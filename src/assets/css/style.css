@@ -1,0 +1,66 @@
+*:focus { outline: none; }
+body { background:#fafafa; font-family:'Crimson Roman'; }
+
+.es-left-content { width:300px; background:#fff; min-height:100vh; height:100%; position:fixed; top:0px; left:0px; border-right:1px solid #e8e7e7; }
+.es-left-content .logo { padding:10px 60px; text-align:center; border-bottom:1px solid #e8e7e7; }
+.es-left-content .logo img { width:100% }
+.es-left-content .header { padding:5px; background: #efefef; font-size:12px; }
+
+.es-left-content .search-wrapper { padding:5px; border-bottom:1px solid #e8e7e7; position:relative; padding-right:25px;}
+.es-left-content .search-wrapper .icon { position:absolute; top:12px; right:8px; }
+.es-left-content .search-wrapper input { width:100%; border:none; height:30px; line-height:30px; padding:0px 8px;  }
+
+.es-left-content .book-listing  .item { padding:8px; border-bottom:1px solid #e8e7e7; cursor:pointer;  }
+.es-left-content .book-listing  .item.active {background:#d7e5f2;  }
+.es-left-content .book-listing  .item:hover {background:#d7e5f2;  }
+.es-left-content .book-listing  .item strong { font-size:18px;  }
+.es-left-content .book-listing  .item p { margin:0px; font-size:12px;  }
+
+.es-content { padding-left:310px; padding-right:310px; padding-top:10px; }
+.es-content .inner { background:#fff; border:1px solid #e8e7e7; min-height:calc(100vh - 20px); }
+.es-content .inner .header { padding:20px; border-bottom:1px solid #e8e7e7; position:relative; }
+.es-content .inner .header p.date {  margin:0px; font-size:14px; }
+.es-content .inner .header p.author { margin:0px; }
+.es-content .inner .header .genres  { margin-top:10px; }
+.es-content .inner .header .genres .item { background:#c6d6e5; color:#000; padding:5px 10px; font-size:12px; }
+.es-content .inner .header .cta-container { background:#fff; border:1px solid #e8e7e7; padding:5px; border-radius:8px; position:absolute; bottom:-18px; right:20px; }
+.es-content .inner .header .cta-container .btn-plain { padding:3px 5px; color:#8e8e8e; cursor:pointer; }
+
+.es-content .inner .tabs { display:none; border-bottom:1px solid #e8e7e7; }
+.es-content .inner .tabs a { display:inline-block; height:45px; line-height:45px; color:#404040; padding:0px 10px; font-size:12px; text-decoration:none; border-right:1px solid #e8e7e7; }
+.es-content .inner .tabs a:not(:first-of-type) { margin-left:-5px; }
+.es-content .inner .tabs a:hover { font-family:'Gotham Bold'; background:#d7e5f2; }
+.es-content .inner .tabs a.active { font-family:'Gotham Bold'; background:#d7e5f2; }
+.es-content .inner .tabs a:last-child { border-right:none; }
+.es-content .inner .tabs a i { font-size:20px; }
+
+.es-right-content { position:fixed; top:0px; right:0px; width:300px; height:100vh; background:#fff; border-left:1px solid #e8e7e7; padding-top:10px; } 
+.es-right-content .toggler-group { padding:3px 10px; display: flex; justify-content: center; } 
+.es-right-content .toggler-group .item {cursor:pointer; padding:3px; border:1px solid #e8e7e7; height:80px; width:90px; margin:0px 5px; padding:15px 3px; text-align:center; } 
+.es-right-content .toggler-group .item:hover { background:#d7e5f2; } 
+.es-right-content .toggler-group .item.active { background:#d7e5f2; } 
+.es-right-content .toggler-group .item i { font-size:30px; } 
+.es-right-content .toggler-group .item p { margin:0px; font-size:10px; font-family:'Gotham Medium'; } 
+.es-right-content .header { margin-top:10px; padding:5px; background: #efefef; font-size:12px; }
+
+.es-right-content .search-wrapper { padding:5px; border-bottom:1px solid #e8e7e7; position:relative; padding-right:25px;}
+.es-right-content .search-wrapper .icon { position:absolute; top:12px; right:8px; }
+.es-right-content .search-wrapper input { width:100%; border:none; height:30px; line-height:30px; padding:0px 8px;  }
+
+.es-right-content .item-listing  .item { padding:8px; border-bottom:1px solid #e8e7e7; cursor:pointer;  }
+.es-right-content .item-listing  .item.active {background:#d7e5f2;  }
+.es-right-content .item-listing  .item:hover {background:#d7e5f2;  }
+.es-right-content .item-listing  .item strong { font-size:18px;  }
+.es-right-content .item-listing  .item p { margin:0px; font-size:12px;  }
+
+@media screen and (max-width: 1180px) {
+	
+	.es-content { padding-right:10px;  }
+	.es-content .header .cta-container { display:none;  }
+	
+	.es-content .inner .tabs { display:block; border-bottom:1px solid #e8e7e7; }
+	
+	
+	.es-right-content { display:none; }
+	
+}
