@@ -2,11 +2,36 @@ const path = require('path');
 let Knex = require('knex');
 const { Model } = require('objection')
 
+let dblocation
+
+if (process.env.NODE_ENV === 'production' && process.platform === 'darwin') {
+  /*
+  * Content/Resources/app folder inside .app
+  * global.resourcePath : folder where the main.js reside , [Content/Resources/app/app]
+  * */
+  global.resourcePath = path.join(__dirname, 'app')
+  dblocation = path.join(process.resourcesPath, 'app', 'base.db')
+} else if (process.env.NODE_ENV === 'production' && process.platform === 'win32') {
+  /*
+  * process.resourcesPath : the .asar file [read only]
+  * global.resourcePath : resource folder where the extra folders that may modified are place , e.g : "public/images" , "database.db"
+  * */
+
+  global.resourcePath = process.resourcesPath
+  dblocation = path.join(process.resourcesPath, '/db/base.db')
+} else {
+  /*
+  * Directory path
+  * */
+  global.resourcePath = path.resolve(__dirname, '../resources')
+  dblocation = path.join(global.resourcePath, 'db/base.db')
+}
+
 var knex = Knex({
   client: 'sqlite3',
   useNullAsDefault: true,
   connection: {
-    filename: path.join(__dirname + '/base.db')
+    filename: path.join(dblocation)
   }
 })
 

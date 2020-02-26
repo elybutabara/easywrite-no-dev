@@ -13,7 +13,8 @@
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.vue src test/unit test/e2e/specs",
     "build": "node build/build.js",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "package-win": "npm run build && electron-builder -w"
   },
   "dependencies": {
     "knex": "^0.20.10",
@@ -93,5 +94,46 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "build": {
+    "appId": "com.forfatterskolen.easywrite",
+    "productName": "Easy Write App",
+    "directories": {
+      "output": "output"
+    },
+    "extraResources": [
+      {
+        "from": "./resources",
+        "to": "./",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
+      "icon": "build/icons/win/icon.ico",
+      "files": [
+        "**/*",
+        "!**src/*",
+        "!**config/*",
+        "!**icons/*",
+        "!**test/*",
+        "!**static/*",
+        "!*.db"
+      ]
+    },
+    "nsis": {
+      "allowToChangeInstallationDirectory": true,
+      "oneClick": false
+    }
+  }
 }

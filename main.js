@@ -2,10 +2,11 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, Menu } = require('electron')
 const path = require('path')
+
+process.env.NODE_ENV = 'production' //change this to dev
+
 const listener = require('./api/listener.js')
 
-// environment
-var ENV = 'dev'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -37,7 +38,7 @@ function createWindow () {
     }
   })
 
-  if (ENV == 'dev') {
+  if (process.env.NODE_ENV == 'dev') {
     mainWindow.webContents.openDevTools()
     let url = 'http://localhost:8080/'
     // and load the index.html of the app.
