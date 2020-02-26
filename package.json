@@ -1,9 +1,9 @@
 {
-  "name": "spa",
+  "name": "EasyWriteApp",
   "main": "main.js",
   "version": "1.0.0",
-  "description": "A Vue.js project",
-  "author": "Kenji Magto",
+  "description": "Easy Write Application , The best app for writer!",
+  "author": "EasyWriteDeveloper",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -14,7 +14,8 @@
     "lint": "eslint --ext .js,.vue src test/unit test/e2e/specs",
     "build": "node build/build.js",
     "postinstall": "electron-builder install-app-deps",
-    "package-win": "npm run build && electron-builder -w"
+    "package-win": "npm run build && electron-builder -w",
+    "package-mac": "npm run build && electron-builder -m"
   },
   "dependencies": {
     "knex": "^0.20.10",
@@ -110,6 +111,21 @@
         ]
       }
     ],
+    "files": [
+      "**/*",
+      "!**src/*",
+      "!**config/*",
+      "!**icons/*",
+      "!**test/*",
+      "!**static/*",
+      "!*.db",
+      "!**db/*"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": "dmg",
+      "icon": "build/icons/mac/icon.icns"
+    },
     "win": {
       "target": [
         {
@@ -120,16 +136,7 @@
           ]
         }
       ],
-      "icon": "build/icons/win/icon.ico",
-      "files": [
-        "**/*",
-        "!**src/*",
-        "!**config/*",
-        "!**icons/*",
-        "!**test/*",
-        "!**static/*",
-        "!*.db"
-      ]
+      "icon": "build/icons/win/icon.ico"
     },
     "nsis": {
       "allowToChangeInstallationDirectory": true,

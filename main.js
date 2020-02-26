@@ -3,7 +3,7 @@
 const { app, BrowserWindow, Menu } = require('electron')
 const path = require('path')
 
-process.env.NODE_ENV = 'production' //change this to dev
+process.env.NODE_ENV = 'dev' //for development only
 
 const listener = require('./api/listener.js')
 
