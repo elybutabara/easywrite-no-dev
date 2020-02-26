@@ -163,7 +163,7 @@ export default {
       // eslint-disable-next-line camelcase
       var author_id = this.$store.getters.getAuthorID
       var response = this.IPCSendSync('GET_BOOKS_BY_AUTHOR', { author_id: author_id })
-      scope.books = response.rows
+      scope.books = response
     },
     showChildren: function (book) {
       var scope = this
@@ -189,7 +189,7 @@ export default {
       if (book.chapters.is_open !== true) {
         book.chapters.is_open = true
         var response = scope.IPCSendSync('GET_CHAPTERS_BY_BOOK', { book_id: book.id })
-        book.chapters.rows = response.rows
+        book.chapters.rows = response
       } else {
         book.chapters.is_open = false
       }
@@ -200,7 +200,7 @@ export default {
       if (book.items.is_open !== true) {
         book.items.is_open = true
         var response = scope.IPCSendSync('GET_ITEMS_BY_BOOK', { book_id: book.id })
-        book.items.rows = response.rows
+        book.items.rows = response
       } else {
         book.items.is_open = false
       }
@@ -211,7 +211,7 @@ export default {
       if (book.characters.is_open !== true) {
         book.characters.is_open = true
         var response = scope.IPCSendSync('GET_CHARACTERS_BY_BOOK', { book_id: book.id })
-        book.characters.rows = response.rows
+        book.characters.rows = response
       } else {
         book.characters.is_open = false
       }
@@ -222,7 +222,7 @@ export default {
       if (book.locations.is_open !== true) {
         book.locations.is_open = true
         var response = scope.IPCSendSync('GET_LOCATIONS_BY_BOOK', { book_id: book.id })
-        book.locations.rows = response.rows
+        book.locations.rows = response
       } else {
         book.locations.is_open = false
       }
@@ -233,7 +233,7 @@ export default {
       if (book.scenes.is_open !== true) {
         book.scenes.is_open = true
         var response = scope.IPCSendSync('GET_OTHER_SCENES_BY_BOOK', { book_id: book.id })
-        book.scenes.rows = response.rows
+        book.scenes.rows = response
       } else {
         book.scenes.is_open = false
       }
@@ -245,7 +245,7 @@ export default {
         scope.$set(chapter, 'is_open', true)
         scope.$set(chapter, 'scenes', { is_open: false, rows: [] })
         var response = scope.IPCSendSync('GET_SCENES_BY_CHAPTER', { chapter_id: chapter.id })
-        chapter.scenes.rows = response.rows
+        chapter.scenes.rows = response
         chapter.scenes.is_open = true
       } else {
         chapter.is_open = false

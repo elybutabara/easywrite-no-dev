@@ -39,7 +39,7 @@ function createWindow () {
 
   if (ENV == 'dev') {
     mainWindow.webContents.openDevTools()
-    let url = 'http://localhost:8081/'
+    let url = 'http://localhost:8080/'
     // and load the index.html of the app.
     // mainWindow.loadFile(url + 'dev/')
     mainWindow.loadURL(url + 'dev/')

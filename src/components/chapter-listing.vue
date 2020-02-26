@@ -22,77 +22,12 @@
         </div>
         <hr/>
        <div class="row">
-            <div class="ccol-12 col-sm-6 col-lg-3  fadeIn animated">
-                <div class="item" >
-                    <div class="header"><i class="las la-bookmark"></i> Chapters</div>
+            <div class="ccol-12 col-sm-6 col-lg-3  fadeIn animated" v-for="chapter in chapters.rows" v-bind:key="chapter.id">
+                <div class="item">
+                    <div class="header"><i class="las la-bookmark"></i> {{ chapter.title }}</div>
                     <div class="content" >
-                        <strong>Short Description</strong>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ccol-12 col-sm-6 col-lg-3  fadeIn animated">
-                <div class="item" >
-                    <div class="header"><i class="las la-bookmark"></i> Chapters</div>
-                    <div class="content" >
-                        <strong>Short Description</strong>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ccol-12 col-sm-6 col-lg-3  fadeIn animated">
-                <div class="item" >
-                    <div class="header"><i class="las la-bookmark"></i> Chapters</div>
-                    <div class="content" >
-                        <strong>Short Description</strong>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ccol-12 col-sm-6 col-lg-3  fadeIn animated">
-                <div class="item" >
-                    <div class="header"><i class="las la-bookmark"></i> Chapters</div>
-                    <div class="content" >
-                        <strong>Short Description</strong>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ccol-12 col-sm-6 col-lg-3  fadeIn animated">
-                <div class="item" >
-                    <div class="header"><i class="las la-bookmark"></i> Chapters</div>
-                    <div class="content">
-                        <strong>Short Description</strong>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ccol-12 col-sm-6 col-lg-3  fadeIn animated">
-                <div class="item" >
-                    <div class="header"><i class="las la-bookmark"></i> Chapters</div>
-                    <div class="content" >
-                        <strong>Short Description</strong>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
+                        <strong> {{ chapter.chapter_guidance }}</strong>
+                        <p class="description" >{{ chapter.short_description }}</p>
                         <button type="button">VIEW</button>
                         <button type="button">EDIT</button>
                         <button type="button">DELETE</button>
@@ -100,7 +35,6 @@
                 </div>
             </div>
        </div>
-
    </div>
 </div>
 </template>
@@ -111,6 +45,7 @@ export default {
   props: ['properties'],
   data: function () {
     return {
+      chapters: [],
       filter: {
         is_open: false,
         keyword: ''
@@ -125,10 +60,19 @@ export default {
     filterResults: function () {
       var scope = this
       console.log(scope.filter.keyword)
+    },
+    getChapters: function (bookId) {
+      var scope = this
+      var response = scope.IPCSendSync('GET_CHAPTERS_BY_BOOK', { book_id: bookId })
+      scope.chapters = response
+      // scope.chapters.rows = getChapterByBook({ book_id: bookId }).catch(err => {
+      //   console.error(err);
+      // })
     }
   },
   mounted () {
-    // var scope = this
+    var scope = this
+    scope.getChapters(scope.properties.id)
   }
 }
 </script>
