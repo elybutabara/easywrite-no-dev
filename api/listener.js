@@ -1,9 +1,6 @@
-const path = require('path')
-
 const { Book, Chapter, Character, Item, Location, Scene, User } = require('./models')
 
 this.loadApi = function (mainWindow) {
-
   // eslint-disable-next-line no-undef
   mainWindow.webContents.on('did-finish-load', () => {
     // eslint-disable-next-line no-undef
@@ -28,7 +25,7 @@ this.loadApi = function (mainWindow) {
   mainWindow.webContents.on('ipc-message-sync', async (event, channel, args) => {
     if (channel === 'AUTHENTICATE') {
       const user = await User.query()
-        .withGraphJoined('author', {maxBatchSize:1})
+        .withGraphJoined('author', { maxBatchSize: 1 })
         .where('username', args.username)
         .where('password', args.password)
         .first()

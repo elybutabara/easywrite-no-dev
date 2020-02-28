@@ -1,16 +1,16 @@
-'use strict';
+'use strict'
 
-const path = require('path');
+const path = require('path')
 
-const { BaseModel } = require('./BaseModel');
+const { BaseModel } = require('./BaseModel')
 
 class Author extends BaseModel {
   // Table name is the only required property.
-  static get tableName() {
-    return 'authors';
+  static get tableName () {
+    return 'authors'
   }
 
-  static get idColumn() { return ["id"]; }
+  static get idColumn () { return ['id'] }
 
   static relationMappings = {
     user: {
@@ -26,4 +26,4 @@ class Author extends BaseModel {
 
 module.exports = {
   Author
-};
+}
