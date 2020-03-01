@@ -63,24 +63,16 @@ export default {
     },
     getChapters: function (bookId) {
       var scope = this
-      var response = scope.IPCSendSync('GET_CHAPTERS_BY_BOOK', { book_id: bookId })
-      scope.chapters = response
+      scope.axios
+        .get('http://localhost:3000/books/' + bookId + '/chapters')
+        .then(response => {
+          scope.chapters = response.data
+        })
     }
   },
   mounted () {
     var scope = this
-    // eslint-disable-next-line no-undef
-    scope.axios
-      .get('http://localhost:3000/books/' + scope.properties.id + '/chapters')
-    //   .get('http://localhost:3000/chapters')
-      .then(response => {
-        scope.chapters = response.data
-      })
-      // .then(result => {
-      //   // this.messages = result
-      //   console.log(result)
-      // })
-    // scope.getChapters(scope.properties.id)
+    scope.getChapters(scope.properties.id)
   }
 }
 </script>
@@ -89,7 +81,7 @@ export default {
     .page-chapter-listing { padding:20px; padding-top:60px; }
     .page-chapter-listing .item { z-index:400; margin-top:20px; border:1px solid #efefef; }
     .page-chapter-listing .item .header { background:#354350; padding:0px 10px; height:35px; line-height:38px; color:#fff; border:2px solid #354350; }
-    .page-chapter-listing .item .content { padding:20px; background:#fff; height: 127px; }
+    .page-chapter-listing .item .content { padding:20px; background:#fff; min-height: 127px; }
     .page-chapter-listing .item .content strong { font-family:'Crimson Bold'; font-size:18px; }
     .page-chapter-listing .item .content .description { font-size:16px; }
     .page-chapter-listing .item .content button { background:#fff; border:1px solid #efefef; padding:5px 10px; padding-bottom:0px; }

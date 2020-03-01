@@ -17,24 +17,9 @@ app.use(function (req, res, next) {
   next()
 })
 
-const { ChapterController } = require('./controller/ChapterController')
-
-app.get('/books/:bookId/chapters', async function (req, res) {
-  const chapters = await ChapterController.getChapterByBookId(req.params.bookId)
-
-  res
-    .status(200)
-    .json(chapters)
-})
-
-app.get('/chapters', async function (req, res) {
-  const chapters = await ChapterController.getAll()
-
-  console.log(chapters)
-  res
-    .status(200)
-    .json(chapters)
-})
+app.use('/books', require('./routes/books'))
+app.use('/users', require('./routes/users'))
+app.use('/chapters', require('./routes/chapters'))
 
 app.listen(3000, function () {
   console.log('Server is running on port 3000')

@@ -161,9 +161,15 @@ export default {
     getBooks: function () {
       var scope = this
       // eslint-disable-next-line camelcase
-      var author_id = this.$store.getters.getAuthorID
-      var response = this.IPCSendSync('GET_BOOKS_BY_AUTHOR', { author_id: author_id })
-      scope.books = response
+      var userID = this.$store.getters.getUserID
+
+      scope.axios
+        .get('http://localhost:3000/users/' + userID + '/books')
+        .then(response => {
+          scope.books = response.data
+        })
+      // var response = this.IPCSendSync('GET_BOOKS_BY_AUTHOR', { author_id: author_id })
+      // scope.books = response
     },
     showChildren: function (book) {
       var scope = this
@@ -188,8 +194,11 @@ export default {
       var scope = this
       if (book.chapters.is_open !== true) {
         book.chapters.is_open = true
-        var response = scope.IPCSendSync('GET_CHAPTERS_BY_BOOK', { book_id: book.id })
-        book.chapters.rows = response
+        scope.axios
+          .get('http://localhost:3000/books/' + book.id + '/chapters')
+          .then(response => {
+            book.chapters.rows = response.data
+          })
       } else {
         book.chapters.is_open = false
       }
@@ -199,8 +208,11 @@ export default {
       var scope = this
       if (book.items.is_open !== true) {
         book.items.is_open = true
-        var response = scope.IPCSendSync('GET_ITEMS_BY_BOOK', { book_id: book.id })
-        book.items.rows = response
+        scope.axios
+          .get('http://localhost:3000/books/' + book.id + '/items')
+          .then(response => {
+            book.items.rows = response.data
+          })
       } else {
         book.items.is_open = false
       }
@@ -210,8 +222,11 @@ export default {
       var scope = this
       if (book.characters.is_open !== true) {
         book.characters.is_open = true
-        var response = scope.IPCSendSync('GET_CHARACTERS_BY_BOOK', { book_id: book.id })
-        book.characters.rows = response
+        scope.axios
+          .get('http://localhost:3000/books/' + book.id + '/characters')
+          .then(response => {
+            book.characters.rows = response.data
+          })
       } else {
         book.characters.is_open = false
       }
@@ -221,8 +236,11 @@ export default {
       var scope = this
       if (book.locations.is_open !== true) {
         book.locations.is_open = true
-        var response = scope.IPCSendSync('GET_LOCATIONS_BY_BOOK', { book_id: book.id })
-        book.locations.rows = response
+        scope.axios
+          .get('http://localhost:3000/books/' + book.id + '/locations')
+          .then(response => {
+            book.locations.rows = response.data
+          })
       } else {
         book.locations.is_open = false
       }
@@ -232,8 +250,11 @@ export default {
       var scope = this
       if (book.scenes.is_open !== true) {
         book.scenes.is_open = true
-        var response = scope.IPCSendSync('GET_OTHER_SCENES_BY_BOOK', { book_id: book.id })
-        book.scenes.rows = response
+        scope.axios
+          .get('http://localhost:3000/books/' + book.id + '/scenes/other')
+          .then(response => {
+            book.scenes.rows = response.data
+          })
       } else {
         book.scenes.is_open = false
       }
@@ -244,8 +265,12 @@ export default {
       if (chapter.is_open !== true) {
         scope.$set(chapter, 'is_open', true)
         scope.$set(chapter, 'scenes', { is_open: false, rows: [] })
-        var response = scope.IPCSendSync('GET_SCENES_BY_CHAPTER', { chapter_id: chapter.id })
-        chapter.scenes.rows = response
+        scope.axios
+          .get('http://localhost:3000/chapters/' + chapter.id + '/scenes')
+          .then(response => {
+            chapter.scenes.rows = response.data
+          })
+
         chapter.scenes.is_open = true
       } else {
         chapter.is_open = false

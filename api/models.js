@@ -1,5 +1,11 @@
 const path = require('path')
 
+const Knex = require('knex')
+const { Model } = require('objection')
+
+const connection = require(path.join('../src/knexfile'))[process.env.NODE_ENV]
+const knexConnection = Knex(connection)
+
 const { Author } = require(path.join(__dirname, 'models/Author'))
 const { User } = require(path.join(__dirname, 'models/User'))
 const { Book } = require(path.join(__dirname, 'models/Book'))
@@ -18,6 +24,8 @@ const { SceneItem } = require(path.join(__dirname, 'models/SceneItem'))
 const { SceneLocation } = require(path.join(__dirname, 'models/SceneLocation'))
 const { RelationDetail } = require(path.join(__dirname, 'models/RelationDetail'))
 const { SoftDeleteQueryBuilder } = require(path.join(__dirname, 'models/SoftDeleteQueryBuilder'))
+
+Model.knex(knexConnection)
 
 module.exports = {
   Author,
