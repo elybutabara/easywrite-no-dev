@@ -10,8 +10,9 @@ class BookController {
       .withGraphJoined('author', { maxBatchSize: 1 })
 
     const books = Book.query()
+      .withGraphJoined('genre')
       .where('author_id', user.author.id)
-      .whereNull('deleted_at')
+      .whereNull('books.deleted_at')
 
     return books
   }

@@ -167,6 +167,7 @@ export default {
         .get('http://localhost:3000/users/' + userID + '/books')
         .then(response => {
           scope.books = response.data
+          console.log(response.data)
         })
       // var response = this.IPCSendSync('GET_BOOKS_BY_AUTHOR', { author_id: author_id })
       // scope.books = response
