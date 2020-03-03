@@ -21,86 +21,20 @@
            </div>
         </div>
         <hr/>
-       <div class="row">
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 fadeIn animated">
+        <div class="row">
+            <div class="col-12 col-lg-3 col-md-6 col-sm-6 fadeIn animated" v-for="otherScene in otherScenes" v-bind:key="otherScene.id">
                 <div class="item" >
-                    <div class="header"><i class="las la-bookmark"></i> Scene</div>
+                    <div class="header"><i class="las la-bookmark"></i> {{ otherScene.title }}</div>
                     <div class="content" >
-                        <strong>Short Description</strong>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
+                        <strong>{{ otherScene.short_description }}</strong>
+                        <div v-html="otherScene.notes" class="description" >{{ otherScene.notes }}</div>
                         <button type="button">VIEW</button>
                         <button type="button">EDIT</button>
                         <button type="button">DELETE</button>
                     </div>
                 </div>
             </div>
-
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 fadeIn animated">
-                <div class="item" >
-                    <div class="header"><i class="las la-bookmark"></i> Scene</div>
-                    <div class="content" >
-                        <strong>Short Description</strong>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 fadeIn animated">
-                <div class="item" >
-                    <div class="header"><i class="las la-bookmark"></i> Scene</div>
-                    <div class="content" >
-                        <strong>Short Description</strong>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 fadeIn animated">
-                <div class="item" >
-                    <div class="header"><i class="las la-bookmark"></i> Scene</div>
-                    <div class="content" >
-                        <strong>Short Description</strong>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 fadeIn animated">
-                <div class="item" >
-                    <div class="header"><i class="las la-bookmark"></i> Scene</div>
-                    <div class="content">
-                        <strong>Short Description</strong>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 fadeIn animated">
-                <div class="item" >
-                    <div class="header"><i class="las la-bookmark"></i> Scene</div>
-                    <div class="content" >
-                        <strong>Short Description</strong>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-       </div>
-
+        </div>
    </div>
 </div>
 </template>
@@ -111,6 +45,7 @@ export default {
   props: ['properties'],
   data: function () {
     return {
+      otherScenes: [],
       filter: {
         is_open: false,
         keyword: ''
@@ -125,10 +60,19 @@ export default {
     filterResults: function () {
       var scope = this
       console.log(scope.filter.keyword)
+    },
+    getOtherScenes: function (bookId) {
+      var scope = this
+      scope.axios
+        .get('http://localhost:3000/books/' + bookId + '/scenes/other')
+        .then(response => {
+          scope.otherScenes = response.data
+        })
     }
   },
   mounted () {
-    // var scope = this
+    var scope = this
+    scope.getOtherScenes(scope.properties.id)
   }
 }
 </script>
