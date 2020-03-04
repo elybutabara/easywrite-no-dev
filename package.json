@@ -24,6 +24,7 @@
     "objection": "^2.1.3",
     "sqlite3": "^4.1.1",
     "sweetalert2": "^9.7.2",
+    "tinymce": "^5.2.0",
     "vue": "^2.5.2",
     "vue-axios": "^2.1.5",
     "vue-notification": "^1.3.20",

@@ -1,5 +1,3 @@
-const { Book, Chapter, Character, Item, Location, Scene, User } = require('./models')
-
 this.loadApi = function (mainWindow) {
   // eslint-disable-next-line no-undef
   mainWindow.webContents.on('did-finish-load', () => {

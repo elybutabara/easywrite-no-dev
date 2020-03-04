@@ -4,6 +4,7 @@ const { app, BrowserWindow, Menu } = require('electron')
 const path = require('path')
 const route = require('./api/server')
 const listener = require('./api/listener.js')
+const menu = require('./menu');
 
 // environment
 var ENV = 'dev'
@@ -11,21 +12,6 @@ var ENV = 'dev'
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
-let menuTemplate = [
-  {
-    label: 'File',
-    submenu: [
-      { label: 'Exit', role: 'close' }
-    ]
-  },
-  {
-    label: 'View',
-    submenu: [
-      { role: 'reload' },
-      { label: 'Dev Tools', role: 'toggleDevTools' }
-    ]
-  }
-]
 
 function createWindow () {
   // Create the browser window.
@@ -53,7 +39,6 @@ function createWindow () {
     mainWindow.loadFile(`${__dirname}/dist/index.html`)
   }
 
-  let menu = Menu.buildFromTemplate(menuTemplate)
   Menu.setApplicationMenu(menu)
 
   // Open the DevTools.
