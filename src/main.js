@@ -2,6 +2,8 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 import App from './App'
 import router from './router'
 import StoreAuth from './stores/auth'
@@ -19,6 +21,7 @@ import './assets/css/style.css'
 // Vue.use(electron)
 Vue.use(Vuex)
 Vue.use(Notifications)
+Vue.use(VueAxios, axios)
 
 const store = new Vuex.Store({
   modules: {

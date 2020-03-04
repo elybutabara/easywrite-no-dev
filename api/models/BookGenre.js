@@ -1,5 +1,7 @@
 'use strict';
 
+const path = require('path');
+
 const { BaseModel } = require('./BaseModel');
 
 class BookGenre extends BaseModel {
@@ -7,6 +9,17 @@ class BookGenre extends BaseModel {
     static get tableName() {
         return 'book_genres';
     }
+
+    static relationMappings = {
+      book_genre_collection: {
+        relation: BaseModel.HasManyRelation,
+        modelClass: path.join(__dirname, 'BookGenreCollection'),
+        join: {
+          from: 'book_genres.id',
+          to: 'book_genre_collections.genre_id'
+        }
+      }
+    };
 }
 
 module.exports = {

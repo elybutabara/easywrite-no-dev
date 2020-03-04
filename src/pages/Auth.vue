@@ -41,24 +41,26 @@ export default {
   methods: {
     authenticate: function (event) {
       var scope = this
-      var response = this.IPCSendSync('AUTHENTICATE', { username: scope.username, password: scope.password })
+      scope.axios
+        .get('http://localhost:3000/users/login?username=' + scope.username + '&password=' + scope.password)
+        .then(response => {
+          this.$store.commit('authenticate', {
+            user: response.data.user,
+            author: response.data.author
+          })
 
-      if (!response.success) {
-        this.$notify({
-          group: 'notification',
-          type: 'error',
-          title: 'Authentication Failed',
-          text: response.message
+          this.$router.push({name: 'Main'})
         })
-        return
-      }
-
-      this.$store.commit('authenticate', {
-        user: response.user,
-        author: response.author
-      })
-
-      this.$router.push({name: 'Main'})
+        .catch(error => {
+          if (error.response.status === 401) {
+            this.$notify({
+              group: 'notification',
+              type: 'error',
+              title: 'Authentication Failed',
+              text: error.response.data.message
+            })
+          }
+        })
     }
   },
   mounted () {

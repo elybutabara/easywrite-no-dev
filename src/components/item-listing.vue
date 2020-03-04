@@ -23,76 +23,12 @@
         <hr/>
 
        <div class="row">
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 bounceInRight animated">
+            <div class="col-12 col-lg-3 col-md-6 col-sm-6 bounceInRight animated" v-for="item in items" v-bind:key="item.id">
                 <div class="item" >
                     <div class="content">
                         <div class="picture-placeholder"></div>
-                        <strong>Item Name</strong>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 bounceInRight animated">
-                <div class="item" >
-                    <div class="content" >
-                        <div class="picture-placeholder"></div>
-                        <strong>Item Name</strong>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 bounceInRight animated">
-                <div class="item" >
-                    <div class="content" >
-                        <div class="picture-placeholder"></div>
-                        <strong>Item Name</strong>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 bounceInRight animated">
-                <div class="item" >
-                    <div class="content" >
-                        <div class="picture-placeholder"></div>
-                        <strong>Item Name</strong>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 bounceInRight animated">
-                <div class="item" >
-                    <div class="content">
-                        <div class="picture-placeholder"></div>
-                        <strong>Item Name</strong>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 bounceInRight animated">
-                <div class="item" >
-                    <div class="content" >
-                        <div class="picture-placeholder"></div>
-                        <strong>Item Name</strong>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
+                        <strong> {{ item.itemname }} </strong>
+                        <p class="description" > {{ item.description }} </p>
                         <button type="button">VIEW</button>
                         <button type="button">EDIT</button>
                         <button type="button">DELETE</button>
@@ -111,6 +47,7 @@ export default {
   props: ['properties'],
   data: function () {
     return {
+      items: [],
       filter: {
         is_open: false,
         keyword: ''
@@ -125,10 +62,19 @@ export default {
     filterResults: function () {
       var scope = this
       console.log(scope.filter.keyword)
+    },
+    getItems: function (bookId) {
+      var scope = this
+      scope.axios
+        .get('http://localhost:3000/books/' + bookId + '/items')
+        .then(response => {
+          scope.items = response.data
+        })
     }
   },
   mounted () {
-    // var scope = this
+    var scope = this
+    scope.getItems(scope.properties.id)
   }
 }
 </script>

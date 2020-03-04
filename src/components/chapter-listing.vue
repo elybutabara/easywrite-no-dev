@@ -22,7 +22,7 @@
         </div>
         <hr/>
        <div class="row">
-            <div class="ccol-12 col-sm-6 col-lg-3  fadeIn animated" v-for="chapter in chapters.rows" v-bind:key="chapter.id">
+            <div class="ccol-12 col-sm-6 col-lg-3  fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
                 <div class="item">
                     <div class="header"><i class="las la-bookmark"></i> {{ chapter.title }}</div>
                     <div class="content" >
@@ -63,11 +63,11 @@ export default {
     },
     getChapters: function (bookId) {
       var scope = this
-      var response = scope.IPCSendSync('GET_CHAPTERS_BY_BOOK', { book_id: bookId })
-      scope.chapters = response
-      // scope.chapters.rows = getChapterByBook({ book_id: bookId }).catch(err => {
-      //   console.error(err);
-      // })
+      scope.axios
+        .get('http://localhost:3000/books/' + bookId + '/chapters')
+        .then(response => {
+          scope.chapters = response.data
+        })
     }
   },
   mounted () {
@@ -81,7 +81,7 @@ export default {
     .page-chapter-listing { padding:20px; padding-top:60px; }
     .page-chapter-listing .item { z-index:400; margin-top:20px; border:1px solid #efefef; }
     .page-chapter-listing .item .header { background:#354350; padding:0px 10px; height:35px; line-height:38px; color:#fff; border:2px solid #354350; }
-    .page-chapter-listing .item .content { padding:20px; background:#fff; }
+    .page-chapter-listing .item .content { padding:20px; background:#fff; min-height: 127px; }
     .page-chapter-listing .item .content strong { font-family:'Crimson Bold'; font-size:18px; }
     .page-chapter-listing .item .content .description { font-size:16px; }
     .page-chapter-listing .item .content button { background:#fff; border:1px solid #efefef; padding:5px 10px; padding-bottom:0px; }

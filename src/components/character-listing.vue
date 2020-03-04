@@ -23,64 +23,12 @@
         <hr/>
 
        <div class="row">
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 fadeIn animated">
+            <div class="col-12 col-lg-3 col-md-6 col-sm-6 fadeIn animated" v-for="character in characters" v-bind:key="character.id">
                 <div class="item" >
                     <div class="content" >
                         <div class="picture-placeholder"></div>
-                        <strong>John Doe (John)</strong> <br/>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 fadeIn animated">
-                <div class="item" >
-                    <div class="content" >
-                        <div class="picture-placeholder"></div>
-                        <strong>John Doe (John)</strong> <br/>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 fadeIn animated">
-                <div class="item" >
-                    <div class="content" >
-                        <div class="picture-placeholder"></div>
-                        <strong>John Doe (John)</strong> <br/>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 fadeIn animated">
-                <div class="item" >
-                    <div class="content" >
-                        <div class="picture-placeholder"></div>
-                        <strong>John Doe (John)</strong> <br/>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 fadeIn animated">
-                <div class="item" >
-                    <div class="content" >
-                        <div class="picture-placeholder"></div>
-                        <strong>John Doe (John)</strong> <br/>
-                        <p class="description" >Some Description are meant to be broken Some Description are meant to be broken Some Description are meant to be broken</p>
+                      <strong>{{ character.fullname }} <span v-if="character.nickname.length !== 0">({{ character.nickname }})</span></strong> <br/>
+                        <div v-html="character.description" class="description" >{{ character.description }}</div>
                         <button type="button">VIEW</button>
                         <button type="button">EDIT</button>
                         <button type="button">DELETE</button>
@@ -99,6 +47,7 @@ export default {
   props: ['properties'],
   data: function () {
     return {
+      characters: [],
       filter: {
         is_open: false,
         keyword: ''
@@ -113,10 +62,19 @@ export default {
     filterResults: function () {
       var scope = this
       console.log(scope.filter.keyword)
+    },
+    getCharacters: function (bookId) {
+      var scope = this
+      scope.axios
+        .get('http://localhost:3000/books/' + bookId + '/characters')
+        .then(response => {
+          scope.characters = response.data
+        })
     }
   },
   mounted () {
-    // var scope = this
+    var scope = this
+    scope.getCharacters(scope.properties.id)
   }
 }
 </script>

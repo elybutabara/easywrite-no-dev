@@ -13,6 +13,9 @@ export default {
     },
     getAuthorID: state => {
       return state.user.author.id
+    },
+    getUserID: state => {
+      return state.user.data.id
     }
   },
   mutations: {

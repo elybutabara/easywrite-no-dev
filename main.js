@@ -2,9 +2,18 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, Menu } = require('electron')
 const path = require('path')
+const fs = require('fs')
+const log = require('electron-log')
 
-process.env.NODE_ENV = 'dev' //for development only
+if(fs.existsSync(path.join(process.resourcesPath,'prod.env'))){
+  process.env.NODE_ENV = 'production'
+  global.resourcePath = process.resourcesPath
+}else{
+  process.env.NODE_ENV = 'development'
+  global.resourcePath = path.resolve('./resources')
+}
 
+const route = require('./api/server')
 const listener = require('./api/listener.js')
 
 
