@@ -9,6 +9,7 @@ import router from './router'
 import StoreAuth from './stores/auth'
 import mixins from './utils/mixins'
 import Notifications from 'vue-notification'
+import Multiselect from 'vue-multiselect'
 
 import './assets/vendors/bootstrap/css/bootstrap.min.css'
 import './assets/vendors/lineawesome/css/line-awesome.min.css'
@@ -17,7 +18,16 @@ import './assets/css/animate.css'
 import './assets/css/fonts.css'
 import './assets/css/style.css'
 
-import tinymce from 'tinymce'
+// import jQuery from 'jquery'
+// import 'jquery/dist/jquery.min'
+
+// import 'select2/dist/css/select2.min.css'
+// import 'select2-theme-bootstrap4/dist/select2-bootstrap.min.css'
+// import 'select2/dist/js/select2.min'
+
+import 'vue-multiselect/dist/vue-multiselect.min.css'
+
+import 'tinymce/tinymce'
 import 'tinymce/themes/silver'
 
 import 'tinymce/skins/ui/oxide/skin.min.css'
@@ -46,11 +56,21 @@ import 'tinymce/plugins/paste'
 import 'tinymce/plugins/textcolor'
 import 'tinymce/plugins/wordcount'
 
+import TinyMCE from './components/TinyMCE'
+
+window.$ = window.jQuery = require('jquery')
+window.moment = require('moment')
+window.swal = require('sweetalert2')
+// window.$.fn.select2.defaults.set('theme', 'bootstrap')
+
 // import electron from 'electron'
 // Vue.use(electron)
 Vue.use(Vuex)
 Vue.use(Notifications)
 Vue.use(VueAxios, axios)
+Vue.component('multiselect', Multiselect)
+Vue.component('tiny-editor', TinyMCE)
+// Vue.use(jQuery)
 
 const store = new Vuex.Store({
   modules: {
@@ -58,7 +78,7 @@ const store = new Vuex.Store({
   }
 })
 
-// Vue.component('editor', TinyMCE)
+// Vue.component('editor', tinymce)
 
 // all global functions goes here...
 Vue.mixin(mixins)
@@ -70,72 +90,4 @@ new Vue({
   store,
   components: { App },
   template: '<App/>'
-})
-
-Vue.component('editor', {
-  template: '<textarea class="form-control">{{ initValue }}</textarea>',
-  props: ['initValue', 'disabled'],
-  methods: {
-    initEditor: function (elementId) {
-      // eslint-disable-next-line one-var
-      tinymce.init({
-        selector: '#' + elementId,
-        min_height: 400,
-        resize: false,
-        hidden_input: false,
-        plugins: [
-          'autolink link lists charmap hr anchor',
-          'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime nonbreaking',
-          'table contextmenu directionality template paste textcolor'// remove autoresize
-        ],
-        toolbar: [
-          'undo | redo | print | copy | cut | paste | bold | italic | underline | strikethrough | backcolor | leftChev | rightChev | enDash | numlist | bullist | alignleft | aligncenter | alignright'
-        ],
-        browser_spellcheck: true,
-        menubar: false,
-        branding: false,
-        autoresize_on_init: false,
-        forced_root_block: false,
-        setup: function (editor) {
-          editor.ui.registry.addButton('leftChev', {
-            text: '<<',
-            tooltip: 'leftChev',
-            onAction: function (_) {
-              editor.insertContent('&#171;')
-            }
-          })
-
-          editor.ui.registry.addButton('rightChev', {
-            text: '>>',
-            tooltip: 'rightChev',
-            onAction: function (_) {
-              editor.insertContent('&#187;')
-            }
-          })
-
-          editor.ui.registry.addButton('enDash', {
-            text: '-',
-            tooltip: 'en dash',
-            onAction: function (_) {
-              editor.insertContent('&#8211;')
-            }
-          })
-        }
-      })
-    }
-  },
-  updated: function () {
-    // Since we're using Ajax to load data, hence we have to use this hook because when parent's data got loaded, it will fire this hook.
-    // Depends on your use case, you might not need this
-    var vm = this
-
-    if (vm.initValue) {
-      var editor = tinymce.get(vm.$el.id)
-      editor.setContent(vm.initValue)
-    }
-  },
-  mounted () {
-    var vm = this
-    vm.initEditor(vm.$el.id)
-  }
 })

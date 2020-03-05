@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
 
-const { User, Book } = require(path.join(__dirname, '..', 'models'))
+const { User, Book, BookGenre } = require(path.join(__dirname, '..', 'models'))
 
 class BookController {
   static async getAllBooksByUserId (userId) {
@@ -15,6 +15,16 @@ class BookController {
       .whereNull('books.deleted_at')
 
     return books
+  }
+  static getAllBookGenres () {
+    const genres = BookGenre.query()
+
+    return genres
+  }
+  static async save (data) {
+    const book = await Book.query().upsertGraph([data])
+
+    return book
   }
 }
 
