@@ -17,9 +17,6 @@
         <div class="form-group">
           <label>Genre: </label>
           <multiselect v-model="genre_collection" :multiple="true" :taggable="true" label="name" track-by="id" :options="genres"></multiselect>
-<!--          <select2 :options="options" v-model="selected">-->
-<!--            <option disabled value="0">Select one</option>-->
-<!--          </select2>-->
         </div>
       </div>
     </div>
@@ -27,9 +24,9 @@
       <div class="col-md-12">
         <div class="form-group">
           <label>Description: </label>
-          <tiny-editor v-model="data.about"
-                  id="tiny-area"
-                  class="form-control"
+          <tiny-editor :initValue="data.about"
+                       v-on:getEditorContent="setAboutValue"
+                       class="form-control"
           />
         </div>
       </div>
@@ -68,6 +65,12 @@ export default {
     Multiselect
   },
   methods: {
+    // Required for geting value from TinyMCE content
+    setAboutValue (value) {
+      var scope = this
+
+      scope.data.about = value
+    },
     getGenre: function () {
       var scope = this
       scope.axios
@@ -79,33 +82,68 @@ export default {
     saveBook: function () {
       var scope = this
 
+      console.log(scope.genre_collection)
+      console.log(scope.data.book_genre_collection)
       scope.genre_collection.forEach(function (item, index) {
-        scope.data.book_genre_collection.push({
-          genre_id: item.id
-        })
+        console.log()
+        // scope.data.book_genre_collection.push({
+        //   genre_id: item.id
+        // })
       })
 
+      // scope.axios
+      //   .post('http://localhost:3000/books', scope.data)
+      //   .then(response => {
+      //     if (response.data) {
+      //       window.swal.fire({
+      //         position: 'center',
+      //         icon: 'success',
+      //         title: 'Book successfuly saved',
+      //         showConfirmButton: false,
+      //         timer: 1500
+      //       }).then(() => {
+      //         scope.$parent.getBooks()
+      //         scope.$parent.changeComponent('book-details', response.data)
+      //       })
+      //     }
+      //   })
+    },
+    loadBook: function () {
+      var scope = this
       scope.axios
-        .post('http://localhost:3000/books', scope.data)
+        .get('http://localhost:3000/books/' + scope.data.id)
         .then(response => {
-          if (response.data) {
-            window.swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Book successfuly saved',
-              showConfirmButton: false,
-              timer: 1500
-            }).then(() => {
-              console.log(response.data)
+          let book = response.data
+          scope.data.title = book.title
+          scope.data.about = book.about
+
+          book.genre.forEach(function (item, index) {
+            scope.genre_collection.push({
+              id: item.id,
+              name: item.name
             })
-          }
-          // scope.genres = response.data
+          })
+
+          book.book_genre_collection.forEach(function (item, index) {
+            scope.data.book_genre_collection.push({
+              id: item.id,
+              book_id: item.book_id,
+              genre_id: item.genre_id
+            })
+          })
         })
+    }
+  },
+  beforeMount () {
+    var scope = this
+
+    scope.$set(scope.data, 'id', 424)
+    if (scope.data.id) {
+      scope.loadBook()
     }
   },
   mounted () {
     var scope = this
-    // scope.components.TinyMCE.methods.initEditor('.tiny-area')
     scope.getGenre()
   }
 }

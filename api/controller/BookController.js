@@ -21,8 +21,19 @@ class BookController {
 
     return genres
   }
+  static getBookById (bookId) {
+    const book = Book.query().findById(bookId)
+      .withGraphJoined('book_genre_collection')
+      .withGraphJoined('genre')
+
+    return book
+  }
   static async save (data) {
-    const book = await Book.query().upsertGraph([data])
+    const saveBook = await Book.query().upsertGraph([data]).first()
+
+    const book = Book.query()
+      .withGraphJoined('genre')
+      .findById(saveBook.id)
 
     return book
   }

@@ -1,5 +1,5 @@
 <template>
-  <textarea class="tiny-area" v-model="initValue"></textarea>
+  <input v-model="initValue" type="text" class="tiny-area" v-on:click="emitToParent" />
 </template>
 
 <script>
@@ -7,12 +7,10 @@ import tinymce from 'tinymce'
 
 export default {
   name: 'TinyMCE',
-  props: ['initValue', 'disabled'],
-  methods: {
-    initEditor: function (selector) {
-      // eslint-disable-next-line one-var
-      tinymce.init({
-        selector: selector,
+  data: function () {
+    return {
+      initConfig: {
+        selector: 'input.tiny-area',
         min_height: 400,
         resize: false,
         hidden_input: false,
@@ -53,8 +51,28 @@ export default {
               editor.insertContent('&#8211;')
             }
           })
+
+          editor.on('change', function (e) {
+            window.jQuery('#' + this.id).val(editor.getContent()).click()
+          })
         }
-      })
+      }
+    }
+  },
+  props: ['initValue', 'disabled'],
+  methods: {
+    initEditor: function () {
+      var vm = this
+
+      tinymce.init(vm.initConfig)
+
+      if (vm.$attrs.value) {
+        var editor = tinymce.get(vm.$attrs.id)
+        editor.setContent(vm.$attrs.value)
+      }
+    },
+    emitToParent (event) {
+      this.$emit('getEditorContent', this.$el.value)
     }
   },
   updated: function () {
@@ -69,8 +87,7 @@ export default {
   },
   mounted () {
     var vm = this
-    var selector = '#' + vm.$el.id
-    vm.initEditor(selector)
+    vm.initEditor()
   }
 }
 </script>

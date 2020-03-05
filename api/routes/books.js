@@ -62,4 +62,12 @@ router.post('/', async function (req, res) {
     .json(book)
 })
 
+router.get('/:bookId', async function (req, res) {
+  const book = await BookController.getBookById(req.params.bookId)
+
+  res
+    .status(200)
+    .json(book)
+})
+
 module.exports = router

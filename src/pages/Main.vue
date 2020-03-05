@@ -111,7 +111,7 @@
         <location-details v-if="active.component == 'location-details'" :properties="active.data"></location-details>
         <character-details v-if="active.component == 'character-details'" :properties="active.data"></character-details>
 
-        <book-form v-if="active.component == 'book-form'"></book-form>
+        <book-form v-if="active.component == 'book-form'" :properties="active.data"></book-form>
     </div>
 </div>
 </template>
