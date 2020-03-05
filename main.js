@@ -1,4 +1,3 @@
-/* eslint-disable eqeqeq */
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, Menu } = require('electron')
 const path = require('path')
@@ -83,7 +82,10 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', function () {
+  checkFreshInstallation()
+  createWindow()
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -100,3 +102,33 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+function checkFreshInstallation () {
+  const fs = require('fs')
+  const fsj = require('fs-jetpack')
+  let src,dist
+  if(process.env.NODE_ENV === 'development'){
+    src = path.resolve('./api', 'base.db')
+    dist = path.resolve(global.resourcePath, 'db', 'base.db')
+  }else{
+    src = path.join(process.resourcesPath, 'app.asar', 'api', 'base.db')
+    dist = path.resolve(app.getPath('userData'), 'resources', 'db', 'base.db')
+  }
+
+  //%USERPROFILE%\AppData\Roaming\{app name}\logs\{process type}.log
+  log.info(process.env.NODE_ENV)
+  log.info(path.resolve(app.getPath('userData'), 'resources', 'db'))
+
+  if (
+    fs.existsSync(src) &&
+    fs.statSync(src).isFile() &&
+    !fs.existsSync(dist)
+  ) {
+    fsj.copy(src, dist)
+    log.info("fresh install")
+    fs.chmod(dist, '0700', function (err) {
+      log.error(err)
+      if (err) throw err
+    })
+  }
+}

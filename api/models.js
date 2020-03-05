@@ -3,8 +3,6 @@ const path = require('path')
 const Knex = require('knex')
 const { Model } = require('objection')
 
-global.resourcePath = (process.env.NODE_ENV === 'dev') ? path.resolve(__dirname, '../resources') : process.resourcesPath
-
 const connection = require(path.join(__dirname, 'knexfile'))[process.env.NODE_ENV]
 const knexConnection = Knex(connection)
 

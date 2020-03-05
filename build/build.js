@@ -73,7 +73,7 @@ let buildOptions = {
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
   if (err) throw err
   webpack(webpackConfig, (err, stats) => {
-    spinner.stop()
+
     if (err) throw err
     process.stdout.write(stats.toString({
       colors: true,
@@ -95,7 +95,7 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     ))
   })
 
-  spinner.start()
+
   let target = (process.platform === 'darwin') ? Platform.MAC.createTarget() : Platform.WINDOWS.createTarget();
 
   builder.build({
@@ -103,7 +103,6 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     config: buildOptions
   }).then(() => {
     console.log(chalk.green('\n\nBuild complete.\n'))
-    spinner.stop()
     process.exit(0);
   });
 })
