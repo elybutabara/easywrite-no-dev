@@ -30,58 +30,12 @@ npm test
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
 
-## Package.json Build Setup
-
-``` bash
-"build": {
-    "appId": "com.forfatterskolen.easywrite",
-    "productName": "Easy Write App",
-    "directories": {
-      "output": "output"
-    },
-    ## Resource folder that will be use outside the compress build (e.g: database,public images)##
-    "extraResources": [
-      {
-        "from": "./resources",
-        "to": "./",
-        "filter": [
-          "**/*"
-        ]
-      }
-    ],
-    ## Files that are excluded (e.g source codes,build,databases)
-    "files": [
-      "**/*",
-      "!**src/*",
-      "!**config/*",
-      "!**icons/*",
-      "!**test/*",
-      "!**static/*",
-      "!*.db",
-      "!**db/*"
-    ],
-    ## installer to install in Application with productivity as category
-    "mac": {
-      "category": "public.app-category.productivity",
-      "target": "dmg",
-      "icon": "build/icons/mac/icon.icns"
-    },
-    ## installer to install in user-choice directory both x86 & x64 bit architecture
-    "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        }
-      ],
-      "icon": "build/icons/win/icon.ico"
-    },
-    "nsis": {
-      "allowToChangeInstallationDirectory": true,
-      "oneClick": false
-    }
-}
+## Package.json Scripts
+> This script is for WINDOWS ONLY, will create "migration file" in "api/migrations"
+```
+"migration-win" : "cross-env NODE_ENV=development knex migrate:make %npm_package_version% --knexfile=./api/knexfile.js",
+```
+> This script is for MAC & LINUX will, create "migration file" in "api/migrations"
+```
+"migration-mac-linux" : "cross-env NODE_ENV=development knex migrate:make $npm_package_name --knexfile=./api/knexfile.js"
 ```

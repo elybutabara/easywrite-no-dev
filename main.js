@@ -4,7 +4,7 @@ const path = require('path')
 const fs = require('fs')
 const log = require('electron-log')
 
-if(fs.existsSync(path.join(process.resourcesPath,'prod.env'))){
+if(fs.existsSync(path.join(process.resourcesPath || '','prod.env'))){
   process.env.NODE_ENV = 'production'
   global.resourcePath = process.resourcesPath
 }else{
@@ -84,6 +84,7 @@ function createWindow () {
 // Some APIs can only be used after this event occurs.
 app.on('ready', function () {
   checkFreshInstallation()
+  checkForVersionUpdates()
   createWindow()
 })
 
@@ -116,8 +117,8 @@ function checkFreshInstallation () {
   }
 
   //%USERPROFILE%\AppData\Roaming\{app name}\logs\{process type}.log
-  log.info(process.env.NODE_ENV)
-  log.info(path.resolve(app.getPath('userData'), 'resources', 'db'))
+  // log.info(process.env.NODE_ENV)
+  // log.info(path.resolve(app.getPath('userData'), 'resources', 'db'))
 
   if (
     fs.existsSync(src) &&
@@ -131,4 +132,54 @@ function checkFreshInstallation () {
       if (err) throw err
     })
   }
+}
+
+function checkForVersionUpdates(){
+  let knexMigrate = require('knex-migrate')
+  let data = {
+    knexfile : path.resolve(__dirname, './api/knexfile.js'),
+    migrations : path.resolve(__dirname, './api/migrations')
+  }
+
+  knexConnection.schema.hasTable('migration_version_control').then(async(exists)=>{
+    if(exists){
+      await knexConnection.first().from('migration_version_control').orderByRaw('version_id DESC').then(function (res) {
+        if(res){
+          data.from = res.name
+        }
+      })
+    }
+
+    let directory_pathName
+    await knexMigrate('up', data, ({ action, migration })=>{
+      log.info('Doing ' + action + ' on ' + migration)
+
+      directory_pathName = migration.split(path.sep)
+    }).then(function () {
+      /*generate_UID*/
+      /* TODO replace this with function for generating UID*/
+      let uuidGenerationRaw = knexConnection.client.config.client === 'sqlite3' ?
+        `(lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6))))` :
+        `uuid_generate_v4()`;
+
+      if(Array.isArray(directory_pathName)){
+          knexConnection.table('migration_version_control').insert({
+            'version_uid' : knexConnection.raw(uuidGenerationRaw),
+            'full_path' : data.migrations,
+            'directory': directory_pathName[0],
+            'name' : directory_pathName[1],
+            'created_at' : knexConnection.fn.now(),
+            'updated_at' : knexConnection.fn.now()
+          }).catch((err)=>{
+            log.error(err)
+          })
+      }
+    }).catch((err)=>{
+      log.error(err)
+    })
+  }).catch((err)=>{
+    log.error(err)
+  })
+
+
 }
