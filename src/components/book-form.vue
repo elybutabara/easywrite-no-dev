@@ -16,7 +16,7 @@
       <div class="col-md-12">
         <div class="form-group">
           <label>Genre: </label>
-          <multiselect v-model="genre_collection" :multiple="true" :taggable="true" label="name" track-by="id" :options="genres"></multiselect>
+          <multiselect v-model="genre_collection" @select="selectGenre" @remove="removeGenre" :multiple="true" :taggable="true" label="name" track-by="id" :options="genres"></multiselect>
         </div>
       </div>
     </div>
@@ -71,6 +71,16 @@ export default {
 
       scope.data.about = value
     },
+    removeGenre ({id}) {
+      var scope = this
+      scope.data.book_genre_collection.find(x => x.genre_id === id).deleted_at = window.moment().format('YYYY-MM-DD hh:mm:ss').toString()
+    },
+    selectGenre ({id}) {
+      var scope = this
+      if (scope.data.book_genre_collection.find(x => (x.genre_id === id && x.deleted_at !== undefined)) !== undefined) {
+        delete scope.data.book_genre_collection.find(x => x.genre_id === id).deleted_at
+      }
+    },
     getGenre: function () {
       var scope = this
       scope.axios
@@ -82,31 +92,30 @@ export default {
     saveBook: function () {
       var scope = this
 
-      console.log(scope.genre_collection)
-      console.log(scope.data.book_genre_collection)
       scope.genre_collection.forEach(function (item, index) {
-        console.log()
-        // scope.data.book_genre_collection.push({
-        //   genre_id: item.id
-        // })
+        if (scope.data.book_genre_collection.find(x => x.genre_id === item.id) === undefined) {
+          scope.data.book_genre_collection.push({
+            genre_id: item.id
+          })
+        }
       })
 
-      // scope.axios
-      //   .post('http://localhost:3000/books', scope.data)
-      //   .then(response => {
-      //     if (response.data) {
-      //       window.swal.fire({
-      //         position: 'center',
-      //         icon: 'success',
-      //         title: 'Book successfuly saved',
-      //         showConfirmButton: false,
-      //         timer: 1500
-      //       }).then(() => {
-      //         scope.$parent.getBooks()
-      //         scope.$parent.changeComponent('book-details', response.data)
-      //       })
-      //     }
-      //   })
+      scope.axios
+        .post('http://localhost:3000/books', scope.data)
+        .then(response => {
+          if (response.data) {
+            window.swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Book successfuly saved',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              scope.$parent.getBooks()
+              scope.$parent.changeComponent('book-details', response.data)
+            })
+          }
+        })
     },
     loadBook: function () {
       var scope = this
@@ -117,19 +126,20 @@ export default {
           scope.data.title = book.title
           scope.data.about = book.about
 
-          book.genre.forEach(function (item, index) {
-            scope.genre_collection.push({
-              id: item.id,
-              name: item.name
-            })
-          })
-
           book.book_genre_collection.forEach(function (item, index) {
             scope.data.book_genre_collection.push({
               id: item.id,
               book_id: item.book_id,
               genre_id: item.genre_id
             })
+
+            if (scope.genres.find(x => (x.id === item.genre_id)) !== undefined) {
+              var selectedGenre = scope.genres.find(x => (x.id === item.genre_id))
+              scope.genre_collection.push({
+                id: selectedGenre.id,
+                name: selectedGenre.name
+              })
+            }
           })
         })
     }
@@ -137,14 +147,15 @@ export default {
   beforeMount () {
     var scope = this
 
+    scope.getGenre()
+
     scope.$set(scope.data, 'id', 424)
     if (scope.data.id) {
       scope.loadBook()
     }
   },
   mounted () {
-    var scope = this
-    scope.getGenre()
+    // var scope = this
   }
 }
 </script>

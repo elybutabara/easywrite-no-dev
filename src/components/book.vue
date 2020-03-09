@@ -8,7 +8,10 @@
                 <div style="padding:10px 0px;">
                     <span class="book-genre" v-for="genre in properties.genre" :key="genre.id">{{ genre.name }}</span>
                 </div>
-
+                <div>
+                  <span  @click="changeComponent('book-form')" class="update-book">Update</span>
+                  <span  @click="changeComponent('book-form')" class="delete-book">Delete</span>
+                </div>
                 <div v-html="properties.about" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';">
                   {{ properties.about }}
                 </div>
