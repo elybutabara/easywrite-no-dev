@@ -93,16 +93,20 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
       '  Tip: built files are meant to be served over an HTTP server.\n' +
       '  Opening index.html over file:// won\'t work.\n'
     ))
+
+    let target = (process.platform === 'darwin') ? Platform.MAC.createTarget() : Platform.WINDOWS.createTarget();
+
+    builder.build({
+      targets : target,
+      config: buildOptions
+    }).then(() => {
+      console.log(chalk.green('\n\nBuild complete.\n'))
+      spinner.stop()
+      process.exit(0);
+    });
+
   })
 
 
-  let target = (process.platform === 'darwin') ? Platform.MAC.createTarget() : Platform.WINDOWS.createTarget();
 
-  builder.build({
-    targets : target,
-    config: buildOptions
-  }).then(() => {
-    console.log(chalk.green('\n\nBuild complete.\n'))
-    process.exit(0);
-  });
 })

@@ -46,7 +46,7 @@ function createWindow () {
     }
   })
 
-  if (process.env.NODE_ENV == 'dev') {
+  if (process.env.NODE_ENV == 'development') {
     mainWindow.webContents.openDevTools()
     let url = 'http://localhost:8080/'
     // and load the index.html of the app.
