@@ -73,7 +73,7 @@
                             </div>
                             <ul class="level-3">
                                 <li v-bind:key="location.id" v-for="location in book.locations.rows">
-                                    <div @click="changeComponent('location-details',location.id)" class="label"><span><img  src="@/assets/img/icons/location.svg"> {{ location.location }}</span></div>
+                                    <div @click="changeComponent('location-details',{ location: location })" class="label"><span><img  src="@/assets/img/icons/location.svg"> {{ location.location }}</span></div>
                                 </li>
                             </ul>
                         </li>
@@ -112,6 +112,7 @@
         <character-details v-if="active.component == 'character-details'" :properties="active.data"></character-details>
 
         <book-form v-if="active.component == 'book-form'" :properties="active.data"></book-form>
+        <location-form v-if="active.component == 'location-form'" :properties="active.data"></location-form>
     </div>
 </div>
 </template>
@@ -132,6 +133,7 @@ import CharacterDetails from '@/components/character'
 import LocationDetails from '@/components/location'
 
 import BookForm from '@/components/book-form'
+import LocationForm from '@/components/location-form'
 
 export default {
   name: 'Main',
@@ -158,12 +160,15 @@ export default {
     'item-details': ItemDetails,
     'character-details': CharacterDetails,
     'location-details': LocationDetails,
-    'book-form': BookForm
+    'book-form': BookForm,
+    'location-form': LocationForm
   },
   methods: {
     changeComponent: function (component, data) {
       var scope = this
+      scope.$delete(scope.active, 'data')
       scope.$set(scope.active, 'data', data)
+      scope.active.component = ''
       scope.active.component = component
     },
     getBooks: function () {

@@ -1,7 +1,7 @@
 <template>
 <div class="page-location-listing">
    <div>
-       <button class="btn-new-record"><i class="las la-plus"></i></button>
+       <button @click="createLocation" class="btn-new-record"><i class="las la-plus"></i></button>
         <div class="row">
            <div class="col-12 col-md-7">
                 <div class="page-title">
@@ -26,12 +26,12 @@
             <div class="col-12 col-lg-3 col-md-6 col-sm-6 fadeIn animated" v-for="location in locations" v-bind:key="location.id">
                 <div class="item" >
                     <div class="content">
-                        <div class="picture-placeholder"></div>
+                        <div class="picture-placeholder"><img :src="location.picture_src" /></div>
                         <strong>{{ location.location }}</strong>
                         <div  v-html="location.description" class="description" >{{ location.description }}</div>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
+                        <button @click="viewLocation(location)" type="button">VIEW</button>
+                        <button @click="editLocation(location)" type="button">EDIT</button>
+                        <button @click="deleteLocation(location.id)" type="button">DELETE</button>
                     </div>
                 </div>
             </div>
@@ -55,13 +55,40 @@ export default {
     }
   },
   methods: {
+    editLocation: function (location) {
+      var scope = this
+      scope.$parent.changeComponent('location-form', { location: location })
+    },
+    viewLocation: function (location) {
+      var scope = this
+      scope.$parent.changeComponent('location-details', { location: location })
+    },
+    deleteLocation: function (locationId) {
+      var scope = this
+      scope.axios
+        .delete('http://localhost:3000/locations/' + locationId)
+        .then(response => {
+          if (response.data) {
+            window.swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Locations successfuly deleted',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              scope.getLocations(scope.properties.id)
+              scope.$parent.changeComponent('location-listing', scope.properties)
+            })
+          }
+        })
+    },
     toggleFilter: function () {
       var scope = this
       scope.filter.is_open = !scope.filter.is_open
     },
     filterResults: function () {
-      var scope = this
-      console.log(scope.filter.keyword)
+      // var scope = this
+      // console.log(scope.filter.keyword)
     },
     getLocations: function (bookId) {
       var scope = this
@@ -70,6 +97,10 @@ export default {
         .then(response => {
           scope.locations = response.data
         })
+    },
+    createLocation () {
+      var scope = this
+      scope.$parent.changeComponent('location-form', scope.properties)
     }
   },
   mounted () {
@@ -85,7 +116,8 @@ export default {
     .page-location-listing .item { margin-top:20px; border:1px solid #9fb1c2; text-align:center; }
     .page-location-listing .item .header { background:#354350; padding:0px 20px; height:35px; line-height:38px; color:#fff; border:2px solid #354350; }
     .page-location-listing .item .content { padding:20px; background:#fff; }
-    .page-location-listing .item .content .picture-placeholder {  display:block; margin:0px auto;  width:60px; height:55px; background:#ccd5dd; border:2px solid #9fb1c2; margin-bottom:10px; cursor:pointer; }
+    .page-location-listing .item .content .picture-placeholder {  display:block; margin:0px auto; width: 200px; height: 100px; background:#ccd5dd; border:2px solid #9fb1c2; margin-bottom:10px; cursor:pointer; }
+    .page-location-listing .item .content .picture-placeholder img { height: 100% }
     .page-location-listing .item .content strong { font-family:'Crimson Bold'; font-size:18px; }
     .page-location-listing .item .content .description { font-size:16px; }
     .page-location-listing .item .content button { background:#fff; border:1px solid #efefef; padding:5px 10px; padding-bottom:0px; }
