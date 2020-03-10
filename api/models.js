@@ -3,8 +3,9 @@ const path = require('path')
 const Knex = require('knex')
 const { Model } = require('objection')
 
-const connection = require(path.join('../src/knexfile'))[process.env.NODE_ENV]
+const connection = require(path.join(__dirname, 'knexfile'))[process.env.NODE_ENV]
 const knexConnection = Knex(connection)
+global.knexConnection = knexConnection // to be use in starter.js(main.js) for update versions
 
 const { Author } = require(path.join(__dirname, 'models/Author'))
 const { User } = require(path.join(__dirname, 'models/User'))
