@@ -48,6 +48,7 @@ import TinyMCE from './TinyMCE'
 
 export default {
   name: 'book-form',
+  props: ['properties'],
   data: function () {
     return {
       data: {
@@ -149,7 +150,7 @@ export default {
 
     scope.getGenre()
 
-    scope.$set(scope.data, 'id', 424)
+    scope.$set(scope.data, 'id', scope.properties.id)
     if (scope.data.id) {
       scope.loadBook()
     }

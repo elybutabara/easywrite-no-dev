@@ -70,4 +70,12 @@ router.get('/:bookId', async function (req, res) {
     .json(book)
 })
 
+router.delete('/:bookId', async function (req, res) {
+  const book = await BookController.delete(req.params.bookId)
+
+  res
+    .status(200)
+    .json(book)
+})
+
 module.exports = router

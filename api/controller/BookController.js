@@ -38,6 +38,11 @@ class BookController {
 
     return book
   }
+  static delete (bookId) {
+    const book = Book.query().findById(bookId).softDelete()
+
+    return book
+  }
 }
 
 module.exports = {

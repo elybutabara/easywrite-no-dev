@@ -9,8 +9,8 @@
                     <span class="book-genre" v-for="genre in properties.genre" :key="genre.id">{{ genre.name }}</span>
                 </div>
                 <div>
-                  <span  @click="changeComponent('book-form')" class="update-book">Update</span>
-                  <span  @click="changeComponent('book-form')" class="delete-book">Delete</span>
+                  <button  @click="updateBook()" class="update-book">Update</button>
+                  <button  @click="deleteBook()" class="delete-book">Delete</button>
                 </div>
                 <div v-html="properties.about" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';">
                   {{ properties.about }}
@@ -41,6 +41,31 @@ export default {
     }
   },
   methods: {
+    updateBook () {
+      var scope = this
+      scope.$parent.getBooks()
+      scope.$parent.changeComponent('book-form', scope.properties)
+    },
+    deleteBook () {
+      var scope = this
+      scope.axios
+        .delete('http://localhost:3000/books/' + scope.properties.id)
+        .then(response => {
+          if (response.data) {
+            window.swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Book successfuly deleted',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              scope.$parent.getBooks()
+              scope.$parent.changeComponent('book-listing', response.data)
+            })
+          }
+        })
+      console.log(scope.properties.id)
+    }
   },
   mounted () {
     // var scope = this
