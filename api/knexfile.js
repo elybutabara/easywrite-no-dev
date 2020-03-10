@@ -2,13 +2,13 @@
 const path = require('path')
 const { app } = require('electron')
 const log = require('electron-log')
-let srcPath = (process.env.NODE_ENV === 'production') ? app.getPath('userData') : path.resolve(__dirname, '..')
+let srcPath = (process.env.NODE_ENV === 'production') ? app.getPath('userData') : path.resolve(__dirname)
 module.exports = {
   development: {
     client: 'sqlite3',
     useNullAsDefault: true,
     connection: {
-      filename: path.join(srcPath, 'resources', 'db', 'base.db')
+      filename: path.join(srcPath, 'base.db')
     },
     migrations: {
       tableName: 'knex_migrations',

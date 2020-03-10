@@ -17,7 +17,7 @@ spinner.start()
 
 let buildOptions = {
   "appId": "com.forfatterskolen.easywrite",
-  "productName": "Easy Write App",
+  "productName": "EasyWriteApp",
   "directories": {
     "output": "output"
   },
