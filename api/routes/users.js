@@ -29,6 +29,24 @@ router.get('/login', async function (req, res) {
 router.get('/:userId/books', async function (req, res) {
   const books = await BookController.getAllBooksByUserId(req.params.userId)
 
+  const genres = await BookController.getAllBookGenres()
+
+  books.forEach(function (item, index) {
+    if(item.book_genre_collection) {
+      const genre = []
+      item.book_genre_collection.forEach(function (collection, indx) {
+        if (genres.find(x => (x.id === collection.genre_id)) !== undefined) {
+          var selectedGenre = genres.find(x => (x.id === collection.genre_id))
+          genre.push({
+            id: selectedGenre.id,
+            name: selectedGenre.name
+          })
+        }
+      })
+      books[index].genre = genre
+    }
+  })
+
   res
     .status(200)
     .json(books)

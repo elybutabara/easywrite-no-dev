@@ -1,17 +1,14 @@
 const { Model } = require('objection')
+const moment = require('moment')
 
 class BaseModel extends Model {
-  $beforeInsert(queryContext) {
-    const now = new Date().toISOString();
-
-    this.created_at = now;
-    this.updated_at = now;
+  $beforeInsert (queryContext) {
+    this.created_at = moment().format('YYYY-MM-DD hh:mm:ss').toString()
+    this.updated_at = moment().format('YYYY-MM-DD hh:mm:ss').toString()
   }
 
-  $beforeUpdate(opt,queryContext) {
-    const now = new Date().toISOString();
-
-    this.updated_at = now;
+  $beforeUpdate (opt, queryContext) {
+    this.updated_at = moment().format('YYYY-MM-DD hh:mm:ss').toString()
   }
 }
 
