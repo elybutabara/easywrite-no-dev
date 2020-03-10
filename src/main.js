@@ -10,6 +10,7 @@ import StoreAuth from './stores/auth'
 import mixins from './utils/mixins'
 import Notifications from 'vue-notification'
 import Multiselect from 'vue-multiselect'
+import Vuelidate from 'vuelidate'
 
 import './assets/vendors/bootstrap/css/bootstrap.min.css'
 import './assets/vendors/lineawesome/css/line-awesome.min.css'
@@ -70,6 +71,7 @@ Vue.use(Notifications)
 Vue.use(VueAxios, axios)
 Vue.component('multiselect', Multiselect)
 Vue.component('tiny-editor', TinyMCE)
+Vue.use(Vuelidate)
 // Vue.use(jQuery)
 
 const store = new Vuex.Store({

@@ -64,7 +64,6 @@ export default {
             })
           }
         })
-      console.log(scope.properties.id)
     }
   },
   mounted () {

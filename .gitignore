@@ -8,6 +8,7 @@ yarn-error.log*
 /test/e2e/reports/
 selenium-debug.log
 resources/
+/package-lock.json
 
 # Ignore all db file
 api/base.db
