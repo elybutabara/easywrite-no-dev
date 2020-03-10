@@ -9,6 +9,11 @@ yarn-error.log*
 selenium-debug.log
 resources/
 
+# Ignore all db file
+api/base.db
+api/es.db
+src/assets/base.db
+
 # Editor directories and files
 .idea
 .vscode
