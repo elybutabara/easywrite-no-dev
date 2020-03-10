@@ -65,22 +65,34 @@ export default {
     },
     deleteLocation: function (locationId) {
       var scope = this
-      scope.axios
-        .delete('http://localhost:3000/locations/' + locationId)
-        .then(response => {
-          if (response.data) {
-            window.swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Locations successfuly deleted',
-              showConfirmButton: false,
-              timer: 1500
-            }).then(() => {
-              scope.getLocations(scope.properties.id)
-              scope.$parent.changeComponent('location-listing', scope.properties)
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/locations/' + locationId)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Locations successfuly deleted',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.getLocations(scope.properties.id)
+                  scope.$parent.changeComponent('location-listing', scope.properties)
+                })
+              }
             })
-          }
-        })
+        }
+      })
     },
     toggleFilter: function () {
       var scope = this

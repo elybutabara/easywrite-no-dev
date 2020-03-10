@@ -160,7 +160,7 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              scope.$parent.changeComponent('location-details', response.data.book)
+              scope.$parent.changeComponent('location-details', { location: response.data })
             })
           }
         })

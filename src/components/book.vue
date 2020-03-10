@@ -48,22 +48,34 @@ export default {
     },
     deleteBook () {
       var scope = this
-      scope.axios
-        .delete('http://localhost:3000/books/' + scope.properties.id)
-        .then(response => {
-          if (response.data) {
-            window.swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Book successfuly deleted',
-              showConfirmButton: false,
-              timer: 1500
-            }).then(() => {
-              scope.$parent.getBooks()
-              scope.$parent.changeComponent('book-listing', response.data)
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/books/' + scope.properties.id)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Book successfuly deleted',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.$parent.getBooks()
+                  scope.$parent.changeComponent('book-listing', response.data)
+                })
+              }
             })
-          }
-        })
+        }
+      })
     }
   },
   mounted () {
