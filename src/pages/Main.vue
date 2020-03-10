@@ -9,6 +9,9 @@
             <i class="las la-search icon"></i>
         </div>
         <div class="es-tree-view">
+            <div class="text-right">
+              <span  @click="changeComponent('book-form')" class="new-book"><i class="las la-plus icon"></i> New Book</span>
+            </div>
             <ul class="level-1">
                 <li v-bind:class="{ 'open' : (book.is_open == true) }" v-bind:key="book.id" v-for="book in books">
                     <div class="label" @click="showChildren(book)"><span><img src="@/assets/img/icons/book.svg"> {{ book.title }}</span></div>
@@ -107,6 +110,8 @@
         <item-details v-if="active.component == 'item-details'" :properties="active.data"></item-details>
         <location-details v-if="active.component == 'location-details'" :properties="active.data"></location-details>
         <character-details v-if="active.component == 'character-details'" :properties="active.data"></character-details>
+
+        <book-form v-if="active.component == 'book-form'" :properties="active.data"></book-form>
     </div>
 </div>
 </template>
@@ -125,6 +130,8 @@ import SceneDetails from '@/components/scene'
 import ItemDetails from '@/components/item'
 import CharacterDetails from '@/components/character'
 import LocationDetails from '@/components/location'
+
+import BookForm from '@/components/book-form'
 
 export default {
   name: 'Main',
@@ -150,7 +157,8 @@ export default {
     'scene-details': SceneDetails,
     'item-details': ItemDetails,
     'character-details': CharacterDetails,
-    'location-details': LocationDetails
+    'location-details': LocationDetails,
+    'book-form': BookForm
   },
   methods: {
     changeComponent: function (component, data) {
@@ -168,7 +176,6 @@ export default {
         .then(response => {
           scope.books = response.data
         })
-      // var response = this.IPCSendSync('GET_BOOKS_BY_AUTHOR', { author_id: author_id })
       // scope.books = response
     },
     showChildren: function (book) {
@@ -299,6 +306,9 @@ ul { margin-left:0px; list-style:none;  }
 .left-side-bar .search-box input { background:#324553; width:100%; height:30px; border:none; color:#fff; padding:0px 5px; padding-right:35px;  }
 .left-side-bar .search-box input:focus, .search-box input:active{ background:#324553; }
 .left-side-bar .search-box input::placeholder { color: #506d84; }
+
+.new-book { font-family: 'Crimson Roman'; color:#abc4d7; font-size: 14px; cursor: pointer }
+.new-book:hover  { color:#fff; }
 
 .es-tree-view { padding:10px 5px; }
 .es-tree-view ul { padding-left:10px; text-align: left; }

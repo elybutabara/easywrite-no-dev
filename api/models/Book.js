@@ -1,14 +1,14 @@
-'use strict';
+'use strict'
 
-const path = require('path');
+const path = require('path')
 
-const { BaseModel } = require('./BaseModel');
+const { BaseModel } = require('./BaseModel')
 
 class Book extends BaseModel {
-    // Table name is the only required property.
-    static get tableName() {
-        return 'books';
-    }
+  // Table name is the only required property.
+  static get tableName () {
+    return 'books'
+  }
 
     static relationMappings = {
       book_genre_collection: {
@@ -20,7 +20,7 @@ class Book extends BaseModel {
         }
       },
       genre: {
-        relation: BaseModel.ManyToManyRelation  ,
+        relation: BaseModel.ManyToManyRelation,
         modelClass: path.join(__dirname, 'BookGenre'),
         join: {
           from: 'books.id',
@@ -36,5 +36,5 @@ class Book extends BaseModel {
 }
 
 module.exports = {
-    Book
-};
+  Book
+}
