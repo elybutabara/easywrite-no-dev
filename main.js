@@ -118,7 +118,7 @@ function checkFreshInstallation () {
 
   //%USERPROFILE%\AppData\Roaming\{app name}\logs\{process type}.log
   // log.info(process.env.NODE_ENV)
-  // log.info(path.resolve(app.getPath('userData'), 'resources', 'db'))
+  log.info(path.resolve(app.getPath('userData'), 'resources', 'db'))
 
   if (
     fs.existsSync(src) &&
@@ -128,8 +128,10 @@ function checkFreshInstallation () {
     fsj.copy(src, dist)
     log.info("fresh install")
     fs.chmod(dist, '0700', function (err) {
-      log.error(err)
-      if (err) throw err
+      if (err){
+        log.error(err)
+        throw err
+      }
     })
   }
 }

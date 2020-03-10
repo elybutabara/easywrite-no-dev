@@ -105,52 +105,5 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ],
-  "build": {
-    "appId": "com.forfatterskolen.easywrite",
-    "productName": "Easy Write App",
-    "directories": {
-      "output": "output"
-    },
-    "extraResources": [
-      {
-        "from": "./resources",
-        "to": "./",
-        "filter": [
-          "**/*"
-        ]
-      }
-    ],
-    "files": [
-      "**/*",
-      "!**src/*",
-      "!**config/*",
-      "!**icons/*",
-      "!**test/*",
-      "!**static/*",
-      "!*.db",
-      "!**db/*"
-    ],
-    "mac": {
-      "category": "public.app-category.productivity",
-      "target": "dmg",
-      "icon": "build/icons/mac/icon.icns"
-    },
-    "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        }
-      ],
-      "icon": "build/icons/win/icon.ico"
-    },
-    "nsis": {
-      "allowToChangeInstallationDirectory": true,
-      "oneClick": false
-    }
-  }
+  ]
 }

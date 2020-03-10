@@ -28,13 +28,6 @@ let buildOptions = {
       "filter": [
         "**/*"
       ]
-    },
-    {
-      "from": "./config/prod.env.js",
-      "to": "./prod.env",
-      "filter": [
-        "**/*"
-      ]
     }
   ],
   "files": [
@@ -96,6 +89,9 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
 
     let target = (process.platform === 'darwin') ? Platform.MAC.createTarget() : Platform.WINDOWS.createTarget();
 
+    /*
+    * This will create the builds base on the options above and based on the target
+    * */
     builder.build({
       targets : target,
       config: buildOptions
