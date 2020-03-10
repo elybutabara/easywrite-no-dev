@@ -1,6 +1,6 @@
-# spa
+# EasyWriteApp
 
-> A Vue.js project
+> Easy Write Application , The best app for writer!
 
 ## Build Setup
 
@@ -28,3 +28,14 @@ npm test
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+
+## Package.json Scripts
+> This script is for WINDOWS ONLY, will create "migration file" in "api/migrations"
+```
+"migration-win" : "cross-env NODE_ENV=development knex migrate:make %npm_package_version% --knexfile=./api/knexfile.js",
+```
+> This script is for MAC & LINUX will, create "migration file" in "api/migrations"
+```
+"migration-mac-linux" : "cross-env NODE_ENV=development knex migrate:make $npm_package_name --knexfile=./api/knexfile.js"
+```

@@ -16,3 +16,7 @@ resources/
 *.ntvs*
 *.njsproj
 *.sln
+*.db
+output/
+private/
+*.diff
