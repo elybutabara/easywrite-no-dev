@@ -1,6 +1,6 @@
 {
   "name": "spa",
-  "main": "main.js",
+  "main": "starter.js",
   "version": "1.0.0",
   "description": "A Vue.js project",
   "author": "Kenji Magto",

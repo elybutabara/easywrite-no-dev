@@ -9,20 +9,20 @@ const knexConnection = Knex(connection)
 const { Author } = require(path.join(__dirname, 'models/Author'))
 const { User } = require(path.join(__dirname, 'models/User'))
 const { Book } = require(path.join(__dirname, 'models/Book'))
-const { Chapter } = require(path.join(__dirname, 'models/Chapter'))
-const { Scene } = require(path.join(__dirname, 'models/Scene'))
-const { Character } = require(path.join(__dirname, 'models/Character'))
-const { Item } = require(path.join(__dirname, 'models/Item'))
-const { Location } = require(path.join(__dirname, 'models/Location'))
+const { BookChapter } = require(path.join(__dirname, 'models/BookChapter'))
+const { BookScene } = require(path.join(__dirname, 'models/BookScene'))
+const { BookCharacter } = require(path.join(__dirname, 'models/BookCharacter'))
+const { BookItem } = require(path.join(__dirname, 'models/BookItem'))
+const { BookLocation } = require(path.join(__dirname, 'models/BookLocation'))
 const { BookGenre } = require(path.join(__dirname, 'models/BookGenre'))
 const { BookGenreCollection } = require(path.join(__dirname, 'models/BookGenreCollection'))
-const { ChapterVersion } = require(path.join(__dirname, 'models/ChapterVersion'))
-const { SceneVersion } = require(path.join(__dirname, 'models/SceneVersion'))
-const { Relation } = require(path.join(__dirname, 'models/Relation'))
-const { SceneCharacter } = require(path.join(__dirname, 'models/SceneCharacter'))
-const { SceneItem } = require(path.join(__dirname, 'models/SceneItem'))
-const { SceneLocation } = require(path.join(__dirname, 'models/SceneLocation'))
-const { RelationDetail } = require(path.join(__dirname, 'models/RelationDetail'))
+const { BookChapterVersion } = require(path.join(__dirname, 'models/BookChapterVersion'))
+const { BookSceneVersion } = require(path.join(__dirname, 'models/BookSceneVersion'))
+const { BookRelation } = require(path.join(__dirname, 'models/BookRelation'))
+const { BookRelationDetail } = require(path.join(__dirname, 'models/BookRelationDetail'))
+const { BookSceneCharacter } = require(path.join(__dirname, 'models/BookSceneCharacter'))
+const { BookSceneItem } = require(path.join(__dirname, 'models/BookSceneItem'))
+const { BookSceneLocation } = require(path.join(__dirname, 'models/BookSceneLocation'))
 const { SoftDeleteQueryBuilder } = require(path.join(__dirname, 'models/SoftDeleteQueryBuilder'))
 
 Model.knex(knexConnection)
@@ -31,19 +31,19 @@ module.exports = {
   Author,
   User,
   Book,
-  Chapter,
-  Scene,
-  Character,
-  Item,
-  Location,
+  BookChapter,
+  BookChapterVersion,
+  BookScene,
+  BookCharacter,
+  BookItem,
+  BookLocation,
   BookGenre,
   BookGenreCollection,
-  ChapterVersion,
-  SceneVersion,
-  Relation,
-  RelationDetail,
-  SceneCharacter,
-  SceneItem,
-  SceneLocation,
+  BookSceneVersion,
+  BookRelation,
+  BookRelationDetail,
+  BookSceneCharacter,
+  BookSceneItem,
+  BookSceneLocation,
   SoftDeleteQueryBuilder
 }

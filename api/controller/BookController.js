@@ -11,7 +11,7 @@ class BookController {
 
     const books = Book.query()
       .withGraphJoined('genre')
-      .where('author_id', user.author.id)
+      .where('author_id', user.author.uuid)
       .whereNull('books.deleted_at')
 
     return books
@@ -28,6 +28,7 @@ class BookController {
 
     return book
   }
+
   static async save (data) {
     const saveBook = await Book.query().upsertGraph([data]).first()
 
@@ -36,6 +37,26 @@ class BookController {
       .findById(saveBook.id)
 
     return book
+  }
+
+  static async sync (rows) {
+    var updated = 0
+    var inserted = 0
+
+    for (var i = 0; i < rows.length; i++) {
+      var data = await Book.query()
+        .patch(rows[i])
+        .where('uuid', '=', rows[i].uuid)
+
+      if (!data || data === 0) {
+        data = await Book.query().insert(rows[i])
+        inserted++
+      } else {
+        updated++
+      }
+    }
+
+    return { updated: updated, inserted: inserted }
   }
 }
 

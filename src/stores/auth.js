@@ -12,10 +12,10 @@ export default {
       return state.isAuthenticated
     },
     getAuthorID: state => {
-      return state.user.author.id
+      return state.user.author.uuid
     },
     getUserID: state => {
-      return state.user.data.id
+      return state.user.data.uuid
     }
   },
   mutations: {

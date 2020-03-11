@@ -62,6 +62,14 @@ router.post('/', async function (req, res) {
     .json(book)
 })
 
+router.post('/sync', async function (req, res) {
+  const book = await BookController.sync(req.body)
+
+  res
+    .status(200)
+    .json(book)
+})
+
 router.get('/:bookId', async function (req, res) {
   const book = await BookController.getBookById(req.params.bookId)
 
