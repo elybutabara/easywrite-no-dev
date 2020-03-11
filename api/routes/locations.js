@@ -38,4 +38,12 @@ router.delete('/:locationId', async function (req, res) {
     .json(location)
 })
 
+router.post('/sync', async function (req, res) {
+  const row = await LocationController.sync(req.body)
+
+  res
+    .status(200)
+    .json(row)
+})
+
 module.exports = router

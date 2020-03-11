@@ -1,37 +1,37 @@
 const path = require('path')
 
-const { BookChapterController } = require(path.join(__dirname, 'controller/BookChapterController'))
-const { BookChapterVersionController } = require(path.join(__dirname, 'controller/BookChapterVersionController'))
-const { BookCharacterController } = require(path.join(__dirname, 'controller/BookCharacterController'))
-const { BookLocationController } = require(path.join(__dirname, 'controller/BookLocationController'))
-const { BookSceneController } = require(path.join(__dirname, 'controller/BookSceneController'))
-const { BookSceneVersionController } = require(path.join(__dirname, 'controller/BookSceneVersionController'))
-const { BookSceneItemController } = require(path.join(__dirname, 'controller/BookSceneItemController'))
-const { BookSceneLocationController } = require(path.join(__dirname, 'controller/BookSceneLocationController'))
-const { BookSceneCharacterController } = require(path.join(__dirname, 'controller/BookSceneCharacterController'))
+const { GenreController } = require(path.join(__dirname, 'controller/GenreController'))
+const { RelationController } = require(path.join(__dirname, 'controller/RelationController'))
+const { ItemController } = require(path.join(__dirname, 'controller/ItemController'))
+const { ChapterController } = require(path.join(__dirname, 'controller/ChapterController'))
+const { ChapterVersionController } = require(path.join(__dirname, 'controller/ChapterVersionController'))
+const { CharacterController } = require(path.join(__dirname, 'controller/CharacterController'))
+const { LocationController } = require(path.join(__dirname, 'controller/LocationController'))
+const { SceneController } = require(path.join(__dirname, 'controller/SceneController'))
+const { SceneVersionController } = require(path.join(__dirname, 'controller/SceneVersionController'))
+const { SceneItemController } = require(path.join(__dirname, 'controller/SceneItemController'))
+const { SceneLocationController } = require(path.join(__dirname, 'controller/SceneLocationController'))
+const { SceneCharacterController } = require(path.join(__dirname, 'controller/SceneCharacterController'))
 const { UserController } = require(path.join(__dirname, 'controller/UserController'))
 const { BookController } = require(path.join(__dirname, 'controller/BookController'))
-const { BookGenreController } = require(path.join(__dirname, 'controller/BookGenreController'))
-const { BookGenreCollectionController } = require(path.join(__dirname, 'controller/BookGenreCollectionController'))
-const { BookRelationController } = require(path.join(__dirname, 'controller/BookRelationController'))
-const { BookRelationDetailController } = require(path.join(__dirname, 'controller/BookRelationDetailController'))
-const { BookItemController } = require(path.join(__dirname, 'controller/BookItemController'))
+const { GenreCollectionController } = require(path.join(__dirname, 'controller/GenreCollectionController'))
+const { RelationDetailController } = require(path.join(__dirname, 'controller/RelationDetailController'))
 
 module.exports = {
-  BookChapterController,
-  BookChapterVersionController,
-  BookItemController,
-  BookCharacterController,
-  BookLocationController,
-  BookSceneController,
-  BookSceneVersionController,
-  BookSceneItemController,
-  BookSceneLocationController,
-  BookSceneCharacterController,
   UserController,
+  GenreController,
+  RelationController,
   BookController,
-  BookGenreController,
-  BookRelationController,
-  BookRelationDetailController,
-  BookGenreCollectionController
+  ItemController,
+  LocationController,
+  ChapterController,
+  ChapterVersionController,
+  CharacterController,
+  SceneController,
+  SceneVersionController,
+  SceneItemController,
+  SceneLocationController,
+  SceneCharacterController,
+  RelationDetailController,
+  GenreCollectionController
 }
