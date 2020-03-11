@@ -7,14 +7,34 @@ class LocationController {
   static getAllByBookId (bookId) {
     var locations = Location.query()
       .where('book_id', bookId)
-      .whereNull('deleted_at')
+      .withGraphJoined('book')
+      .whereNull('book_locations.deleted_at')
 
     return locations
   }
 
+  static getByLocationId (locationId) {
+    var location = Location.query()
+      .withGraphJoined('book')
+      .findById(locationId)
+
+    return location
+  }
+
   static async save (data) {
-    const save = await Location.query().upsertGraph([data]).first()
-    return save
+    const saveLocation = await Location.query().upsertGraph([data]).first()
+
+    const location = Location.query()
+      .withGraphJoined('book')
+      .findById(saveLocation.uuid)
+
+    return location
+  }
+
+  static async delete (locationId) {
+    const location = await Location.query().findById(locationId).softDelete()
+
+    return location
   }
 
   static async sync (rows) {

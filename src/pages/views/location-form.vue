@@ -137,7 +137,7 @@ export default {
           .then(response => {
             window.$('#location-details [name="picture"]').val(response.data.file.name)
 
-            scope.data.picture = response.data.file.name
+            scope.data.pictures = response.data.file.name
             scope.saveLocation()
           }).catch(function () {
             console.log('FAILURE!!')
@@ -167,21 +167,20 @@ export default {
     },
     loadLocation () {
       var scope = this
-
       scope.axios
-        .get('http://localhost:3000/locations/' + scope.data.id)
+        .get('http://localhost:3000/locations/' + scope.data.uuid)
         .then(response => {
-          let locaiton = response.data
-          scope.data.location = locaiton.location
-          scope.data.AKA = locaiton.AKA
-          scope.data.tags = locaiton.tags
-          scope.data.description = locaiton.description
+          let location = response.data
+          scope.data.location = location.location
+          scope.data.AKA = location.AKA
+          scope.data.tags = location.tags
+          scope.data.description = location.description
 
-          if (locaiton.picture) {
-            scope.$set(scope.data, 'picture', locaiton.picture)
+          if (location.pictures) {
+            scope.$set(scope.data, 'pictures', location.pictures)
 
             const image = new Image()
-            image.src = locaiton.picture_src
+            image.src = location.picture_src
             image.setAttribute('width', '100%')
 
             window.$('.uploaded-file-preview').html(image)
@@ -193,6 +192,7 @@ export default {
     var scope = this
 
     scope.$set(scope.data, 'id', scope.properties.location.id)
+    scope.$set(scope.data, 'uuid', scope.properties.location.uuid)
     if (scope.data.id) {
       scope.loadLocation()
     }

@@ -4,10 +4,10 @@ const path = require('path')
 const express = require('express')
 const router = express.Router()
 
-const { BookChapterController, BookItemController, BookCharacterController, LocationController, SceneController, BookController } = require(path.join(__dirname, '..', 'controllers'))
+const { ChapterController, ItemController, CharacterController, LocationController, SceneController, BookController } = require(path.join(__dirname, '..', 'controllers'))
 
 router.get('/:bookId/chapters', async function (req, res) {
-  const chapters = await BookChapterController.getAllByBookId(req.params.bookId)
+  const chapters = await ChapterController.getAllByBookId(req.params.bookId)
 
   res
     .status(200)
@@ -15,7 +15,7 @@ router.get('/:bookId/chapters', async function (req, res) {
 })
 
 router.get('/:bookId/items', async function (req, res) {
-  const items = await BookItemController.getAllByBookId(req.params.bookId)
+  const items = await ItemController.getAllByBookId(req.params.bookId)
 
   res
     .status(200)
@@ -23,7 +23,7 @@ router.get('/:bookId/items', async function (req, res) {
 })
 
 router.get('/:bookId/characters', async function (req, res) {
-  const characters = await BookCharacterController.getAllByBookId(req.params.bookId)
+  const characters = await CharacterController.getAllByBookId(req.params.bookId)
 
   res
     .status(200)
@@ -35,8 +35,8 @@ router.get('/:bookId/locations', async function (req, res) {
 
   locations.forEach(function (item, index) {
     locations[index].picture_src = ''
-    if (item.picture) {
-      locations[index].picture_src = 'file://' + path.resolve(__dirname, '../..', 'resources', 'images', 'locations', item.picture)
+    if (item.pictures) {
+      locations[index].picture_src = 'file://' + path.resolve(__dirname, '../..', 'resources', 'images', 'locations', item.pictures)
     }
   })
 

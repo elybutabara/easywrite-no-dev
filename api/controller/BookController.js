@@ -18,11 +18,13 @@ class BookController {
 
     return books
   }
+
   static getAllBookGenres () {
     const genres = BookGenre.query()
 
     return genres
   }
+
   static getBookById (bookId) {
     const book = Book.query().findById(bookId)
       .withGraphJoined('book_genre_collection')

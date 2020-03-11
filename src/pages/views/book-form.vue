@@ -121,7 +121,7 @@ export default {
     loadBook: function () {
       var scope = this
       scope.axios
-        .get('http://localhost:3000/books/' + scope.data.id)
+        .get('http://localhost:3000/books/' + scope.data.uuid)
         .then(response => {
           let book = response.data
           scope.data.title = book.title
@@ -151,6 +151,7 @@ export default {
     scope.getGenre()
 
     scope.$set(scope.data, 'id', scope.properties.id)
+    scope.$set(scope.data, 'uuid', scope.properties.uuid)
     if (scope.data.id) {
       scope.loadBook()
     }

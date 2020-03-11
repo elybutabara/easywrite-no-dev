@@ -10,30 +10,28 @@ class Book extends BaseModel {
     return 'books'
   }
 
-  static get idColumn () { return ['uuid'] }
-
-    static relationMappings = {
-      book_genre_collection: {
-        relation: BaseModel.HasManyRelation,
-        modelClass: path.join(__dirname, 'BookGenreCollection'),
-        join: {
-          from: 'books.id',
-          to: 'book_genre_collections.book_id'
-        }
-      },
-      genre: {
-        relation: BaseModel.ManyToManyRelation,
-        modelClass: path.join(__dirname, 'BookGenre'),
-        join: {
-          from: 'books.id',
-          through: {
-            from: 'book_genre_collections.book_id',
-            to: 'book_genre_collections.genre_id'
-          },
-          to: 'book_genres.id'
-        }
+  static relationMappings = {
+    book_genre_collection: {
+      relation: BaseModel.HasManyRelation,
+      modelClass: path.join(__dirname, 'BookGenreCollection'),
+      join: {
+        from: 'books.uuid',
+        to: 'book_genre_collections.book_id'
       }
-    };
+    },
+    genre: {
+      relation: BaseModel.ManyToManyRelation,
+      modelClass: path.join(__dirname, 'BookGenre'),
+      join: {
+        from: 'books.uuid',
+        through: {
+          from: 'book_genre_collections.book_id',
+          to: 'book_genre_collections.genre_id'
+        },
+        to: 'book_genres.uuid'
+      }
+    }
+  }
 }
 
 module.exports = {

@@ -31,7 +31,7 @@
                         <div  v-html="location.description" class="description" >{{ location.description }}</div>
                         <button @click="viewLocation(location)" type="button">VIEW</button>
                         <button @click="editLocation(location)" type="button">EDIT</button>
-                        <button @click="deleteLocation(location.id)" type="button">DELETE</button>
+                        <button @click="deleteLocation(location.uuid)" type="button">DELETE</button>
                     </div>
                 </div>
             </div>
@@ -86,7 +86,7 @@ export default {
                   showConfirmButton: false,
                   timer: 1500
                 }).then(() => {
-                  scope.getLocations(scope.properties.id)
+                  scope.getLocations(scope.properties.uuid)
                   scope.$parent.changeComponent('location-listing', scope.properties)
                 })
               }
@@ -117,7 +117,7 @@ export default {
   },
   mounted () {
     var scope = this
-    scope.getLocations(scope.properties.id)
+    scope.getLocations(scope.properties.uuid)
   }
 }
 </script>

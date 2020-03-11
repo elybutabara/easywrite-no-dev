@@ -39,7 +39,7 @@ router.get('/:userId/books', async function (req, res) {
   const genres = await BookController.getAllBookGenres()
 
   books.forEach(function (item, index) {
-    if(item.book_genre_collection) {
+    if (item.book_genre_collection) {
       const genre = []
       item.book_genre_collection.forEach(function (collection, indx) {
         if (genres.find(x => (x.id === collection.genre_id)) !== undefined) {

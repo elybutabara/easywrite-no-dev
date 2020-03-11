@@ -46,7 +46,7 @@ export default {
       }).then((result) => {
         if (result.value) {
           scope.axios
-            .delete('http://localhost:3000/locations/' + scope.location.id)
+            .delete('http://localhost:3000/locations/' + scope.location.uuid)
             .then(response => {
               if (response.data) {
                 window.swal.fire({

@@ -9,8 +9,8 @@ const { LocationController } = require(path.resolve(__dirname, '..', 'controller
 router.post('/', async function (req, res) {
   const location = await LocationController.save(req.body)
 
-  if (location.picture) {
-    location.picture_src = 'file://' + path.resolve(__dirname, '../..', 'resources', 'images', 'locations', location.picture)
+  if (location.pictures) {
+    location.picture_src = 'file://' + path.resolve(__dirname, '../..', 'resources', 'images', 'locations', location.pictures)
   }
 
   res
@@ -21,8 +21,8 @@ router.post('/', async function (req, res) {
 router.get('/:locationId', async function (req, res) {
   const location = await LocationController.getByLocationId(req.params.locationId)
 
-  if (location.picture) {
-    location.picture_src = 'file://' + path.resolve(__dirname, '../..', 'resources', 'images', 'locations', location.picture)
+  if (location.pictures) {
+    location.picture_src = 'file://' + path.resolve(__dirname, '../..', 'resources', 'images', 'locations', location.pictures)
   }
 
   res

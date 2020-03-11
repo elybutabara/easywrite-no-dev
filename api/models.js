@@ -9,7 +9,7 @@ global.knexConnection = knexConnection // to be use in starter.js(main.js) for u
 
 const { Author } = require(path.join(__dirname, 'models/Author'))
 const { User } = require(path.join(__dirname, 'models/User'))
-const { Genre } = require(path.join(__dirname, 'models/Genre'))
+const { BookGenre } = require(path.join(__dirname, 'models/BookGenre'))
 const { Relation } = require(path.join(__dirname, 'models/Relation'))
 const { Book } = require(path.join(__dirname, 'models/Book'))
 const { Chapter } = require(path.join(__dirname, 'models/Chapter'))
@@ -17,7 +17,7 @@ const { Scene } = require(path.join(__dirname, 'models/Scene'))
 const { Character } = require(path.join(__dirname, 'models/Character'))
 const { Item } = require(path.join(__dirname, 'models/Item'))
 const { Location } = require(path.join(__dirname, 'models/Location'))
-const { GenreCollection } = require(path.join(__dirname, 'models/GenreCollection'))
+const { BookGenreCollection } = require(path.join(__dirname, 'models/BookGenreCollection'))
 const { ChapterVersion } = require(path.join(__dirname, 'models/ChapterVersion'))
 const { SceneVersion } = require(path.join(__dirname, 'models/SceneVersion'))
 const { RelationDetail } = require(path.join(__dirname, 'models/RelationDetail'))
@@ -31,12 +31,12 @@ Model.knex(knexConnection)
 module.exports = {
   Author,
   User,
-  Genre,
+  BookGenre,
   Relation,
   Book,
   Item,
   Location,
-  GenreCollection,
+  BookGenreCollection,
   Chapter,
   ChapterVersion,
   Scene,

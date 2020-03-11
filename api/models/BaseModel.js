@@ -10,6 +10,8 @@ class BaseModel extends Model {
   $beforeUpdate (opt, queryContext) {
     this.updated_at = moment().format('YYYY-MM-DD hh:mm:ss').toString()
   }
+
+  static get idColumn () { return ['uuid'] }
 }
 
 module.exports = {

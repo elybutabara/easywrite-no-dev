@@ -15,8 +15,8 @@ class Location extends BaseModel {
       relation: BaseModel.HasOneRelation,
       modelClass: path.join(__dirname, 'Book'),
       join: {
-        from: 'locations.book_id',
-        to: 'books.id'
+        from: 'book_locations.book_id',
+        to: 'books.uuid'
       }
     }
   }
