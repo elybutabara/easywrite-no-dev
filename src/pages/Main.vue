@@ -1,102 +1,11 @@
 <template>
 <div class="page-main">
-    <div class="left-side-bar">
-        <div class="header">
-            <img src="@/assets/img/es-logo-white.png">
-        </div>
-        <div class="search-box">
-            <input type="text" placeholder="Search keyword...">
-            <i class="las la-search icon"></i>
-        </div>
-        <div class="es-tree-view">
-            <div class="text-right">
-              <span  @click="changeComponent('book-form')" class="new-book"><i class="las la-plus icon"></i> New Book</span>
-            </div>
-            <ul class="level-1">
-                <li v-bind:class="{ 'open' : (book.is_open == true) }" v-bind:key="book.id" v-for="book in books">
-                    <div class="label" @click="showChildren(book)"><span><img src="@/assets/img/icons/book.svg"> {{ book.title }}</span></div>
-                    <ul v-if="book.is_open == true" class="level-2">
-                        <li v-bind:class="{ 'open' : book.chapters.is_open  == true }">
-                            <div @click="getChapters(book)"  class="label">
-                                <span>
-                                    <img v-if="book.chapters.is_open" src="@/assets/img/icons/folder-open.svg">
-                                    <img v-else src="@/assets/img/icons/folder.svg">
-                                    Chapters
-                                </span>
-                            </div>
-                            <ul class="level-3">
-                                <li v-bind:class="{ 'open' : chapter.is_open  == true }" v-bind:key="chapter.id" v-for="chapter in book.chapters.rows">
-                                    <div @click="getSceneByChapter(chapter)" class="label"><span><img  src="@/assets/img/icons/chapter.svg"> {{ chapter.title }}</span></div>
-                                    <ul v-if="chapter.is_open  == true " class="level-4">
-                                        <li v-bind:key="scene.id" v-for="scene in chapter.scenes.rows">
-                                            <div @click="changeComponent('scene-details',scene.id)" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title }}</span></div>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li v-bind:class="{ 'open' : book.items.is_open  == true }">
-                            <div @click="getItems(book)" class="label">
-                                <span>
-                                    <img v-if="book.items.is_open" src="@/assets/img/icons/folder-open.svg">
-                                    <img v-else src="@/assets/img/icons/folder.svg">
-                                    Items
-                                </span>
-                            </div>
-                            <ul class="level-3">
-                                <li v-bind:key="item.id" v-for="item in book.items.rows">
-                                    <div @click="changeComponent('item-details',item.id)" class="label"><span><img  src="@/assets/img/icons/item.svg"> {{ item.itemname }}</span></div>
-                                </li>
-                            </ul>
-                        </li>
-                        <li v-bind:class="{ 'open' : book.characters.is_open  == true }">
-                            <div @click="getCharacters(book)"  class="label">
-                                <span>
-                                    <img v-if="book.characters.is_open" src="@/assets/img/icons/folder-open.svg">
-                                    <img v-else src="@/assets/img/icons/folder.svg">
-                                    Characters
-                                </span>
-                            </div>
-                            <ul class="level-3">
-                                <li v-bind:key="character.id" v-for="character in book.characters.rows">
-                                    <div @click="changeComponent('character-details',character.id)" class="label"><span><img  src="@/assets/img/icons/character.svg"> {{ character.fullname }}</span></div>
-                                </li>
-                            </ul>
-                        </li>
-                        <li v-bind:class="{ 'open' : book.locations.is_open  == true }">
-                            <div @click="getLocations(book)" class="label">
-                                <span>
-                                    <img v-if="book.locations.is_open" src="@/assets/img/icons/folder-open.svg">
-                                    <img v-else src="@/assets/img/icons/folder.svg">
-                                    Locations
-                                </span>
-                            </div>
-                            <ul class="level-3">
-                                <li v-bind:key="location.id" v-for="location in book.locations.rows">
-                                    <div @click="changeComponent('location-details',{ location: location })" class="label"><span><img  src="@/assets/img/icons/location.svg"> {{ location.location }}</span></div>
-                                </li>
-                            </ul>
-                        </li>
-                        <li v-bind:class="{ 'open' : book.scenes.is_open  == true }">
-                            <div @click="getScenes(book)" class="label">
-                                <span>
-                                    <img v-if="book.scenes.is_open" src="@/assets/img/icons/folder-open.svg">
-                                    <img v-else src="@/assets/img/icons/folder.svg">
-                                    Other Scenes
-                                </span>
-                            </div>
-                            <ul class="level-4">
-                                <li  v-bind:key="scene.id" v-for="scene in book.scenes.rows">
-                                    <div @click="changeComponent('scene-details',scene.id)" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title }}</span></div>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
+    <main-side-navigation></main-side-navigation>
+    <syncer v-if="syncer.is_open"></syncer>
     <div style="text-align:left; padding-left:330px;">
+        <div style="background:#ccc; text-align:right; padding:5px 10px;">
+            <button @click="toggleSyncer()" style="background:#293742; padding:0px 10px; line-height:30px; height:30px; border:none; font-size:14px; color:#fff;">OPEN SYNCER</button>
+        </div>
         <book-listing v-if="active.component == 'book-listing'"></book-listing>
         <chapter-listing v-if="active.component == 'chapter-listing'" :properties="active.data"></chapter-listing>
         <scene-listing v-if="active.component == 'scene-listing'" :properties="active.data"></scene-listing>
@@ -118,28 +27,34 @@
 </template>
 
 <script>
-import BookListing from '@/components/book-listing'
-import ChapterListing from '@/components/chapter-listing'
-import SceneListing from '@/components/scene-listing'
-import ItemListing from '@/components/item-listing'
-import CharacterListing from '@/components/character-listing'
-import LocationListing from '@/components/location-listing'
+import MainSideNavigation from '@/components/MainSideNavigation'
+import Syncer from '@/components/Syncer'
 
-import BookDetails from '@/components/book'
-import ChapterDetails from '@/components/chapter'
-import SceneDetails from '@/components/scene'
-import ItemDetails from '@/components/item'
-import CharacterDetails from '@/components/character'
-import LocationDetails from '@/components/location'
+import BookListing from '@/pages/views/book-listing'
+import ChapterListing from '@/pages/views/chapter-listing'
+import SceneListing from '@/pages/views/scene-listing'
+import ItemListing from '@/pages/views/item-listing'
+import CharacterListing from '@/pages/views/character-listing'
+import LocationListing from '@/pages/views/location-listing'
 
-import BookForm from '@/components/book-form'
-import LocationForm from '@/components/location-form'
+import BookDetails from '@/pages/views/book-details'
+import ChapterDetails from '@/pages/views/chapter-details'
+import SceneDetails from '@/pages/views/scene-details'
+import ItemDetails from '@/pages/views/item-details'
+import CharacterDetails from '@/pages/views/character-details'
+import LocationDetails from '@/pages/views/location-details'
+
+import BookForm from '@/pages/views/book-form'
+import LocationForm from '@/pages/views/location-form'
 
 export default {
   name: 'Main',
   data: function () {
     return {
       books: [],
+      syncer: {
+        is_open: false
+      },
       active: {
         id: 0,
         data: null,
@@ -148,6 +63,8 @@ export default {
     }
   },
   components: {
+    'main-side-navigation': MainSideNavigation,
+    'syncer': Syncer,
     'book-listing': BookListing,
     'chapter-listing': ChapterListing,
     'scene-listing': SceneListing,
@@ -171,6 +88,10 @@ export default {
       scope.active.component = ''
       scope.active.component = component
     },
+    toggleSyncer: function () {
+      var scope = this
+      scope.syncer.is_open = !scope.syncer.is_open
+    },
     getBooks: function () {
       var scope = this
       // eslint-disable-next-line camelcase
@@ -182,113 +103,6 @@ export default {
           scope.books = response.data
         })
       // scope.books = response
-    },
-    showChildren: function (book) {
-      var scope = this
-      if (book.is_open !== true) {
-        scope.$set(book, 'is_open', true)
-        scope.$set(book, 'chapters', { is_open: false, rows: [] })
-        scope.$set(book, 'characters', { is_open: false, rows: [] })
-        scope.$set(book, 'items', { is_open: false, rows: [] })
-        scope.$set(book, 'locations', { is_open: false, rows: [] })
-        scope.$set(book, 'scenes', { is_open: false, rows: [] })
-      } else {
-        scope.$set(book, 'is_open', false)
-        scope.$set(book, 'chapters', { is_open: false, rows: [] })
-        scope.$set(book, 'characters', { is_open: false, rows: [] })
-        scope.$set(book, 'items', { is_open: false, rows: [] })
-        scope.$set(book, 'locations', { is_open: false, rows: [] })
-        scope.$set(book, 'scenes', { is_open: false, rows: [] })
-      }
-      scope.changeComponent('book-details', book)
-    },
-    getChapters: function (book) {
-      var scope = this
-      if (book.chapters.is_open !== true) {
-        book.chapters.is_open = true
-        scope.axios
-          .get('http://localhost:3000/books/' + book.id + '/chapters')
-          .then(response => {
-            book.chapters.rows = response.data
-          })
-      } else {
-        book.chapters.is_open = false
-      }
-      scope.changeComponent('chapter-listing', book)
-    },
-    getItems: function (book) {
-      var scope = this
-      if (book.items.is_open !== true) {
-        book.items.is_open = true
-        scope.axios
-          .get('http://localhost:3000/books/' + book.id + '/items')
-          .then(response => {
-            book.items.rows = response.data
-          })
-      } else {
-        book.items.is_open = false
-      }
-      scope.changeComponent('item-listing', book)
-    },
-    getCharacters: function (book) {
-      var scope = this
-      if (book.characters.is_open !== true) {
-        book.characters.is_open = true
-        scope.axios
-          .get('http://localhost:3000/books/' + book.id + '/characters')
-          .then(response => {
-            book.characters.rows = response.data
-          })
-      } else {
-        book.characters.is_open = false
-      }
-      scope.changeComponent('character-listing', book)
-    },
-    getLocations: function (book) {
-      var scope = this
-      if (book.locations.is_open !== true) {
-        book.locations.is_open = true
-        scope.axios
-          .get('http://localhost:3000/books/' + book.id + '/locations')
-          .then(response => {
-            book.locations.rows = response.data
-          })
-      } else {
-        book.locations.is_open = false
-      }
-      scope.changeComponent('location-listing', book)
-    },
-    getScenes: function (book) {
-      var scope = this
-      if (book.scenes.is_open !== true) {
-        book.scenes.is_open = true
-        scope.axios
-          .get('http://localhost:3000/books/' + book.id + '/scenes/other')
-          .then(response => {
-            book.scenes.rows = response.data
-          })
-      } else {
-        book.scenes.is_open = false
-      }
-      scope.changeComponent('scene-listing', book)
-    },
-    getSceneByChapter: function (chapter) {
-      var scope = this
-      if (chapter.is_open !== true) {
-        scope.$set(chapter, 'is_open', true)
-        scope.$set(chapter, 'scenes', { is_open: false, rows: [] })
-        scope.axios
-          .get('http://localhost:3000/chapters/' + chapter.id + '/scenes')
-          .then(response => {
-            chapter.scenes.rows = response.data
-          })
-
-        chapter.scenes.is_open = true
-      } else {
-        chapter.is_open = false
-        chapter.scenes.is_open = false
-      }
-      scope.changeComponent('chapter-details', chapter)
     }
   },
   mounted () {

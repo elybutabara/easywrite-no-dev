@@ -10,6 +10,8 @@ class Book extends BaseModel {
     return 'books'
   }
 
+  static get idColumn () { return ['uuid'] }
+
     static relationMappings = {
       book_genre_collection: {
         relation: BaseModel.HasManyRelation,
@@ -25,7 +27,6 @@ class Book extends BaseModel {
         join: {
           from: 'books.id',
           through: {
-            // persons_movies is the join table.
             from: 'book_genre_collections.book_id',
             to: 'book_genre_collections.genre_id'
           },

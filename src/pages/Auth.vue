@@ -44,20 +44,63 @@ export default {
       scope.axios
         .get('http://localhost:3000/users/login?username=' + scope.username + '&password=' + scope.password)
         .then(response => {
-          this.$store.commit('authenticate', {
+          scope.$store.commit('authenticate', {
             user: response.data.user,
             author: response.data.author
           })
 
-          this.$router.push({name: 'Main'})
+          scope.$router.push({name: 'Main'})
         })
         .catch(error => {
           if (error.response.status === 401) {
-            this.$notify({
-              group: 'notification',
-              type: 'error',
-              title: 'Authentication Failed',
-              text: error.response.data.message
+            scope.authenticateAPI()
+          }
+        })
+    },
+    authenticateAPI: function () {
+      var scope = this
+      scope.axios.post('https://api-pilot.orosage.com/dev/login', {
+        username: scope.username,
+        password: scope.password
+      })
+        .then(function (response) {
+          delete response.data.user.id
+          delete response.data.author.id
+
+          scope.$set(response.data.user, 'password', scope.password)
+          scope.$set(response.data.user, 'author', response.data.author)
+          scope.saveUser(response.data.user)
+        })
+        .catch(function (error) {
+          scope.$notify({
+            group: 'notification',
+            type: 'error',
+            title: 'Authentication Failed',
+            text: error.response.data.message
+          })
+        })
+    },
+    saveUser: function (data) {
+      var scope = this
+      console.log(data)
+      scope.axios
+        .post('http://localhost:3000/users', data)
+        .then(response => {
+          if (response.data) {
+            console.log(response.data)
+            window.swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'User successfuly saved',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              scope.$store.commit('authenticate', {
+                user: response.data,
+                author: response.data.author
+              })
+
+              scope.$router.push({name: 'Main'})
             })
           }
         })

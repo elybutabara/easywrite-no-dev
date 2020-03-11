@@ -10,7 +10,7 @@ class Author extends BaseModel {
     return 'authors'
   }
 
-  static get idColumn () { return ['id'] }
+  static get idColumn () { return ['uuid'] }
 
   static relationMappings = {
     user: {
@@ -18,7 +18,7 @@ class Author extends BaseModel {
       modelClass: path.join(__dirname, 'User'),
       join: {
         from: 'authors.user_id',
-        to: 'users.id'
+        to: 'users.uuid'
       }
     }
   }

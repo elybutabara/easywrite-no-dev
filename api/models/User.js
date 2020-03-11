@@ -1,23 +1,23 @@
-'use strict';
+'use strict'
 
-const path = require('path');
+const path = require('path')
 
-const { BaseModel } = require('./BaseModel');
+const { BaseModel } = require('./BaseModel')
 
 class User extends BaseModel {
-    // Table name is the only required property.
-    static get tableName() {
-        return 'users';
-    }
+  // Table name is the only required property.
+  static get tableName () {
+    return 'users'
+  }
 
-  static get idColumn() { return ["id"]; }
+  static get idColumn () { return ['uuid'] }
 
   static relationMappings = {
     author: {
       relation: BaseModel.HasOneRelation,
       modelClass: path.join(__dirname, 'Author'),
       join: {
-        from: 'users.id',
+        from: 'users.uuid',
         to: 'authors.user_id'
       }
     }
@@ -25,5 +25,5 @@ class User extends BaseModel {
 }
 
 module.exports = {
-    User
-};
+  User
+}

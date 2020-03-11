@@ -1,14 +1,16 @@
-'use strict';
+'use strict'
 
-const path = require('path');
+const path = require('path')
 
-const { BaseModel } = require('./BaseModel');
+const { BaseModel } = require('./BaseModel')
 
 class BookGenreCollection extends BaseModel {
-    // Table name is the only required property.
-    static get tableName() {
-        return 'book_genre_collections';
-    }
+  // Table name is the only required property.
+  static get tableName () {
+    return 'book_genre_collections'
+  }
+
+  static get idColumn () { return ['uuid'] }
 
     static relationMappings = {
       book_genre: {
@@ -16,7 +18,7 @@ class BookGenreCollection extends BaseModel {
         modelClass: path.join(__dirname, 'BookGenre'),
         join: {
           from: 'book_genre_collections.genre_id',
-          to: 'book_genres.id'
+          to: 'book_genres.uuid'
         }
       },
       book: {
@@ -24,12 +26,12 @@ class BookGenreCollection extends BaseModel {
         modelClass: path.join(__dirname, 'Book'),
         join: {
           from: 'book_genre_collections.book_id',
-          to: 'books.id'
+          to: 'books.uuid'
         }
       }
     };
 }
 
 module.exports = {
-    BookGenreCollection
-};
+  BookGenreCollection
+}
