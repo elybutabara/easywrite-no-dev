@@ -8,6 +8,7 @@ import StoreAuth from '@/stores/auth'
 Vue.use(Router)
 
 function checkAuth (to, from, next) {
+  // } else {
   // check if route is protected
   if (to.meta.protected) {
     var isAuthenticated = StoreAuth.state.isAuthenticated
@@ -19,6 +20,7 @@ function checkAuth (to, from, next) {
   } else {
     next()
   }
+  // }
 }
 
 export default new Router({
@@ -28,7 +30,7 @@ export default new Router({
       name: 'Main',
       beforeEnter: checkAuth,
       component: Main,
-      meta: { protected: true }
+      meta: { protected: false }
     },
     {
       path: '/auth',

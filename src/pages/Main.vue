@@ -47,6 +47,12 @@ import LocationDetails from '@/pages/views/location-details'
 import BookForm from '@/pages/views/book-form'
 import LocationForm from '@/pages/views/location-form'
 
+const electron = window.require('electron')
+
+const remote = electron.remote
+
+const loginInfo = remote.getGlobal('loginInfo')
+
 export default {
   name: 'Main',
   data: function () {
@@ -104,6 +110,12 @@ export default {
         })
       // scope.books = response
     }
+  },
+  beforeMount () {
+    this.$store.commit('authenticate', {
+      user: loginInfo.data.user,
+      author: loginInfo.data.author
+    })
   },
   mounted () {
     var scope = this
