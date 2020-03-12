@@ -11,7 +11,7 @@ if(fs.existsSync(path.join(process.resourcesPath || '','prod.env'))){
   process.env.NODE_ENV = 'development'
   global.resourcePath = path.resolve('./resources')
 }
-
+checkFreshInstallation()
 const route = require('./api/server')
 const listener = require('./api/listener.js')
 const menu = require('./menu');
@@ -108,7 +108,6 @@ function createLoginWindow () {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', function () {
-  checkFreshInstallation()
   checkForVersionUpdates()
   createLoginWindow()
   // createWindow()
@@ -136,15 +135,16 @@ function checkFreshInstallation () {
   let src,dist
   if(process.env.NODE_ENV === 'development'){
     src = path.resolve('./api', 'base.db')
-    dist = path.resolve(global.resourcePath, 'db', 'base.db')
+    dist = path.resolve(__dirname,'config', 'db', 'development.db')
   }else{
     src = path.join(process.resourcesPath, 'app.asar', 'api', 'base.db')
-    dist = path.resolve(app.getPath('userData'), 'resources', 'db', 'base.db')
+    dist = path.resolve(app.getPath('userData'), 'resources', 'db', 'easywrite.db')
+
+    log.info('starter:' + process.env.NODE_ENV)
+    log.info('starter:' + dist)
   }
 
   //%USERPROFILE%\AppData\Roaming\{app name}\logs\{process type}.log
-  // log.info(process.env.NODE_ENV)
-  log.info(path.resolve(app.getPath('userData'), 'resources', 'db'))
 
   if (
     fs.existsSync(src) &&
