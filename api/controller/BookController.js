@@ -38,7 +38,7 @@ class BookController {
 
     const book = Book.query()
       .withGraphJoined('genre')
-      .findById(saveBook.id)
+      .findById(saveBook.uuid)
 
     return book
   }

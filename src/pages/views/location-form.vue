@@ -72,7 +72,7 @@ export default {
   data: function () {
     return {
       data: {
-        book_id: this.properties.id,
+        book_id: this.properties.uuid,
         location: '',
         AKA: '',
         tags: '',
@@ -191,15 +191,17 @@ export default {
   beforeMount () {
     var scope = this
 
-    scope.$set(scope.data, 'id', scope.properties.location.id)
-    scope.$set(scope.data, 'uuid', scope.properties.location.uuid)
-    if (scope.data.id) {
-      scope.loadLocation()
+    if (scope.properties.location) {
+      scope.$set(scope.data, 'id', scope.properties.location.id)
+      scope.$set(scope.data, 'uuid', scope.properties.location.uuid)
     }
   },
   mounted () {
-    // var scope = this
-    // console.log(scope)
+    var scope = this
+
+    if (scope.data.id) {
+      scope.loadLocation()
+    }
   }
 }
 </script>

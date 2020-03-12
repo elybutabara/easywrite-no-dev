@@ -42,10 +42,10 @@ router.get('/:userId/books', async function (req, res) {
     if (item.book_genre_collection) {
       const genre = []
       item.book_genre_collection.forEach(function (collection, indx) {
-        if (genres.find(x => (x.id === collection.genre_id)) !== undefined) {
-          var selectedGenre = genres.find(x => (x.id === collection.genre_id))
+        if (genres.find(x => (x.uuid === collection.genre_id)) !== undefined) {
+          var selectedGenre = genres.find(x => (x.uuid === collection.genre_id))
           genre.push({
-            id: selectedGenre.id,
+            uuid: selectedGenre.uuid,
             name: selectedGenre.name
           })
         }

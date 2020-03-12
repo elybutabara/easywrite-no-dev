@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-12 col-lg-12 order-2 order-lg-1">
                 <div style="padding:10px 0px;">
-                    <span class="book-genre" v-for="genre in properties.genre" :key="genre.id">{{ genre.name }}</span>
+                    <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>
                 </div>
                 <div>
                   <button  @click="updateBook()" class="update-book">Update</button>
@@ -59,7 +59,7 @@ export default {
       }).then((result) => {
         if (result.value) {
           scope.axios
-            .delete('http://localhost:3000/books/' + scope.properties.id)
+            .delete('http://localhost:3000/books/' + scope.properties.uuid)
             .then(response => {
               if (response.data) {
                 window.swal.fire({
@@ -69,7 +69,7 @@ export default {
                   showConfirmButton: false,
                   timer: 1500
                 }).then(() => {
-                  scope.$parent.getBooks()
+                  scope.$parent.$children[0].getBooks()
                   scope.$parent.changeComponent('book-listing', response.data)
                 })
               }

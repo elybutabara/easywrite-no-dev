@@ -126,9 +126,6 @@ ul { margin-left:0px; list-style:none;  }
 .left-side-bar .search-box input:focus, .search-box input:active{ background:#324553; }
 .left-side-bar .search-box input::placeholder { color: #506d84; }
 
-.new-book { font-family: 'Crimson Roman'; color:#abc4d7; font-size: 14px; cursor: pointer }
-.new-book:hover  { color:#fff; }
-
 .es-tree-view { padding:10px 5px; }
 .es-tree-view ul { padding-left:10px; text-align: left; }
 .es-tree-view ul:not(:first-child) { padding-left:30px; }

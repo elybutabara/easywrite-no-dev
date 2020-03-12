@@ -16,7 +16,7 @@
       <div class="col-md-12">
         <div class="form-group">
           <label>Genre: </label>
-          <multiselect v-model="genre_collection" @select="selectGenre" @remove="removeGenre" :multiple="true" :taggable="true" label="name" track-by="id" :options="genres"></multiselect>
+          <multiselect v-model="genre_collection" @select="selectGenre" @remove="removeGenre" :multiple="true" :taggable="true" label="name" track-by="uuid" :options="genres"></multiselect>
         </div>
       </div>
     </div>
@@ -72,14 +72,16 @@ export default {
 
       scope.data.about = value
     },
-    removeGenre ({id}) {
+    removeGenre ({uuid}) {
       var scope = this
-      scope.data.book_genre_collection.find(x => x.genre_id === id).deleted_at = window.moment().format('YYYY-MM-DD hh:mm:ss').toString()
+      if (scope.data.book_genre_collection.find(x => (x.genre_id === uuid && x.deleted_at === undefined)) !== undefined) {
+        scope.data.book_genre_collection.find(x => x.genre_id === uuid).deleted_at = window.moment().format('YYYY-MM-DD hh:mm:ss').toString()
+      }
     },
-    selectGenre ({id}) {
+    selectGenre ({uuid}) {
       var scope = this
-      if (scope.data.book_genre_collection.find(x => (x.genre_id === id && x.deleted_at !== undefined)) !== undefined) {
-        delete scope.data.book_genre_collection.find(x => x.genre_id === id).deleted_at
+      if (scope.data.book_genre_collection.find(x => (x.genre_id === uuid && x.deleted_at !== undefined)) !== undefined) {
+        delete scope.data.book_genre_collection.find(x => x.genre_id === uuid).deleted_at
       }
     },
     getGenre: function () {
@@ -94,9 +96,9 @@ export default {
       var scope = this
 
       scope.genre_collection.forEach(function (item, index) {
-        if (scope.data.book_genre_collection.find(x => x.genre_id === item.id) === undefined) {
+        if (scope.data.book_genre_collection.find(x => x.genre_id === item.uuid) === undefined) {
           scope.data.book_genre_collection.push({
-            genre_id: item.id
+            genre_id: item.uuid
           })
         }
       })
@@ -130,14 +132,15 @@ export default {
           book.book_genre_collection.forEach(function (item, index) {
             scope.data.book_genre_collection.push({
               id: item.id,
+              uuid: item.uuid,
               book_id: item.book_id,
               genre_id: item.genre_id
             })
 
-            if (scope.genres.find(x => (x.id === item.genre_id)) !== undefined) {
-              var selectedGenre = scope.genres.find(x => (x.id === item.genre_id))
+            if (scope.genres.find(x => (x.uuid === item.genre_id)) !== undefined) {
+              var selectedGenre = scope.genres.find(x => (x.uuid === item.genre_id))
               scope.genre_collection.push({
-                id: selectedGenre.id,
+                uuid: selectedGenre.uuid,
                 name: selectedGenre.name
               })
             }
@@ -150,14 +153,17 @@ export default {
 
     scope.getGenre()
 
-    scope.$set(scope.data, 'id', scope.properties.id)
-    scope.$set(scope.data, 'uuid', scope.properties.uuid)
-    if (scope.data.id) {
-      scope.loadBook()
+    if (scope.properties) {
+      scope.$set(scope.data, 'id', scope.properties.id)
+      scope.$set(scope.data, 'uuid', scope.properties.uuid)
     }
   },
   mounted () {
-    // var scope = this
+    var scope = this
+
+    if (scope.data.id) {
+      scope.loadBook()
+    }
   }
 }
 </script>

@@ -121,7 +121,6 @@ export default {
         .then(response => {
           scope.books = response.data
         })
-      // scope.books = response
     },
     showChildren: function (book) {
       var scope = this
@@ -294,4 +293,7 @@ ul { margin-left:0px; list-style:none;  }
 
 .es-tree-view .level-3 li ul, .es-tree-view .level-3 li > ul > li { display:none; }
 .es-tree-view .level-3 li.open ul, .es-tree-view .level-3 li.open > ul > li{ display:block; }
+
+.new-book { font-family: 'Crimson Roman'; color:#abc4d7; font-size: 14px; cursor: pointer }
+.new-book:hover  { color:#fff; }
 </style>
