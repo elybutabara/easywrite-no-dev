@@ -69,6 +69,7 @@ function createLoginWindow () {
   loginWindow = new BrowserWindow({
     resizable: false,
     frame: false,
+    show: false,
     width : 390,
     height: 380,
     icon: path.join(__dirname, 'resources/images/Group 179.png'),
@@ -83,7 +84,19 @@ function createLoginWindow () {
 
     // Load login html file into window
     loginWindow.loadURL(url + 'dev/#/auth')
+  }else {
+    // and load the index.html of the app.
+    // eslint-disable-next-line no-template-curly-in-string
+    // let url = 'file://C:\\Users\\Admin\\Desktop\\FINAL\\spa\\'
+    // mainWindow.loadFile(url + 'prod/index.html')
+    // mainWindow.loadURL(url + 'dist/index.html')
+    loginWindow.loadFile(`${__dirname}/dist/auth.html`)
   }
+
+  // only show window after the contents are loaded , it will delay load because of background
+  loginWindow.webContents.once('did-finish-load', function(){
+    loginWindow.show();
+  });
 
   ipcMain.on('createMainWindow', function (e, cat) {
     global.loginInfo = cat

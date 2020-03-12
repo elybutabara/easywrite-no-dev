@@ -5,6 +5,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import App from './App'
+import Auth from './pages/Auth'
 import router from './router'
 import StoreAuth from './stores/auth'
 import mixins from './utils/mixins'
@@ -92,3 +93,18 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+
+/*
+* Vues below here is for MPA
+* declare here the vues , put the html ins "src/html"
+* */
+if (process.env.NODE_ENV === 'production') {
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: '#auth',
+    router,
+    store,
+    components: { Auth },
+    template: '<Auth/>'
+  })
+}

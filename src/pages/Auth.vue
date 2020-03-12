@@ -1,5 +1,5 @@
 <template>
-  <div class="page-auth">
+  <div id="auth" class="page-auth">
     <div class="login-form text-center">
       <form v-on:submit.prevent="authenticate()">
         <h1 class="no-margin">Easy Write</h1>
