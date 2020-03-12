@@ -134,6 +134,11 @@ import LocationDetails from '@/components/location'
 
 import BookForm from '@/components/book-form'
 import LocationForm from '@/components/location-form'
+const electron = window.require('electron')
+
+const remote = electron.remote
+
+const loginInfo = remote.getGlobal('loginInfo')
 
 export default {
   name: 'Main',
@@ -290,6 +295,12 @@ export default {
       }
       scope.changeComponent('chapter-details', chapter)
     }
+  },
+  beforeMount () {
+    this.$store.commit('authenticate', {
+      user: loginInfo.data.user,
+      author: loginInfo.data.author
+    })
   },
   mounted () {
     var scope = this

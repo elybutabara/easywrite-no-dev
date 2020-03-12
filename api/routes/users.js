@@ -9,15 +9,14 @@ const { UserController, BookController } = require(path.join(__dirname, '..', 'c
 router.get('/login', async function (req, res) {
   const user = await UserController.authenticate(req.query.username, req.query.password)
 
-  if(user) {
+  if (user) {
     res
       .status(200)
       .json({
         user: user,
         author: user.author
       })
-  }
-  else {
+  } else {
     res
       .status(401)
       .json({

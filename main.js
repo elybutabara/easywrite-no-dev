@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, Menu } = require('electron')
+const { app, BrowserWindow, Menu, ipcMain } = require('electron')
 const path = require('path')
 const fs = require('fs')
 const log = require('electron-log')
@@ -19,7 +19,7 @@ const menu = require('./menu');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
+let mainWindow, loginWindow
 
 function createWindow () {
   // Create the browser window.
@@ -38,7 +38,7 @@ function createWindow () {
     let url = 'http://localhost:8080/'
     // and load the index.html of the app.
     // mainWindow.loadFile(url + 'dev/')
-    mainWindow.loadURL(url + 'dev/')
+    mainWindow.loadURL(url + 'dev/#')
   } else {
     // and load the index.html of the app.
     // eslint-disable-next-line no-template-curly-in-string
@@ -47,6 +47,8 @@ function createWindow () {
     // mainWindow.loadURL(url + 'dist/index.html')
     mainWindow.loadFile(`${__dirname}/dist/index.html`)
   }
+
+  console.log(menu)
 
   Menu.setApplicationMenu(menu)
 
@@ -65,13 +67,40 @@ function createWindow () {
   listener.loadApi(mainWindow)
 }
 
+function createLoginWindow () {
+  loginWindow = new BrowserWindow({
+    resizable: false,
+    frame: false,
+    width : 390,
+    height: 380,
+    icon: path.join(__dirname, 'resources/images/Group 179.png'),
+    webPreferences: {
+      webSecurity: false,
+      nodeIntegration: true
+    }
+  })
+
+  if (process.env.NODE_ENV == 'development') {
+    let url = 'http://localhost:8080/'
+
+    // Load login html file into window
+    loginWindow.loadURL(url + 'dev/#/auth')
+  }
+
+  ipcMain.on('createMainWindow', function (e, cat) {
+    global.loginInfo = cat
+    createWindow()
+  })
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', function () {
   checkFreshInstallation()
   checkForVersionUpdates()
-  createWindow()
+  createLoginWindow()
+  // createWindow()
 })
 
 // Quit when all windows are closed.
