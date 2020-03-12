@@ -1,7 +1,7 @@
 <template>
 <div class="page-item-listing">
    <div>
-       <button class="btn-new-record"><i class="las la-plus"></i></button>
+       <button @click="createItem" class="btn-new-record"><i class="las la-plus"></i></button>
        <div class="row">
            <div class="col-12 col-md-7">
                 <div class="page-title">
@@ -23,20 +23,19 @@
         <hr/>
 
        <div class="row">
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 bounceInRight animated" v-for="item in items" v-bind:key="item.id">
+            <div class="col-12 col-lg-4 col-md-6 col-sm-6 bounceInRight animated" v-for="item in items" v-bind:key="item.id">
                 <div class="item" >
                     <div class="content">
-                        <div class="picture-placeholder"></div>
+                        <div class="picture-placeholder"><img :src="item.picture_src" /></div>
                         <strong> {{ item.itemname }} </strong>
-                        <p class="description" > {{ item.description }} </p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
+                        <div v-html="item.description" class="description" >{{ item.description }}</div>
+                        <button @click="viewItem(item)" type="button">VIEW</button>
+                        <button @click="editItem(item)" type="button">EDIT</button>
+                        <button @click="deleteItem(item.uuid)" type="button">DELETE</button>
                     </div>
                 </div>
             </div>
        </div>
-
    </div>
 </div>
 </template>
@@ -70,11 +69,54 @@ export default {
         .then(response => {
           scope.items = response.data
         })
+    },
+    createItem () {
+      var scope = this
+      scope.$parent.changeComponent('item-form', scope.properties)
+    },
+    editItem: function (item) {
+      var scope = this
+      scope.$parent.changeComponent('item-form', { item: item })
+    },
+    viewItem: function (item) {
+      var scope = this
+      scope.$parent.changeComponent('item-details', { item: item })
+    },
+    deleteItem: function (locationId) {
+      var scope = this
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/items/' + locationId)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Item successfuly deleted',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.getItems(scope.properties.uuid)
+                  scope.$parent.changeComponent('item-listing', scope.properties)
+                })
+              }
+            })
+        }
+      })
     }
   },
   mounted () {
     var scope = this
-    scope.getItems(scope.properties.id)
+    scope.getItems(scope.properties.uuid)
   }
 }
 </script>
@@ -84,7 +126,8 @@ export default {
     .page-item-listing .item { margin-top:20px; border:1px solid #9fb1c2; text-align:center; }
     .page-item-listing .item .header { background:#354350; padding:0px 20px; height:35px; line-height:38px; color:#fff; border:2px solid #354350; }
     .page-item-listing .item .content { padding:20px; background:#fff; }
-    .page-item-listing .item .content .picture-placeholder {  display:block; margin:0px auto;  width:60px; height:55px; background:#ccd5dd; border:2px solid #9fb1c2; margin-bottom:10px; cursor:pointer; }
+    .page-item-listing .item .content .picture-placeholder {  display:block; margin:0px auto;  width:200px; height:100px; background:#ccd5dd; border:2px solid #9fb1c2; margin-bottom:10px; cursor:pointer; }
+    .page-item-listing .item .content .picture-placeholder img { height: 100% }
     .page-item-listing .item .content strong { font-family:'Crimson Bold'; font-size:18px; }
     .page-item-listing .item .content .description { font-size:16px; }
     .page-item-listing .item .content button { background:#fff; border:1px solid #efefef; padding:5px 10px; padding-bottom:0px; }

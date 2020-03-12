@@ -1,7 +1,7 @@
 <template>
-<div class="page-location-form">
+<div class="page-item-form">
   <div class="page-title">
-    <h3>{{ properties.location.book.title }} New Location</h3>
+    <h3>{{ properties.item.book.title }} New Item</h3>
   </div>
   <div class="content" >
 
@@ -18,8 +18,8 @@
         <div class="row">
           <div class="col-md-12">
             <div class="form-group">
-              <label>Location: </label>
-              <input v-model="data.location" type="text" class="form-control" placeholder="Location" >
+              <label>Item Name: </label>
+              <input v-model="data.itemname" type="text" class="form-control" placeholder="Item" >
             </div>
           </div>
         </div>
@@ -73,7 +73,7 @@ export default {
     return {
       data: {
         book_id: this.properties.uuid,
-        location: '',
+        itemname: '',
         AKA: '',
         tags: '',
         description: ''
@@ -129,58 +129,58 @@ export default {
         formData.append('single-picture-file', scope.file)
 
         scope.axios
-          .post('http://localhost:3000/upload/locations/image', formData, {
+          .post('http://localhost:3000/upload/items/image', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
           })
           .then(response => {
-            window.$('#location-details [name="picture"]').val(response.data.file.name)
+            window.$('#item-details [name="picture"]').val(response.data.file.name)
 
             scope.data.pictures = response.data.file.name
-            scope.saveLocation()
+            scope.saveItem()
           }).catch(function () {
             console.log('FAILURE!!')
           })
       } else {
-        scope.saveLocation()
+        scope.saveItem()
       }
     },
-    saveLocation () {
+    saveItem () {
       var scope = this
 
       scope.axios
-        .post('http://localhost:3000/locations', scope.data)
+        .post('http://localhost:3000/items', scope.data)
         .then(response => {
           if (response.data) {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: 'Location successfuly saved',
+              title: 'Item successfuly saved',
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              scope.$parent.changeComponent('location-details', { location: response.data })
+              scope.$parent.changeComponent('item-details', { item: response.data })
             })
           }
         })
     },
-    loadLocation () {
+    loadItem () {
       var scope = this
       scope.axios
-        .get('http://localhost:3000/locations/' + scope.data.uuid)
+        .get('http://localhost:3000/items/' + scope.data.uuid)
         .then(response => {
-          let location = response.data
-          scope.data.location = location.location
-          scope.data.AKA = location.AKA
-          scope.data.tags = location.tags
-          scope.data.description = location.description
+          let item = response.data
+          scope.data.itemname = item.itemname
+          scope.data.AKA = item.AKA
+          scope.data.tags = item.tags
+          scope.data.description = item.description
 
-          if (location.pictures) {
-            scope.$set(scope.data, 'pictures', location.pictures)
+          if (item.pictures) {
+            scope.$set(scope.data, 'pictures', item.pictures)
 
             const image = new Image()
-            image.src = location.picture_src
+            image.src = item.picture_src
             image.setAttribute('width', '100%')
 
             window.$('.uploaded-file-preview').html(image)
@@ -191,17 +191,17 @@ export default {
   beforeMount () {
     var scope = this
 
-    if (scope.properties.location) {
-      scope.$set(scope.data, 'id', scope.properties.location.id)
-      scope.$set(scope.data, 'uuid', scope.properties.location.uuid)
+    if (scope.properties.item) {
+      scope.$set(scope.data, 'id', scope.properties.item.id)
+      scope.$set(scope.data, 'uuid', scope.properties.item.uuid)
     }
   },
   mounted () {
     var scope = this
 
     if (scope.data.id) {
-      window.$('.page-location-form .page-title h3').html('Update ' + scope.properties.location.location)
-      scope.loadLocation()
+      window.$('.page-item-form .page-title h3').html('Update ' + scope.properties.item.itemname)
+      scope.loadItem()
     }
   }
 }

@@ -20,8 +20,6 @@ class Location extends BaseModel {
       }
     }
   }
-
-  static get idColumn () { return ['uuid'] }
 }
 
 module.exports = {
