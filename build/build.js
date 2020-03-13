@@ -43,7 +43,7 @@ let buildOptions = {
   "mac": {
     "category": "public.app-category.productivity",
     "target": "dmg",
-    "icon": "build/icons/mac/icon.icns"
+    "icon": "build/icons/mac/easywrite.icns"
   },
   "win": {
     "target": [
@@ -55,7 +55,7 @@ let buildOptions = {
         ]
       }
     ],
-    "icon": "build/icons/win/icon.ico"
+    "icon": "build/icons/win/easywrite.ico"
   },
   "nsis": {
     "allowToChangeInstallationDirectory": true,

@@ -26,6 +26,7 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 960,
+    icon: path.resolve('src/assets/img/easywrite.png'),
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true,
@@ -72,7 +73,7 @@ function createLoginWindow () {
     show: false,
     width : 390,
     height: 380,
-    icon: path.join(__dirname, 'resources/images/Group 179.png'),
+    icon: path.resolve('src/assets/img/easywrite.png'),
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true
