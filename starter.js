@@ -48,8 +48,6 @@ function createWindow () {
     mainWindow.loadFile(`${__dirname}/dist/index.html`)
   }
 
-  console.log(menu)
-
   Menu.setApplicationMenu(menu)
 
   // Open the DevTools.

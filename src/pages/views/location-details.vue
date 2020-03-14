@@ -6,7 +6,7 @@
     <div class="row">
       <div class="col-12 col-lg-12 order-2 order-lg-1">
         <div>
-          <button  @click="editLocation()" class="update-book">Update</button>
+          <button  @click="editLocation(properties.location)" class="update-book">Update</button>
           <button  @click="deleteLocation()" class="delete-book">Delete</button>
         </div>
       </div>
@@ -29,9 +29,9 @@ export default {
     }
   },
   methods: {
-    editLocation () {
+    editLocation (location) {
       var scope = this
-      scope.$parent.changeComponent('location-form', { location: scope.location })
+      scope.$parent.changeComponent('location-form', { location: location })
     },
     deleteLocation: function () {
       var scope = this

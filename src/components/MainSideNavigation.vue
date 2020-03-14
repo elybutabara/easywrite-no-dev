@@ -44,7 +44,7 @@
                             </div>
                             <ul class="level-3">
                                 <li v-bind:key="item.id" v-for="item in book.items.rows">
-                                    <div @click="changeComponent('item-details',item.id)" class="label"><span><img  src="@/assets/img/icons/item.svg"> {{ item.itemname }}</span></div>
+                                    <div @click="changeComponent('item-details', { item: item })" class="label"><span><img  src="@/assets/img/icons/item.svg"> {{ item.itemname }}</span></div>
                                 </li>
                             </ul>
                         </li>

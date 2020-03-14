@@ -23,7 +23,7 @@
         <hr/>
 
        <div class="row">
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 fadeIn animated" v-for="location in locations" v-bind:key="location.id">
+            <div class="col-12 col-lg-4 col-md-6 col-sm-6 fadeIn animated" v-for="location in locations" v-bind:key="location.id">
                 <div class="item" >
                     <div class="content">
                         <div class="picture-placeholder"><img :src="location.picture_src" /></div>
