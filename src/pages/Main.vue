@@ -2,26 +2,36 @@
 <div class="page-main">
     <main-side-navigation></main-side-navigation>
     <syncer v-if="syncer.is_open"></syncer>
-    <div style="text-align:left; padding-left:330px;">
-        <div style="background:#ccc; text-align:right; padding:5px 10px;">
+    <div style="text-align:left; padding-left:320px;">
+        <div style="background:#dbdee3; text-align:right; padding:5px 10px;">
             <button @click="toggleSyncer()" style="background:#293742; padding:0px 10px; line-height:30px; height:30px; border:none; font-size:14px; color:#fff;">OPEN SYNCER</button>
         </div>
-        <book-listing v-if="active.component == 'book-listing'"></book-listing>
-        <chapter-listing v-if="active.component == 'chapter-listing'" :properties="active.data"></chapter-listing>
-        <scene-listing v-if="active.component == 'scene-listing'" :properties="active.data"></scene-listing>
-        <item-listing v-if="active.component == 'item-listing'" :properties="active.data"></item-listing>
-        <location-listing v-if="active.component == 'location-listing'" :properties="active.data"></location-listing>
-        <character-listing v-if="active.component == 'character-listing'" :properties="active.data"></character-listing>
 
-        <book-details v-if="active.component == 'book-details'" :properties="active.data"></book-details>
-        <chapter-details v-if="active.component == 'chapter-details'" :properties="active.data"></chapter-details>
-        <scene-details v-if="active.component == 'scene-details'" :properties="active.data"></scene-details>
-        <item-details v-if="active.component == 'item-details'" :properties="active.data"></item-details>
-        <location-details v-if="active.component == 'location-details'" :properties="active.data"></location-details>
-        <character-details v-if="active.component == 'character-details'" :properties="active.data"></character-details>
+        <div style="display:none; " class="tab-nav">
+            <div class="tab-nav-item" v-bind:class="{ 'active': tab.active }" v-for="(tab,index) in tabs" v-bind:key="index">
+                {{ tab.title }}
+                <span class="tab-closer"><i class="fas fa-times"></i></span>
+            </div>
+        </div>
+        <div>
+            <book-listing v-if="active.component == 'book-listing'"></book-listing>
+            <chapter-listing v-if="active.component == 'chapter-listing'" :properties="active.data"></chapter-listing>
+            <scene-listing v-if="active.component == 'scene-listing'" :properties="active.data"></scene-listing>
+            <item-listing v-if="active.component == 'item-listing'" :properties="active.data"></item-listing>
+            <location-listing v-if="active.component == 'location-listing'" :properties="active.data"></location-listing>
+            <character-listing v-if="active.component == 'character-listing'" :properties="active.data"></character-listing>
 
-        <book-form v-if="active.component == 'book-form'" :properties="active.data"></book-form>
-        <location-form v-if="active.component == 'location-form'" :properties="active.data"></location-form>
+            <book-details v-if="active.component == 'book-details'" :properties="active.data"></book-details>
+            <chapter-details v-if="active.component == 'chapter-details'" :properties="active.data"></chapter-details>
+            <scene-details v-if="active.component == 'scene-details'" :properties="active.data"></scene-details>
+            <item-details v-if="active.component == 'item-details'" :properties="active.data"></item-details>
+            <location-details v-if="active.component == 'location-details'" :properties="active.data"></location-details>
+            <character-details v-if="active.component == 'character-details'" :properties="active.data"></character-details>
+
+            <book-form v-if="active.component == 'book-form'" :properties="active.data"></book-form>
+            <location-form v-if="active.component == 'location-form'" :properties="active.data"></location-form>
+        </div>
+
     </div>
 </div>
 </template>
@@ -65,7 +75,12 @@ export default {
         id: 0,
         data: null,
         component: 'book-listing'
-      }
+      },
+      tabs: [
+        { title: 'Books', component: 'book-listing', active: true },
+        { title: 'The Story of john hahaha hehehe hohoho', component: 'book-listing', active: false },
+        { title: 'TEST', component: 'book-listing', active: false }
+      ]
     }
   },
   components: {
@@ -178,4 +193,11 @@ ul { margin-left:0px; list-style:none;  }
 
 .es-tree-view .level-3 li ul, .es-tree-view .level-3 li > ul > li { display:none; }
 .es-tree-view .level-3 li.open ul, .es-tree-view .level-3 li.open > ul > li{ display:block; }
+
+.tab-nav { background:#293742; padding-top:5px; display:flex; }
+.tab-nav .tab-nav-item { position:relative; font-size:12px; cursor:pointer; color:#fff; background:#324859; padding:7px 15px; padding-bottom:10px; padding-right:20px; width:180px; text-align:center; margin:0px 1px; display:inline-block;  border-top-left-radius: 3px; border-top-right-radius: 3px; border:1px solid #324351; border-bottom:none; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; }
+.tab-nav .tab-nav-item .tab-closer { position:absolute; top:7px; right:5px;  border-radius:50%; font-size:12px; line-height:15px; color:#82a5c0; font-weight:600; width:15px; height:15px; display:inline-block; text-align:center; }
+.tab-nav .tab-nav-item:first-child {  margin-left:-1px; }
+.tab-nav .tab-nav-item.active { background:#ffffff; color:#324351; }
+.tab-nav .tab-nav-item.active .tab-closer {color:#902c39; }
 </style>

@@ -1,11 +1,11 @@
 'use strict'
 const path = require('path')
 
-const { Genre } = require(path.join(__dirname, '..', 'models'))
+const { BookGenre } = require(path.join(__dirname, '..', 'models'))
 
-class GenreController {
+class BookGenreController {
   static async save (data) {
-    const saveGenre = await Genre.query().upsertGraph([data]).first()
+    const saveGenre = await BookGenre.query().upsertGraph([data]).first()
 
     return saveGenre
   }
@@ -15,12 +15,18 @@ class GenreController {
     var inserted = 0
 
     for (var i = 0; i < rows.length; i++) {
-      var data = await Genre.query()
+      var data = await BookGenre.query()
         .patch(rows[i])
         .where('uuid', '=', rows[i].uuid)
 
       if (!data || data === 0) {
-        data = await Genre.query().insert(rows[i])
+        data = await BookGenre.query().insert(rows[i])
+
+        // update uuid to match web
+        data = await BookGenre.query()
+          .patch({ 'uuid': rows[i].uuid })
+          .where('uuid', '=', data.uuid)
+
         inserted++
       } else {
         updated++
@@ -32,5 +38,5 @@ class GenreController {
 }
 
 module.exports = {
-  GenreController
+  BookGenreController
 }

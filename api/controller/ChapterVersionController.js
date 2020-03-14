@@ -15,6 +15,12 @@ class ChapterVersionController {
 
       if (!data || data === 0) {
         data = await ChapterVersion.query().insert(rows[i])
+
+        // update uuid to match web
+        data = await ChapterVersion.query()
+          .patch({ 'uuid': rows[i].uuid })
+          .where('uuid', '=', data.uuid)
+
         inserted++
       } else {
         updated++

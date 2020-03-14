@@ -1,5 +1,5 @@
 *:focus { outline: none; }
-body { background:#fafafa; font-family:'Crimson Roman'; }
+body { margin:0px !important; background:#fafafa; font-family:'Crimson Roman'; }
 
 .es-left-content { width:300px; background:#fff; min-height:100vh; height:100%; position:fixed; top:0px; left:0px; border-right:1px solid #e8e7e7; }
 .es-left-content .logo { padding:10px 60px; text-align:center; border-bottom:1px solid #e8e7e7; }
@@ -54,13 +54,9 @@ body { background:#fafafa; font-family:'Crimson Roman'; }
 .es-right-content .item-listing  .item p { margin:0px; font-size:12px;  }
 
 @media screen and (max-width: 1180px) {
-	
 	.es-content { padding-right:10px;  }
 	.es-content .header .cta-container { display:none;  }
-	
 	.es-content .inner .tabs { display:block; border-bottom:1px solid #e8e7e7; }
-	
-	
+
 	.es-right-content { display:none; }
-	
 }

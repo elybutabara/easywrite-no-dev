@@ -20,6 +20,12 @@ class RelationController {
 
       if (!data || data === 0) {
         data = await Relation.query().insert(rows[i])
+
+        // update uuid to match web
+        data = await Relation.query()
+          .patch({ 'uuid': rows[i].uuid })
+          .where('uuid', '=', data.uuid)
+
         inserted++
       } else {
         updated++
