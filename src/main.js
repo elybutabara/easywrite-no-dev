@@ -10,8 +10,11 @@ import StoreAuth from './stores/auth'
 import mixins from './utils/mixins'
 import Notifications from 'vue-notification'
 import Multiselect from 'vue-multiselect'
+import { BootstrapVue } from 'bootstrap-vue'
 
-import './assets/vendors/bootstrap/css/bootstrap.min.css'
+// import './assets/vendors/bootstrap/css/bootstrap.min.css'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 import './assets/vendors/lineawesome/css/line-awesome.min.css'
 import './assets/vendors/fontawesome/css/all.min.css'
 import './assets/css/animate.css'
@@ -71,6 +74,8 @@ Vue.use(Notifications)
 Vue.use(VueAxios, axios)
 Vue.component('multiselect', Multiselect)
 Vue.component('tiny-editor', TinyMCE)
+// Install BootstrapVue
+Vue.use(BootstrapVue)
 // Vue.use(jQuery)
 
 const store = new Vuex.Store({
