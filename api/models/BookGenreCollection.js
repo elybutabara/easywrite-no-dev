@@ -31,5 +31,5 @@ class BookGenreCollection extends BaseModel {
 }
 
 module.exports = {
-  GenreCollection: BookGenreCollection
+  BookGenreCollection
 }

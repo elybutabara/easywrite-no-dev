@@ -1,6 +1,6 @@
 const path = require('path')
 
-const { GenreController } = require(path.join(__dirname, 'controller/GenreController'))
+const { BookGenreController } = require(path.join(__dirname, 'controller/BookGenreController'))
 const { RelationController } = require(path.join(__dirname, 'controller/RelationController'))
 const { ItemController } = require(path.join(__dirname, 'controller/ItemController'))
 const { ChapterController } = require(path.join(__dirname, 'controller/ChapterController'))
@@ -14,12 +14,12 @@ const { SceneLocationController } = require(path.join(__dirname, 'controller/Sce
 const { SceneCharacterController } = require(path.join(__dirname, 'controller/SceneCharacterController'))
 const { UserController } = require(path.join(__dirname, 'controller/UserController'))
 const { BookController } = require(path.join(__dirname, 'controller/BookController'))
-const { GenreCollectionController } = require(path.join(__dirname, 'controller/GenreCollectionController'))
+const { BookGenreCollectionController } = require(path.join(__dirname, 'controller/BookGenreCollectionController'))
 const { RelationDetailController } = require(path.join(__dirname, 'controller/RelationDetailController'))
 
 module.exports = {
   UserController,
-  GenreController,
+  BookGenreController,
   RelationController,
   BookController,
   ItemController,
@@ -33,5 +33,5 @@ module.exports = {
   SceneLocationController,
   SceneCharacterController,
   RelationDetailController,
-  GenreCollectionController
+  BookGenreCollectionController
 }

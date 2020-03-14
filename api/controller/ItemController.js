@@ -48,6 +48,12 @@ class ItemController {
 
       if (!data || data === 0) {
         data = await Item.query().insert(rows[i])
+
+        // update uuid to match web
+        data = await Item.query()
+          .patch({ 'uuid': rows[i].uuid })
+          .where('uuid', '=', data.uuid)
+
         inserted++
       } else {
         updated++
