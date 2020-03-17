@@ -116,11 +116,10 @@ export default {
           let chapter = response.data
           scope.data.title = chapter.title
           scope.data.short_description = chapter.short_description
-
-          if (chapter.chapter_version[0]) {
-            scope.data.chapter_version.id = chapter.chapter_version[0].id
-            scope.data.chapter_version.uuid = chapter.chapter_version[0].uuid
-            scope.data.chapter_version.content = chapter.chapter_version[0].content
+          if (chapter.chapter_version[chapter.chapter_version.length - 1]) {
+            scope.data.chapter_version.id = chapter.chapter_version[chapter.chapter_version.length - 1].id
+            scope.data.chapter_version.uuid = chapter.chapter_version[chapter.chapter_version.length - 1].uuid
+            scope.data.chapter_version.content = chapter.chapter_version[chapter.chapter_version.length - 1].content
           }
         })
     }

@@ -8,8 +8,15 @@ class ChapterVersionController {
     var version = ChapterVersion.query()
       .where('chapter_id', chapterId)
       .whereNull('deleted_at')
+      .orderBy('id', 'asc')
 
     return version
+  }
+
+  static async save (data) {
+    const chapterVersion = await ChapterVersion.query().upsertGraphAndFetch([data]).first()
+
+    return chapterVersion
   }
 
   static async sync (rows) {

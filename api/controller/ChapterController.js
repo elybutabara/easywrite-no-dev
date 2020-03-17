@@ -16,6 +16,7 @@ class ChapterController {
   static getChapterById (chapterId) {
     const chapter = Chapter.query().findById(chapterId)
       .withGraphJoined('chapter_version', {maxBatchSize: 1})
+      .orderBy('chapter_version.id')
 
     return chapter
   }

@@ -43,11 +43,11 @@ router.post('/', async function (req, res) {
 })
 
 router.get('/:chapterId', async function (req, res) {
-  const book = await ChapterController.getChapterById(req.params.chapterId)
+  const chapter = await ChapterController.getChapterById(req.params.chapterId)
 
   res
     .status(200)
-    .json(book)
+    .json(chapter)
 })
 
 router.post('/sync', async function (req, res) {

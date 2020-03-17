@@ -23,7 +23,7 @@
           </div>
         </div>
         <div class="es-tab-content" v-if="tab.active == 'content'">
-            <div v-html="properties.chapter_version[properties.chapter_version.length - 1].content" class="description" >{{ properties.chapter_version[0].content }}</div>
+            <div v-html="properties.chapter_version[properties.chapter_version.length - 1].content" class="description" ></div>
         </div>
         <div class="es-tab-content" v-if="tab.active == 'scenes'">
             <div class="chapter-scenes-list">
@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="es-tab-content" v-if="tab.active == 'versions'">
-          <div>
+          <div class="version-container">
             <b-card no-body>
               <b-tabs pills card vertical nav-wrapper-class="w-30">
                 <b-tab v-for="(version, index) in chapter.chapter_version" v-bind:key="version.id" :active="index==0" >
@@ -54,7 +54,11 @@
                     <b-badge variant="success" v-else-if="version.is_same == true" >Same</b-badge>
                     <b-badge variant="secondary" v-else >Diff</b-badge>
                   </template>
-                  <b-card-text v-html=" version.change_description "></b-card-text>
+                  <div class="text-right" style="position: sticky; top: 1rem">
+                    <b-button @click="editVersion(version)" variant="dark" class="btn-edit-version">Edit</b-button>
+                  </div>
+                  <br >
+                  <b-card-text class="version-change-description" v-html="version.change_description "></b-card-text>
                 </b-tab>
               </b-tabs>
             </b-card>
@@ -107,6 +111,8 @@ export default {
     return {
       chapter: this.properties,
       chapter_version: {
+        chapter_id: this.properties.uuid,
+        content: '',
         change_description: ''
       },
       tab: {
@@ -121,7 +127,13 @@ export default {
   },
   methods: {
     newVersion: function () {
+      var scope = this
       this.busy = true
+
+      if (scope.chapter_version.id) {
+        delete (scope.chapter_version.id)
+        delete (scope.chapter_version.uuid)
+      }
     },
     onShown () {
       // Focus the dialog prompt
@@ -137,7 +149,32 @@ export default {
     },
     saveNewVersion () {
       var scope = this
-      console.log(scope.chapter_version)
+      scope.axios
+        .post('http://localhost:3000/chapter-versions', scope.chapter_version)
+        .then(response => {
+          if (response.data) {
+            scope.getAllChapterVersions(scope.properties)
+            window.swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Chapter successfuly saved',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              scope.changeTab('versions')
+              this.busy = false
+            })
+          }
+        })
+    },
+    editVersion: function (version) {
+      var scope = this
+      scope.chapter_version.id = version.id
+      scope.chapter_version.uuid = version.uuid
+      scope.chapter_version.change_description = version.change_description
+      scope.chapter_version.content = version.content
+
+      this.busy = true
     },
     editChapter: function (chapter) {
       var scope = this
@@ -154,22 +191,27 @@ export default {
     },
     getAllChapterVersions: function (chapter) {
       var scope = this
+      scope.chapter = chapter
       scope.axios
         .get('http://localhost:3000/chapters/' + chapter.uuid + '/versions')
         .then(response => {
           scope.chapter.chapter_version = response.data
+
+          scope.chapter_version.chapter_id = chapter.uuid
+          scope.chapter_version.change_description = ''
+          scope.chapter_version.content = scope.chapter.chapter_version[response.data.length - 1].content
         })
     }
   },
-  updated () {
+  beforeUpdate () {
     var scope = this
     if (scope.chapter.uuid !== scope.properties.uuid) {
-      scope.chapter = scope.properties
       scope.getAllChapterVersions(scope.properties)
     }
   },
   mounted () {
-    // var scope = this
+    var scope = this
+    scope.getAllChapterVersions(scope.properties)
   }
 }
 </script>
