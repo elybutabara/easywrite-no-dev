@@ -9,8 +9,6 @@ class BookController {
       .findById(userId)
       .withGraphJoined('author', { maxBatchSize: 1 })
 
-    console.log(user.author.uuid)
-
     const books = Book.query()
       .withGraphJoined('book_genre_collection')
       .withGraphJoined('genre')

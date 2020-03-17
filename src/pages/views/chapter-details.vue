@@ -1,10 +1,13 @@
 <template>
 <div class="page-chapter-details">
-    <div class="page-title">
-        <button @click="toggleFilter()" class="btn-toggle-filter"><i class="las la-filter"></i></button>
-        <h3>{{ properties.title }}</h3>
-        <p>{{ properties.short_description }}</p>
-        <input type="hidden" v-model="properties.uuid" @change="getAllChapterVersions(properties)">
+    <div class="header">
+      <div class="page-title">
+          <button @click="toggleFilter()" class="btn-toggle-filter"><i class="las la-filter"></i></button>
+          <h3>{{ properties.title }}</h3>
+          <p>{{ properties.short_description }}</p>
+      </div>
+      <b-button @click="editChapter(properties)" variant="dark">Edit</b-button>
+      <b-button ref="button" :disabled="busy" @click="newVersion" variant="dark">Save as New Version</b-button>
     </div>
     <hr/>
     <div class="es-tab">
@@ -15,12 +18,12 @@
             <div v-bind:class="{ 'active' : tab.active == 'scenes' }" class="es-tab-button" @click="changeTab('scenes')">
                 Scenes
             </div>
-            <div v-bind:class="{ 'active' : tab.active == 'versions' }" class="es-tab-button" @click="changeTab('versions')">
-                Versions
-            </div>
+          <div v-bind:class="{ 'active' : tab.active == 'versions' }" class="es-tab-button" @click="changeTab('versions')">
+            Versions
+          </div>
         </div>
         <div class="es-tab-content" v-if="tab.active == 'content'">
-            <div v-html="properties.chapter_version[0].content" class="description" >{{ properties.chapter_version[0].content }}</div>
+            <div v-html="properties.chapter_version[properties.chapter_version.length - 1].content" class="description" >{{ properties.chapter_version[0].content }}</div>
         </div>
         <div class="es-tab-content" v-if="tab.active == 'scenes'">
             <div class="chapter-scenes-list">
@@ -41,60 +44,121 @@
             </div>
         </div>
         <div class="es-tab-content" v-if="tab.active == 'versions'">
-            <div style="margin-bottom: 1rem;text-align: right">
-              <b-button @click="createChapterVersion()" variant="dark">Create new version</b-button>
-            </div>
-            <div role="tablist">
-              <b-card no-body class="mb-1" v-for="(version, index) in chapter_version" v-bind:key="version.id">
-                <b-card-header header-tag="header" class="p-1" role="tab">
-                  <b-button block href="#" v-b-toggle="'accordion-' + version.id" class="text-left" variant="light">
+          <div>
+            <b-card no-body>
+              <b-tabs pills card vertical nav-wrapper-class="w-30">
+                <b-tab v-for="(version, index) in chapter.chapter_version" v-bind:key="version.id" :active="index==0" >
+                  <template v-slot:title>
                     Version {{ index+1 }}
-                    <b-badge variant="primary" v-if="index+1 == chapter_version.length" >Latest</b-badge>
+                    <b-badge variant="primary" v-if="index+1 == chapter.chapter_version.length" >Latest</b-badge>
                     <b-badge variant="success" v-else-if="version.is_same == true" >Same</b-badge>
                     <b-badge variant="secondary" v-else >Diff</b-badge>
-                  </b-button>
-                </b-card-header>
-                <b-collapse :id="'accordion-' + version.id" accordion="chapter-scenes" role="tabpanel">
-                  <b-card-body>
-                    <b-card-text v-html=" version.change_description "></b-card-text>
-                  </b-card-body>
-                </b-collapse>
-              </b-card>
-            </div>
+                  </template>
+                  <b-card-text v-html=" version.change_description "></b-card-text>
+                </b-tab>
+              </b-tabs>
+            </b-card>
+          </div>
         </div>
     </div>
+  <b-overlay :show="busy" no-wrap fixed @shown="onShown" @hidden="onHidden">
+    <template v-slot:overlay>
+      <div
+        id="overlay-background"
+        ref="dialog"
+        tabindex="-1"
+        role="dialog"
+        aria-modal="false"
+        aria-labelledby="form-confirm-label"
+        class="p-3"
+      >
+        <b-container class="bv-example-row">
+          <b-row style="margin-bottom: 1rem;">
+            <b-col>
+              <label>Description: </label>
+              <tiny-editor :initValue="chapter_version.change_description"
+                           v-on:getEditorContent="setDescription"
+                           class="form-control"
+              />
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              <div class="text-right">
+                <b-button variant="outline-dark" class="mr-3" @click="onCancel">Cancel</b-button>
+                <b-button variant="dark" @click="saveNewVersion">Save</b-button>
+              </div>
+            </b-col>
+          </b-row>
+        </b-container>
+      </div>
+    </template>
+  </b-overlay>
 </div>
 </template>
 
 <script>
+import TinyMCE from '../../components/TinyMCE'
+
 export default {
   name: 'chapter-details',
   props: ['properties'],
   data: function () {
     return {
       chapter: this.properties,
-      chapter_version: this.getAllChapterVersions(this.properties),
+      chapter_version: {
+        change_description: ''
+      },
       tab: {
         active: 'content'
-      }
+      },
+      busy: false,
+      interval: null
     }
   },
+  components: {
+    TinyMCE
+  },
   methods: {
+    newVersion: function () {
+      this.busy = true
+    },
+    onShown () {
+      // Focus the dialog prompt
+      this.$refs.dialog.focus()
+    },
+    onHidden () {
+      // In this case, we return focus to the submit button
+      // You may need to alter this based on your application requirements
+      this.$refs.button.focus()
+    },
+    onCancel () {
+      this.busy = false
+    },
+    saveNewVersion () {
+      var scope = this
+      console.log(scope.chapter_version)
+    },
+    editChapter: function (chapter) {
+      var scope = this
+      scope.$parent.changeComponent('chapter-form', { chapter: chapter })
+    },
     changeTab: function (active) {
       var scope = this
       scope.tab.active = active
+    },
+    setDescription (value) {
+      var scope = this
+
+      scope.chapter_version.change_description = value
     },
     getAllChapterVersions: function (chapter) {
       var scope = this
       scope.axios
         .get('http://localhost:3000/chapters/' + chapter.uuid + '/versions')
         .then(response => {
-          scope.chapter_version = response.data
+          scope.chapter.chapter_version = response.data
         })
-    },
-    createChapterVersion: function () {
-      var scope = this
-      scope.$parent.changeComponent('chapter-version-form', scope.properties)
     }
   },
   updated () {

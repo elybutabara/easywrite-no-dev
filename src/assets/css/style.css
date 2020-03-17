@@ -34,13 +34,13 @@ body { margin:0px !important; background:#fafafa; font-family:'Crimson Roman'; }
 .es-content .inner .tabs a:last-child { border-right:none; }
 .es-content .inner .tabs a i { font-size:20px; }
 
-.es-right-content { position:fixed; top:0px; right:0px; width:300px; height:100vh; background:#fff; border-left:1px solid #e8e7e7; padding-top:10px; } 
-.es-right-content .toggler-group { padding:3px 10px; display: flex; justify-content: center; } 
-.es-right-content .toggler-group .item {cursor:pointer; padding:3px; border:1px solid #e8e7e7; height:80px; width:90px; margin:0px 5px; padding:15px 3px; text-align:center; } 
-.es-right-content .toggler-group .item:hover { background:#d7e5f2; } 
-.es-right-content .toggler-group .item.active { background:#d7e5f2; } 
-.es-right-content .toggler-group .item i { font-size:30px; } 
-.es-right-content .toggler-group .item p { margin:0px; font-size:10px; font-family:'Gotham Medium'; } 
+.es-right-content { position:fixed; top:0px; right:0px; width:300px; height:100vh; background:#fff; border-left:1px solid #e8e7e7; padding-top:10px; }
+.es-right-content .toggler-group { padding:3px 10px; display: flex; justify-content: center; }
+.es-right-content .toggler-group .item {cursor:pointer; padding:3px; border:1px solid #e8e7e7; height:80px; width:90px; margin:0px 5px; padding:15px 3px; text-align:center; }
+.es-right-content .toggler-group .item:hover { background:#d7e5f2; }
+.es-right-content .toggler-group .item.active { background:#d7e5f2; }
+.es-right-content .toggler-group .item i { font-size:30px; }
+.es-right-content .toggler-group .item p { margin:0px; font-size:10px; font-family:'Gotham Medium'; }
 .es-right-content .header { margin-top:10px; padding:5px; background: #efefef; font-size:12px; }
 
 .es-right-content .search-wrapper { padding:5px; border-bottom:1px solid #e8e7e7; position:relative; padding-right:25px;}
@@ -52,6 +52,10 @@ body { margin:0px !important; background:#fafafa; font-family:'Crimson Roman'; }
 .es-right-content .item-listing  .item:hover {background:#d7e5f2;  }
 .es-right-content .item-listing  .item strong { font-size:18px;  }
 .es-right-content .item-listing  .item p { margin:0px; font-size:12px;  }
+
+.w-30 {
+  width: 30% !important;
+}
 
 @media screen and (max-width: 1180px) {
 	.es-content { padding-right:10px;  }

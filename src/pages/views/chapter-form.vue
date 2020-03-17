@@ -1,10 +1,9 @@
 <template>
-<div class="page-item-form">
+<div class="page-chapter-form">
   <div class="page-title">
     <h3>New Chapter</h3>
   </div>
   <div class="content" >
-
     <div class="row">
       <div class="col-md-12">
         <div class="form-group">
@@ -24,18 +23,33 @@
     <div class="row">
       <div class="col-md-12">
         <div class="form-group">
-          <label>Description: </label>
+          <label>Content: </label>
           <tiny-editor :initValue="data.chapter_version.content"
-                       v-on:getEditorContent="setDescription"
-                       class="form-control"
+                                     v-on:getEditorContent="setContent"
+                                     class="form-control"
           />
         </div>
+<!--        <b-tabs class="form-group" content-class="mt-3">-->
+<!--          <b-tab title="Description" active>-->
+<!--            <tiny-editor :initValue="data.chapter_version.change_description"-->
+<!--                         v-on:getEditorContent="setDescription"-->
+<!--                         class="form-control"-->
+<!--            />-->
+<!--          </b-tab>-->
+<!--          <b-tab title="Content">-->
+<!--            <tiny-editor :initValue="data.chapter_version.content"-->
+<!--                         v-on:getEditorContent="setContent"-->
+<!--                         class="form-control"-->
+<!--            />-->
+<!--          </b-tab>-->
+<!--        </b-tabs>-->
       </div>
     </div>
     <div class="row">
       <div class="col-md-12">
-        <div class="form-group">
-          <button @click="saveChapter">Save</button>
+        <div class="form-group text-right">
+<!--          <b-button v-if="data.id !== undefined"  @click="saveNewVersion" variant="dark">Save as New Version</b-button>-->
+          <b-button @click="saveChapter" variant="dark">Save</b-button>
         </div>
       </div>
     </div>
@@ -52,10 +66,11 @@ export default {
   data: function () {
     return {
       data: {
-        book_id: this.properties.chapter.book_id,
+        book_id: '',
         title: '',
         short_description: '',
         chapter_version: {
+          change_description: '',
           content: ''
         }
       }
@@ -66,15 +81,13 @@ export default {
   },
   methods: {
     // Required for geting value from TinyMCE content
-    setDescription (value) {
+    setContent (value) {
       var scope = this
 
       scope.data.chapter_version.content = value
     },
     saveChapter () {
       var scope = this
-
-      console.log(scope.data)
 
       scope.axios
         .post('http://localhost:3000/chapters', scope.data)
@@ -92,12 +105,14 @@ export default {
           }
         })
     },
+    saveNewVersion () {
+
+    },
     loadChapter () {
       var scope = this
       scope.axios
         .get('http://localhost:3000/chapters/' + scope.data.uuid)
         .then(response => {
-          console.log(response.data)
           let chapter = response.data
           scope.data.title = chapter.title
           scope.data.short_description = chapter.short_description
@@ -116,21 +131,20 @@ export default {
     if (scope.properties.chapter) {
       scope.$set(scope.data, 'id', scope.properties.chapter.id)
       scope.$set(scope.data, 'uuid', scope.properties.chapter.uuid)
+      scope.$set(scope.data, 'book_id', scope.properties.chapter.book_id)
+      scope.loadChapter()
+    } else {
+      scope.$set(scope.data, 'book_id', scope.properties.uuid)
     }
   },
   mounted () {
-    var scope = this
-
-    if (scope.data.id) {
-      // window.$('.page-item-form .page-title h3').html('Update ' + scope.properties.item.itemname)
-      scope.loadChapter()
-    }
+    // var scope = this
   }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .page-book-form { padding:20px; }
+  .page-chapter-form { padding:20px; }
 
   .page-title { font-family: 'Crimson Roman Bold'; position:relative; padding-top:20px; }
   .page-title h3 { font-size:35px; }

@@ -160,19 +160,17 @@ export default {
 /*.input-group button { background:#354350;  }*/
 /*.input-group button:hover { background:#354350;  }*/
 .page-auth {
-  height: 364px;
-}
-.login-form {
   background: url("../assets/img/login-bg.png") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  width: calc(100% + 32px);
-  height: 380px;
+}
+.login-form {
   color: #fff;
   padding-top: 50px;
-  margin: -16px;
+  width: 100%;
+  height: 380px;
 }
 .login-form .input-group {
   width: 80%;

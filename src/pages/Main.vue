@@ -1,5 +1,5 @@
 <template>
-<div class="page-main">
+<div class="page-main" aria-controls="overlay-background">
     <main-side-navigation></main-side-navigation>
     <syncer v-if="syncer.is_open"></syncer>
     <div style="text-align:left; padding-left:320px;">
@@ -31,7 +31,6 @@
             <location-form v-if="active.component == 'location-form'" :properties="active.data"></location-form>
             <item-form v-if="active.component == 'item-form'" :properties="active.data"></item-form>
             <chapter-form v-if="active.component == 'chapter-form'" :properties="active.data"></chapter-form>
-            <chapter-version-form v-if="active.component == 'chapter-version-form'" :properties="active.data"></chapter-version-form>
         </div>
     </div>
 </div>
@@ -59,7 +58,6 @@ import BookForm from '@/pages/views/book-form'
 import LocationForm from '@/pages/views/location-form'
 import ItemForm from '@/pages/views/item-form'
 import ChapterForm from '@/pages/views/chapter-form'
-import ChapterVersionForm from '@/pages/views/chapter-version-form'
 
 const electron = window.require('electron')
 
@@ -105,8 +103,7 @@ export default {
     'book-form': BookForm,
     'location-form': LocationForm,
     'item-form': ItemForm,
-    'chapter-form': ChapterForm,
-    'chapter-version-form': ChapterVersionForm
+    'chapter-form': ChapterForm
   },
   methods: {
     changeComponent: function (component, data) {
