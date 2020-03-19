@@ -6,6 +6,22 @@ const router = express.Router()
 
 const { RelationDetailController } = require(path.join(__dirname, '..', 'controllers'))
 
+router.post('/', async function (req, res) {
+  const relationDetail = await RelationDetailController.save(req.body)
+
+  res
+    .status(200)
+    .json(relationDetail)
+})
+
+router.delete('/:relationDetailId', async function (req, res) {
+  const relationDetail = await RelationDetailController.delete(req.params.relationDetailId)
+
+  res
+    .status(200)
+    .json(relationDetail)
+})
+
 router.post('/sync', async function (req, res) {
   const row = await RelationDetailController.sync(req.body)
 

@@ -80,6 +80,10 @@ body { margin:0px !important; background:#fafafa; font-family:'Crimson Roman'; }
   opacity: 1;
 }
 
+.margin-bottom-1rem {
+  margin-bottom: 1rem;
+}
+
 @media screen and (max-width: 1180px) {
 	.es-content { padding-right:10px;  }
 	.es-content .header .cta-container { display:none;  }

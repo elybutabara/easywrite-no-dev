@@ -4,6 +4,14 @@ const path = require('path')
 const { Relation } = require(path.join(__dirname, '..', 'models'))
 
 class RelationController {
+  static async getAll () {
+    const relations = await Relation.query()
+      .orderBy('created_at')
+      .whereNull('deleted_at')
+
+    return relations
+  }
+
   static async save (data) {
     const save = await Relation.query().upsertGraph([data]).first()
     return save

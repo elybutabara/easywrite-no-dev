@@ -58,7 +58,7 @@
                             </div>
                             <ul class="level-3">
                                 <li v-bind:key="character.id" v-for="character in book.characters.rows">
-                                    <div @click="changeComponent('character-details',character.id)" class="label"><span><img  src="@/assets/img/icons/character.svg"> {{ character.fullname }}</span></div>
+                                    <div @click="changeComponent('character-details', {character: character})" class="label"><span><img  src="@/assets/img/icons/character.svg"> {{ character.fullname }}</span></div>
                                 </li>
                             </ul>
                         </li>

@@ -1,7 +1,7 @@
 <template>
 <div class="page-character-listing">
    <div>
-       <button class="btn-new-record"><i class="las la-plus"></i></button>
+       <button @click="createCharacter" class="btn-new-record"><i class="las la-plus"></i></button>
        <div class="row">
            <div class="col-12 col-md-7">
                 <div class="page-title">
@@ -23,15 +23,15 @@
         <hr/>
 
        <div class="row">
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 fadeIn animated" v-for="character in characters" v-bind:key="character.id">
+            <div class="col-12 col-lg-4 col-md-6 col-sm-6 fadeIn animated" v-for="character in characters" v-bind:key="character.id">
                 <div class="item" >
                     <div class="content" >
-                        <div class="picture-placeholder"></div>
-                      <strong>{{ character.fullname }} <span v-if="character.nickname.length !== 0">({{ character.nickname }})</span></strong> <br/>
+                        <div class="picture-placeholder"><img :src="character.picture_src" /></div>
+                      <strong>{{ character.fullname }} <span v-if="character.nickname && character.nickname.length !== 0">({{ character.nickname }})</span></strong> <br/>
                         <div v-html="character.description" class="description" >{{ character.description }}</div>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
+                        <button @click="viewCharacter(character)" type="button">VIEW</button>
+                        <button @click="editCharacter(character)" type="button">EDIT</button>
+                        <button @click="deleteCharacter(character.uuid)"  type="button">DELETE</button>
                     </div>
                 </div>
             </div>
@@ -70,11 +70,54 @@ export default {
         .then(response => {
           scope.characters = response.data
         })
+    },
+    createCharacter: function () {
+      var scope = this
+      scope.$parent.changeComponent('character-form', scope.properties)
+    },
+    editCharacter: function (character) {
+      var scope = this
+      scope.$parent.changeComponent('character-form', { character: character })
+    },
+    viewCharacter: function (character) {
+      var scope = this
+      scope.$parent.changeComponent('character-details', { character: character })
+    },
+    deleteCharacter: function (characterId) {
+      var scope = this
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/characters/' + characterId)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Character successfuly deleted',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.getCharacters(scope.properties.uuid)
+                  scope.$parent.changeComponent('character-listing', scope.properties)
+                })
+              }
+            })
+        }
+      })
     }
   },
   mounted () {
     var scope = this
-    scope.getCharacters(scope.properties.id)
+    scope.getCharacters(scope.properties.uuid)
   }
 }
 </script>
@@ -84,7 +127,8 @@ export default {
     .page-character-listing .item { margin-top:20px; border:1px solid #9fb1c2; }
     .page-character-listing .item .header { background:#354350; padding:0px 20px; height:35px; line-height:38px; color:#fff; border:2px solid #354350; }
     .page-character-listing .item .content { padding:20px; background:#fff; text-align:center; }
-    .page-character-listing .item .content .picture-placeholder { border-radius:50%; width:70px; height:65px; background:#ccd5dd; border:2px solid #9fb1c2; display:block; margin:0px auto; margin-bottom:10px; cursor:pointer; }
+    .page-character-listing .item .content .picture-placeholder {  display:block; margin:0px auto;  width:200px; height:100px; background:#ccd5dd; border:2px solid #9fb1c2; margin-bottom:10px; cursor:pointer; }
+    .page-character-listing .item .content .picture-placeholder img { height: 100% }
     .page-character-listing .item .content strong { font-family:'Crimson Bold'; font-size:18px; }
     .page-character-listing .item .content .description { font-size:16px; }
     .page-character-listing .item .content button { font-size:14px; background:#fff; border:1px solid #efefef; padding:5px 10px; padding-bottom:0px; }

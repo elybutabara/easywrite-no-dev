@@ -7,8 +7,6 @@ class Relation extends BaseModel {
   static get tableName () {
     return 'book_relations'
   }
-
-  static get idColumn () { return ['uuid'] }
 }
 
 module.exports = {
