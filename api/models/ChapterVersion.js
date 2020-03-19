@@ -7,8 +7,6 @@ class ChapterVersion extends BaseModel {
   static get tableName () {
     return 'book_chapter_versions'
   }
-
-  static get idColumn () { return ['uuid'] }
 }
 
 module.exports = {

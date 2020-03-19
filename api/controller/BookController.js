@@ -60,6 +60,12 @@ class BookController {
 
       if (!data || data === 0) {
         data = await Book.query().insert(rows[i])
+
+        // update uuid to match web
+        data = await Book.query()
+          .patch({ 'uuid': rows[i].uuid })
+          .where('uuid', '=', data.uuid)
+
         inserted++
       } else {
         updated++

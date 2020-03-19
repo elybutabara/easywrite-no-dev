@@ -27,7 +27,7 @@
                                 <li v-bind:class="{ 'open' : chapter.is_open  == true }" v-bind:key="chapter.id" v-for="chapter in book.chapters.rows">
                                     <div @click="getSceneByChapter(chapter)" class="label"><span><img  src="@/assets/img/icons/chapter.svg"> {{ chapter.title }}</span></div>
                                     <ul v-if="chapter.is_open  == true " class="level-4">
-                                        <li v-bind:key="scene.id" v-for="scene in chapter.scenes.rows">
+                                        <li v-bind:key="scene.id" v-for="scene in chapter.scenes">
                                             <div @click="changeComponent('scene-details',scene.id)" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title }}</span></div>
                                         </li>
                                     </ul>
@@ -58,7 +58,7 @@
                             </div>
                             <ul class="level-3">
                                 <li v-bind:key="character.id" v-for="character in book.characters.rows">
-                                    <div @click="changeComponent('character-details',character.id)" class="label"><span><img  src="@/assets/img/icons/character.svg"> {{ character.fullname }}</span></div>
+                                    <div @click="changeComponent('character-details', {character: character})" class="label"><span><img  src="@/assets/img/icons/character.svg"> {{ character.fullname }}</span></div>
                                 </li>
                             </ul>
                         </li>
@@ -219,15 +219,15 @@ export default {
         scope.axios
           .get('http://localhost:3000/chapters/' + chapter.uuid + '/scenes')
           .then(response => {
-            chapter.scenes.rows = response.data
+            chapter.scenes.is_open = true
+            chapter.scenes = response.data
+            scope.changeComponent('chapter-details', chapter)
           })
-
-        chapter.scenes.is_open = true
       } else {
         chapter.is_open = false
         chapter.scenes.is_open = false
+        scope.changeComponent('chapter-details', chapter)
       }
-      scope.changeComponent('chapter-details', chapter)
     }
   },
   mounted () {

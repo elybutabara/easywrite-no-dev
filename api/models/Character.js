@@ -1,5 +1,7 @@
 'use strict'
 
+const path = require('path')
+
 const { BaseModel } = require('./BaseModel')
 
 class Character extends BaseModel {
@@ -8,7 +10,16 @@ class Character extends BaseModel {
     return 'book_characters'
   }
 
-  static get idColumn () { return ['uuid'] }
+  static relationMappings = {
+    book: {
+      relation: BaseModel.HasOneRelation,
+      modelClass: path.join(__dirname, 'Book'),
+      join: {
+        from: 'book_characters.book_id',
+        to: 'books.uuid'
+      }
+    }
+  }
 }
 
 module.exports = {

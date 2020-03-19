@@ -21,8 +21,21 @@ class UserController {
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await User.query().insert(row)
-      data = await Author.query().insert(row.author)
+      var user = await User.query().insert(row)
+      var author = await Author.query().insert(row.author)
+
+      console.log(user)
+      console.log(author)
+
+      // update uuid to match web
+      data = await User.query()
+        .patch({'uuid': row.uuid})
+        .where('uuid', '=', user.uuid)
+
+        // update uuid to match web
+      data = await Author.query()
+        .patch({ 'uuid': row.author.uuid })
+        .where('uuid', '=', author.uuid)
     }
 
     data = await User.query().findById(row.uuid)

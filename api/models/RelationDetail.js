@@ -10,31 +10,29 @@ class RelationDetail extends BaseModel {
     return 'book_relation_details'
   }
 
-  static get idColumn () { return ['uuid'] }
-
     static relationMappings = {
       character: {
         relation: BaseModel.HasOneRelation,
         modelClass: path.join(__dirname, 'Character'),
         join: {
-          from: 'relation_details.character_id',
-          to: 'characters.id'
+          from: 'book_relation_details.character_id',
+          to: 'book_characters.uuid'
         }
       },
       character_relation: {
         relation: BaseModel.HasOneRelation,
         modelClass: path.join(__dirname, 'Character'),
         join: {
-          from: 'relation_details.character_relation_id',
-          to: 'characters.id'
+          from: 'book_relation_details.character_relation_id',
+          to: 'book_characters.uuid'
         }
       },
       relation: {
         relation: BaseModel.HasOneRelation,
         modelClass: path.join(__dirname, 'Relation'),
         join: {
-          from: 'relation_details.relation_id',
-          to: 'relations.id'
+          from: 'book_relation_details.relation_id',
+          to: 'book_relations.uuid'
         }
       }
     }

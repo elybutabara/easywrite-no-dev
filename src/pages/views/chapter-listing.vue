@@ -1,7 +1,7 @@
 <template>
 <div class="page-chapter-listing">
    <div>
-        <button class="btn-new-record"><i class="las la-plus"></i></button>
+        <button @click="createChapter" class="btn-new-record"><i class="las la-plus"></i></button>
         <div class="row">
            <div class="col-12 col-md-7">
                 <div class="page-title">
@@ -22,14 +22,14 @@
         </div>
         <hr/>
        <div class="row">
-            <div class="ccol-12 col-sm-6 col-lg-3  fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
+            <div class="ccol-12 col-sm-6 col-lg-4  fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
                 <div class="item">
                     <div class="header"><i class="las la-bookmark"></i> {{ chapter.title }}</div>
                     <div class="content" >
                         <strong> {{ chapter.chapter_guidance }}</strong>
                         <p class="description" >{{ chapter.short_description }}</p>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
+                        <button @click="viewChapter(chapter)" type="button">VIEW</button>
+                        <button @click="editChapter(chapter)" type="button">EDIT</button>
                         <button type="button">DELETE</button>
                     </div>
                 </div>
@@ -68,11 +68,28 @@ export default {
         .then(response => {
           scope.chapters = response.data
         })
+    },
+    createChapter: function () {
+      var scope = this
+      scope.$parent.changeComponent('chapter-form', scope.properties)
+    },
+    editChapter: function (chapter) {
+      var scope = this
+      scope.$parent.changeComponent('chapter-form', { chapter: chapter })
+    },
+    viewChapter: function (chapter) {
+      var scope = this
+      scope.axios
+        .get('http://localhost:3000/chapters/' + chapter.uuid + '/scenes')
+        .then(response => {
+          chapter.scenes = response.data
+          scope.$parent.changeComponent('chapter-details', chapter)
+        })
     }
   },
   mounted () {
     var scope = this
-    scope.getChapters(scope.properties.id)
+    scope.getChapters(scope.properties.uuid)
   }
 }
 </script>

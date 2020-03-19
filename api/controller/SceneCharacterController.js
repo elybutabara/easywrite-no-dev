@@ -15,6 +15,12 @@ class SceneCharacterController {
 
       if (!data || data === 0) {
         data = await SceneCharacter.query().insert(rows[i])
+
+        // update uuid to match web
+        data = await SceneCharacter.query()
+          .patch({ 'uuid': rows[i].uuid })
+          .where('uuid', '=', data.uuid)
+
         inserted++
       } else {
         updated++

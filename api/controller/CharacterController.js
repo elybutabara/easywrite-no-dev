@@ -7,9 +7,34 @@ class CharacterController {
   static getAllByBookId (bookId) {
     var characters = Character.query()
       .where('book_id', bookId)
-      .whereNull('deleted_at')
+      .withGraphJoined('book')
+      .whereNull('book_characters.deleted_at')
 
     return characters
+  }
+
+  static getByCharacterId (characterId) {
+    var character = Character.query()
+      .withGraphJoined('book')
+      .findById(characterId)
+
+    return character
+  }
+
+  static async save (data) {
+    const saveCharacters = await Character.query().upsertGraph([data]).first()
+
+    const character = Character.query()
+      .withGraphJoined('book')
+      .findById(saveCharacters.uuid)
+
+    return character
+  }
+
+  static async delete (characterId) {
+    const character = await Character.query().findById(characterId).softDelete()
+
+    return character
   }
 
   static async sync (rows) {
@@ -23,6 +48,12 @@ class CharacterController {
 
       if (!data || data === 0) {
         data = await Character.query().insert(rows[i])
+
+        // update uuid to match web
+        data = await Character.query()
+          .patch({ 'uuid': rows[i].uuid })
+          .where('uuid', '=', data.uuid)
+
         inserted++
       } else {
         updated++

@@ -4,10 +4,10 @@ const path = require('path')
 const express = require('express')
 const router = express.Router()
 
-const { GenreCollectionController } = require(path.join(__dirname, '..', 'controllers'))
+const { BookGenreCollectionController } = require(path.join(__dirname, '..', 'controllers'))
 
 router.post('/sync', async function (req, res) {
-  const row = await GenreCollectionController.sync(req.body)
+  const row = await BookGenreCollectionController.sync(req.body)
 
   res
     .status(200)

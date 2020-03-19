@@ -32,6 +32,13 @@ router.get('/:bookId/items', async function (req, res) {
 router.get('/:bookId/characters', async function (req, res) {
   const characters = await CharacterController.getAllByBookId(req.params.bookId)
 
+  characters.forEach(function (item, index) {
+    characters[index].picture_src = ''
+    if (item.picture) {
+      characters[index].picture_src = 'file://' + path.resolve(__dirname, '../..', 'resources', 'images', 'characters', item.picture)
+    }
+  })
+
   res
     .status(200)
     .json(characters)

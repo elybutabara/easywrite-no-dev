@@ -48,6 +48,12 @@ class LocationController {
 
       if (!data || data === 0) {
         data = await Location.query().insert(rows[i])
+
+        // update uuid to match web
+        data = await Location.query()
+          .patch({ 'uuid': rows[i].uuid })
+          .where('uuid', '=', data.uuid)
+
         inserted++
       } else {
         updated++
