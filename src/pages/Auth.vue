@@ -3,6 +3,7 @@
     <div class="login-form text-center">
       <form v-on:submit.prevent="authenticate()">
         <h1 class="no-margin">Easy Write</h1>
+        <h6 class="version no-margin" style="color: white;font-size: small" v-html="'Version ' + version"></h6>
         <p><small>Welcome Back! Please login to continue.</small></p><br>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
@@ -62,7 +63,8 @@ export default {
     return {
       username: 'Support',
       password: '123QazQaz',
-      window: remote.getCurrentWindow()
+      window: remote.getCurrentWindow(),
+      version: remote.app.getVersion()
     }
   },
   methods: {
@@ -186,5 +188,14 @@ export default {
 }
 .login-form button {
   width: 154px;
+}
+
+.version{
+  color: white;
+  font-size: x-small;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  padding: 5px;
 }
 </style>

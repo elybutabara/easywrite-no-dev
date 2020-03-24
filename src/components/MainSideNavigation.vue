@@ -104,6 +104,8 @@
 const electron = window.require('electron')
 const log = window.require('electron-log')
 const remote = electron.remote
+const { ipcRenderer } = electron
+
 // In renderer process (web page).
 export default {
   name: 'MainSideNavigation',
@@ -247,6 +249,7 @@ export default {
         confirmButtonText: 'Yes, delete it!'
       }).then((result) => {
         if (result.value) {
+          log.info('Quit and install update triggered')
           ipcRenderer.send('install-update')
         }
       })
