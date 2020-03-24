@@ -254,7 +254,6 @@ export default {
       scope.$set(scope.data, 'id', scope.properties.character.id)
       scope.$set(scope.data, 'uuid', scope.properties.character.uuid)
       scope.$set(scope.data, 'book_id', scope.properties.character.book_id)
-      console.log(scope.properties.character)
     }
   },
   mounted () {

@@ -28,7 +28,7 @@
                                     <div @click="getSceneByChapter(chapter)" class="label"><span><img  src="@/assets/img/icons/chapter.svg"> {{ chapter.title }}</span></div>
                                     <ul v-if="chapter.is_open  == true " class="level-4">
                                         <li v-bind:key="scene.id" v-for="scene in chapter.scenes">
-                                            <div @click="changeComponent('scene-details',scene.id)" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title }}</span></div>
+                                            <div @click="changeComponent('scene-details', { scene: scene })" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title }}</span></div>
                                         </li>
                                     </ul>
                                 </li>

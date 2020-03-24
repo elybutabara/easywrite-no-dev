@@ -121,7 +121,6 @@ export default {
         author_id: scope.$store.getters.getAuthorID,
         relation: relation
       }
-
       scope.axios
         .post('http://localhost:3000/relations', newRelation)
         .then(response => {
@@ -138,7 +137,6 @@ export default {
             })
           }
         })
-      console.log(newRelation)
     },
     deleteRelationDetail (item, index) {
       var scope = this

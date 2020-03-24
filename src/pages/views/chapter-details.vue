@@ -26,17 +26,20 @@
             <div v-html="properties.chapter_version[properties.chapter_version.length - 1].content" class="description" ></div>
         </div>
         <div class="es-tab-content" v-if="tab.active == 'scenes'">
+          <div class="text-right">
+            <b-button @click="createScene()" variant="dark">Add Scene</b-button>
+          </div>
             <div class="chapter-scenes-list">
               <div class="row">
-                <div class="col-12 col-lg-4 col-md-6 col-sm-6 fadeIn animated" v-for="scene in properties.scenes" v-bind:key="scene.id">
+                <div class="col-12 col-lg-4 col-md-6 col-sm-6 fadeIn animated" v-for="scene in chapter.scenes" v-bind:key="scene.id">
                   <div class="item" >
                     <div class="header"><i class="las la-bookmark"></i> {{ scene.title }}</div>
                     <div class="content" >
                       <strong>{{ scene.short_description }}</strong>
                       <div v-html="scene.notes" class="description" >{{ scene.notes }}</div>
                       <button type="button">VIEW</button>
-                      <button type="button">EDIT</button>
-                      <button type="button">DELETE</button>
+                      <button @click="editScene(scene)" type="button">EDIT</button>
+                      <button @click="deleteScene(scene.uuid)" type="button">DELETE</button>
                     </div>
                   </div>
                 </div>
@@ -126,6 +129,10 @@ export default {
     TinyMCE
   },
   methods: {
+    createScene: function () {
+      var scope = this
+      scope.$parent.changeComponent('scene-form', { chapter: scope.chapter })
+    },
     newVersion: function () {
       var scope = this
       this.busy = true
@@ -154,15 +161,15 @@ export default {
         .then(response => {
           if (response.data) {
             scope.getAllChapterVersions(scope.properties)
+            this.busy = false
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: 'Chapter successfuly saved',
+              title: 'Chapter version successfuly saved',
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
               scope.changeTab('versions')
-              this.busy = false
             })
           }
         })
@@ -201,6 +208,48 @@ export default {
           scope.chapter_version.change_description = ''
           scope.chapter_version.content = scope.chapter.chapter_version[response.data.length - 1].content
         })
+    },
+    getSceneByChapter: function (chapterId) {
+      var scope = this
+      scope.axios
+        .get('http://localhost:3000/chapters/' + chapterId + '/scenes')
+        .then(response => {
+          scope.chapter.scenes = response.data
+        })
+    },
+    editScene: function (scene) {
+      var scope = this
+      scope.$parent.changeComponent('scene-form', { scene: scene })
+    },
+    deleteScene: function (sceneId) {
+      var scope = this
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/scenes/' + sceneId)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Scene successfuly deleted',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.getSceneByChapter(scope.properties.uuid)
+                })
+              }
+            })
+        }
+      })
     }
   },
   beforeUpdate () {

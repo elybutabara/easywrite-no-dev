@@ -30,7 +30,7 @@
                         <p class="description" >{{ chapter.short_description }}</p>
                         <button @click="viewChapter(chapter)" type="button">VIEW</button>
                         <button @click="editChapter(chapter)" type="button">EDIT</button>
-                        <button type="button">DELETE</button>
+                        <button @click="deleteChapter(chapter.uuid)" type="button">DELETE</button>
                     </div>
                 </div>
             </div>
@@ -85,6 +85,37 @@ export default {
           chapter.scenes = response.data
           scope.$parent.changeComponent('chapter-details', chapter)
         })
+    },
+    deleteChapter: function (chapterId) {
+      var scope = this
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/chapters/' + chapterId)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Chapter successfuly deleted',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.getChapters(scope.properties.uuid)
+                  scope.$parent.changeComponent('chapter-listing', scope.properties)
+                })
+              }
+            })
+        }
+      })
     }
   },
   mounted () {

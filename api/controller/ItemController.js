@@ -32,7 +32,7 @@ class ItemController {
   }
 
   static async delete (itemId) {
-    const item = await Item.query().findById(itemId).softDelete()
+    const item = await Item.query().softDeleteById(itemId)
 
     return item
   }

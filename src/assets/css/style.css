@@ -57,19 +57,22 @@ body { margin:0px !important; background:#fafafa; font-family:'Crimson Roman'; }
   width: 30% !important;
 }
 
-.version-container ul[role="tablist"] {
-  height: 500px!important;
-  overflow-y: auto;
-  flex-direction: row!important;
+.version-container .wrap {
+  overflow: hidden;
+  flex-direction: row;
 }
 
-.version-container ul[role="tablist"] li {
-  width: 100%;
+.version-container .nav-pills {
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  max-height: 500px;
+  overflow: auto;
 }
 
 .version-container .tab-content {
   height: 500px!important;
   overflow-y: auto;
+  width: 1000px;
 }
 
 .version-container .tab-content .btn-edit-version {

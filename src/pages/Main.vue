@@ -32,6 +32,7 @@
             <item-form v-if="active.component == 'item-form'" :properties="active.data"></item-form>
             <chapter-form v-if="active.component == 'chapter-form'" :properties="active.data"></chapter-form>
             <character-form v-if="active.component == 'character-form'" :properties="active.data"></character-form>
+            <scene-form v-if="active.component == 'scene-form'" :properties="active.data"></scene-form>
         </div>
     </div>
 </div>
@@ -60,6 +61,7 @@ import LocationForm from '@/pages/views/location-form'
 import ItemForm from '@/pages/views/item-form'
 import ChapterForm from '@/pages/views/chapter-form'
 import CharacterForm from '@/pages/views/character-form'
+import SceneForm from '@/pages/views/scene-form'
 
 const electron = window.require('electron')
 
@@ -106,7 +108,8 @@ export default {
     'location-form': LocationForm,
     'item-form': ItemForm,
     'chapter-form': ChapterForm,
-    'character-form': CharacterForm
+    'character-form': CharacterForm,
+    'scene-form': SceneForm
   },
   methods: {
     changeComponent: function (component, data) {

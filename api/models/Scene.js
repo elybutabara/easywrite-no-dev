@@ -10,42 +10,40 @@ class Scene extends BaseModel {
     return 'book_scenes'
   }
 
-  static get idColumn () { return ['uuid'] }
-
-    static relationMappings = {
-      scene_version: {
-        relation: BaseModel.HasManyRelation,
-        modelClass: path.join(__dirname, 'SceneVersion'),
-        join: {
-          from: 'book_scenes.uuid',
-          to: 'scene_versions.scene_id'
-        }
-      },
-      scene_character: {
-        relation: BaseModel.HasManyRelation,
-        modelClass: path.join(__dirname, 'SceneCharacter'),
-        join: {
-          from: 'book_scenes.uuid',
-          to: 'scene_characters.scene_id'
-        }
-      },
-      scene_location: {
-        relation: BaseModel.HasManyRelation,
-        modelClass: path.join(__dirname, 'SceneLocation'),
-        join: {
-          from: 'scenes.id',
-          to: 'scene_locations.scene_id'
-        }
-      },
-      scene_item: {
-        relation: BaseModel.HasManyRelation,
-        modelClass: path.join(__dirname, 'SceneItem'),
-        join: {
-          from: 'scenes.id',
-          to: 'scene_items.scene_id'
-        }
+  static relationMappings = {
+    scene_version: {
+      relation: BaseModel.HasManyRelation,
+      modelClass: path.join(__dirname, 'SceneVersion'),
+      join: {
+        from: 'book_scenes.uuid',
+        to: 'book_scene_versions.book_scene_id'
+      }
+    },
+    scene_character: {
+      relation: BaseModel.HasManyRelation,
+      modelClass: path.join(__dirname, 'SceneCharacter'),
+      join: {
+        from: 'book_scenes.uuid',
+        to: 'book_scene_characters.book_scene_id'
+      }
+    },
+    scene_location: {
+      relation: BaseModel.HasManyRelation,
+      modelClass: path.join(__dirname, 'SceneLocation'),
+      join: {
+        from: 'book_scenes.uuid',
+        to: 'book_scene_locations.book_scene_id'
+      }
+    },
+    scene_item: {
+      relation: BaseModel.HasManyRelation,
+      modelClass: path.join(__dirname, 'SceneItem'),
+      join: {
+        from: 'book_scenes.uuid',
+        to: 'book_scene_items.book_scene_id'
       }
     }
+  }
 }
 
 module.exports = {

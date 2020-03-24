@@ -32,7 +32,7 @@ class LocationController {
   }
 
   static async delete (locationId) {
-    const location = await Location.query().findById(locationId).softDelete()
+    const location = await Location.query().softDeleteById(locationId)
 
     return location
   }

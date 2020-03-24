@@ -1,7 +1,7 @@
 <template>
 <div class="page-item-form">
   <div class="page-title">
-    <h3>{{ properties.item.book.title }} New Item</h3>
+    <h3>{{ page_title }}</h3>
   </div>
   <div class="content" >
 
@@ -78,7 +78,8 @@ export default {
         tags: '',
         description: ''
       },
-      file: ''
+      file: '',
+      page_title: ''
     }
   },
   components: {
@@ -200,15 +201,17 @@ export default {
     var scope = this
 
     if (scope.data.id) {
-      window.$('.page-item-form .page-title h3').html('Update ' + scope.properties.item.itemname)
+      scope.page_title = 'Update ' + scope.properties.item.itemname
       scope.loadItem()
+    } else {
+      scope.page_title = scope.properties.title + ' New Item'
     }
   }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .page-book-form { padding:20px; }
+  .page-item-form { padding:20px; }
 
   .page-title { font-family: 'Crimson Roman Bold'; position:relative; padding-top:20px; }
   .page-title h3 { font-size:35px; }

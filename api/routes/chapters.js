@@ -50,6 +50,14 @@ router.get('/:chapterId', async function (req, res) {
     .json(chapter)
 })
 
+router.delete('/:chapterId', async function (req, res) {
+  const chapter = await ChapterController.delete(req.params.chapterId)
+
+  res
+    .status(200)
+    .json(chapter)
+})
+
 router.post('/sync', async function (req, res) {
   const row = await ChapterController.sync(req.body)
 

@@ -10,26 +10,24 @@ class SceneCharacter extends BaseModel {
     return 'book_scene_characters'
   }
 
-  static get idColumn () { return ['uuid'] }
-
-    static relationMappings = {
-      scene: {
-        relation: BaseModel.BelongsToOneRelation,
-        modelClass: path.join(__dirname, 'BookScene'),
-        join: {
-          from: 'book_scene_characters.book_scene_id',
-          to: 'book_scenes.uuid'
-        }
-      },
-      character: {
-        relation: BaseModel.BelongsToOneRelation,
-        modelClass: path.join(__dirname, 'BookCharacter'),
-        join: {
-          from: 'book_scene_characters.character_id',
-          to: 'book_characters.uuid'
-        }
+  static relationMappings = {
+    scene: {
+      relation: BaseModel.BelongsToOneRelation,
+      modelClass: path.join(__dirname, 'Scene'),
+      join: {
+        from: 'book_scene_characters.book_scene_id',
+        to: 'book_scenes.uuid'
+      }
+    },
+    character: {
+      relation: BaseModel.BelongsToOneRelation,
+      modelClass: path.join(__dirname, 'Character'),
+      join: {
+        from: 'book_scene_characters.book_character_id',
+        to: 'book_characters.uuid'
       }
     }
+  }
 }
 
 module.exports = {

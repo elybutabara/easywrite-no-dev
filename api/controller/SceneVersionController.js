@@ -4,6 +4,21 @@ const path = require('path')
 const { SceneVersion } = require(path.join(__dirname, '..', 'models'))
 
 class SceneVersionController {
+  static getAllSceneVersionsBySceneId (sceneId) {
+    var version = SceneVersion.query()
+      .where('book_scene_id', sceneId)
+      .whereNull('deleted_at')
+      .orderBy('id', 'asc')
+
+    return version
+  }
+
+  static async save (data) {
+    const sceneVersion = await SceneVersion.query().upsertGraphAndFetch([data]).first()
+
+    return sceneVersion
+  }
+
   static async sync (rows) {
     var updated = 0
     var inserted = 0

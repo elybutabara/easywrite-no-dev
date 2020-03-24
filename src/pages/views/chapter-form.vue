@@ -29,20 +29,6 @@
                                      class="form-control"
           />
         </div>
-<!--        <b-tabs class="form-group" content-class="mt-3">-->
-<!--          <b-tab title="Description" active>-->
-<!--            <tiny-editor :initValue="data.chapter_version.change_description"-->
-<!--                         v-on:getEditorContent="setDescription"-->
-<!--                         class="form-control"-->
-<!--            />-->
-<!--          </b-tab>-->
-<!--          <b-tab title="Content">-->
-<!--            <tiny-editor :initValue="data.chapter_version.content"-->
-<!--                         v-on:getEditorContent="setContent"-->
-<!--                         class="form-control"-->
-<!--            />-->
-<!--          </b-tab>-->
-<!--        </b-tabs>-->
       </div>
     </div>
     <div class="row">

@@ -46,6 +46,12 @@ class ChapterController {
     return chapter
   }
 
+  static async delete (chapterId) {
+    const chapter = await Chapter.query().softDeleteById(chapterId)
+
+    return chapter
+  }
+
   static async sync (rows) {
     var updated = 0
     var inserted = 0

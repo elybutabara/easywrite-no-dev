@@ -32,7 +32,7 @@ class CharacterController {
   }
 
   static async delete (characterId) {
-    const character = await Character.query().findById(characterId).softDelete()
+    const character = await Character.query().softDeleteById(characterId)
 
     return character
   }
