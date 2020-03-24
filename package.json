@@ -1,7 +1,7 @@
 {
   "name": "EasyWriteApp",
   "main": "starter.js",
-  "version": "0.9.0",
+  "version": "0.9.2",
   "description": "Easy Write Application , The best app for writer!",
   "author": "EasyWriteDeveloper",
   "private": true,
@@ -17,7 +17,9 @@
     "package-win": "npm run build && electron-builder -w",
     "package-mac": "npm run build && electron-builder -m",
     "migration-win": "cross-env NODE_ENV=development knex migrate:make create_test-%npm_package_version% --knexfile=./api/knexfile.js",
-    "migration-mac-linux": "cross-env NODE_ENV=development knex migrate:make [ACTION_NAME]-$npm_package_name --knexfile=./api/knexfile.js"
+    "migration-mac-linux": "cross-env NODE_ENV=development knex migrate:make [ACTION_NAME]-$npm_package_name --knexfile=./api/knexfile.js",
+    "publisher": "cross-env IS_PUBLISH=onTagOrDraft npm run build",
+    "make-cert": "electron-builder create-self-signed-cert -p easywrite-v2"
   },
   "dependencies": {
     "axios": "^0.19.2",
