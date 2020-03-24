@@ -93,17 +93,24 @@
                     </ul>
                 </li>
             </ul>
+          <div class="updateVersion" v-if="updateInfo.hasUpdate == true">
+            <span @click="updateVersion()" href='#' ><i class="las la-code-branch icon" v-html="' Upgrade to version: ' + updateInfo.version"></i></span>
+          </div>
         </div>
     </div>
 </template>
 
 <script>
+const electron = window.require('electron')
+const log = window.require('electron-log')
+const remote = electron.remote
 // In renderer process (web page).
 export default {
   name: 'MainSideNavigation',
   data () {
     return {
-      books: []
+      books: [],
+      updateInfo: remote.getGlobal('updateInfo')
     }
   },
   methods: {
@@ -228,6 +235,21 @@ export default {
         chapter.scenes.is_open = false
         scope.changeComponent('chapter-details', chapter)
       }
+    },
+    updateVersion: function () {
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          ipcRenderer.send('install-update')
+        }
+      })
     }
   },
   mounted () {
@@ -296,4 +318,8 @@ ul { margin-left:0px; list-style:none;  }
 
 .new-book { font-family: 'Crimson Roman'; color:#abc4d7; font-size: 14px; cursor: pointer }
 .new-book:hover  { color:#fff; }
+
+.updateVersion{ width:320px;background: #324553;position: fixed;bottom: 0;left: 0;text-align: center;margin-left: -5px;}
+.updateVersion span{ font-family: 'Crimson Roman'; color:#abc4d7; font-size: 14px; cursor: pointer }
+.updateVersion span:hover  { color:#fff; }
 </style>

@@ -1,7 +1,7 @@
 {
   "name": "EasyWriteApp",
   "main": "starter.js",
-  "version": "1.0.0",
+  "version": "0.9.0",
   "description": "Easy Write Application , The best app for writer!",
   "author": "EasyWriteDeveloper",
   "private": true,
@@ -27,6 +27,7 @@
     "cross-env": "^7.0.0",
     "diff-match-patch": "^1.0.4",
     "electron-log": "^4.0.7",
+    "electron-updater": "^4.2.5",
     "express": "latest",
     "fs-extra": "^8.1.0",
     "fs-jetpack": "^2.2.3",

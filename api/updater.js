@@ -1,0 +1,74 @@
+// Modules
+// eslint-disable-next-line no-unused-vars
+const {autoUpdater} = require('electron-updater')
+
+// Enable logging
+autoUpdater.logger = require('electron-log')
+autoUpdater.logger.transports.file.level = 'info'
+
+autoUpdater.autoInstallOnAppQuit = false;
+
+
+exports.check = () => {
+  global.updateInfo = {
+    hasUpdate: false,
+    version : null
+  }
+//   if(process.env.NODE_ENV !== 'production') return false
+
+  process.env.GH_TOKEN = 'd3c4f38a373edb26e4bf97cd2992517f9ebb96ea'
+
+  // return false;
+  autoUpdater.checkForUpdates().then(()=>{}).catch(err => autoUpdater.logger.error(err))
+
+  /*
+  autoUpdater.checkForUpdatesAndNotify().then(function (data) {
+    swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      console.log(result)
+    })
+    dialog.showMessageBox({
+      type: 'info',
+      title: 'Update Available',
+      message: 'New version. Do you want to update now?',
+      buttons: ['Update', 'No']
+    }).then(function (buttonIndex) {
+      console.log(buttonIndex.response)
+      if (buttonIndex.response !== 0) {
+        return false
+      }else{
+        console.log(data)
+        autoUpdater.downloadUpdate().catch(err => log.info(err))
+
+      }
+    })
+  }).catch(err => log.info(err))
+  */
+
+  let downloadProgress = 0
+  autoUpdater.on('download-progress', function (d) {
+    downloadProgress = d.percent
+    autoUpdater.logger.info(downloadProgress)
+  })
+
+  autoUpdater.on('update-downloaded',function (data) {
+    autoUpdater.logger.info('Done download update');
+    console.log('has update')
+    global.updateInfo = {
+      hasUpdate: true,
+      version : data.version
+    }
+
+    // console.log(global)
+    // remote.getGlobal('updateInfo').hasUpdate = true;
+  })
+
+  return true
+}

@@ -3,6 +3,7 @@ const { app, BrowserWindow, Menu, ipcMain } = require('electron')
 const path = require('path')
 const fs = require('fs')
 const log = require('electron-log')
+const appUpdate = require('./api/updater')
 
 if(fs.existsSync(path.join(process.resourcesPath || '','prod.env'))){
   process.env.NODE_ENV = 'production'
@@ -108,9 +109,10 @@ function createLoginWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', function () {
+app.on('ready', function appReady() {
   checkForVersionUpdates()
   createLoginWindow()
+  appUpdate.check()
   // createWindow()
 })
 
@@ -212,3 +214,8 @@ function checkForVersionUpdates(){
 
 
 }
+
+ipcMain.on('install-update', function (e, cat) {
+  const {autoUpdater} = require('electron-updater')
+  autoUpdater.quitAndInstall()
+})
