@@ -1,0 +1,6 @@
+owner: rancorfloydz
+repo: es-v2-updater
+provider: github
+private: true
+token: d3c4f38a373edb26e4bf97cd2992517f9ebb96ea
+updaterCacheDirName: easywriteapp-updater
