@@ -4,7 +4,7 @@
     <syncer v-if="syncer.is_open"></syncer>
     <div style="text-align:left; padding-left:320px;">
         <div style="background:#dbdee3; text-align:right; padding:5px 10px;">
-            <button @click="toggleSyncer()" style="background:#293742; padding:0px 10px; line-height:30px; height:30px; border:none; font-size:14px; color:#fff;">OPEN SYNCER 0.9.2</button>
+            <button @click="toggleSyncer()" style="background:#293742; padding:0px 10px; line-height:30px; height:30px; border:none; font-size:14px; color:#fff;">OPEN SYNCER</button>
         </div>
         <div style="display:none; " class="tab-nav">
             <div class="tab-nav-item" v-bind:class="{ 'active': tab.active }" v-for="(tab,index) in tabs" v-bind:key="index">

@@ -36,7 +36,9 @@ let buildOptions = {
     "!**config/*",
     "!**icons/*",
     "!**test/*",
+    "!**private/*",
     "!**static/*",
+    "!**output/*",
     "!*.db",
     "!**db/*"
   ],
@@ -59,7 +61,7 @@ let buildOptions = {
     "publish" : [{
       "provider": "github",
       "private": true,
-      "token": "d3c4f38a373edb26e4bf97cd2992517f9ebb96ea"
+      "token": "b4295f46f0726d12b2e3373f131a6adb9c356d3d"
     }],
     "certificateFile" : "private/easywrite-v2.pfx",
     "verifyUpdateCodeSignature" : false,
