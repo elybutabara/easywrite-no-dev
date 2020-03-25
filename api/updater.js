@@ -16,7 +16,7 @@ exports.check = () => {
   }
 //   if(process.env.NODE_ENV !== 'production') return false
 
-  process.env.GH_TOKEN = 'd3c4f38a373edb26e4bf97cd2992517f9ebb96ea'
+  process.env.GH_TOKEN = 'b4295f46f0726d12b2e3373f131a6adb9c356d3d'
 
   // return false;
   autoUpdater.checkForUpdates().then(()=>{}).catch(err => autoUpdater.logger.error(err))
