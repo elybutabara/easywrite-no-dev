@@ -101,6 +101,7 @@ export default {
           delete response.data.author.id
 
           scope.$set(response.data.user, 'password', scope.password)
+          scope.$set(response.data.user, 'token', response.data.success.token)
           scope.$set(response.data.user, 'author', response.data.author)
           scope.saveUser(response.data.user)
         })
@@ -115,7 +116,6 @@ export default {
     },
     saveUser: function (data) {
       var scope = this
-      console.log(data)
       scope.axios
         .post('http://localhost:3000/users', data)
         .then(response => {

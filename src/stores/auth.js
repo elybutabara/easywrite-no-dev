@@ -17,6 +17,9 @@ export default {
     },
     getUserID: state => {
       return state.user.data.uuid
+    },
+    getUserToken: state => {
+      return state.user.data.token
     }
   },
   mutations: {
