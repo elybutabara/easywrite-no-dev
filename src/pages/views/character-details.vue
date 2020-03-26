@@ -1,78 +1,83 @@
 <template>
 <div class="page-character-details">
-    <div class="header">
-      <div class="page-title">
-        <button @click="toggleFilter()" class="btn-toggle-filter"><i class="las la-filter"></i></button>
-        <h3>{{ properties.character.fullname }}</h3>
-        <p>{{ properties.short_description }}</p>
-      </div>
-      <b-button @click="editCharacter(properties.character)" variant="dark">Edit</b-button>
-      <b-button @click="deleteCharacter(properties.character.uuid)" variant="dark">Delete</b-button>
+
+    <div class="es-panel">
+        <div class="es-panel-content">
+            <div class="image-container"><img :src="properties.character.picture_src" /></div>
+            <h2 class="title">
+                {{ properties.character.fullname || 'No Name' }}
+                <span v-if="properties.character.shortname != ''  && properties.character.shortname !== null">
+                    ({{ properties.character.shortname }})
+                </span>
+            </h2>
+            <p class="aka">{{ properties.character.nickname || 'Not Set' }}</p>
+
+            <div class="es-panel-tab" style="">
+                <a @click="changeTab('description')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'description'}">Description</a>
+                <a @click="changeTab('bio')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'bio'}">Bio</a>
+                <a @click="changeTab('goals')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'goals'}">Goals</a>
+                <a @click="changeTab('relations')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'relations'}">Relations</a>
+            </div>
+            <div class="es-panel-tab-content">
+                <div v-if="tab.active == 'description'">
+                    <div v-html="properties.character.description" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';"></div>
+                </div>
+                <div v-if="tab.active == 'bio'" v-bind:class="{ 'active' : tab.active == 'bio'}">
+                    <div v-html="properties.character.bio" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';"></div>
+                </div>
+                <div v-if="tab.active == 'goals'" v-bind:class="{ 'active' : tab.active == 'goals'}">
+                    <div v-html="properties.character.goals" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';"></div>
+                </div>
+                <div v-if="tab.active == 'relations'" v-bind:class="{ 'active' : tab.active == 'relations'}">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="grid-character-relation">
+                                <div class="avatar"></div>
+                                <div class="name">&nbsp;</div>
+                                <div class="relation">&nbsp;</div>
+                                <div @click="toggleRelationForm()" style="border:2px dashed #c0c6d1; color:#c0c6d1; cursor:pointer; position:absolute; top:0px; left:0px; width:100%; height:100%; background:#f5f8fa; font-size:90px; padding:5px 10px;">
+                                    <i class="las la-user-alt"></i>
+                                    <p style="margin-top:-30px; font-size:14px; font-weight:600;">CLICK TO ADD RELATION</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-for="(item, index) in relation_detail" v-bind:key="item.id" class="col-4">
+                            <div class="grid-character-relation">
+                                <button class="btn-delete" @click="deleteRelationDetail(item, index)"><i class="las la-trash-alt"></i></button>
+                                <div class="avatar"></div>
+                                <div class="name">{{ item.character_relation.fullname }}</div>
+                                <div class="relation">({{ item.relation.relation }})</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="es-panel-footer">
+            <div class="cta" @click="CHANGE_COMPONENT('character-form', {  book_id: properties.uuid, character: properties.character }, 'Edit - ' + properties.character.fullname, true)">EDIT</div>
+            <div class="cta" @click="DELETE_FROM_LIST('characters', properties.character)">DELETE</div>
+        </div>
     </div>
-    <hr/>
-    <div class="image-container"><img :src="properties.character.picture_src" /></div>
-    <br>
-    <div class="es-tab">
-      <b-tabs content-class="mt-3" active-nav-item-class="bg-dark text-white">
-        <b-tab title="Description" active>
-          <div v-html="properties.character.description" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';"></div>
-        </b-tab>
-        <b-tab title="Bio">
-          <div v-html="properties.character.bio" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';"></div>
-        </b-tab>
-        <b-tab title="Goals">
-          <div v-html="properties.character.goals" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';"></div>
-        </b-tab>
-        <b-tab title="Relation">
-          <div class="text-right">
-            <b-button v-show='btn_relation_toggle' @click='btn_relation_toggle = !btn_relation_toggle' v-b-toggle.collapse-1 variant="dark" class="margin-bottom-1rem">Add Relation</b-button>
-          </div>
-          <b-collapse id="collapse-1" class="mt-2 margin-bottom-1rem">
-            <b-card>
-              <b-row class="margin-bottom-1rem">
-                <b-col>
-                  <label class="typo__label">Relation: </label>
-                  <multiselect v-model="selected_relation" :options="relations" placeholder="Select Relation" label="relation" track-by="relation" :taggable="true" @tag="addRelation" tag-placeholder="Press enter to add as new relation" deselectLabel="Press enter to deselect"></multiselect>
-                </b-col>
-                <b-col>
-                  <label class="typo__label">Character: </label>
-                  <multiselect v-model="selected_character" :options="characters" placeholder="Select Character" label="fullname" track-by="fullname" deselectLabel="Press enter to deselect"></multiselect>
-                </b-col>
-              </b-row>
-              <b-row class="text-right">
-                <b-col>
-                  <b-button ref="btn_cancel_relation" v-b-toggle.collapse-1 variant="dark" @click='btn_relation_toggle = !btn_relation_toggle'>Cancel</b-button>
-                  <b-button @click="saveRelationDetail()" variant="dark">Save</b-button>
-                </b-col>
-              </b-row>
-            </b-card>
-          </b-collapse>
-          <b-table
-            hover caption-top responsive borderless
-            stacked="md"
-            :current-page="currentPage"
-            :per-page="perPage"
-            :items="relation_detail"
-            :fields="fields"
-            thead-class="bg-dark text-white"
-            @filtered="onFiltered"
-          >
-            <!-- Example scoped slot for action state illustrative purposes -->
-            <template v-slot:cell(actions)="row">
-              <b-button size="sm" @click="deleteRelationDetail(row.item, row.index)" class="mr-1" variant="outline-dark">
-                <i class="fa fa-trash"></i>
-              </b-button>
-            </template>
-            <template v-if="totalRows" small v-slot:bottom-row>
-              <b-td colspan="6" variant="secondary" class="text-right">
-                Total Rows: <b>{{totalRows}}</b>
-              </b-td>
-            </template>
-          </b-table>
-          <b-pagination v-if="totalRows" v-model="currentPage" :per-page="perPage" :total-rows="totalRows" align="center"></b-pagination>
-        </b-tab>
-      </b-tabs>
+
+    <div class="es-dialog-overlay" v-bind:class="{'open' : relation_form.is_open }">
+        <div class="es-dialog-content">
+            <div style="margin-bottom:15px;">
+                <label class="typo__label">Relation: </label>
+                <multiselect v-model="selected_relation" :options="relations" placeholder="Select Relation" label="relation" track-by="relation" :taggable="true" @tag="addRelation" tag-placeholder="Press enter to add as new relation" deselectLabel="Press enter to deselect"></multiselect>
+            </div>
+
+            <div style="margin-bottom:15px;">
+                <label class="typo__label">Character: </label>
+                <multiselect v-model="selected_character" :options="characters" placeholder="Select Character" label="fullname" track-by="fullname" deselectLabel="Press enter to deselect"></multiselect>
+            </div>
+
+             <div style="text-align:right;">
+                <b-button @click="saveRelationDetail()" variant="dark">Save</b-button>
+                <b-button @click="toggleRelationForm()" ref="btn_cancel_relation" v-b-toggle.collapse-1 variant="dark">Cancel</b-button>
+            </div>
+        </div>
     </div>
+
 </div>
 </template>
 
@@ -103,13 +108,23 @@ export default {
       totalRows: 1,
       currentPage: 1,
       perPage: 10,
-      btn_relation_toggle: true
+      btn_relation_toggle: true,
+      tab: {
+        active: 'description'
+      },
+      relation_form: {
+        is_open: false
+      }
     }
   },
   components: {
     Multiselect
   },
   methods: {
+    changeTab (tab) {
+      var scope = this
+      scope.tab.active = tab
+    },
     onFiltered (filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length
@@ -200,7 +215,7 @@ export default {
             // Reset Relation Form
             scope.selected_relation = null
             scope.selected_character = null
-            scope.$refs.btn_cancel_relation.click()
+            scope.toggleRelationForm()
 
             window.swal.fire({
               position: 'center',
@@ -269,6 +284,10 @@ export default {
           scope.relation_detail = response.data
           scope.totalRows = scope.relation_detail.length
         })
+    },
+    toggleRelationForm () {
+      var scope = this
+      scope.relation_form.is_open = !scope.relation_form.is_open
     }
   },
   updated () {
@@ -285,10 +304,32 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .page-character-details { padding:20px; }
-
   .image-container { text-align: center; }
-  .image-container img { width: 30% }
+  .image-container img { width:100%; max-width:250px; }
 
-  .btn-toggle-filter { display:none; float:right;  position:absolute; top:0px; right:0px; background:#fff; border:1px solid #9fb1c2; padding-top:5px; padding-bottom:0px; }
+  .es-panel { background:#fff; margin:0px auto; margin-top:70px; max-width:700px; border:1px solid #e0e5ee; }
+  .es-panel .es-panel-content { padding:30px 30px; }
+  .es-panel .es-panel-content .title { margin:0px; margin-top:20px; text-align:center;  font-size:25px; font-weight:600; color:#293742; }
+  .es-panel .es-panel-content .aka { margin-top:0px; text-align:center;  font-size:16px; color:#922c39; font-weight:600; }
+  .es-panel .es-panel-content .tags { text-align:center; font-size:16px; color:#293742; }
+  .es-panel .es-panel-content .description { display:block; padding:20px 0px; font-size:18px; text-align:center; }
+
+  .es-panel .es-panel-content .es-panel-tab { padding:20px 10px; text-align:center; }
+  .es-panel .es-panel-content .es-panel-tab a { padding:0px 10px; color:#293742; font-size:18px; font-weight:600; }
+  .es-panel .es-panel-content .es-panel-tab a.active { color:#922c39; text-decoration: underline; }
+  .es-panel .es-panel-content .es-panel-tab-content { text-align:center; padding:10px; }
+
+  .es-panel .es-panel-footer { display:flex; background:#f5f8fa; border-top:1px solid #e0e5ee; height:40px; line-height:40px; padding:0px 0px; }
+  .es-panel .es-panel-footer .cta { font-weight:600; cursor:pointer; text-align:center; width:50%;}
+  .es-panel .es-panel-footer .cta:first-child {  border-right:1px solid #e0e5ee; }
+
+  .grid-character-relation { border:2px solid #f5f8fa; margin-top:10px; padding:10px 0px; position:relative; background:#f5f8fa; }
+  .grid-character-relation .btn-delete { position:absolute; top:0px; right:0px; background:#922c39; color:#fff; padding:5px; border:1px solid #e0e5ee; }
+  .grid-character-relation .avatar { display:inline-block; background:#293742; border-radius:50%; width:100px; height:100px; }
+  .grid-character-relation .name { font-weight:600; }
+  .grid-character-relation .relation { font-weight:600; color:#922c39; }
+
+  .es-dialog-overlay { display:none; width:100%; height:100vh; position:fixed; top:0px; left:0px; background:rgba(41,55,66,0.9); }
+  .es-dialog-overlay.open { display:block;}
+  .es-dialog-overlay .es-dialog-content { padding:40px; width:600px; height:300px; position:fixed; top:calc(50vh - 200px); left:calc(50% - 300px); background:#fff; }
 </style>

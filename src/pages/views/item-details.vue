@@ -1,21 +1,19 @@
 <template>
 <div class="page-item-details">
-  <div style="padding:20px;">
-    <h2 style="margin:0px; font-family:'Crimson Roman Bold';">{{ properties.item.itemname }}</h2>
-    <small style="font-family:'Crimson Roman'; font-size:12px; color:#72789b;">Tags: {{ properties.item.tags }}</small>
-    <div class="row">
-      <div class="col-12 col-lg-12 order-2 order-lg-1">
-        <div>
-          <button  @click="editItem(properties.item)" class="update-book">Update</button>
-          <button  @click="deleteItem(properties.item.uuid)" class="delete-book">Delete</button>
+    <div class="es-panel">
+        <div class="es-panel-content">
+            <div class="image-container"><img :src="properties.item.picture_src" /></div>
+            <h2 class="title">{{ properties.item.itemname || 'Untitled' }}</h2>
+            <p class="aka">{{ properties.item.AKA || 'Not Set' }}</p>
+            <div class="tags">{{ properties.item.tags || 'No tag is set' }}</div>
+            <i class="description" v-if="properties.item.description !== '' && properties.item.description !== null" v-html="properties.item.description" ></i>
+            <i class="description" v-else>No Description</i>
         </div>
-      </div>
-      <div class="col-12 col-lg-12 order-2 order-lg-1">
-        <div class="image-container"><img :src="properties.item.picture_src" /></div>
-        <div v-html="properties.item.description" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';"></div>
-      </div>
+        <div class="es-panel-footer">
+            <div class="cta" @click="CHANGE_COMPONENT('item-form', {  book_id: properties.uuid, item: properties.item }, 'Edit - ' + properties.item.itemname, true)">EDIT</div>
+            <div class="cta" @click="DELETE_FROM_LIST('items', properties.item)">DELETE</div>
+        </div>
     </div>
-  </div>
 </div>
 </template>
 
@@ -26,42 +24,6 @@ export default {
   data: function () {
     return {
       item: []
-    }
-  },
-  methods: {
-    editItem: function (item) {
-      var scope = this
-      scope.$parent.changeComponent('item-form', { item: item })
-    },
-    deleteItem: function (locationId) {
-      var scope = this
-      window.swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
-        if (result.value) {
-          scope.axios
-            .delete('http://localhost:3000/items/' + locationId)
-            .then(response => {
-              if (response.data) {
-                window.swal.fire({
-                  position: 'center',
-                  icon: 'success',
-                  title: 'Item successfuly deleted',
-                  showConfirmButton: false,
-                  timer: 1500
-                }).then(() => {
-                  scope.$parent.changeComponent('item-listing', scope.item.book)
-                })
-              }
-            })
-        }
-      })
     }
   },
   beforeMount () {
@@ -76,5 +38,16 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .image-container { text-align: center; }
-  .image-container img { width: 30% }
+  .image-container img { width:100%; max-width:250px; }
+
+  .es-panel { background:#fff; margin:0px auto; margin-top:70px; max-width:670px; border:1px solid #e0e5ee; }
+  .es-panel .es-panel-content { padding:30px 30px; }
+  .es-panel .es-panel-content .title { margin:0px; margin-top:20px; text-align:center;  font-size:25px; font-weight:600; color:#293742; }
+  .es-panel .es-panel-content .aka { margin-top:0px; text-align:center;  font-size:16px; color:#922c39; font-weight:600; }
+  .es-panel .es-panel-content .tags { text-align:center; font-size:16px; color:#293742; }
+  .es-panel .es-panel-content .description { display:block; padding:20px 0px; font-size:18px; text-align:center; }
+
+  .es-panel .es-panel-footer { display:flex; background:#f5f8fa; border-top:1px solid #e0e5ee; height:40px; line-height:40px; padding:0px 0px; }
+  .es-panel .es-panel-footer .cta { font-weight:600; cursor:pointer; text-align:center; width:50%;}
+  .es-panel .es-panel-footer .cta:first-child {  border-right:1px solid #e0e5ee; }
 </style>

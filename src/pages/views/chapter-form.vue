@@ -1,45 +1,53 @@
 <template>
 <div class="page-chapter-form">
-  <div class="page-title">
-    <h3>New Chapter</h3>
-  </div>
-  <div class="content" >
-    <div class="row">
-      <div class="col-md-12">
-        <div class="form-group">
-          <label>Title: </label>
-          <input v-model="data.title" type="text" class="form-control" placeholder="Chapter Title" >
+    <div class="es-page-head">
+        <div class="inner">
+            <div class="details">
+                <div  v-if="data.id != null">
+                    <h4>Edit: <strong>{{ data.title }}</strong></h4>
+                    <small>Date Modified: {{ data.updated_at }}</small>
+                </div>
+                <div v-else>
+                    <h4>Create New Chapter</h4>
+                </div>
+            </div>
+            <div class="actions">
+                <button v-if="data.id != null" class="es-button-white" @click="saveChapter()">Save Changes</button>
+                <button v-else class="es-button-white" @click="saveChapter()">Save</button>
+            </div>
         </div>
-      </div>
     </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="form-group">
-          <label>Short Description: </label>
-          <input v-model.trim="data.short_description" type="text" class="form-control" placeholder="Short Description" >
+
+  <div class="es-page-content">
+        <div class="container">
+            <div class="es-panel">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Title: </label>
+                            <input v-model="data.title" type="text" class="form-control" placeholder="Chapter Title">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Short Description: </label>
+                            <input v-model.trim="data.short_description" type="text" class="form-control" placeholder="Short Description">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Content: </label>
+                            <tiny-editor :initValue="data.chapter_version.content" v-on:getEditorContent="setContent" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="form-group">
-          <label>Content: </label>
-          <tiny-editor :initValue="data.chapter_version.content"
-                                     v-on:getEditorContent="setContent"
-                                     class="form-control"
-          />
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="form-group text-right">
-<!--          <b-button v-if="data.id !== undefined"  @click="saveNewVersion" variant="dark">Save as New Version</b-button>-->
-          <b-button @click="saveChapter" variant="dark">Save</b-button>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 </template>
 
@@ -52,7 +60,9 @@ export default {
   data: function () {
     return {
       data: {
-        book_id: '',
+        id: null,
+        uuid: null,
+        book_id: null,
         title: '',
         short_description: '',
         chapter_version: {
@@ -74,7 +84,6 @@ export default {
     },
     saveChapter () {
       var scope = this
-
       scope.axios
         .post('http://localhost:3000/chapters', scope.data)
         .then(response => {
@@ -86,7 +95,19 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              scope.$parent.changeComponent('chapter-details', response.data)
+              if (scope.data.uuid === null) {
+                scope.$set(scope.data, 'id', response.data.id)
+                scope.$set(scope.data, 'uuid', response.data.uuid)
+                scope.$set(scope.data, 'updated_at', response.data.updated_at)
+                scope.ADD_TO_LIST('chapters', response.data)
+                scope.CHANGE_COMPONENT('chapter-details', { book_id: response.data.book_id, chapter: response.data }, 'View - ' + response.data.title, false, scope.$store.getters.getActiveTab)
+              } else {
+                scope.$set(scope.data, 'id', response.data.id)
+                scope.$set(scope.data, 'uuid', response.data.uuid)
+                scope.$set(scope.data, 'updated_at', response.data.updated_at)
+                scope.UPDATE_FROM_LIST('chapters', response.data)
+                scope.CHANGE_COMPONENT('chapter-details', { book_id: response.data.book_id, chapter: response.data }, 'View - ' + response.data.title, false, scope.$store.getters.getActiveTab)
+              }
             })
           }
         })
@@ -112,18 +133,19 @@ export default {
   },
   beforeMount () {
     var scope = this
+    scope.data.book_id = scope.properties.book_id
 
     if (scope.properties.chapter) {
       scope.$set(scope.data, 'id', scope.properties.chapter.id)
       scope.$set(scope.data, 'uuid', scope.properties.chapter.uuid)
-      scope.$set(scope.data, 'book_id', scope.properties.chapter.book_id)
-      scope.loadChapter()
-    } else {
-      scope.$set(scope.data, 'book_id', scope.properties.uuid)
     }
   },
   mounted () {
-    // var scope = this
+    var scope = this
+
+    if (scope.data.id) {
+      scope.loadChapter()
+    }
   }
 }
 </script>

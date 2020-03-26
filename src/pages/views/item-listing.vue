@@ -1,41 +1,36 @@
 <template>
 <div class="page-item-listing">
    <div>
-       <button @click="createItem" class="btn-new-record"><i class="las la-plus"></i></button>
-       <div class="row">
-           <div class="col-12 col-md-7">
-                <div class="page-title">
-                    <button @click="toggleFilter()" class="btn-toggle-filter"><i class="las la-filter"></i></button>
-                    <h3>{{ properties.title }}'s Items</h3>
+       <div class="es-page-head">
+            <div class="inner">
+                <div class="details">
+                    <h4>Items</h4>
+                    <small>Below are the list of items under {{ properties.title }}</small>
                 </div>
-           </div>
-           <div class="col-12 col-md-5">
-               <div v-bind:class="{ 'open' : filter.is_open }" class="page-actions">
-                    <div class="search-box">
-                        <form v-on:submit.prevent="filterResults()">
-                            <input v-model="filter.keyword" type="text" placeholder="Enter a keyword...">
-                            <button class="btn-search" type="submit"><i class="las la-search"></i></button>
-                        </form>
-                    </div>
+                <div class="actions">
+                    <button class="es-button-white" @click="CHANGE_COMPONENT('item-form', { list_index: -1, book_id: properties.uuid, item: null }, 'New Item', true)">New Item</button>
                 </div>
-           </div>
+            </div>
         </div>
-        <hr/>
 
-       <div class="row">
-            <div class="col-12 col-lg-4 col-md-6 col-sm-6 bounceInRight animated" v-for="item in items" v-bind:key="item.id">
-                <div class="item" >
-                    <div class="content">
-                        <div class="picture-placeholder"><img :src="item.picture_src" /></div>
-                        <strong> {{ item.itemname }} </strong>
-                        <div v-html="item.description" class="description" >{{ item.description }}</div>
-                        <button @click="viewItem(item)" type="button">VIEW</button>
-                        <button @click="editItem(item)" type="button">EDIT</button>
-                        <button @click="deleteItem(item.uuid)" type="button">DELETE</button>
+        <div class="es-page-content">
+            <div class="es-row">
+                <div class="es-col fadeIn animated" v-for="item in GET_ITEMS_BY_BOOK(bookUUID)" v-bind:key="item.id">
+                    <div class="es-card">
+                        <div class="es-card-content">
+                            <p class="title">{{ item.itemname || 'Untitled' }}</p>
+                            <i class="description" v-if="item.description !== '' && item.description !== null" v-html="item.description"></i>
+                            <i class="description" v-else>No Description</i>
+                        </div>
+                        <div class="es-card-footer">
+                            <button class="btn-" @click="CHANGE_COMPONENT('item-details', {  book_id: properties.uuid, item: item }, item.itemname)"><i class="lar la-eye"></i> VIEW</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT('item-form', { book_id: properties.uuid, item: item }, 'Edit - ' + item.itemname, true)"><i class="las la-pencil-alt"></i> EDIT</button>
+                            <button class="btn-delete" @click="DELETE_FROM_LIST('items', item)"><i class="las la-trash-alt"></i> DELETE</button>
+                        </div>
                     </div>
                 </div>
             </div>
-       </div>
+        </div>
    </div>
 </div>
 </template>
@@ -46,30 +41,10 @@ export default {
   props: ['properties'],
   data: function () {
     return {
-      items: [],
-      filter: {
-        is_open: false,
-        keyword: ''
-      }
+      bookUUID: ''
     }
   },
   methods: {
-    toggleFilter: function () {
-      var scope = this
-      scope.filter.is_open = !scope.filter.is_open
-    },
-    filterResults: function () {
-      var scope = this
-      console.log(scope.filter.keyword)
-    },
-    getItems: function (bookId) {
-      var scope = this
-      scope.axios
-        .get('http://localhost:3000/books/' + bookId + '/items')
-        .then(response => {
-          scope.items = response.data
-        })
-    },
     createItem () {
       var scope = this
       scope.$parent.changeComponent('item-form', scope.properties)
@@ -105,8 +80,7 @@ export default {
                   showConfirmButton: false,
                   timer: 1500
                 }).then(() => {
-                  scope.getItems(scope.properties.uuid)
-                  scope.$parent.changeComponent('item-listing', scope.properties)
+                  scope.GET_ITEMS_BY_BOOK(scope.bookUUID)
                 })
               }
             })
@@ -116,42 +90,23 @@ export default {
   },
   mounted () {
     var scope = this
-    scope.getItems(scope.properties.uuid)
+    // scope.getItems(scope.properties.uuid)
+    scope.bookUUID = scope.properties.uuid
   }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    .page-item-listing { padding:20px; }
-    .page-item-listing .item { margin-top:20px; border:1px solid #9fb1c2; text-align:center; }
-    .page-item-listing .item .header { background:#354350; padding:0px 20px; height:35px; line-height:38px; color:#fff; border:2px solid #354350; }
-    .page-item-listing .item .content { padding:20px; background:#fff; }
-    .page-item-listing .item .content .picture-placeholder {  display:block; margin:0px auto;  width:200px; height:100px; background:#ccd5dd; border:2px solid #9fb1c2; margin-bottom:10px; cursor:pointer; }
-    .page-item-listing .item .content .picture-placeholder img { height: 100% }
-    .page-item-listing .item .content strong { font-family:'Crimson Bold'; font-size:18px; }
-    .page-item-listing .item .content .description { font-size:16px; }
-    .page-item-listing .item .content button { background:#fff; border:1px solid #efefef; padding:5px 10px; padding-bottom:0px; }
+.es-card { color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
+.es-card .es-card-content { position:relative; padding:20px; min-height:150px; }
+.es-card .es-card-content .title { font-size:18px; font-weight:900; margin:0px; }
+.es-card .es-card-content .description { display:inline-block; padding-top:15px; color:#4b6273; }
 
-    .page-title { position:relative; padding-right:50px; }
-    .page-actions { text-align:right; margin-top:10px; }
-    .page-actions .search-box  { position:relative; display:inline-block; width:350px; }
-    .page-actions .search-box input { width:100%;  padding:0px 10px; padding-top:3px; padding-right:30px; height:35px; line-height:35px; }
-    .page-actions .search-box .btn-search {  position:absolute; top:2px; right:0px; height:35px; width:35px; background:none; border:none; }
+.es-card .es-card-content .es-card-actions { position:absolute; top:20px; right:20px; text-align:right; }
 
-    .btn-new-record { z-index:500; padding-top:8px; position:fixed; bottom:20px; right:20px; height:50px; width:50px; border-radius:50%; background:#c12938; color:#fff; border:none; font-size:25px; }
-    .btn-toggle-filter { display:none; float:right;  position:absolute; top:0px; right:0px; background:#fff; border:1px solid #9fb1c2; padding-top:5px; padding-bottom:0px; }
-
-    @media only screen and (max-width: 968px) {
-        .page-item-listing .item .header { padding:0px 15px; }
-        .page-item-listing .item .content { padding:15px;  }
-
-        .page-item-listing .item .content strong { font-family:'Crimson Bold'; font-size:16px; }
-        .page-item-listing .item .content .description { font-size:14px; }
-
-        .page-actions {  text-align:left;  display:none; }
-        .page-actions.open {  display:block; }
-        .page-actions .search-box  { width:100%; }
-
-        .btn-toggle-filter { display:inline-block; }
-    }
+.es-card .es-card-footer { position:relative; background:#f5f8fa; height:40px; line-height:40px; padding:0px 0px; border-top:1px solid #e0e5ee; }
+.es-card .es-card-footer button { font-weight:600; background:transparent; border:none; height:40px; line-height:32px; text-align:center; font-size:14px; padding:0px 8px; }
+.es-card .es-card-footer button:hover { background:#e0e5ee; }
+.es-card .es-card-footer button i { font-size:18px; }
+.es-card .es-card-footer button.btn-delete { font-weight:600; color:#8f2c39; border-left:1px solid #e0e5ee; position:absolute; top:0px; right:0px; }
 </style>

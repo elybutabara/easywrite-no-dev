@@ -1,36 +1,31 @@
 <template>
 <div class="page-scene-listing">
    <div>
-        <button class="btn-new-record"><i class="las la-plus"></i></button>
-        <div class="row">
-           <div class="col-12 col-lg-7">
-                <div class="page-title">
-                    <button @click="toggleFilter()" class="btn-toggle-filter"><i class="las la-filter"></i></button>
-                    <h3>{{ properties.title }}'s Scenes</h3>
+        <div class="es-page-head">
+            <div class="inner">
+                <div class="details">
+                    <h4>Scenes</h4>
+                    <small>Below are the list of scenes under {{ properties.title }}</small>
                 </div>
-           </div>
-           <div class="col-12 col-lg-5">
-               <div v-bind:class="{ 'open' : filter.is_open }" class="page-actions">
-                    <div class="search-box">
-                        <form v-on:submit.prevent="filterResults()">
-                            <input v-model="filter.keyword" type="text" placeholder="Enter a keyword...">
-                            <button class="btn-search" type="submit"><i class="las la-search"></i></button>
-                        </form>
-                    </div>
+                <div class="actions">
+                    <button class="es-button-white" @click="saveBook()">New Scene</button>
                 </div>
-           </div>
+            </div>
         </div>
-        <hr/>
-        <div class="row">
-            <div class="col-12 col-lg-3 col-md-6 col-sm-6 fadeIn animated" v-for="otherScene in otherScenes" v-bind:key="otherScene.id">
-                <div class="item" >
-                    <div class="header"><i class="las la-bookmark"></i> {{ otherScene.title }}</div>
-                    <div class="content" >
-                        <strong>{{ otherScene.short_description }}</strong>
-                        <div v-html="otherScene.notes" class="description" >{{ otherScene.notes }}</div>
-                        <button type="button">VIEW</button>
-                        <button type="button">EDIT</button>
-                        <button type="button">DELETE</button>
+
+        <div class="es-page-content">
+            <div class="es-row">
+                <div class="es-col fadeIn animated" v-for="scene in GET_SCENES_BY_BOOK(bookUUID)" v-bind:key="scene.id">
+                    <div class="es-card">
+                        <div class="es-card-content">
+                            <p class="title">{{ scene.fullname || 'Untitled' }}</p>
+                            <i class="description">{{ scene.short_description || 'No Short Description...'  }}</i>
+                        </div>
+                        <div class="es-card-footer">
+                            <button class="btn-"><i class="lar la-eye"></i> VIEW</button>
+                            <button class="btn-"><i class="las la-pencil-alt"></i> EDIT</button>
+                            <button class="btn-delete"><i class="las la-trash-alt"></i> DELETE</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -46,10 +41,7 @@ export default {
   data: function () {
     return {
       otherScenes: [],
-      filter: {
-        is_open: false,
-        keyword: ''
-      }
+      bookUUID: ''
     }
   },
   methods: {
@@ -72,41 +64,23 @@ export default {
   },
   mounted () {
     var scope = this
-    scope.getOtherScenes(scope.properties.id)
+    // scope.getOtherScenes(scope.properties.id)
+    scope.bookUUID = scope.properties.uuid
   }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    .page-scene-listing { padding:20px; padding-top:60px; }
+    .es-card { color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
+    .es-card .es-card-content { position:relative; padding:20px; min-height:150px; }
+    .es-card .es-card-content .title { font-size:18px; font-weight:900; margin:0px; padding-right:110px; }
+    .es-card .es-card-content .description { display:inline-block; padding-top:15px; color:#4b6273; }
 
-    .page-scene-listing .item { margin-top:20px; border:1px solid #efefef; }
-    .page-scene-listing .item .header { background:#354350; padding:0px 10px; height:35px; line-height:38px; color:#fff; border:2px solid #354350; }
-    .page-scene-listing .item .content { padding:20px; background:#fff; }
-    .page-scene-listing .item .content strong { font-family:'Crimson Bold'; font-size:18px; }
-    .page-scene-listing .item .content .description { font-size:16px; }
-    .page-scene-listing .item .content button { background:#fff; border:1px solid #efefef; padding:5px 10px; padding-bottom:0px; }
+    .es-card .es-card-content .es-card-actions { position:absolute; top:20px; right:20px; text-align:right; }
 
-    .page-title { position:relative; padding-right:50px; }
-    .page-actions { text-align:right; margin-top:10px; }
-    .page-actions .search-box  { position:relative; display:inline-block; width:350px; }
-    .page-actions .search-box input { width:100%;  padding:0px 10px; padding-top:3px; padding-right:30px; height:35px; line-height:35px; }
-    .page-actions .search-box .btn-search {  position:absolute; top:2px; right:0px; height:35px; width:35px; background:none; border:none; }
-
-    .btn-new-record { z-index:500; padding-top:8px; position:fixed; bottom:20px; right:20px; height:50px; width:50px; border-radius:50%; background:#c12938; color:#fff; border:none; font-size:25px; }
-    .btn-toggle-filter { display:none; float:right;  position:absolute; top:0px; right:0px; background:#fff; border:1px solid #9fb1c2; padding-top:5px; padding-bottom:0px; }
-
-    @media only screen and (max-width: 968px) {
-        .page-scene-listing .item .header { padding:0px 15px; }
-        .page-scene-listing .item .content { padding:15px;  }
-
-        .page-scene-listing .item .content strong { font-family:'Crimson Bold'; font-size:16px; }
-        .page-scene-listing .item .content .description { font-size:14px; }
-
-        .page-actions {  text-align:left;  display:none; }
-        .page-actions.open {  display:block; }
-        .page-actions .search-box  { width:100%; }
-
-        .btn-toggle-filter { display:inline-block; }
-    }
+    .es-card .es-card-footer { position:relative; background:#f5f8fa; height:40px; line-height:40px; padding:0px 0px; border-top:1px solid #e0e5ee; }
+    .es-card .es-card-footer button { font-weight:600; background:transparent; border:none; height:40px; line-height:32px; text-align:center; font-size:14px; padding:0px 8px; }
+    .es-card .es-card-footer button:hover { background:#e0e5ee; }
+    .es-card .es-card-footer button i { font-size:18px; }
+    .es-card .es-card-footer button.btn-delete { font-weight:600; color:#8f2c39; border-left:1px solid #e0e5ee; position:absolute; top:0px; right:0px; }
 </style>

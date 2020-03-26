@@ -1,32 +1,22 @@
 <template>
 <div class="page-book-details">
-    <div style="padding:20px;">
-        <h2 style="margin:0px; font-family:'Crimson Roman Bold';">{{ properties.title }}</h2>
-        <small style="font-family:'Crimson Roman'; font-size:12px; color:#72789b;">Date Modified: {{ properties.created_at }}</small>
-        <div class="row">
-            <div class="col-12 col-lg-12 order-2 order-lg-1">
-                <div style="padding:10px 0px;">
-                    <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>
-                </div>
-                <div>
-                  <button  @click="updateBook()" class="update-book">Update</button>
-                  <button  @click="deleteBook()" class="delete-book">Delete</button>
-                </div>
-                <div v-html="properties.about" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';">
-                  {{ properties.about }}
-                </div>
+    <div class="es-page-head">
+        <div class="inner">
+            <div class="details">
+                <h4>{{ properties.title }}</h4>
+                <small>Date Modified: {{ properties.created_at }}</small>
             </div>
-            <div style="display:none;" class="col-12 col-lg-3 order-1 order-lg-2">
-                <div class="book-stats">
-                    <strong class="heading">Book Statistics</strong>
-                    <ul class="list-group">
-                        <li class="list-group-item"><span class="badge badge-success">12</span> &nbsp; <strong>Total Chapters</strong></li>
-                        <li class="list-group-item"><span class="badge badge-success">38</span> &nbsp; <strong>Total Scenes</strong></li>
-                        <li class="list-group-item"><span class="badge badge-success">21</span> &nbsp; <strong>Total Locations</strong></li>
-                        <li class="list-group-item"><span class="badge badge-success">89</span> &nbsp; <strong>Total Items</strong></li>
-                    </ul>
-                </div>
+            <div class="actions">
+                <button class="es-button-white" @click="CHANGE_COMPONENT('book-form', properties, 'Story Board - ' + properties.title, true)">STORY BOARD</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT('book-form', properties, 'Edit - ' + properties.title, true)">EDIT</button>
+                <button class="es-button-red" @click="deleteBook()">DELETE</button>
             </div>
+        </div>
+    </div>
+    <div class="es-page-content">
+        <div class="es-panel">
+            <h4>About</h4>
+            <div v-html="properties.about"></div>
         </div>
     </div>
 </div>
@@ -43,8 +33,10 @@ export default {
   methods: {
     updateBook () {
       var scope = this
-      scope.$parent.getBooks()
-      scope.$parent.changeComponent('book-form', scope.properties)
+      // scope.$parent.getBooks()
+      // scope.$parent.changeComponent('book-form', scope.properties)
+      scope.$parent.changeComponent('book-form', scope.properties, scope.properties.title, true)
+      scope.$store.commit('addTab', { title: scope.properties.title, component: 'book-form', data: scope.properties })
     },
     deleteBook () {
       var scope = this

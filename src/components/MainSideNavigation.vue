@@ -8,85 +8,82 @@
             <i class="las la-search icon"></i>
         </div>
         <div class="es-tree-view">
-          <div class="text-right">
-            <span  @click="changeComponent('book-form')" class="new-book"><i class="las la-plus icon"></i> New Book</span>
-          </div>
             <ul class="level-1">
-                <li v-bind:class="{ 'open' : (book.is_open == true) }" v-bind:key="book.id" v-for="book in books">
-                    <div class="label" @click="showChildren(book)"><span><img src="@/assets/img/icons/book.svg"> {{ book.title }}</span></div>
+                <li v-bind:class="{ 'open' : (book.is_open == true) }" v-bind:key="book.id" v-for="(book,book_index)  in GET_BOOKS_BY_AUTHOR()">
+                    <div class="label" @dblclick="TOGGLE_TREE('books', book_index, book.is_open, book)"><span><img src="@/assets/img/icons/book.svg"> {{ book.title || 'Untitled' }}</span></div>
                     <ul v-if="book.is_open == true" class="level-2">
-                        <li v-bind:class="{ 'open' : book.chapters.is_open  == true }">
-                            <div @click="getChapters(book)"  class="label">
+                        <li v-bind:class="{ 'open' : book.chapter_folder.is_open  == true }">
+                            <div @dblclick="TOGGLE_TREE('chapters',book_index, book.chapter_folder.is_open, book)" class="label">
                                 <span>
-                                    <img v-if="book.chapters.is_open" src="@/assets/img/icons/folder-open.svg">
+                                    <img v-if="book.chapter_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
                                     Chapters
                                 </span>
                             </div>
                             <ul class="level-3">
-                                <li v-bind:class="{ 'open' : chapter.is_open  == true }" v-bind:key="chapter.id" v-for="chapter in book.chapters.rows">
-                                    <div @click="getSceneByChapter(chapter)" class="label"><span><img  src="@/assets/img/icons/chapter.svg"> {{ chapter.title }}</span></div>
+                                <li v-bind:class="{ 'open' : chapter.is_open  == true }" v-bind:key="chapter.id" v-for="chapter in GET_CHAPTERS_BY_BOOK(book.uuid)">
+                                    <div @dblclick="CHANGE_COMPONENT('chapter-details', { book_id: book.uuid, chapter: chapter }, chapter.title);getSceneByChapter(chapter)" class="label"><span><img  src="@/assets/img/icons/chapter.svg"> {{ chapter.title }}</span></div>
                                     <ul v-if="chapter.is_open  == true " class="level-4">
-                                        <li v-bind:key="scene.id" v-for="scene in chapter.scenes">
-                                            <div @click="changeComponent('scene-details', { scene: scene })" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title }}</span></div>
+                                        <li v-bind:key="scene.id" v-for="scene in chapter.scenes.rows">
+                                            <div @dblclick="CHANGE_COMPONENT('scene-details',{ book_id: book.uuid, scene: scene}, scene.title )" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title || 'Untitled' }}</span></div>
                                         </li>
                                     </ul>
                                 </li>
                             </ul>
                         </li>
-                        <li v-bind:class="{ 'open' : book.items.is_open  == true }">
-                            <div @click="getItems(book)" class="label">
+                        <li v-bind:class="{ 'open' : book.item_folder.is_open  == true }">
+                            <div @dblclick="TOGGLE_TREE('items',book_index, book.item_folder.is_open, book)" class="label">
                                 <span>
-                                    <img v-if="book.items.is_open" src="@/assets/img/icons/folder-open.svg">
+                                    <img v-if="book.item_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
                                     Items
                                 </span>
                             </div>
                             <ul class="level-3">
-                                <li v-bind:key="item.id" v-for="item in book.items.rows">
-                                    <div @click="changeComponent('item-details', { item: item })" class="label"><span><img  src="@/assets/img/icons/item.svg"> {{ item.itemname }}</span></div>
+                                <li v-bind:key="item.id" v-for="item in GET_ITEMS_BY_BOOK(book.uuid)">
+                                    <div @dblclick="CHANGE_COMPONENT('item-details', {  book_id: book.uuid, item: item }, item.itemname, true)" class="label"><span><img  src="@/assets/img/icons/item.svg"> {{ item.itemname || 'Untitled' }}</span></div>
                                 </li>
                             </ul>
                         </li>
-                        <li v-bind:class="{ 'open' : book.characters.is_open  == true }">
-                            <div @click="getCharacters(book)"  class="label">
+                        <li v-bind:class="{ 'open' : book.character_folder.is_open  == true }">
+                            <div @dblclick="TOGGLE_TREE('characters',book_index, book.character_folder.is_open, book)"  class="label">
                                 <span>
-                                    <img v-if="book.characters.is_open" src="@/assets/img/icons/folder-open.svg">
+                                    <img v-if="book.character_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
                                     Characters
                                 </span>
                             </div>
                             <ul class="level-3">
-                                <li v-bind:key="character.id" v-for="character in book.characters.rows">
-                                    <div @click="changeComponent('character-details', {character: character})" class="label"><span><img  src="@/assets/img/icons/character.svg"> {{ character.fullname }}</span></div>
+                                <li v-bind:key="character.id" v-for="character in GET_CHARACTERS_BY_BOOK(book.uuid)">
+                                    <div @dblclick="CHANGE_COMPONENT('character-details', {  book_id: book.uuid, character: character }, character.fullname)" class="label"><span><img  src="@/assets/img/icons/character.svg"> {{ character.fullname || 'Unamed' }}</span></div>
                                 </li>
                             </ul>
                         </li>
-                        <li v-bind:class="{ 'open' : book.locations.is_open  == true }">
-                            <div @click="getLocations(book)" class="label">
+                        <li v-bind:class="{ 'open' : book.location_folder.is_open  == true }">
+                            <div @dblclick="TOGGLE_TREE('locations',book_index, book.location_folder.is_open, book)" class="label">
                                 <span>
-                                    <img v-if="book.locations.is_open" src="@/assets/img/icons/folder-open.svg">
+                                    <img v-if="book.location_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
                                     Locations
                                 </span>
                             </div>
                             <ul class="level-3">
-                                <li v-bind:key="location.id" v-for="location in book.locations.rows">
-                                    <div @click="changeComponent('location-details', { location: location })" class="label"><span><img  src="@/assets/img/icons/location.svg"> {{ location.location }}</span></div>
+                                <li v-bind:key="location.id" v-for="location in GET_LOCATIONS_BY_BOOK(book.uuid)">
+                                    <div @dblclick="CHANGE_COMPONENT('location-details', {  book_id: book.uuid, location: location }, location.location, true)" class="label"><span><img  src="@/assets/img/icons/location.svg"> {{ location.location || 'Untitled' }}</span></div>
                                 </li>
                             </ul>
                         </li>
-                        <li v-bind:class="{ 'open' : book.scenes.is_open  == true }">
-                            <div @click="getScenes(book)" class="label">
+                        <li v-bind:class="{ 'open' : book.scene_folder.is_open  == true }">
+                            <div @dblclick="TOGGLE_TREE('scenes',book_index, book.scene_folder.is_open, book)" class="label">
                                 <span>
-                                    <img v-if="book.scenes.is_open" src="@/assets/img/icons/folder-open.svg">
+                                    <img v-if="book.scene_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
                                     Other Scenes
                                 </span>
                             </div>
                             <ul class="level-4">
-                                <li  v-bind:key="scene.id" v-for="scene in book.scenes.rows">
-                                    <div @click="changeComponent('scene-details',scene.id)" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title }}</span></div>
+                                <li  v-bind:key="scene.id" v-for="scene in GET_SCENES_BY_BOOK(book.uuid)">
+                                    <div @dblclick="changeComponent('scene-details',scene.id, scene.title)" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title || 'Untitled' }}</span></div>
                                 </li>
                             </ul>
                         </li>
@@ -103,43 +100,59 @@ export default {
   name: 'MainSideNavigation',
   data () {
     return {
-      books: []
+      // chapters: [],
+      scenes: [],
+      items: [],
+      locations: [],
+      other_scenes: []
     }
   },
   methods: {
-    changeComponent: function (component, data) {
+    changeComponent: function (tabComponent, data, tabTitle = 'New Tab', newTab = false, tabIndex = 0) {
       var scope = this
-      scope.$parent.changeComponent(component, data)
+      // scope.$parent.changeComponent(component, data)
+      if (newTab) {
+        scope.$store.dispatch('newTab', { title: tabTitle, component: tabComponent })
+      } else {
+        scope.$store.dispatch('changeTabContent', { title: tabTitle, component: tabComponent, data: data, index: tabIndex })
+      }
     },
-    getBooks: function () {
+    toggleTree: function (model, index, data) {
       var scope = this
-      // eslint-disable-next-line camelcase
-      var userID = this.$store.getters.getUserID
+      scope.$store.dispatch('toggleTree', { model: model, index: index })
 
-      scope.axios
-        .get('http://localhost:3000/users/' + userID + '/books')
-        .then(response => {
-          scope.books = response.data
-        })
+      if (model === 'book') {
+        scope.changeComponent('book-details', data, 'aaaaa')
+      } else if (model === 'chapter') {
+        scope.changeComponent('chapter-listing', data, 'Chapters - ' + data.title)
+      } else if (model === 'item') {
+        scope.changeComponent('item-listing', data, 'Items - ' + data.title)
+      } else if (model === 'location') {
+        scope.changeComponent('location-listing', data, 'Location - ' + data.title)
+      } else if (model === 'character') {
+        scope.changeComponent('character-listing', data, 'Character - ' + data.title)
+      } else if (model === 'scene') {
+        scope.changeComponent('scene-listing', data, 'Scenes - ' + data.title)
+      }
     },
     showChildren: function (book) {
       var scope = this
       if (book.is_open !== true) {
-        scope.$set(book, 'is_open', true)
-        scope.$set(book, 'chapters', { is_open: false, rows: [] })
-        scope.$set(book, 'characters', { is_open: false, rows: [] })
-        scope.$set(book, 'items', { is_open: false, rows: [] })
-        scope.$set(book, 'locations', { is_open: false, rows: [] })
-        scope.$set(book, 'scenes', { is_open: false, rows: [] })
+        // scope.$set(book, 'is_open', true)
+        // scope.$set(book, 'chapters', { is_open: false, rows: [] })
+        // scope.$set(book, 'characters', { is_open: false, rows: [] })
+        // scope.$set(book, 'items', { is_open: false, rows: [] })
+        // scope.$set(book, 'locations', { is_open: false, rows: [] })
+        // scope.$set(book, 'scenes', { is_open: false, rows: [] })
       } else {
-        scope.$set(book, 'is_open', false)
-        scope.$set(book, 'chapters', { is_open: false, rows: [] })
-        scope.$set(book, 'characters', { is_open: false, rows: [] })
-        scope.$set(book, 'items', { is_open: false, rows: [] })
-        scope.$set(book, 'locations', { is_open: false, rows: [] })
-        scope.$set(book, 'scenes', { is_open: false, rows: [] })
+        // scope.$set(book, 'is_open', false)
+        // scope.$set(book, 'chapters', { is_open: false, rows: [] })
+        // scope.$set(book, 'characters', { is_open: false, rows: [] })
+        // scope.$set(book, 'items', { is_open: false, rows: [] })
+        // scope.$set(book, 'locations', { is_open: false, rows: [] })
+        // scope.$set(book, 'scenes', { is_open: false, rows: [] })
       }
-      scope.changeComponent('book-details', book)
+      scope.changeComponent('book-details', book, book.title)
     },
     getChapters: function (book) {
       var scope = this
@@ -153,7 +166,7 @@ export default {
       } else {
         book.chapters.is_open = false
       }
-      scope.changeComponent('chapter-listing', book)
+      scope.changeComponent('chapter-listing', book, 'Chapters | ' + book.title)
     },
     getItems: function (book) {
       var scope = this
@@ -167,7 +180,7 @@ export default {
       } else {
         book.items.is_open = false
       }
-      scope.changeComponent('item-listing', book)
+      scope.changeComponent('item-listing', book, 'Items | ' + book.title)
     },
     getCharacters: function (book) {
       var scope = this
@@ -181,7 +194,7 @@ export default {
       } else {
         book.characters.is_open = false
       }
-      scope.changeComponent('character-listing', book)
+      scope.changeComponent('character-listing', book, 'Characters | ' + book.title)
     },
     getLocations: function (book) {
       var scope = this
@@ -195,7 +208,7 @@ export default {
       } else {
         book.locations.is_open = false
       }
-      scope.changeComponent('location-listing', book)
+      scope.changeComponent('location-listing', book, 'Locations | ' + book.title)
     },
     getScenes: function (book) {
       var scope = this
@@ -209,7 +222,7 @@ export default {
       } else {
         book.scenes.is_open = false
       }
-      scope.changeComponent('scene-listing', book)
+      scope.changeComponent('scene-listing', book, 'Scenes | ' + book.title)
     },
     getSceneByChapter: function (chapter) {
       var scope = this
@@ -219,80 +232,25 @@ export default {
         scope.axios
           .get('http://localhost:3000/chapters/' + chapter.uuid + '/scenes')
           .then(response => {
-            chapter.scenes.is_open = true
-            chapter.scenes = response.data
-            scope.changeComponent('chapter-details', chapter)
+            chapter.scenes.rows = response.data
           })
+
+        chapter.scenes.is_open = true
       } else {
         chapter.is_open = false
         chapter.scenes.is_open = false
-        scope.changeComponent('chapter-details', chapter)
       }
+      // scope.changeComponent('chapter-details', chapter, 'Scenes | ' + chapter.title)
     }
   },
   mounted () {
-    var scope = this
-    scope.getBooks()
+    // var scope = this
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-ul { margin-left:0px; list-style:none;  }
-
-.left-side-bar { position:fixed; top:0px; left:0px; background:#293742; width:320px; height:100vh; overflow-y:auto; }
-
-.left-side-bar .header { text-align:center; height:70px; line-height:70px; border-bottom:1px solid #3c505f; padding:0px 10px; }
-.left-side-bar .header img { height:60px; }
-
-.left-side-bar .search-box { height:40px; line-height:40px; border-bottom:1px solid #3c505f; padding:0px 5px; position:relative; }
-.left-side-bar .search-box .icon { position:absolute; top:8px; right:8px; color:#506d84; font-size:25px; }
-.left-side-bar .search-box input { background:#324553; width:100%; height:30px; border:none; color:#fff; padding:0px 5px; padding-right:35px;  }
-.left-side-bar .search-box input:focus, .search-box input:active{ background:#324553; }
-.left-side-bar .search-box input::placeholder { color: #506d84; }
-
-.es-tree-view { padding:10px 5px; }
-
-.es-tree-view ul { padding-left:10px; text-align: left; }
-.es-tree-view ul:not(:first-child) { padding-left:30px; }
-.es-tree-view ul li  { padding-top:10px; cursor:pointer; }
-.es-tree-view ul li  img { height:14px; }
-.es-tree-view ul li .label { font-family:'Crimson Roman'; color:#abc4d7; font-size:18px; }
-.es-tree-view ul li .label span i { padding-right:5px; }
-.es-tree-view ul li .label:hover { color:#fff; }
-
-.es-tree-view ul.level-1 > li > .label { text-decoration:none; }
-
-.es-tree-view ul.level-1 > li > ul  { position:relative;  }
-.es-tree-view ul.level-1 > li > ul:after { height:100%; width:1px; content:''; border-left:1px #abc4d7 dotted ; position:absolute; top:0px; left:12px; }
-
-.es-tree-view ul.level-2 > li  { position:relative;  }
-.es-tree-view ul.level-2 > li:after  { content:''; position:absolute; top:18px; left:-10px; width:12px; height:1px; border-bottom:1px #abc4d7 dotted;  }
-
-.es-tree-view ul.level-2 > li ul { position:relative;  }
-.es-tree-view ul.level-2 > li ul:after { height:100%; width:1px; content:''; border-left:1px #abc4d7 dotted ; position:absolute; top:0px; left:12px; }
-
-.es-tree-view ul.level-3 > li  { position:relative;  }
-.es-tree-view ul.level-3 > li:after  { content:''; position:absolute; top:18px; left:-10px; width:12px; height:1px; border-bottom:1px #abc4d7 dotted;  }
-
-.es-tree-view ul.level-3 > li ul { position:relative;  }
-.es-tree-view ul.level-3 > li ul:after { height:100%; width:1px; content:''; border-left:1px #abc4d7 dotted ; position:absolute; top:0px; left:9px; }
-
-.es-tree-view ul.level-4 > li  { position:relative;  }
-.es-tree-view ul.level-4 > li:after  { content:''; position:absolute; top:18px; left:-10px; width:12px; height:1px; border-bottom:1px #abc4d7 dotted;  }
-
-.es-tree-view ul.level-4 > li ul { position:relative;  }
-.es-tree-view ul.level-4 > li ul:after { height:100%; width:1px; content:''; border-left:1px #abc4d7 dotted ; position:absolute; top:0px; left:12px; }
-
-.es-tree-view .level-1 li ul, .es-tree-view .level-1 li > ul > li { display:none; }
-.es-tree-view .level-1 li.open ul, .es-tree-view .level-1 li.open > ul > li{ display:block; }
-
-.es-tree-view .level-2 li ul, .es-tree-view .level-2 li > ul > li { display:none; }
-.es-tree-view .level-2 li.open ul, .es-tree-view .level-2 li.open > ul > li{ display:block; }
-
-.es-tree-view .level-3 li ul, .es-tree-view .level-3 li > ul > li { display:none; }
-.es-tree-view .level-3 li.open ul, .es-tree-view .level-3 li.open > ul > li{ display:block; }
 
 .new-book { font-family: 'Crimson Roman'; color:#abc4d7; font-size: 14px; cursor: pointer }
 .new-book:hover  { color:#fff; }

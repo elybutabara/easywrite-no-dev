@@ -1,38 +1,44 @@
 <template>
-<div class="page-main" aria-controls="overlay-background">
-    <main-side-navigation></main-side-navigation>
-    <syncer v-if="syncer.is_open"></syncer>
-    <div style="text-align:left; padding-left:320px;">
-        <div style="background:#dbdee3; text-align:right; padding:5px 10px;">
-            <button @click="toggleSyncer()" style="background:#293742; padding:0px 10px; line-height:30px; height:30px; border:none; font-size:14px; color:#fff;">OPEN SYNCER</button>
-        </div>
-        <div style="display:none; " class="tab-nav">
-            <div class="tab-nav-item" v-bind:class="{ 'active': tab.active }" v-for="(tab,index) in tabs" v-bind:key="index">
-                {{ tab.title }}
-                <span class="tab-closer"><i class="fas fa-times"></i></span>
+<div class="page-main">
+    <div v-if="ready">
+        <main-side-navigation></main-side-navigation>
+        <div class="es-right-side-content">
+            <div class="es-top-nav">
+                <button @click="CHANGE_COMPONENT('dashboard', null, 'Dashboard')"> Dashboard</button>
+                <button @click="CHANGE_COMPONENT('syncing', null, 'Syncing', true)">Sync Data</button>
+                <button @click="CHANGE_COMPONENT('book-form', null, 'New Book', true)"> New Book</button>
             </div>
-        </div>
-        <div>
-            <book-listing v-if="active.component == 'book-listing'"></book-listing>
-            <chapter-listing v-if="active.component == 'chapter-listing'" :properties="active.data"></chapter-listing>
-            <scene-listing v-if="active.component == 'scene-listing'" :properties="active.data"></scene-listing>
-            <item-listing v-if="active.component == 'item-listing'" :properties="active.data"></item-listing>
-            <location-listing v-if="active.component == 'location-listing'" :properties="active.data"></location-listing>
-            <character-listing v-if="active.component == 'character-listing'" :properties="active.data"></character-listing>
+            <div class="es-tab-nav">
+                <div class="es-tab-nav-item"  v-bind:class="{ 'active': index == tabs.active_index }" v-for="(tab,index) in tabs.items" v-bind:key="index">
+                    <span @click="CHANGE_TAB(index)" class="es-tab-title">{{ tab.title || 'Untitled' }}</span>
+                    <span @click="REMOVE_TAB(index)" class="es-tab-closer" v-if="index != 0"><i class="fas fa-times"></i></span>
+                </div>
+            </div>
 
-            <book-details v-if="active.component == 'book-details'" :properties="active.data"></book-details>
-            <chapter-details v-if="active.component == 'chapter-details'" :properties="active.data"></chapter-details>
-            <scene-details v-if="active.component == 'scene-details'" :properties="active.data"></scene-details>
-            <item-details v-if="active.component == 'item-details'" :properties="active.data"></item-details>
-            <location-details v-if="active.component == 'location-details'" :properties="active.data"></location-details>
-            <character-details v-if="active.component == 'character-details'" :properties="active.data"></character-details>
+            <div class="es-item-content" v-bind:class="{ 'active': index == tabs.active_index }" v-for="(tab,index) in tabs.items"  v-bind:key="'content-' + index" >
+                <dashboard v-if="tab.component == 'dashboard'" :properties="tab.data"></dashboard>
+                <chapter-listing v-if="tab.component == 'chapter-listing'" :properties="tab.data"></chapter-listing>
+                <scene-listing v-if="tab.component == 'scene-listing'" :properties="tab.data"></scene-listing>
+                <item-listing v-if="tab.component == 'item-listing'" :properties="tab.data"></item-listing>
+                <location-listing v-if="tab.component == 'location-listing'" :properties="tab.data"></location-listing>
+                <character-listing v-if="tab.component == 'character-listing'" :properties="tab.data"></character-listing>
 
-            <book-form v-if="active.component == 'book-form'" :properties="active.data"></book-form>
-            <location-form v-if="active.component == 'location-form'" :properties="active.data"></location-form>
-            <item-form v-if="active.component == 'item-form'" :properties="active.data"></item-form>
-            <chapter-form v-if="active.component == 'chapter-form'" :properties="active.data"></chapter-form>
-            <character-form v-if="active.component == 'character-form'" :properties="active.data"></character-form>
-            <scene-form v-if="active.component == 'scene-form'" :properties="active.data"></scene-form>
+                <book-details v-if="tab.component == 'book-details'" :properties="tab.data"></book-details>
+                <chapter-details v-if="tab.component == 'chapter-details'" :properties="tab.data"></chapter-details>
+                <scene-details v-if="tab.component == 'scene-details'" :properties="tab.data"></scene-details>
+                <item-details v-if="tab.component == 'item-details'" :properties="tab.data"></item-details>
+                <location-details v-if="tab.component == 'location-details'" :properties="tab.data"></location-details>
+                <character-details v-if="tab.component == 'character-details'" :properties="tab.data"></character-details>
+
+                <book-form v-if="tab.component == 'book-form'" :properties="tab.data"></book-form>
+                <location-form v-if="tab.component == 'location-form'" :properties="tab.data"></location-form>
+                <item-form v-if="tab.component == 'item-form'" :properties="tab.data"></item-form>
+                <character-form v-if="tab.component == 'character-form'" :properties="tab.data"></character-form>
+                <chapter-form v-if="tab.component == 'chapter-form'" :properties="tab.data"></chapter-form>
+                <scene-form v-if="tab.component == 'scene-form'" :properties="tab.data"></scene-form>
+
+                <syncing v-if="tab.component == 'syncing'" :properties="tab.data"></syncing>
+            </div>
         </div>
     </div>
 </div>
@@ -42,7 +48,8 @@
 import MainSideNavigation from '@/components/MainSideNavigation'
 import Syncer from '@/components/Syncer'
 
-import BookListing from '@/pages/views/book-listing'
+import Syncing from '@/pages/views/syncing'
+import Dashboard from '@/pages/views/dashboard'
 import ChapterListing from '@/pages/views/chapter-listing'
 import SceneListing from '@/pages/views/scene-listing'
 import ItemListing from '@/pages/views/item-listing'
@@ -59,20 +66,19 @@ import LocationDetails from '@/pages/views/location-details'
 import BookForm from '@/pages/views/book-form'
 import LocationForm from '@/pages/views/location-form'
 import ItemForm from '@/pages/views/item-form'
-import ChapterForm from '@/pages/views/chapter-form'
 import CharacterForm from '@/pages/views/character-form'
 import SceneForm from '@/pages/views/scene-form'
+import ChapterForm from '@/pages/views/chapter-form'
 
-const electron = window.require('electron')
-
-const remote = electron.remote
-
-const loginInfo = remote.getGlobal('loginInfo')
+// const electron = window.require('electron')
+// const remote = electron.remote
+// const loginInfo = remote.getGlobal('loginInfo')
 
 export default {
   name: 'Main',
   data: function () {
     return {
+      ready: false,
       books: [],
       syncer: {
         is_open: false
@@ -81,18 +87,14 @@ export default {
         id: 0,
         data: null,
         component: 'book-listing'
-      },
-      tabs: [
-        { title: 'Books', component: 'book-listing', active: true },
-        { title: 'The Story of john hahaha hehehe hohoho', component: 'book-listing', active: false },
-        { title: 'TEST', component: 'book-listing', active: false }
-      ]
+      }
     }
   },
   components: {
     'main-side-navigation': MainSideNavigation,
     'syncer': Syncer,
-    'book-listing': BookListing,
+    'syncing': Syncing,
+    'dashboard': Dashboard,
     'chapter-listing': ChapterListing,
     'scene-listing': SceneListing,
     'item-listing': ItemListing,
@@ -108,8 +110,8 @@ export default {
     'location-form': LocationForm,
     'item-form': ItemForm,
     'chapter-form': ChapterForm,
-    'character-form': CharacterForm,
-    'scene-form': SceneForm
+    'scene-form': SceneForm,
+    'character-form': CharacterForm
   },
   methods: {
     changeComponent: function (component, data) {
@@ -122,92 +124,33 @@ export default {
     toggleSyncer: function () {
       var scope = this
       scope.syncer.is_open = !scope.syncer.is_open
-    },
-    getBooks: function () {
-      var scope = this
-      // eslint-disable-next-line camelcase
-      var userID = this.$store.getters.getUserID
-
-      scope.axios
-        .get('http://localhost:3000/users/' + userID + '/books')
-        .then(response => {
-          scope.books = response.data
-        })
-      // scope.books = response
     }
   },
   beforeMount () {
+    /*
     this.$store.commit('authenticate', {
       user: loginInfo.data.user,
       author: loginInfo.data.author
     })
+    */
+  },
+  computed: {
+    tabs () {
+      return this.$store.getters.getTabs
+    }
   },
   mounted () {
     var scope = this
-    scope.getBooks()
+    var userID = this.$store.getters.getUserID
+    scope.$store.dispatch('getBooksByAuthorID', userID)
+
+    setTimeout(function () {
+      scope.ready = true
+    }, 1000)
   }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-ul { margin-left:0px; list-style:none;  }
-
-.left-side-bar { position:fixed; top:0px; left:0px; background:#293742; width:320px; height:100vh; overflow-y:auto; }
-
-.left-side-bar .header { text-align:center; height:70px; line-height:70px; border-bottom:1px solid #3c505f; padding:0px 10px; }
-.left-side-bar .header img { height:60px; }
-
-.left-side-bar .search-box { height:40px; line-height:40px; border-bottom:1px solid #3c505f; padding:0px 5px; position:relative; }
-.left-side-bar .search-box .icon { position:absolute; top:8px; right:8px; color:#506d84; font-size:25px; }
-.left-side-bar .search-box input { background:#324553; width:100%; height:30px; border:none; color:#fff; padding:0px 5px; padding-right:35px;  }
-.left-side-bar .search-box input:focus, .search-box input:active{ background:#324553; }
-.left-side-bar .search-box input::placeholder { color: #506d84; }
-
-.es-tree-view { padding:10px 5px; }
-.es-tree-view ul { padding-left:10px; text-align: left; }
-.es-tree-view ul:not(:first-child) { padding-left:30px; }
-.es-tree-view ul li  { padding-top:10px; cursor:pointer; }
-.es-tree-view ul li  img { height:14px; }
-.es-tree-view ul li .label { font-family:'Crimson Roman'; color:#abc4d7; font-size:18px; }
-.es-tree-view ul li .label span i { padding-right:5px; }
-.es-tree-view ul li .label:hover { color:#fff; }
-
-.es-tree-view ul.level-1 > li > .label { text-decoration:none; }
-
-.es-tree-view ul.level-1 > li > ul  { position:relative;  }
-.es-tree-view ul.level-1 > li > ul:after { height:100%; width:1px; content:''; border-left:1px #abc4d7 dotted ; position:absolute; top:0px; left:12px; }
-
-.es-tree-view ul.level-2 > li  { position:relative;  }
-.es-tree-view ul.level-2 > li:after  { content:''; position:absolute; top:18px; left:-10px; width:12px; height:1px; border-bottom:1px #abc4d7 dotted;  }
-
-.es-tree-view ul.level-2 > li ul { position:relative;  }
-.es-tree-view ul.level-2 > li ul:after { height:100%; width:1px; content:''; border-left:1px #abc4d7 dotted ; position:absolute; top:0px; left:12px; }
-
-.es-tree-view ul.level-3 > li  { position:relative;  }
-.es-tree-view ul.level-3 > li:after  { content:''; position:absolute; top:18px; left:-10px; width:12px; height:1px; border-bottom:1px #abc4d7 dotted;  }
-
-.es-tree-view ul.level-3 > li ul { position:relative;  }
-.es-tree-view ul.level-3 > li ul:after { height:100%; width:1px; content:''; border-left:1px #abc4d7 dotted ; position:absolute; top:0px; left:9px; }
-
-.es-tree-view ul.level-4 > li  { position:relative;  }
-.es-tree-view ul.level-4 > li:after  { content:''; position:absolute; top:18px; left:-10px; width:12px; height:1px; border-bottom:1px #abc4d7 dotted;  }
-
-.es-tree-view ul.level-4 > li ul { position:relative;  }
-.es-tree-view ul.level-4 > li ul:after { height:100%; width:1px; content:''; border-left:1px #abc4d7 dotted ; position:absolute; top:0px; left:12px; }
-
-.es-tree-view .level-1 li ul, .es-tree-view .level-1 li > ul > li { display:none; }
-.es-tree-view .level-1 li.open ul, .es-tree-view .level-1 li.open > ul > li{ display:block; }
-
-.es-tree-view .level-2 li ul, .es-tree-view .level-2 li > ul > li { display:none; }
-.es-tree-view .level-2 li.open ul, .es-tree-view .level-2 li.open > ul > li{ display:block; }
-
-.es-tree-view .level-3 li ul, .es-tree-view .level-3 li > ul > li { display:none; }
-.es-tree-view .level-3 li.open ul, .es-tree-view .level-3 li.open > ul > li{ display:block; }
-
-.tab-nav { background:#293742; padding-top:5px; display:flex; }
-.tab-nav .tab-nav-item { position:relative; font-size:12px; cursor:pointer; color:#fff; background:#324859; padding:7px 15px; padding-bottom:10px; padding-right:20px; width:180px; text-align:center; margin:0px 1px; display:inline-block;  border-top-left-radius: 3px; border-top-right-radius: 3px; border:1px solid #324351; border-bottom:none; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; }
-.tab-nav .tab-nav-item .tab-closer { position:absolute; top:7px; right:5px;  border-radius:50%; font-size:12px; line-height:15px; color:#82a5c0; font-weight:600; width:15px; height:15px; display:inline-block; text-align:center; }
-.tab-nav .tab-nav-item:first-child {  margin-left:-1px; }
-.tab-nav .tab-nav-item.active { background:#ffffff; color:#324351; }
-.tab-nav .tab-nav-item.active .tab-closer {color:#902c39; }
+p { }
 </style>

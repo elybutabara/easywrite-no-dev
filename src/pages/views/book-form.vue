@@ -1,44 +1,52 @@
 <template>
 <div class="page-book-form">
-  <div class="page-title">
-    <h3>Create New Book</h3>
-  </div>
-  <div class="content" >
-    <div class="row">
-      <div class="col-md-12">
-        <div class="form-group">
-          <label>Title: </label>
-          <input v-model="data.title" type="text" class="form-control" placeholder="Title" >
+    <div class="es-page-head">
+        <div class="inner">
+            <div class="details">
+                <div  v-if="properties != null">
+                    <h4>{{ properties.title }}</h4>
+                    <small>Date Modified: {{ properties.created_at }}</small>
+                </div>
+                <div v-else>
+                    <h4>Create New Book</h4>
+                </div>
+            </div>
+            <div class="actions">
+                <button v-if="properties != null" class="es-button-white" @click="saveBook()">Save Changes</button>
+                <button v-else class="es-button-white" @click="saveBook()">Save</button>
+            </div>
         </div>
-      </div>
     </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="form-group">
-          <label>Genre: </label>
-          <multiselect v-model="genre_collection" @select="selectGenre" @remove="removeGenre" :multiple="true" :taggable="true" label="name" track-by="uuid" :options="genres"></multiselect>
+    <div class="es-page-content">
+        <div class="container">
+            <div class="es-panel">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Title: </label>
+                            <input v-model="data.title" type="text" class="form-control" placeholder="Title">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Genre: </label>
+                            <multiselect v-model="genre_collection" @select="selectGenre" @remove="removeGenre" :multiple="true" :taggable="true" label="name" track-by="uuid" :options="genres"></multiselect>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Description: </label>
+                            <tiny-editor :initValue="data.about" v-on:getEditorContent="setAboutValue" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="form-group">
-          <label>Description: </label>
-          <tiny-editor :initValue="data.about"
-                       v-on:getEditorContent="setAboutValue"
-                       class="form-control"
-          />
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="form-group">
-          <button @click="saveBook">Save</button>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 </template>
 
@@ -114,8 +122,8 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              scope.$parent.getBooks()
-              scope.$parent.changeComponent('book-details', response.data)
+              var userID = this.$store.getters.getUserID
+              scope.$store.dispatch('getBooksByAuthorID', userID)
             })
           }
         })
@@ -160,6 +168,7 @@ export default {
   },
   mounted () {
     var scope = this
+    console.log('HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE' + scope.properties)
 
     if (scope.data.id) {
       scope.loadBook()
@@ -169,7 +178,6 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .page-book-form { padding:20px; }
 
   .page-title { font-family: 'Crimson Roman Bold'; position:relative; padding-top:20px; }
   .page-title h3 { font-size:35px; }

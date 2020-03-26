@@ -24,8 +24,8 @@ let mainWindow, loginWindow
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 960,
+    width : 500,
+    height: 600,
     icon: path.resolve('src/assets/img/easywrite.png'),
     webPreferences: {
       webSecurity: false,
@@ -35,7 +35,7 @@ function createWindow () {
   })
 
   if (process.env.NODE_ENV == 'development') {
-    mainWindow.webContents.openDevTools()
+    // mainWindow.webContents.openDevTools()
     let url = 'http://localhost:8080/'
     // and load the index.html of the app.
     // mainWindow.loadFile(url + 'dev/')
@@ -49,7 +49,7 @@ function createWindow () {
     mainWindow.loadFile(`${__dirname}/dist/index.html`)
   }
 
-  Menu.setApplicationMenu(menu)
+  Menu.setApplicationMenu(null)
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
@@ -64,8 +64,16 @@ function createWindow () {
 
   // load api listener, all IPC message will go
   listener.loadApi(mainWindow)
+
+  // resize after authentication
+  ipcMain.on('RESIZE_MAIN_WINDOW', function (e, cat) {
+    Menu.setApplicationMenu(menu)
+    mainWindow.setSize(1280, 920);
+    mainWindow.center();
+  })
 }
 
+/*
 function createLoginWindow () {
   loginWindow = new BrowserWindow({
     resizable: false,
@@ -85,7 +93,7 @@ function createLoginWindow () {
 
     // Load login html file into window
     loginWindow.loadURL(url + 'dev/#/auth')
-  }else {
+  } else {
     // and load the index.html of the app.
     // eslint-disable-next-line no-template-curly-in-string
     // let url = 'file://C:\\Users\\Admin\\Desktop\\FINAL\\spa\\'
@@ -104,14 +112,15 @@ function createLoginWindow () {
     createWindow()
   })
 }
+*/
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', function () {
   checkForVersionUpdates()
-  createLoginWindow()
-  // createWindow()
+  // createLoginWindow()
+  createWindow()
 })
 
 // Quit when all windows are closed.

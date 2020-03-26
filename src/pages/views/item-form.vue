@@ -1,65 +1,73 @@
 <template>
 <div class="page-item-form">
-  <div class="page-title">
-    <h3>{{ page_title }}</h3>
-  </div>
-  <div class="content" >
+    <div class="es-page-head">
+        <div class="inner">
+            <div class="details">
+                <div  v-if="data.id != null">
+                    <h4>Edit: <strong>{{ data.itemname }}</strong></h4>
+                    <small>Date Modified: {{ data.updated_at }}</small>
+                </div>
+                <div v-else>
+                    <h4>Create New Item</h4>
+                </div>
+            </div>
+            <div class="actions">
+                <button v-if="data.id != null" class="es-button-white" @click="uploadImage()">Save Changes</button>
+                <button v-else class="es-button-white" @click="uploadImage()">Save</button>
+            </div>
+        </div>
+    </div>
 
-    <div class="row">
-      <div class="col-md-5">
-        <div class="form-group">
-          <input v-on:change="displayImage" ref="fileInput" type="file" class="single-picture-file" name="single-picture-file" accept=".png, .jpg, .jpeg">
-          <div @click="$refs.fileInput.click()" class="uploaded-file-preview">
-            <div class="default-preview"><i class="fa fa-image"></i></div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-7">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="form-group">
-              <label>Item Name: </label>
-              <input v-model="data.itemname" type="text" class="form-control" placeholder="Item" >
+    <div class="es-page-content">
+        <div class="container">
+            <div class="es-panel">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <input v-on:change="displayImage" ref="fileInput" type="file" class="single-picture-file" name="single-picture-file" accept=".png, .jpg, .jpeg">
+                            <div @click="$refs.fileInput.click()" class="uploaded-file-preview">
+                                <div class="default-preview"><i class="fa fa-image"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Item Name: </label>
+                                    <input v-model="data.itemname" type="text" class="form-control" placeholder="Item">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>AKA: </label>
+                                    <input v-model.trim="data.AKA" type="text" class="form-control" placeholder="AKA">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Tags: </label>
+                                    <input v-model="data.tags" type="text" class="form-control" placeholder="Tags">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Description: </label>
+                            <tiny-editor :initValue="data.description" v-on:getEditorContent="setDescription" class="form-control" />
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="form-group">
-              <label>AKA: </label>
-              <input v-model.trim="data.AKA" type="text" class="form-control" placeholder="AKA" >
-            </div>
-          </div>
-        </div>
-        <div class="row">
-        <div class="col-md-12">
-          <div class="form-group">
-            <label>Tags: </label>
-            <input v-model="data.tags" type="text" class="form-control" placeholder="Tags" >
-          </div>
-        </div>
-      </div>
-      </div>
     </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="form-group">
-          <label>Description: </label>
-          <tiny-editor :initValue="data.description"
-                       v-on:getEditorContent="setDescription"
-                       class="form-control"
-          />
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="form-group">
-          <button @click="uploadImage">Save</button>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 </template>
 
@@ -72,14 +80,15 @@ export default {
   data: function () {
     return {
       data: {
-        book_id: this.properties.uuid,
+        id: null,
+        uuid: null,
+        book_id: null,
         itemname: '',
         AKA: '',
         tags: '',
         description: ''
       },
-      file: '',
-      page_title: ''
+      file: ''
     }
   },
   components: {
@@ -141,7 +150,12 @@ export default {
             scope.data.pictures = response.data.file.name
             scope.saveItem()
           }).catch(function () {
-            console.log('FAILURE!!')
+            scope.$notify({
+              group: 'notification',
+              type: 'error',
+              title: 'Failed',
+              text: 'An error occur while processing...'
+            })
           })
       } else {
         scope.saveItem()
@@ -149,11 +163,10 @@ export default {
     },
     saveItem () {
       var scope = this
-
       scope.axios
         .post('http://localhost:3000/items', scope.data)
         .then(response => {
-          if (response.data) {
+          if (response) {
             window.swal.fire({
               position: 'center',
               icon: 'success',
@@ -161,7 +174,17 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              scope.$parent.changeComponent('item-details', { item: response.data })
+              if (scope.data.uuid === null) {
+                scope.$set(scope.data, 'id', response.data.id)
+                scope.$set(scope.data, 'uuid', response.data.uuid)
+                scope.$set(scope.data, 'updated_at', response.data.updated_at)
+                scope.ADD_TO_LIST('items', response.data)
+              } else {
+                scope.$set(scope.data, 'id', response.data.id)
+                scope.$set(scope.data, 'uuid', response.data.uuid)
+                scope.$set(scope.data, 'updated_at', response.data.updated_at)
+                scope.UPDATE_FROM_LIST('items', response.data)
+              }
             })
           }
         })
@@ -191,6 +214,7 @@ export default {
   },
   beforeMount () {
     var scope = this
+    scope.data.book_id = scope.properties.book_id
 
     if (scope.properties.item) {
       scope.$set(scope.data, 'id', scope.properties.item.id)
@@ -201,18 +225,13 @@ export default {
     var scope = this
 
     if (scope.data.id) {
-      scope.page_title = 'Update ' + scope.properties.item.itemname
       scope.loadItem()
-    } else {
-      scope.page_title = scope.properties.title + ' New Item'
     }
   }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .page-item-form { padding:20px; }
-
   .page-title { font-family: 'Crimson Roman Bold'; position:relative; padding-top:20px; }
   .page-title h3 { font-size:35px; }
 

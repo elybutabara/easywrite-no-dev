@@ -1,16 +1,21 @@
 <template>
 <div class="page-chapter-details">
-    <div class="header">
-      <div class="page-title">
-          <button @click="toggleFilter()" class="btn-toggle-filter"><i class="las la-filter"></i></button>
-          <h3>{{ properties.title }}</h3>
-          <p>{{ properties.short_description }}</p>
-      </div>
-      <b-button @click="editChapter(properties)" variant="dark">Edit</b-button>
-      <b-button ref="button" :disabled="busy" @click="newVersion" variant="dark">Save as New Version</b-button>
+    <div class="es-page-head">
+        <div class="inner">
+            <div class="details">
+                <div>
+                    <h4><strong>{{ properties.chapter.title }}</strong></h4>
+                </div>
+            </div>
+            <div class="actions">
+                <button class="es-button-white" @click="CHANGE_COMPONENT('chapter-form', {  book_id: properties.chapter.book_id, chapter:  properties.chapter }, 'Edit - ' +  properties.chapter.title)">EDIT</button>
+                <button class="es-button-white" @click="DELETE_FROM_LIST('chapters',  properties.chapter)">DELETE</button>
+            </div>
+        </div>
     </div>
-    <hr/>
-    <div class="es-tab">
+
+    <div  class="es-page-content">
+        <div style="max-width:800px; margin:0px auto;" class="es-tab">
         <div>
             <div v-bind:class="{ 'active' : tab.active == 'content' }" class="es-tab-button" @click="changeTab('content')">
                 Content
@@ -23,7 +28,7 @@
           </div>
         </div>
         <div class="es-tab-content" v-if="tab.active == 'content'">
-            <div v-html="properties.chapter_version[properties.chapter_version.length - 1].content" class="description" ></div>
+           <div v-if="chapter_versions !== 'undefined' && chapter_versions.length > 0" v-html="chapter_versions[chapter_versions.length - 1].content" class="description" ></div>
         </div>
         <div class="es-tab-content" v-if="tab.active == 'scenes'">
           <div class="text-right">
@@ -50,10 +55,10 @@
           <div class="version-container">
             <b-card no-body>
               <b-tabs pills card vertical nav-wrapper-class="w-30">
-                <b-tab v-for="(version, index) in chapter.chapter_version" v-bind:key="version.id" :active="index==0" >
+                <b-tab v-for="(version, index) in chapter_versions" v-bind:key="version.id" :active="index==0" >
                   <template v-slot:title>
                     Version {{ index+1 }}
-                    <b-badge variant="primary" v-if="index+1 == chapter.chapter_version.length" >Latest</b-badge>
+                    <b-badge variant="primary" v-if="index+1 == chapter_versions.length" >Latest</b-badge>
                     <b-badge variant="success" v-else-if="version.is_same == true" >Same</b-badge>
                     <b-badge variant="secondary" v-else >Diff</b-badge>
                   </template>
@@ -68,10 +73,10 @@
           </div>
         </div>
     </div>
+    </div>
   <b-overlay :show="busy" no-wrap fixed @shown="onShown" @hidden="onHidden">
     <template v-slot:overlay>
       <div
-        id="overlay-background"
         ref="dialog"
         tabindex="-1"
         role="dialog"
@@ -112,9 +117,10 @@ export default {
   props: ['properties'],
   data: function () {
     return {
-      chapter: this.properties,
+      chapter: null,
+      chapter_versions: [],
       chapter_version: {
-        chapter_id: this.properties.uuid,
+        chapter_id: null,
         content: '',
         change_description: ''
       },
@@ -202,11 +208,11 @@ export default {
       scope.axios
         .get('http://localhost:3000/chapters/' + chapter.uuid + '/versions')
         .then(response => {
-          scope.chapter.chapter_version = response.data
+          scope.chapter_versions = response.data
 
           scope.chapter_version.chapter_id = chapter.uuid
           scope.chapter_version.change_description = ''
-          scope.chapter_version.content = scope.chapter.chapter_version[response.data.length - 1].content
+          scope.chapter_version.content = scope.chapter_versions[response.data.length - 1].content
         })
     },
     getSceneByChapter: function (chapterId) {
@@ -254,19 +260,19 @@ export default {
   },
   beforeUpdate () {
     var scope = this
-    if (scope.chapter.uuid !== scope.properties.uuid) {
-      scope.getAllChapterVersions(scope.properties)
+    if (scope.properties.chapter.uuid !== scope.chapter.uuid) {
+      scope.$set(scope, 'chapter', scope.properties.chapter)
+      scope.getAllChapterVersions(scope.properties.chapter)
     }
   },
   mounted () {
     var scope = this
-    scope.getAllChapterVersions(scope.properties)
+    scope.getAllChapterVersions(scope.properties.chapter)
   }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    .page-chapter-details { padding:20px; }
 
     .es-tab .es-tab-button {
         cursor:pointer; background:#354350; color:#fff; border:1px solid #efefef; display:inline-block; height:40px; line-height:40px; padding:0px 40px; font-family: 'Crimson Roman Bold'; cursor:pointer;
@@ -286,28 +292,17 @@ export default {
     /*.chapter-scenes-list .item { font-family: 'Crimson Roman Bold'; border:1px solid #354350; border-top:none; padding:0px 20px; height:35px; line-height:35px}*/
     /*.chapter-scenes-list .item:first-child { border-top:1px solid #354350;  }*/
 
-    .page-title { font-family: 'Crimson Roman Bold'; position:relative; padding-top:20px; }
-    .page-title h3 { font-size:35px; }
-    .page-title p { font-size:18px; }
-    .page-actions { text-align:right; margin-top:10px;  }
-    .page-actions .search-box  { position:relative; display:inline-block; width:350px; }
-    .page-actions .search-box input { width:100%;  padding:0px 10px; padding-top:3px; padding-right:30px; height:35px; line-height:35px; }
-    .page-actions .search-box .btn-search {  position:absolute; top:2px; right:0px; height:35px; width:35px; background:none; border:none; }
+    .image-container { text-align: center; }
+    .image-container img { width:100%; max-width:250px; }
 
-    .btn-new-record { z-index:500; padding-top:8px; position:fixed; bottom:20px; right:20px; height:50px; width:50px; border-radius:50%; background:#c12938; color:#fff; border:none; font-size:25px; }
-    .btn-toggle-filter { display:none; float:right;  position:absolute; top:0px; right:0px; background:#fff; border:1px solid #9fb1c2; padding-top:5px; padding-bottom:0px; }
+    .es-panel { background:#fff; margin:0px auto; margin-top:70px; max-width:780px; border:1px solid #e0e5ee; }
+    .es-panel .es-panel-content { padding:30px 30px; }
+    .es-panel .es-panel-content .title { margin:0px; margin-top:20px; text-align:center;  font-size:25px; font-weight:600; color:#293742; }
+    .es-panel .es-panel-content .aka { margin-top:0px; text-align:center;  font-size:16px; color:#922c39; font-weight:600; }
+    .es-panel .es-panel-content .tags { text-align:center; font-size:16px; color:#293742; }
+    .es-panel .es-panel-content .description { display:block; padding:20px 0px; font-size:18px; text-align:center; }
 
-    @media only screen and (max-width: 968px) {
-        .page-chapter-listing .item .header { padding:0px 15px; }
-        .page-chapter-listing .item .content { padding:15px;  }
-
-        .page-chapter-listing .item .content strong { font-family:'Crimson Bold'; font-size:16px; }
-        .page-chapter-listing .item .content .description { font-size:14px; }
-
-        .page-actions {  text-align:left;  display:none; }
-        .page-actions.open {  display:block; }
-        .page-actions .search-box  { width:100%; }
-
-        .btn-toggle-filter { display:inline-block; }
-    }
+    .es-panel .es-panel-footer { display:flex; background:#f5f8fa; border-top:1px solid #e0e5ee; height:40px; line-height:40px; padding:0px 0px; }
+    .es-panel .es-panel-footer .cta { font-weight:600; cursor:pointer; text-align:center; width:50%;}
+    .es-panel .es-panel-footer .cta:first-child {  border-right:1px solid #e0e5ee; }
 </style>

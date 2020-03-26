@@ -7,11 +7,14 @@ import VueAxios from 'vue-axios'
 import App from './App'
 import Auth from './pages/Auth'
 import router from './router'
-import StoreAuth from './stores/auth'
 import mixins from './utils/mixins'
 import Notifications from 'vue-notification'
 import Multiselect from 'vue-multiselect'
 import { BootstrapVue } from 'bootstrap-vue'
+
+import tab from './stores/tab'
+import auth from './stores/auth'
+import listing from './stores/listing'
 
 // import './assets/vendors/bootstrap/css/bootstrap.min.css'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -81,10 +84,11 @@ Vue.use(BootstrapVue)
 
 const store = new Vuex.Store({
   modules: {
-    auth: StoreAuth
+    tab: tab,
+    auth: auth,
+    listing: listing
   }
 })
-
 // Vue.component('editor', tinymce)
 
 // all global functions goes here...

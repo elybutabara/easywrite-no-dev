@@ -30,7 +30,7 @@ export default new Router({
       name: 'Main',
       beforeEnter: checkAuth,
       component: Main,
-      meta: { protected: false }
+      meta: { protected: true }
     },
     {
       path: '/auth',

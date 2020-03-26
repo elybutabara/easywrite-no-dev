@@ -1,5 +1,6 @@
 export default {
   strict: true, // make sure everything us mutated, no direct editing of state
+  name: 'auth',
   state: {
     user: {
       data: [],

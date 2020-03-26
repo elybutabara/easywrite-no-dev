@@ -19,30 +19,21 @@ class SceneVersionController {
     return sceneVersion
   }
 
-  static async sync (rows) {
-    var updated = 0
-    var inserted = 0
+  static async sync (row) {
+    var data = await SceneVersion.query()
+      .patch(row)
+      .where('uuid', '=', row.uuid)
 
-    for (var i = 0; i < rows.length; i++) {
-      var data = await SceneVersion.query()
-        .patch(rows[i])
-        .where('uuid', '=', rows[i].uuid)
+    if (!data || data === 0) {
+      data = await SceneVersion.query().insert(row)
 
-      if (!data || data === 0) {
-        data = await SceneVersion.query().insert(rows[i])
-
-        // update uuid to match web
-        data = await SceneVersion.query()
-          .patch({ 'uuid': rows[i].uuid })
-          .where('uuid', '=', data.uuid)
-
-        inserted++
-      } else {
-        updated++
-      }
+      // update uuid to match web
+      data = await SceneVersion.query()
+        .patch({ 'uuid': row.uuid })
+        .where('uuid', '=', data.uuid)
     }
 
-    return { updated: updated, inserted: inserted }
+    return data
   }
 }
 

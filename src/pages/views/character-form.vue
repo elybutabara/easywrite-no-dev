@@ -1,100 +1,97 @@
 <template>
 <div class="page-character-form">
-  <div class="page-title">
-    <h3>New Character</h3>
-  </div>
-  <div class="content" >
-    <div class="row">
-      <div class="col-md-6">
-        <div class="form-group">
-          <input v-on:change="displayImage" ref="fileInput" type="file" class="single-picture-file" name="single-picture-file" accept=".png, .jpg, .jpeg">
-          <div @click="$refs.fileInput.click()" class="uploaded-file-preview">
-            <div class="default-preview"><i class="fa fa-image"></i></div>
-          </div>
+    <div class="es-page-head">
+        <div class="inner">
+            <div class="details">
+                <div  v-if="data.id != null">
+                    <h4>Edit: <strong>{{ data.fullname }}</strong></h4>
+                    <small>Date Modified: {{ data.updated_at }}</small>
+                </div>
+                <div v-else>
+                    <h4>Create New Character</h4>
+                </div>
+            </div>
+            <div class="actions">
+                <button v-if="data.id != null" class="es-button-white" @click="uploadImage()">Save Changes</button>
+                <button v-else class="es-button-white" @click="uploadImage()">Save</button>
+            </div>
         </div>
-      </div>
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="form-group">
-              <label>Full Name: </label>
-              <b-form-input
-                id="input-live"
-                v-model="data.fullname"
-                :state="null"
-                aria-describedby="input-live-help input-live-feedback"
-                placeholder="Full Name"
-              ></b-form-input>
+    </div>
 
-              <!-- This will only be shown if the preceding input has an invalid state -->
-              <b-form-invalid-feedback id="input-live-feedback">
-                Full name is required
-              </b-form-invalid-feedback>
+    <div class="es-page-content">
+        <div class="container">
+            <div class="es-panel">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input v-on:change="displayImage" ref="fileInput" type="file" class="single-picture-file" name="single-picture-file" accept=".png, .jpg, .jpeg">
+                            <div @click="$refs.fileInput.click()" class="uploaded-file-preview">
+                                <div class="default-preview"><i class="fa fa-image"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Full Name: </label>
+                                    <b-form-input id="input-live" v-model="data.fullname" :state="null" aria-describedby="input-live-help input-live-feedback" placeholder="Full Name"></b-form-input>
+
+                                    <!-- This will only be shown if the preceding input has an invalid state -->
+                                    <b-form-invalid-feedback id="input-live-feedback">
+                                        Full name is required
+                                    </b-form-invalid-feedback>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Short Name: </label>
+                                    <input v-model="data.shortname" type="text" class="form-control" placeholder="Short Name">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Nickname: </label>
+                                    <input v-model.trim="data.nickname" type="text" class="form-control" placeholder="Nickname">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Occupation: </label>
+                            <input v-model="data.occupation" type="text" class="form-control" placeholder="Occupation">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="birthdate-datepicker">Birthdate: </label>
+                            <b-form-datepicker id="birthdate-datepicker" v-model="data.birthdate" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"></b-form-datepicker>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <b-tabs content-class="mt-3" active-nav-item-class="bg-dark text-white">
+                                <b-tab title="Description" active>
+                                    <tiny-editor :initValue="data.description" v-on:getEditorContent="setDescription" class="form-control" />
+                                </b-tab>
+                                <b-tab title="Bio">
+                                    <tiny-editor :initValue="data.bio" v-on:getEditorContent="setBio" class="form-control" />
+                                </b-tab>
+                                <b-tab title="Goals">
+                                    <tiny-editor :initValue="data.goals" v-on:getEditorContent="setGoals" class="form-control" />
+                                </b-tab>
+                            </b-tabs>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="col-md-12">
-            <div class="form-group">
-              <label>Short Name: </label>
-              <input v-model="data.shortname" type="text" class="form-control" placeholder="Short Name" >
-            </div>
-          </div>
-          <div class="col-md-12">
-            <div class="form-group">
-              <label>Nickname: </label>
-              <input v-model.trim="data.nickname" type="text" class="form-control" placeholder="Nickname" >
-            </div>
-          </div>
         </div>
-      </div>
     </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="form-group">
-          <label>Occupation: </label>
-          <input v-model="data.occupation" type="text" class="form-control" placeholder="Occupation" >
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="form-group">
-          <label for="birthdate-datepicker">Birthdate: </label>
-          <b-form-datepicker id="birthdate-datepicker" v-model="data.birthdate" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"></b-form-datepicker>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="form-group">
-          <b-tabs content-class="mt-3" active-nav-item-class="bg-dark text-white">
-            <b-tab title="Description" active>
-              <tiny-editor :initValue="data.description"
-                           v-on:getEditorContent="setDescription"
-                           class="form-control"
-              />
-            </b-tab>
-            <b-tab title="Bio">
-              <tiny-editor :initValue="data.bio"
-                           v-on:getEditorContent="setBio"
-                           class="form-control"
-              />
-            </b-tab>
-            <b-tab title="Goals">
-              <tiny-editor :initValue="data.goals"
-                           v-on:getEditorContent="setGoals"
-                           class="form-control"
-              />
-            </b-tab>
-          </b-tabs>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="form-group">
-          <button @click="uploadImage">Save</button>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 </template>
 
@@ -109,7 +106,9 @@ export default {
   data: function () {
     return {
       data: {
-        book_id: this.properties.uuid,
+        id: null,
+        uuid: null,
+        book_id: null,
         shortname: '',
         fullname: '',
         nickname: '',
@@ -212,11 +211,20 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              scope.$parent.changeComponent('character-details', { character: response.data })
+              if (scope.data.uuid === null) {
+                scope.$set(scope.data, 'id', response.data.id)
+                scope.$set(scope.data, 'uuid', response.data.uuid)
+                scope.$set(scope.data, 'updated_at', response.data.updated_at)
+                scope.ADD_TO_LIST('characters', response.data)
+              } else {
+                scope.$set(scope.data, 'id', response.data.id)
+                scope.$set(scope.data, 'uuid', response.data.uuid)
+                scope.$set(scope.data, 'updated_at', response.data.updated_at)
+                scope.UPDATE_FROM_LIST('characters', response.data)
+              }
             })
           }
         })
-      console.log(scope.data)
     },
     loadCharacter () {
       var scope = this
@@ -242,25 +250,22 @@ export default {
 
             window.$('.uploaded-file-preview').html(image)
           }
-
-          console.log(response.data)
         })
     }
   },
   beforeMount () {
     var scope = this
+    scope.data.book_id = scope.properties.book_id
 
     if (scope.properties.character) {
       scope.$set(scope.data, 'id', scope.properties.character.id)
       scope.$set(scope.data, 'uuid', scope.properties.character.uuid)
-      scope.$set(scope.data, 'book_id', scope.properties.character.book_id)
     }
   },
   mounted () {
     var scope = this
 
     if (scope.data.id) {
-      window.$('.page-character-form .page-title h3').html('Update ' + scope.properties.character.fullname)
       scope.loadCharacter()
     }
   }

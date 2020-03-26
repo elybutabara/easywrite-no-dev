@@ -1,41 +1,36 @@
 <template>
 <div class="page-character-listing">
    <div>
-       <button @click="createCharacter" class="btn-new-record"><i class="las la-plus"></i></button>
-       <div class="row">
-           <div class="col-12 col-md-7">
-                <div class="page-title">
-                    <button @click="toggleFilter()" class="btn-toggle-filter"><i class="las la-filter"></i></button>
-                    <h3>{{ properties.title }}'s Characters</h3>
+        <div class="es-page-head">
+            <div class="inner">
+                <div class="details">
+                    <h4>Characters</h4>
+                    <small>Below are the list of characters under {{ properties.title }}</small>
                 </div>
-           </div>
-           <div class="col-12 col-md-5">
-               <div v-bind:class="{ 'open' : filter.is_open }" class="page-actions">
-                    <div class="search-box">
-                        <form v-on:submit.prevent="filterResults()">
-                            <input v-model="filter.keyword" type="text" placeholder="Enter a keyword...">
-                            <button class="btn-search" type="submit"><i class="las la-search"></i></button>
-                        </form>
-                    </div>
+                <div class="actions">
+                    <button class="es-button-white" @click="CHANGE_COMPONENT('character-form', { list_index: -1, book_id: properties.uuid, character: null }, 'New Character', true)">New Character</button>
                 </div>
-           </div>
+            </div>
         </div>
-        <hr/>
 
-       <div class="row">
-            <div class="col-12 col-lg-4 col-md-6 col-sm-6 fadeIn animated" v-for="character in characters" v-bind:key="character.id">
-                <div class="item" >
-                    <div class="content" >
-                        <div class="picture-placeholder"><img :src="character.picture_src" /></div>
-                      <strong>{{ character.fullname }} <span v-if="character.nickname && character.nickname.length !== 0">({{ character.nickname }})</span></strong> <br/>
-                        <div v-html="character.description" class="description" >{{ character.description }}</div>
-                        <button @click="viewCharacter(character)" type="button">VIEW</button>
-                        <button @click="editCharacter(character)" type="button">EDIT</button>
-                        <button @click="deleteCharacter(character.uuid)"  type="button">DELETE</button>
+       <div class="es-page-content">
+            <div class="es-row">
+                <div class="es-col fadeIn animated" v-for="character in GET_CHARACTERS_BY_BOOK(bookUUID)" v-bind:key="character.id">
+                    <div class="es-card">
+                        <div class="es-card-content">
+                            <p class="title">{{ character.fullname || 'Untitled' }}</p>
+                            <i class="description" v-if="character.description !== '' && character.description !== null" v-html="character.description"></i>
+                            <i class="description" v-else>No Description</i>
+                        </div>
+                        <div class="es-card-footer">
+                            <button class="btn-" @click="CHANGE_COMPONENT('character-details', {  book_id: properties.uuid, character: character }, character.fullname)"><i class="lar la-eye"></i> VIEW</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT('character-form', { book_id: properties.uuid, character: character }, 'Edit - ' + character.fullname, true)"><i class="las la-pencil-alt"></i> EDIT</button>
+                            <button class="btn-delete" @click="DELETE_FROM_LIST('characters', item)"><i class="las la-trash-alt"></i> DELETE</button>
+                        </div>
                     </div>
                 </div>
             </div>
-       </div>
+        </div>
 
    </div>
 </div>
@@ -48,10 +43,7 @@ export default {
   data: function () {
     return {
       characters: [],
-      filter: {
-        is_open: false,
-        keyword: ''
-      }
+      bookUUID: ''
     }
   },
   methods: {
@@ -70,89 +62,27 @@ export default {
         .then(response => {
           scope.characters = response.data
         })
-    },
-    createCharacter: function () {
-      var scope = this
-      scope.$parent.changeComponent('character-form', scope.properties)
-    },
-    editCharacter: function (character) {
-      var scope = this
-      scope.$parent.changeComponent('character-form', { character: character })
-    },
-    viewCharacter: function (character) {
-      var scope = this
-      scope.$parent.changeComponent('character-details', { character: character })
-    },
-    deleteCharacter: function (characterId) {
-      var scope = this
-      window.swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
-        if (result.value) {
-          scope.axios
-            .delete('http://localhost:3000/characters/' + characterId)
-            .then(response => {
-              if (response.data) {
-                window.swal.fire({
-                  position: 'center',
-                  icon: 'success',
-                  title: 'Character successfuly deleted',
-                  showConfirmButton: false,
-                  timer: 1500
-                }).then(() => {
-                  scope.getCharacters(scope.properties.uuid)
-                  scope.$parent.changeComponent('character-listing', scope.properties)
-                })
-              }
-            })
-        }
-      })
     }
   },
   mounted () {
     var scope = this
-    scope.getCharacters(scope.properties.uuid)
+    // scope.getCharacters(scope.properties.id)
+    scope.bookUUID = scope.properties.uuid
   }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    .page-character-listing { padding:20px; padding-top:60px; }
-    .page-character-listing .item { margin-top:20px; border:1px solid #9fb1c2; }
-    .page-character-listing .item .header { background:#354350; padding:0px 20px; height:35px; line-height:38px; color:#fff; border:2px solid #354350; }
-    .page-character-listing .item .content { padding:20px; background:#fff; text-align:center; }
-    .page-character-listing .item .content .picture-placeholder {  display:block; margin:0px auto;  width:200px; height:100px; background:#ccd5dd; border:2px solid #9fb1c2; margin-bottom:10px; cursor:pointer; }
-    .page-character-listing .item .content .picture-placeholder img { height: 100% }
-    .page-character-listing .item .content strong { font-family:'Crimson Bold'; font-size:18px; }
-    .page-character-listing .item .content .description { font-size:16px; }
-    .page-character-listing .item .content button { font-size:14px; background:#fff; border:1px solid #efefef; padding:5px 10px; padding-bottom:0px; }
+    .es-card { color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
+    .es-card .es-card-content { position:relative; padding:20px; min-height:150px; }
+    .es-card .es-card-content .title { font-size:18px; font-weight:900; margin:0px; padding-right:110px; }
+    .es-card .es-card-content .description { display:inline-block; padding-top:15px; color:#4b6273; }
 
-    .page-title { position:relative; padding-right:50px; }
-    .page-actions { text-align:right; margin-top:10px; }
-    .page-actions .search-box  { position:relative; display:inline-block; width:350px; }
-    .page-actions .search-box input { width:100%;  padding:0px 10px; padding-top:3px; padding-right:30px; height:35px; line-height:35px; }
-    .page-actions .search-box .btn-search {  position:absolute; top:2px; right:0px; height:35px; width:35px; background:none; border:none; }
+    .es-card .es-card-content .es-card-actions { position:absolute; top:20px; right:20px; text-align:right; }
 
-    .btn-new-record { z-index:500; padding-top:8px; position:fixed; bottom:20px; right:20px; height:50px; width:50px; border-radius:50%; background:#c12938; color:#fff; border:none; font-size:25px; }
-    .btn-toggle-filter { display:none; float:right;  position:absolute; top:0px; right:0px; background:#fff; border:1px solid #9fb1c2; padding-top:5px; padding-bottom:0px; }
-
-    @media only screen and (max-width: 968px) {
-        .page-character-listing .item .header { padding:0px 15px; }
-        .page-character-listing .item .content { padding:15px;  }
-
-        .page-character-listing .item .content strong { font-family:'Crimson Bold'; font-size:16px; }
-        .page-character-listing .item .content .description { font-size:14px; }
-
-        .page-actions {  text-align:left;  display:none; }
-        .page-actions.open {  display:block; }
-        .page-actions .search-box  { width:100%; }
-
-        .btn-toggle-filter { display:inline-block; }
-    }
+    .es-card .es-card-footer { position:relative; background:#f5f8fa; height:40px; line-height:40px; padding:0px 0px; border-top:1px solid #e0e5ee; }
+    .es-card .es-card-footer button { font-weight:600; background:transparent; border:none; height:40px; line-height:32px; text-align:center; font-size:14px; padding:0px 8px; }
+    .es-card .es-card-footer button:hover { background:#e0e5ee; }
+    .es-card .es-card-footer button i { font-size:18px; }
+    .es-card .es-card-footer button.btn-delete { font-weight:600; color:#8f2c39; border-left:1px solid #e0e5ee; position:absolute; top:0px; right:0px; }
 </style>

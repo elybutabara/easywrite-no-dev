@@ -37,30 +37,21 @@ class LocationController {
     return location
   }
 
-  static async sync (rows) {
-    var updated = 0
-    var inserted = 0
+  static async sync (row) {
+    var data = await Location.query()
+      .patch(row)
+      .where('uuid', '=', row.uuid)
 
-    for (var i = 0; i < rows.length; i++) {
-      var data = await Location.query()
-        .patch(rows[i])
-        .where('uuid', '=', rows[i].uuid)
+    if (!data || data === 0) {
+      data = await Location.query().insert(row)
 
-      if (!data || data === 0) {
-        data = await Location.query().insert(rows[i])
-
-        // update uuid to match web
-        data = await Location.query()
-          .patch({ 'uuid': rows[i].uuid })
-          .where('uuid', '=', data.uuid)
-
-        inserted++
-      } else {
-        updated++
-      }
+      // update uuid to match web
+      data = await Location.query()
+        .patch({ 'uuid': row.uuid })
+        .where('uuid', '=', data.uuid)
     }
 
-    return { updated: updated, inserted: inserted }
+    return data
   }
 }
 

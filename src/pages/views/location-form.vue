@@ -1,65 +1,72 @@
 <template>
 <div class="page-location-form">
-  <div class="page-title">
-    <h3>{{ properties.location.book.title }} New Location</h3>
-  </div>
-  <div class="content" >
-
-    <div class="row">
-      <div class="col-md-5">
-        <div class="form-group">
-          <input v-on:change="displayImage" ref="fileInput" type="file" class="single-picture-file" name="single-picture-file" accept=".png, .jpg, .jpeg">
-          <div @click="$refs.fileInput.click()" class="uploaded-file-preview">
-            <div class="default-preview"><i class="fa fa-image"></i></div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-7">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="form-group">
-              <label>Location: </label>
-              <input v-model="data.location" type="text" class="form-control" placeholder="Location" >
+   <div class="es-page-head">
+        <div class="inner">
+            <div class="details">
+                <div  v-if="data.id != null">
+                    <h4>Edit: <strong>{{ data.location }}</strong></h4>
+                    <small>Date Modified: {{ data.updated_at }}</small>
+                </div>
+                <div v-else>
+                    <h4>Create New Location</h4>
+                </div>
             </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="form-group">
-              <label>AKA: </label>
-              <input v-model.trim="data.AKA" type="text" class="form-control" placeholder="AKA" >
+            <div class="actions">
+                <button v-if="data.id != null" class="es-button-white" @click="uploadImage()">Save Changes</button>
+                <button v-else class="es-button-white" @click="uploadImage()">Save</button>
             </div>
-          </div>
         </div>
-        <div class="row">
-        <div class="col-md-12">
-          <div class="form-group">
-            <label>Tags: </label>
-            <input v-model="data.tags" type="text" class="form-control" placeholder="Tags" >
-          </div>
-        </div>
-      </div>
-      </div>
     </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="form-group">
-          <label>Description: </label>
-          <tiny-editor :initValue="data.description"
-                       v-on:getEditorContent="setDescription"
-                       class="form-control"
-          />
+    <div class="es-page-content">
+        <div class="container">
+            <div class="es-panel">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <input v-on:change="displayImage" ref="fileInput" type="file" class="single-picture-file" name="single-picture-file" accept=".png, .jpg, .jpeg">
+                            <div @click="$refs.fileInput.click()" class="uploaded-file-preview">
+                                <div class="default-preview"><i class="fa fa-image"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Location: </label>
+                                    <input v-model="data.location" type="text" class="form-control" placeholder="Location">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>AKA: </label>
+                                    <input v-model.trim="data.AKA" type="text" class="form-control" placeholder="AKA">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Tags: </label>
+                                    <input v-model="data.tags" type="text" class="form-control" placeholder="Tags">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Description: </label>
+                            <tiny-editor :initValue="data.description" v-on:getEditorContent="setDescription" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="form-group">
-          <button @click="uploadImage">Save</button>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 </template>
 
@@ -72,7 +79,9 @@ export default {
   data: function () {
     return {
       data: {
-        book_id: this.properties.uuid,
+        id: null,
+        uuid: null,
+        book_id: null,
         location: '',
         AKA: '',
         tags: '',
@@ -160,7 +169,17 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              scope.$parent.changeComponent('location-details', { location: response.data })
+              if (scope.data.uuid === null) {
+                scope.$set(scope.data, 'id', response.data.id)
+                scope.$set(scope.data, 'uuid', response.data.uuid)
+                scope.$set(scope.data, 'updated_at', response.data.updated_at)
+                scope.ADD_TO_LIST('locations', response.data)
+              } else {
+                scope.$set(scope.data, 'id', response.data.id)
+                scope.$set(scope.data, 'uuid', response.data.uuid)
+                scope.$set(scope.data, 'updated_at', response.data.updated_at)
+                scope.UPDATE_FROM_LIST('locations', response.data)
+              }
             })
           }
         })
@@ -190,6 +209,7 @@ export default {
   },
   beforeMount () {
     var scope = this
+    scope.data.book_id = scope.properties.book_id
 
     if (scope.properties.location) {
       scope.$set(scope.data, 'id', scope.properties.location.id)
