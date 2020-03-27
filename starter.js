@@ -3,6 +3,7 @@ const { app, BrowserWindow, Menu, ipcMain } = require('electron')
 const path = require('path')
 const fs = require('fs')
 const log = require('electron-log')
+const appUpdate = require('./api/updater')
 
 if(fs.existsSync(path.join(process.resourcesPath || '','prod.env'))){
   process.env.NODE_ENV = 'production'
@@ -34,6 +35,7 @@ function createWindow () {
     }
   })
 
+  // mainWindow.webContents.openDevTools()
   if (process.env.NODE_ENV == 'development') {
     // mainWindow.webContents.openDevTools()
     let url = 'http://localhost:8080/'
@@ -117,10 +119,10 @@ function createLoginWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', function () {
+app.on('ready', function appReady() {
   checkForVersionUpdates()
-  // createLoginWindow()
   createWindow()
+  appUpdate.check()
 })
 
 // Quit when all windows are closed.
@@ -147,11 +149,20 @@ function checkFreshInstallation () {
     src = path.resolve('./api', 'base.db')
     dist = path.resolve(__dirname,'config', 'db', 'development.db')
   }else{
-    src = path.join(process.resourcesPath, 'app.asar', 'api', 'base.db')
-    dist = path.resolve(app.getPath('userData'), 'resources', 'db', 'easywrite.db')
+    process.env.TEST_PROD = true;
+    if(process.env.TEST_PROD){
+      src = path.join(process.resourcesPath, 'app.asar', 'api', 'base.db')
+      dist = path.resolve(process.resourcesPath, 'resources', 'db', 'easywrite.db')
 
-    log.info('starter:' + process.env.NODE_ENV)
-    log.info('starter:' + dist)
+      log.info('starter:' + process.env.NODE_ENV)
+      log.info('starter:' + dist)
+    }else{
+      src = path.join(process.resourcesPath, 'app.asar', 'api', 'base.db')
+      dist = path.resolve(app.getPath('userData'), 'resources', 'db', 'easywrite.db')
+
+      log.info('starter:' + process.env.NODE_ENV)
+      log.info('starter:' + dist)
+    }
   }
 
   //%USERPROFILE%\AppData\Roaming\{app name}\logs\{process type}.log
@@ -221,3 +232,8 @@ function checkForVersionUpdates(){
 
 
 }
+
+ipcMain.on('install-update', function (e, cat) {
+  const {autoUpdater} = require('electron-updater')
+  autoUpdater.quitAndInstall()
+})

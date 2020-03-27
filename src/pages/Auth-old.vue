@@ -4,6 +4,7 @@
     <div class="login-form text-center">
       <form v-on:submit.prevent="authenticate()">
         <h1 class="no-margin">Easy Write</h1>
+        <h6 class="version no-margin" style="color: white;font-size: small" v-html="'Version ' + version"></h6>
         <p><small>Welcome Back! Please login to continue.</small></p><br>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
@@ -30,7 +31,7 @@
                </div>
                <div class="content">
                    <form v-on:submit.prevent="authenticate()">
-                       <h6 class="version no-margin" style="color: white;font-size: small" v-html="'Version ' + version"></h6>
+                     <h6 class="version no-margin" style="color: white;font-size: small" v-html="'Version ' + version"></h6>
                        <p class="welcome">Welcome to EasyWrite, please login to your account to continue.</p>
                        <div class="input-group line">
                            <label>Username</label>
@@ -82,12 +83,8 @@ export default {
             user: response.data.user,
             author: response.data.author
           })
-          setTimeout(function () {
-            ipcRenderer.send('RESIZE_MAIN_WINDOW', response)
-            console.log(scope.$store.getters.isAuthenticated)
-            console.log(scope.$store.getters.getUserToken)
-            scope.$router.push({name: 'Main'})
-          }, 100)
+          ipcRenderer.send('RESIZE_MAIN_WINDOW', response)
+          scope.$router.push({name: 'Main'})
           // this.window.close()
         })
         .catch(error => {
@@ -98,8 +95,7 @@ export default {
     },
     authenticateAPI: function () {
       var scope = this
-      console.log(window.API_URL + '/login')
-      scope.axios.post(window.API_URL + '/login', {
+      scope.axios.post('https://api-pilot.orosage.com/dev/login', {
         username: scope.username,
         password: scope.password
       })
@@ -139,12 +135,8 @@ export default {
                 user: response.data,
                 author: response.data.author
               })
-              setTimeout(function () {
-                ipcRenderer.send('RESIZE_MAIN_WINDOW', response)
-                console.log(scope.$store.getters.isAuthenticated)
-                console.log(scope.$store.getters.getUserToken)
-                scope.$router.push({name: 'Main'})
-              }, 100)
+              ipcRenderer.send('RESIZE_MAIN_WINDOW', response)
+              scope.$router.push({name: 'Main'})
             })
           }
         })
@@ -204,13 +196,14 @@ body { background:#293742 !important; }
 .login-form button {
   width: 154px;
 }
+<<<<<<< HEAD
 */
 .version{
-    color: white;
-    font-size: x-small;
-    bottom: 0;
-    right: 0;
-    position: absolute;
-    padding: 5px;
+  color: white;
+  font-size: x-small;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  padding: 5px;
 }
 </style>

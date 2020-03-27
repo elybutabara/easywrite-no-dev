@@ -22,7 +22,7 @@
                             </div>
                             <ul class="level-3">
                                 <li v-bind:class="{ 'open' : chapter.is_open  == true }" v-bind:key="chapter.id" v-for="chapter in GET_CHAPTERS_BY_BOOK(book.uuid)">
-                                    <div @dblclick="CHANGE_COMPONENT('chapter-details', { book_id: book.uuid, chapter: chapter }, chapter.title);getSceneByChapter(chapter)" class="label"><span><img  src="@/assets/img/icons/chapter.svg"> {{ chapter.title }}</span></div>
+                                    <div @dblclick="getSceneByChapter(chapter),CHANGE_COMPONENT('chapter-details', { book_id: book.uuid, chapter: chapter }, chapter.title)" class="label"><span><img  src="@/assets/img/icons/chapter.svg"> {{ chapter.title }}</span></div>
                                     <ul v-if="chapter.is_open  == true " class="level-4">
                                         <li v-bind:key="scene.id" v-for="scene in chapter.scenes.rows">
                                             <div @dblclick="CHANGE_COMPONENT('scene-details',{ book_id: book.uuid, scene: scene}, scene.title )" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title || 'Untitled' }}</span></div>
@@ -90,11 +90,19 @@
                     </ul>
                 </li>
             </ul>
+          <div class="updateVersion" v-if="updateInfo.hasUpdate == true">
+            <span @click="updateVersion()" href='#' ><i class="las la-code-branch icon" v-html="' Upgrade to version: ' + updateInfo.version"></i></span>
+          </div>
         </div>
     </div>
 </template>
 
 <script>
+const electron = window.require('electron')
+const log = window.require('electron-log')
+const remote = electron.remote
+const { ipcRenderer } = electron
+
 // In renderer process (web page).
 export default {
   name: 'MainSideNavigation',
@@ -104,7 +112,8 @@ export default {
       scenes: [],
       items: [],
       locations: [],
-      other_scenes: []
+      other_scenes: [],
+      updateInfo: remote.getGlobal('updateInfo')
     }
   },
   methods: {
@@ -241,6 +250,22 @@ export default {
         chapter.scenes.is_open = false
       }
       // scope.changeComponent('chapter-details', chapter, 'Scenes | ' + chapter.title)
+    },
+    updateVersion: function () {
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          log.info('Quit and install update triggered')
+          ipcRenderer.send('install-update')
+        }
+      })
     }
   },
   mounted () {
@@ -254,4 +279,8 @@ export default {
 
 .new-book { font-family: 'Crimson Roman'; color:#abc4d7; font-size: 14px; cursor: pointer }
 .new-book:hover  { color:#fff; }
+
+.updateVersion{ width:320px;background: #324553;position: fixed;bottom: 0;left: 0;text-align: center;margin-left: -5px;}
+.updateVersion span{ font-family: 'Crimson Roman'; color:#abc4d7; font-size: 14px; cursor: pointer }
+.updateVersion span:hover  { color:#fff; }
 </style>

@@ -2,7 +2,7 @@
 require('./check-versions')()
 
 process.env.NODE_ENV = 'production'
-
+const appVersion = require('../package').version;
 const ora = require('ora')
 const rm = require('rimraf')
 const path = require('path')
@@ -19,7 +19,7 @@ let buildOptions = {
   "appId": "com.forfatterskolen.easywrite",
   "productName": "EasyWriteApp",
   "directories": {
-    "output": "output"
+    "output": "output/" + appVersion
   },
   "extraResources": [
     {
@@ -36,7 +36,9 @@ let buildOptions = {
     "!**config/*",
     "!**icons/*",
     "!**test/*",
+    "!**private/*",
     "!**static/*",
+    "!**output/*",
     "!*.db",
     "!**db/*"
   ],
@@ -51,11 +53,21 @@ let buildOptions = {
         "target": "nsis",
         "arch": [
           "x64",
-          "ia32"
+          // "ia32"
         ]
       }
     ],
-    "icon": "build/icons/win/easywrite.ico"
+    "icon": "build/icons/win/easywrite.ico",
+    "publish" : [{
+      "provider": "github",
+      "private": true,
+      "token": "dfd1c61fcb090ecba24909875e177c5326ad449d",
+      "owner": "rancorfloydz",
+      "repo": "easywrite-v2-updater"
+    }],
+    "certificateFile" : "private/easywrite-v2.pfx",
+    "verifyUpdateCodeSignature" : false,
+    "publisherName" : "easywrite-v2"
   },
   "nsis": {
     "allowToChangeInstallationDirectory": true,
@@ -86,21 +98,31 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
       '  Tip: built files are meant to be served over an HTTP server.\n' +
       '  Opening index.html over file:// won\'t work.\n'
     ))
+    spinner.stop()
 
-    let target = (process.platform === 'darwin') ? Platform.MAC.createTarget() : Platform.WINDOWS.createTarget();
+    if(process.env.IS_UPDATE != 'true') {
+      spinner.start()
+      let target = (process.platform === 'darwin') ? Platform.MAC.createTarget() : Platform.WINDOWS.createTarget();
 
-    /*
-    * This will create the builds base on the options above and based on the target
-    * */
-    builder.build({
-      targets : target,
-      config: buildOptions
-    }).then(() => {
-      console.log(chalk.green('\n\nBuild complete.\n'))
-      spinner.stop()
-      process.exit(0);
-    });
+      if(process.env.IS_PUBLISH == 'true'){
+        console.log(chalk.greenBright('\n\n BUILDING AND PUBLISHING !!!.\n\n'))
+      }
 
+      /*
+      * This will create the builds base on the options above and based on the target
+      * */
+      builder.build({
+        targets: target,
+        config: buildOptions,
+        publish : process.env.IS_PUBLISH || 'never'
+      }).then(() => {
+        console.log(chalk.green('\n\nBuild complete.\n'))
+        spinner.stop()
+        process.exit(0);
+      }).catch(err =>{
+        console.log(err)
+      })
+    }
   })
 
 
