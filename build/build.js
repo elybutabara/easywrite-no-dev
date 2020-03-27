@@ -13,13 +13,14 @@ const webpackConfig = require('./webpack.prod.conf')
 const builder = require('electron-builder')
 const Platform = builder.Platform
 const spinner = ora('building for production...')
+const moment = require('moment')
 spinner.start()
 
 let buildOptions = {
   "appId": "com.forfatterskolen.easywrite",
   "productName": "EasyWriteApp",
   "directories": {
-    "output": "output/" + appVersion
+    "output": "output/" + appVersion +'-'+ moment().format('YYYY-MM-DD-hh-mm-ss').toString()
   },
   "extraResources": [
     {
