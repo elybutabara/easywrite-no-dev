@@ -60,7 +60,9 @@ export default {
   data: function () {
     return {
       data: {
-        author_id: this.$store.getters.getAuthorID,
+        id: null,
+        uuid: null,
+        author_id: null,
         title: '',
         book_genre_collection: [],
         about: ''
@@ -77,7 +79,6 @@ export default {
     // Required for geting value from TinyMCE content
     setAboutValue (value) {
       var scope = this
-
       scope.data.about = value
     },
     removeGenre ({uuid}) {
@@ -158,6 +159,7 @@ export default {
   },
   beforeMount () {
     var scope = this
+    scope.data.author_id = this.$store.getters.getAuthorID
 
     scope.getGenre()
 
@@ -172,6 +174,8 @@ export default {
 
     if (scope.data.id) {
       scope.loadBook()
+    } else {
+      console.log('aaaaa')
     }
   }
 }
