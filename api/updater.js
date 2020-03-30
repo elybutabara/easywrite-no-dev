@@ -6,21 +6,21 @@ const {autoUpdater} = require('electron-updater')
 autoUpdater.logger = require('electron-log')
 autoUpdater.logger.transports.file.level = 'info'
 
-autoUpdater.autoInstallOnAppQuit = false;
-
+autoUpdater.autoInstallOnAppQuit = false
 
 exports.check = () => {
   global.updateInfo = {
     hasUpdate: false,
-    version : null
+    version: null
   }
 
-//   if(process.env.NODE_ENV !== 'production') return false
+  //   if(process.env.NODE_ENV !== 'production') return false
+  if (process.platform === 'darwin') return false // TODO : remove this if DEVELOPERS CERTIFICATE IS GOOD TO GO
 
   process.env.GH_TOKEN = 'dfd1c61fcb090ecba24909875e177c5326ad449d'
 
   // return false;
-  autoUpdater.checkForUpdates().then(()=>{}).catch(err => autoUpdater.logger.error(err))
+  autoUpdater.checkForUpdates().then(() => {}).catch(err => autoUpdater.logger.error(err))
 
   /*
   autoUpdater.checkForUpdatesAndNotify().then(function (data) {
@@ -59,16 +59,13 @@ exports.check = () => {
     autoUpdater.logger.info(downloadProgress)
   })
 
-  autoUpdater.on('update-downloaded',function (data) {
-    autoUpdater.logger.info('Done download update');
+  autoUpdater.on('update-downloaded', function (data) {
+    autoUpdater.logger.info('Done download update')
     console.log('has update')
     global.updateInfo = {
       hasUpdate: true,
-      version : data.version
+      version: data.version
     }
-
-    // console.log(global)
-    // remote.getGlobal('updateInfo').hasUpdate = true;
   })
 
   return true
