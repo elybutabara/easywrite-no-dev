@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
 
-const { Chapter } = require(path.join(__dirname, '..', 'models'))
+const { Chapter, Scene } = require(path.join(__dirname, '..', 'models'))
 
 class ChapterController {
   static getAllByBookId (bookId) {
@@ -48,6 +48,12 @@ class ChapterController {
 
   static async delete (chapterId) {
     const chapter = await Chapter.query().softDeleteById(chapterId)
+
+    await Scene.query()
+      .where('chapter_id', chapterId)
+      .patch({
+        chapter_id: null
+      })
 
     return chapter
   }

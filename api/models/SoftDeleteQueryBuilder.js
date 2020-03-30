@@ -53,7 +53,9 @@ class SoftDeleteQueryBuilder extends Model.QueryBuilder {
       // softdelete all relations of this model
       // eslint-disable-next-line camelcase
       for (const relation_class_name of Object.keys(relations)) {
-        await model.$relatedQuery(relation_class_name).softDelete()
+        if (relations[relation_class_name].softDelete) {
+          await model.$relatedQuery(relation_class_name).softDelete()
+        }
       }
     }
 

@@ -17,7 +17,8 @@ class Scene extends BaseModel {
       join: {
         from: 'book_scenes.uuid',
         to: 'book_scene_versions.book_scene_id'
-      }
+      },
+      softDelete: true
     },
     scene_character: {
       relation: BaseModel.HasManyRelation,
@@ -25,7 +26,8 @@ class Scene extends BaseModel {
       join: {
         from: 'book_scenes.uuid',
         to: 'book_scene_characters.book_scene_id'
-      }
+      },
+      softDelete: true
     },
     scene_location: {
       relation: BaseModel.HasManyRelation,
@@ -33,7 +35,8 @@ class Scene extends BaseModel {
       join: {
         from: 'book_scenes.uuid',
         to: 'book_scene_locations.book_scene_id'
-      }
+      },
+      softDelete: true
     },
     scene_item: {
       relation: BaseModel.HasManyRelation,
@@ -41,7 +44,8 @@ class Scene extends BaseModel {
       join: {
         from: 'book_scenes.uuid',
         to: 'book_scene_items.book_scene_id'
-      }
+      },
+      softDelete: true
     }
   }
 }

@@ -7,6 +7,13 @@
                 <h4>Welcome John!</h4>
                 <small>Last Login: January 01, 2020</small>
             </div>
+            <div class="actions">
+                <div style="display:none; height:30px; line-height:30px; background:red; padding:0px 10px;">
+                    <span style="font-family:'Digital'; font-size:30px;">25:00</span>
+                    <span style="font-family:'Digital'; font-size:30px;">START</span>
+                    <span style="font-family:'Digital'; font-size:30px;">RESET</span>
+                </div>
+            </div>
         </div>
     </div>
     <div class="es-page-content">

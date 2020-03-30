@@ -18,6 +18,15 @@ class Location extends BaseModel {
         from: 'book_locations.book_id',
         to: 'books.uuid'
       }
+    },
+    scene_location: {
+      relation: BaseModel.HasManyRelation,
+      modelClass: path.join(__dirname, 'SceneLocation'),
+      join: {
+        from: 'book_locations.uuid',
+        to: 'book_scene_locations.book_location_id'
+      },
+      softDelete: true
     }
   }
 }

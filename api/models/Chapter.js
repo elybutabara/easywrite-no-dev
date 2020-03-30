@@ -17,7 +17,8 @@ class Chapter extends BaseModel {
       join: {
         from: 'book_chapters.uuid',
         to: 'book_chapter_versions.chapter_id'
-      }
+      },
+      softDelete: true
     }
   };
 }

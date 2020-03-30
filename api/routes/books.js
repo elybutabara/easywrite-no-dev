@@ -7,7 +7,16 @@ const router = express.Router()
 const { ChapterController, ItemController, CharacterController, LocationController, SceneController, BookController } = require(path.join(__dirname, '..', 'controllers'))
 
 router.get('/:bookId/chapters', async function (req, res) {
-  const chapters = await ChapterController.getAllByBookId(req.params.bookId)
+  const param = {
+    bookId: req.params.bookId,
+    search: ''
+  }
+
+  if (req.query.search) {
+    param.search = req.query.search
+  }
+
+  const chapters = await ChapterController.getAllByBookId(param)
 
   res
     .status(200)
@@ -15,7 +24,16 @@ router.get('/:bookId/chapters', async function (req, res) {
 })
 
 router.get('/:bookId/items', async function (req, res) {
-  const items = await ItemController.getAllByBookId(req.params.bookId)
+  const param = {
+    bookId: req.params.bookId,
+    search: ''
+  }
+
+  if (req.query.search) {
+    param.search = req.query.search
+  }
+
+  const items = await ItemController.getAllByBookId(param)
 
   items.forEach(function (item, index) {
     items[index].picture_src = ''
@@ -30,7 +48,16 @@ router.get('/:bookId/items', async function (req, res) {
 })
 
 router.get('/:bookId/characters', async function (req, res) {
-  const characters = await CharacterController.getAllByBookId(req.params.bookId)
+  const param = {
+    bookId: req.params.bookId,
+    search: ''
+  }
+
+  if (req.query.search) {
+    param.search = req.query.search
+  }
+
+  const characters = await CharacterController.getAllByBookId(param)
 
   characters.forEach(function (item, index) {
     characters[index].picture_src = ''
@@ -45,7 +72,16 @@ router.get('/:bookId/characters', async function (req, res) {
 })
 
 router.get('/:bookId/locations', async function (req, res) {
-  const locations = await LocationController.getAllByBookId(req.params.bookId)
+  const param = {
+    bookId: req.params.bookId,
+    search: ''
+  }
+
+  if (req.query.search) {
+    param.search = req.query.search
+  }
+
+  const locations = await LocationController.getAllByBookId(param)
 
   locations.forEach(function (item, index) {
     locations[index].picture_src = ''
@@ -60,11 +96,20 @@ router.get('/:bookId/locations', async function (req, res) {
 })
 
 router.get('/:bookId/scenes/other', async function (req, res) {
-  const locations = await SceneController.getOtherScene(req.params.bookId)
+  const param = {
+    bookId: req.params.bookId,
+    search: ''
+  }
+
+  if (req.query.search) {
+    param.search = req.query.search
+  }
+
+  const scenes = await SceneController.getOtherScene(param)
 
   res
     .status(200)
-    .json(locations)
+    .json(scenes)
 })
 
 router.get('/genres', async function (req, res) {

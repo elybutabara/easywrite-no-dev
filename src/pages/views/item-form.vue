@@ -88,7 +88,8 @@ export default {
         tags: '',
         description: ''
       },
-      file: ''
+      file: '',
+      tempDescription: ''
     }
   },
   components: {
@@ -98,8 +99,7 @@ export default {
     // Required for geting value from TinyMCE content
     setDescription (value) {
       var scope = this
-
-      scope.data.description = value
+      scope.tempDescription = value
     },
     displayImage: function () {
       var scope = this
@@ -163,6 +163,7 @@ export default {
     },
     saveItem () {
       var scope = this
+      scope.data.description = scope.tempDescription
       scope.axios
         .post('http://localhost:3000/items', scope.data)
         .then(response => {

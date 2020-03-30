@@ -26,7 +26,6 @@ class RelationDetailController {
 
   static async delete (relationDetailId) {
     const relationDetail = await RelationDetail.query().softDeleteById(relationDetailId)
-
     return relationDetail
   }
 

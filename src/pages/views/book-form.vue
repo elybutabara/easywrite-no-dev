@@ -60,11 +60,14 @@ export default {
   data: function () {
     return {
       data: {
-        author_id: this.$store.getters.getAuthorID,
+        id: null,
+        uuid: null,
+        author_id: null,
         title: '',
         book_genre_collection: [],
         about: ''
       },
+      tempAbout: '',
       genre_collection: [],
       genres: []
     }
@@ -77,8 +80,7 @@ export default {
     // Required for geting value from TinyMCE content
     setAboutValue (value) {
       var scope = this
-
-      scope.data.about = value
+      scope.tempAbout = value
     },
     removeGenre ({uuid}) {
       var scope = this
@@ -102,6 +104,8 @@ export default {
     },
     saveBook: function () {
       var scope = this
+
+      scope.data.about = scope.tempAbout
 
       scope.genre_collection.forEach(function (item, index) {
         if (scope.data.book_genre_collection.find(x => x.genre_id === item.uuid) === undefined) {
@@ -158,6 +162,7 @@ export default {
   },
   beforeMount () {
     var scope = this
+    scope.data.author_id = this.$store.getters.getAuthorID
 
     scope.getGenre()
 
@@ -172,6 +177,8 @@ export default {
 
     if (scope.data.id) {
       scope.loadBook()
+    } else {
+      console.log('aaaaa')
     }
   }
 }

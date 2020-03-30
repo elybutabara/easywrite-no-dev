@@ -80,8 +80,13 @@ export default {
             user: response.data.user,
             author: response.data.author
           })
-          ipcRenderer.send('RESIZE_MAIN_WINDOW', response)
-          scope.$router.push({name: 'Main'})
+
+          setTimeout(function () {
+            ipcRenderer.send('RESIZE_MAIN_WINDOW', response)
+            console.log(scope.$store.getters.isAuthenticated)
+            console.log(scope.$store.getters.getUserToken)
+            scope.$router.push({name: 'Main'})
+          }, 100)
           // this.window.close()
         })
         .catch(error => {
@@ -92,7 +97,8 @@ export default {
     },
     authenticateAPI: function () {
       var scope = this
-      scope.axios.post('https://api-pilot.orosage.com/dev/login', {
+      console.log(window.API_URL + '/login')
+      scope.axios.post(window.API_URL + '/login', {
         username: scope.username,
         password: scope.password
       })
@@ -132,8 +138,12 @@ export default {
                 user: response.data,
                 author: response.data.author
               })
-              ipcRenderer.send('RESIZE_MAIN_WINDOW', response)
-              scope.$router.push({name: 'Main'})
+              setTimeout(function () {
+                ipcRenderer.send('RESIZE_MAIN_WINDOW', response)
+                console.log(scope.$store.getters.isAuthenticated)
+                console.log(scope.$store.getters.getUserToken)
+                scope.$router.push({name: 'Main'})
+              }, 100)
             })
           }
         })
