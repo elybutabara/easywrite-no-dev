@@ -20,7 +20,7 @@ let buildOptions = {
   "appId": "com.forfatterskolen.easywrite",
   "productName": "EasyWriteApp",
   "directories": {
-    "output": "output/" + appVersion +'-'+ moment().format('YYYY-MM-DD-hh-mm-ss').toString()
+    "output": "output/" + appVersion +'-'+ moment().format('YYYY-MM-DD-hhmmss').toString()
   },
   "extraResources": [
     {
@@ -46,7 +46,14 @@ let buildOptions = {
   "mac": {
     "category": "public.app-category.productivity",
     "target": "dmg",
-    "icon": "build/icons/mac/easywrite.icns"
+    "icon": "build/icons/mac/easywrite.icns",
+    "publish" : [{
+      "provider": "github",
+      "private": true,
+      "token": "dfd1c61fcb090ecba24909875e177c5326ad449d",
+      "owner": "rancorfloydz",
+      "repo": "easywrite-v2-updater-mac"
+    }]
   },
   "win": {
     "target": [
