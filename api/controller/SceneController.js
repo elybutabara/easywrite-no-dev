@@ -4,12 +4,12 @@ const path = require('path')
 const { Scene } = require(path.join(__dirname, '..', 'models'))
 
 class SceneController {
-  static getOtherScene (bookId) {
+  static getOtherScene (param) {
     var scenes = Scene.query()
-      .where('book_scenes.book_id', bookId)
+      .where('book_scenes.book_id', param.bookId)
       .withGraphJoined('scene_version', {maxBatchSize: 1})
-      .whereRaw('chapter_id IS NULL OR chapter_id = 0')
       .whereNull('book_scenes.deleted_at')
+      .whereRaw('chapter_id IS NULL OR chapter_id = 0')
 
     return scenes
   }

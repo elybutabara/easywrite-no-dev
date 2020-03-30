@@ -4,9 +4,10 @@ const path = require('path')
 const { Chapter, Scene } = require(path.join(__dirname, '..', 'models'))
 
 class ChapterController {
-  static getAllByBookId (bookId) {
+  static getAllByBookId (param) {
     var chapters = Chapter.query()
-      .where('book_id', bookId)
+      .where('book_id', param.bookId)
+      .where('title', 'like', '%' + param.search + '%')
       .withGraphJoined('chapter_version', {maxBatchSize: 1})
       .whereNull('book_chapters.deleted_at')
 
@@ -24,9 +25,6 @@ class ChapterController {
   static async getAll () {
     return Chapter.query()
       .whereNull('deleted_at')
-
-    // console.log(chapters)
-    // return chapters[0]
   }
 
   static async save (data) {

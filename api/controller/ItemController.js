@@ -4,9 +4,10 @@ const path = require('path')
 const { Item } = require(path.join(__dirname, '..', 'models'))
 
 class ItemController {
-  static getAllByBookId (bookId) {
+  static getAllByBookId (param) {
     var items = Item.query()
-      .where('book_id', bookId)
+      .where('book_id', param.bookId)
+      .where('itemname', 'like', '%' + param.search + '%')
       .withGraphJoined('book')
       .whereNull('book_items.deleted_at')
 

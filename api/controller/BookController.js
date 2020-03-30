@@ -45,6 +45,7 @@ class BookController {
 
   static async delete (bookId) {
     const book = await Book.query().softDeleteById(bookId)
+
     return book
   }
 

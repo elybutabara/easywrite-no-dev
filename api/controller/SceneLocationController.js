@@ -4,21 +4,20 @@ const path = require('path')
 const { SceneLocation } = require(path.join(__dirname, '..', 'models'))
 
 class SceneLocationController {
-
   static getAllSceneLocationsBySceneId (sceneId) {
     const sceneLocation = SceneLocation.query()
-        .withGraphFetched('location')
-        .where('book_scene_id', sceneId)
-        .whereNull('book_scene_locations.deleted_at')
+      .withGraphFetched('location')
+      .where('book_scene_id', sceneId)
+      .whereNull('book_scene_locations.deleted_at')
 
     return sceneLocation
-    }
+  }
 
-    static async save (data) {
+  static async save (data) {
     const save = await SceneLocation.query().upsertGraph([data])
-        .withGraphFetched('scene')
-        .withGraphFetched('location')
-        .first()
+      .withGraphFetched('scene')
+      .withGraphFetched('location')
+      .first()
 
     return save
   }

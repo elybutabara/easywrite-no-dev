@@ -72,6 +72,8 @@ export default {
           axios
             .get('http://localhost:3000/books/' + bookID + '/chapters')
             .then(response => {
+              console.log('aaaa')
+              console.log(response)
               state.chapters[bookID] = { rows: response.data }
               console.log(state.chapters)
             })
@@ -130,6 +132,8 @@ export default {
         axios
           .get('http://localhost:3000/books/' + bookID + '/scenes/other')
           .then(response => {
+            console.log('test')
+            console.log(response.data)
             state.scenes[bookID] = { rows: response.data }
           })
       }

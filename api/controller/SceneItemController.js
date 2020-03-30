@@ -15,6 +15,7 @@ class SceneItemController {
 
   static async delete (sceneItemId) {
     const sceneItem = await SceneItem.query().softDeleteById(sceneItemId)
+
     return sceneItem
   }
 

@@ -5,9 +5,10 @@ const moment = require('moment')
 const { Character, RelationDetail } = require(path.join(__dirname, '..', 'models'))
 
 class CharacterController {
-  static getAllByBookId (bookId) {
+  static getAllByBookId (param) {
     var characters = Character.query()
-      .where('book_id', bookId)
+      .where('book_id', param.bookId)
+      .where('fullname', 'like', '%' + param.search + '%')
       .withGraphJoined('book')
       .whereNull('book_characters.deleted_at')
 
