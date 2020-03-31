@@ -87,7 +87,7 @@
                         </b-form-group>
                     </div>
                     <div>
-                        <button @click="togglePomodoro()" style="background:#293742; color:#fff; border:1px solid #293742; border-radius:3px; width:100px;">START</button>
+                        <button @click="togglePomodoro()" style="background:#293742; color:#fff; border:1px solid #293742; border-radius:3px; width:100px;">{{pmdtogglestatus.pmd_toggle}}</button>
                         <button @click="resetPomodoro()" style="background:#8a2c3a; color:#fff; border:1px solid #8a2c3a; border-radius:3px; width:100px;">RESET</button>
                     </div>
                 </div>
