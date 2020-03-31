@@ -15,6 +15,7 @@ import { BootstrapVue } from 'bootstrap-vue'
 import tab from './stores/tab'
 import auth from './stores/auth'
 import listing from './stores/listing'
+import timer from './stores/timer'
 
 // import './assets/vendors/bootstrap/css/bootstrap.min.css'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -86,7 +87,8 @@ const store = new Vuex.Store({
   modules: {
     tab: tab,
     auth: auth,
-    listing: listing
+    listing: listing,
+    timer: timer
   }
 })
 // Vue.component('editor', tinymce)

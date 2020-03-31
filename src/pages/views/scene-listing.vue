@@ -8,7 +8,7 @@
                     <small>Below are the list of scenes under {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT('scene-form',{ uuid: properties.uuid },'New Scenes')">New Scene</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT('scene-form',{ uuid: properties.uuid },'New Scenes', true)">New Scene</button>
                 </div>
             </div>
         </div>
@@ -18,7 +18,7 @@
                 <div class="es-col fadeIn animated" v-for="scene in GET_SCENES_BY_BOOK(bookUUID)" v-bind:key="scene.id">
                     <div class="es-card">
                         <div class="es-card-content">
-                            <p class="title">{{ scene.fullname || 'Untitled' }}</p>
+                            <p class="title">{{ scene.title || 'Untitled' }}</p>
                             <i class="description">{{ scene.short_description || 'No Short Description...'  }}</i>
                         </div>
                         <div class="es-card-footer">
