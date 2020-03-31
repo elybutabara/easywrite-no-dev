@@ -70,6 +70,16 @@ export default {
     GET_SCENES_BY_BOOK: function (uuid = '') {
       return this.$store.getters.getScenesByBook(uuid)
     },
+    GET_SCENES_BY_CHAPTER: function (uuid = '') {
+      console.log('CHAPTER SCENES:')
+      console.log(uuid)
+      return this.$store.getters.getScenesByChapter(uuid)
+    },
+    LOAD_LIST: function (model = '', data) {
+      var scope = this
+      console.log('LIST LOADED ' + model)
+      scope.$store.dispatch('loadList', {model: model, data: data})
+    },
     ADD_TO_LIST: function (model = '', data) {
       var scope = this
       scope.$store.dispatch('addToList', {model: model, data: data})
