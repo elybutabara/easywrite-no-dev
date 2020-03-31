@@ -1,12 +1,14 @@
 'use strict'
 const path = require('path')
+const moment = require('moment')
 
-const { Character } = require(path.join(__dirname, '..', 'models'))
+const { Character, RelationDetail } = require(path.join(__dirname, '..', 'models'))
 
 class CharacterController {
-  static getAllByBookId (bookId) {
+  static getAllByBookId (param) {
     var characters = Character.query()
-      .where('book_id', bookId)
+      .where('book_id', param.bookId)
+      .where('fullname', 'like', '%' + param.search + '%')
       .withGraphJoined('book')
       .whereNull('book_characters.deleted_at')
 
@@ -33,6 +35,13 @@ class CharacterController {
 
   static async delete (characterId) {
     const character = await Character.query().softDeleteById(characterId)
+
+    await RelationDetail.query()
+      .where('character_id', characterId)
+      .orWhere('character_relation_id', characterId)
+      .patch({
+        deleted_at: moment().format('YYYY-MM-DD hh:mm:ss').toString()
+      })
 
     return character
   }

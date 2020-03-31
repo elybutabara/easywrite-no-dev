@@ -7,7 +7,8 @@ class SceneCharacterController {
   static getAllSceneCharactersBySceneId (sceneId) {
     const sceneCharacter = SceneCharacter.query()
       .withGraphFetched('character')
-      .where('book_scenes.uuid', sceneId)
+      .where('book_scene_id', sceneId)
+      .whereNull('book_scene_characters.deleted_at')
 
     return sceneCharacter
   }
@@ -19,6 +20,12 @@ class SceneCharacterController {
       .first()
 
     return save
+  }
+
+  static async delete (sceneCharacterId) {
+    const sceneCharacter = await SceneCharacter.query().softDeleteById(sceneCharacterId, {deleteWithRelated: false})
+
+    return sceneCharacter
   }
 
   static async sync (row) {

@@ -69,7 +69,8 @@ export default {
           change_description: '',
           content: ''
         }
-      }
+      },
+      chapterVersionCont: ''
     }
   },
   components: {
@@ -80,10 +81,12 @@ export default {
     setContent (value) {
       var scope = this
 
-      scope.data.chapter_version.content = value
+      // scope.data.chapter_version.content = value
+      scope.chapterVersionCont = value
     },
     saveChapter () {
       var scope = this
+      scope.data.chapter_version.content = scope.chapterVersionCont
       scope.axios
         .post('http://localhost:3000/chapters', scope.data)
         .then(response => {

@@ -4,108 +4,79 @@
         <div class="inner">
             <div class="details">
                 <div>
-                    <h4><strong>{{ properties.chapter.title }}</strong></h4>
+                    <h4><strong>{{ page.title }}</strong></h4>
                 </div>
             </div>
             <div class="actions">
+                <button class="es-button-white" @click="newVersion()">SAVE AS NEW VERSION</button>
                 <button class="es-button-white" @click="CHANGE_COMPONENT('chapter-form', {  book_id: properties.chapter.book_id, chapter:  properties.chapter }, 'Edit - ' +  properties.chapter.title)">EDIT</button>
                 <button class="es-button-white" @click="DELETE_FROM_LIST('chapters',  properties.chapter)">DELETE</button>
             </div>
         </div>
     </div>
 
-    <div  class="es-page-content">
-        <div style="max-width:800px; margin:0px auto;" class="es-tab">
-        <div>
-            <div v-bind:class="{ 'active' : tab.active == 'content' }" class="es-tab-button" @click="changeTab('content')">
-                Content
-            </div>
-            <div v-bind:class="{ 'active' : tab.active == 'scenes' }" class="es-tab-button" @click="changeTab('scenes')">
-                Scenes
-            </div>
-          <div v-bind:class="{ 'active' : tab.active == 'versions' }" class="es-tab-button" @click="changeTab('versions')">
-            Versions
-          </div>
-        </div>
-        <div class="es-tab-content" v-if="tab.active == 'content'">
-           <div v-if="chapter_versions !== 'undefined' && chapter_versions.length > 0" v-html="chapter_versions[chapter_versions.length - 1].content" class="description" ></div>
-        </div>
-        <div class="es-tab-content" v-if="tab.active == 'scenes'">
-          <div class="text-right">
-            <b-button @click="createScene()" variant="dark">Add Scene</b-button>
-          </div>
-            <div class="chapter-scenes-list">
-              <div class="row">
-                <div class="col-12 col-lg-4 col-md-6 col-sm-6 fadeIn animated" v-for="scene in chapter.scenes" v-bind:key="scene.id">
-                  <div class="item" >
+    <div class="es-chapter-details-tab">
+        <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-chapter-details-tab-item">CONTENT</div>
+        <div v-bind:class="{ 'active' : tab.active == 'scenes' }" @click="changeTab('scenes')" class="es-chapter-details-tab-item">SCENES</div>
+        <div v-bind:class="{ 'active' : tab.active == 'versions' }" @click="changeTab('versions')" class="es-chapter-details-tab-item">VERSION</div>
+    </div>
+
+    <div v-bind:class="{ 'active' : tab.active == 'content' }" class="es-chapter-details-tab-content">
+        <div v-if="chapter_versions !== 'undefined' && chapter_versions.length > 0" v-html="chapter_versions[chapter_versions.length - 1].content" class="description" ></div>
+    </div>
+    <div v-bind:class="{ 'active' : tab.active == 'scenes' }" class="es-chapter-details-tab-content">
+        <div class="chapter-scenes-list">
+            <div class="row">
+                <div class="col-12 col-lg-4 col-md-6 col-sm-6 fadeIn animated" v-for="scene in chapter_scenes" v-bind:key="scene.id">
+                <div class="item" >
                     <div class="header"><i class="las la-bookmark"></i> {{ scene.title }}</div>
                     <div class="content" >
-                      <strong>{{ scene.short_description }}</strong>
-                      <div v-html="scene.notes" class="description" >{{ scene.notes }}</div>
-                      <button type="button">VIEW</button>
-                      <button @click="editScene(scene)" type="button">EDIT</button>
-                      <button @click="deleteScene(scene.uuid)" type="button">DELETE</button>
+                    <strong>{{ scene.short_description }}</strong>
+                    <div v-html="scene.notes" class="description" >{{ scene.notes }}</div>
+                    <button @click="CHANGE_COMPONENT('scene-details',{ book_id: scene.book_uuid, scene: scene}, scene.title )" type="button">VIEW</button>
+                    <button @click="CHANGE_COMPONENT('scene-form',{ book_id: scene.book_uuid, scene: scene}, scene.title )" type="button">EDIT</button>
+                    <button @click="deleteScene(scene.uuid)" type="button">DELETE</button>
                     </div>
-                  </div>
                 </div>
-              </div>
+                </div>
             </div>
         </div>
-        <div class="es-tab-content" v-if="tab.active == 'versions'">
-          <div class="version-container">
-            <b-card no-body>
-              <b-tabs pills card vertical nav-wrapper-class="w-30">
-                <b-tab v-for="(version, index) in chapter_versions" v-bind:key="version.id" :active="index==0" >
-                  <template v-slot:title>
-                    Version {{ index+1 }}
-                    <b-badge variant="primary" v-if="index+1 == chapter_versions.length" >Latest</b-badge>
-                    <b-badge variant="success" v-else-if="version.is_same == true" >Same</b-badge>
-                    <b-badge variant="secondary" v-else >Diff</b-badge>
-                  </template>
-                  <div class="text-right" style="position: sticky; top: 1rem">
-                    <b-button @click="editVersion(version)" variant="dark" class="btn-edit-version">Edit</b-button>
-                  </div>
-                  <br >
-                  <b-card-text class="version-change-description" v-html="version.change_description "></b-card-text>
-                </b-tab>
-              </b-tabs>
-            </b-card>
-          </div>
+    </div>
+
+    <div v-bind:class="{ 'active' : tab.active == 'versions' }" class="es-chapter-details-tab-content no-padding">
+        <div class="es-chapter-details-versions-list">
+            <div v-bind:class="{ 'active' : active_version.uuid === version.uuid }" @click="viewChapterVersion(version, index)" v-for="(version, index) in chapter_versions.slice().reverse()" v-bind:key="version.id" :active="index==0"  class="es-chapter-details-versions-list-item">
+                Version {{ chapter_versions.length - index }}
+                <b-badge variant="primary" v-if="(chapter_versions.length - index) == chapter_versions.length" >Latest</b-badge>
+                <b-badge variant="success" v-else-if="version.is_same == true" >Same</b-badge>
+                <b-badge variant="secondary" v-else >Diff</b-badge>
+                <i class="icon las la-chevron-circle-right"></i>
+            </div>
+        </div>
+
+        <div v-bind:class="{'transparent' : (active_version.uuid === null && !editing_version) }" class="es-chapter-details-version-header">
+            <button v-if="active_version.uuid !== null && !editing_version" class="btn-edit" @click="editChapterVersion(active_version)" ><i class="las la-pencil-alt"></i> Edit</button>
+            <h4 v-if="active_version.uuid !== null && !editing_version">Version {{ (chapter_versions.length - active_version_index) }}</h4>
+            <h4 v-if="active_version.uuid !== null && editing_version">Edit Version {{ (chapter_versions.length - active_version_index) }}</h4>
+            <h4 v-if="active_version.uuid === null && editing_version">New Version</h4>
+        </div>
+        <div class="es-chapter-details-version-content" v-if="active_version.uuid !== null" >
+            <div v-if="!editing_version">
+                <div v-if="active_version.change_description !== null && active_version.change_description !== ''" style="padding-top:30px;" class="version-change-description" v-html="active_version.change_description"></div>
+                <div v-else  style="padding-top:30px;"><i>This <strong>Version</strong> has no description</i></div>
+            </div>
+        </div>
+        <div class="es-chapter-details-version-content" v-if="editing_version">
+            <tiny-editor :key="UNIQUE()" :initValue="active_version.change_description"
+                v-on:getEditorContent="setDescription"
+                class="form-control"
+           />
+            <div class="cta-container text-right">
+              <button class="btn-dark" @click="saveChapterVersion(active_version)">Save Changes</button>
+              <button class="btn-light" @click="onCancel">Cancel</button>
+            </div>
         </div>
     </div>
-    </div>
-  <b-overlay :show="busy" no-wrap fixed @shown="onShown" @hidden="onHidden">
-    <template v-slot:overlay>
-      <div
-        ref="dialog"
-        tabindex="-1"
-        role="dialog"
-        aria-modal="false"
-        aria-labelledby="form-confirm-label"
-        class="p-3"
-      >
-        <b-container class="bv-example-row">
-          <b-row style="margin-bottom: 1rem;">
-            <b-col>
-              <label>Description: </label>
-              <tiny-editor :initValue="chapter_version.change_description"
-                           v-on:getEditorContent="setDescription"
-                           class="form-control"
-              />
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col>
-              <div class="text-right">
-                <b-button variant="outline-dark" class="mr-3" @click="onCancel">Cancel</b-button>
-                <b-button variant="dark" @click="saveNewVersion">Save</b-button>
-              </div>
-            </b-col>
-          </b-row>
-        </b-container>
-      </div>
-    </template>
-  </b-overlay>
 </div>
 </template>
 
@@ -117,18 +88,27 @@ export default {
   props: ['properties'],
   data: function () {
     return {
+      page: {
+        title: ''
+      },
+      editing_version: false,
       chapter: null,
       chapter_versions: [],
-      chapter_version: {
+      active_version: {
+        id: null,
+        uuid: null,
         chapter_id: null,
         content: '',
         change_description: ''
       },
+      active_version_index: 0,
+      chapter_scenes: [],
       tab: {
         active: 'content'
       },
       busy: false,
-      interval: null
+      interval: null,
+      tempVersionDesc: ''
     }
   },
   components: {
@@ -143,10 +123,11 @@ export default {
       var scope = this
       this.busy = true
 
-      if (scope.chapter_version.id) {
-        delete (scope.chapter_version.id)
-        delete (scope.chapter_version.uuid)
-      }
+      scope.active_version.change_description = ''
+      scope.active_version.id = null
+      scope.active_version.uuid = null
+      scope.editing_version = true
+      scope.changeTab('versions')
     },
     onShown () {
       // Focus the dialog prompt
@@ -158,16 +139,21 @@ export default {
       this.$refs.button.focus()
     },
     onCancel () {
+      var scope = this
+      scope.editing_version = false
       this.busy = false
     },
-    saveNewVersion () {
+    saveChapterVersion () {
       var scope = this
+      scope.active_version.change_description = scope.tempVersionDesc
       scope.axios
-        .post('http://localhost:3000/chapter-versions', scope.chapter_version)
+        .post('http://localhost:3000/chapter-versions', scope.active_version)
         .then(response => {
           if (response.data) {
-            scope.getAllChapterVersions(scope.properties)
-            this.busy = false
+            if (scope.active_version.uuid === null) {
+              scope.chapter_versions.push(response.data)
+            }
+            this.editing_version = false
             window.swal.fire({
               position: 'center',
               icon: 'success',
@@ -175,19 +161,18 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              scope.changeTab('versions')
+              // scope.changeTab('versions')
             })
           }
         })
     },
-    editVersion: function (version) {
+    editChapterVersion: function (version) {
       var scope = this
-      scope.chapter_version.id = version.id
-      scope.chapter_version.uuid = version.uuid
-      scope.chapter_version.change_description = version.change_description
-      scope.chapter_version.content = version.content
-
-      this.busy = true
+      scope.active_version.id = version.id
+      scope.active_version.uuid = version.uuid
+      scope.active_version.change_description = version.change_description
+      scope.active_version.content = version.content
+      scope.editing_version = true
     },
     editChapter: function (chapter) {
       var scope = this
@@ -199,20 +184,22 @@ export default {
     },
     setDescription (value) {
       var scope = this
-
-      scope.chapter_version.change_description = value
+      // scope.active_version.change_description = value
+      scope.tempVersionDesc = value
     },
     getAllChapterVersions: function (chapter) {
       var scope = this
       scope.chapter = chapter
+      scope.active_version.chapter_id = chapter.uuid
       scope.axios
         .get('http://localhost:3000/chapters/' + chapter.uuid + '/versions')
         .then(response => {
           scope.chapter_versions = response.data
-
-          scope.chapter_version.chapter_id = chapter.uuid
-          scope.chapter_version.change_description = ''
-          scope.chapter_version.content = scope.chapter_versions[response.data.length - 1].content
+          // scope.active_version.change_description = ''
+          //  scope.active_version.id = scope.chapter_versions[response.data.length - 1].id
+          // scope.active_version.uuid = scope.chapter_versions[response.data.length - 1].uuid
+          // scope.active_version.content = scope.chapter_versions[response.data.length - 1].content
+          // scope.active_version = scope.chapter_versions[response.data.length - 1]
         })
     },
     getSceneByChapter: function (chapterId) {
@@ -220,7 +207,7 @@ export default {
       scope.axios
         .get('http://localhost:3000/chapters/' + chapterId + '/scenes')
         .then(response => {
-          scope.chapter.scenes = response.data
+          scope.chapter_scenes = response.data
         })
     },
     editScene: function (scene) {
@@ -256,23 +243,36 @@ export default {
             })
         }
       })
+    },
+    viewChapterVersion: function (version, index = 0) {
+      var scope = this
+      scope.active_version.id = version.id
+      scope.active_version.uuid = version.uuid
+      scope.active_version.change_description = version.change_description
+      scope.active_version.content = version.content
+      scope.active_version_index = index
+      scope.editing_version = false
     }
   },
   beforeUpdate () {
     var scope = this
     if (scope.properties.chapter.uuid !== scope.chapter.uuid) {
       scope.$set(scope, 'chapter', scope.properties.chapter)
-      scope.getAllChapterVersions(scope.properties.chapter)
+      // scope.getAllChapterVersions(scope.properties.chapter)
     }
   },
   mounted () {
     var scope = this
+    scope.page.title = scope.properties.chapter.title
     scope.getAllChapterVersions(scope.properties.chapter)
+    scope.getSceneByChapter(scope.properties.chapter.uuid)
   }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+    .btn-edit { float:right; background:#fff; border:1px solid #506d84; }
 
     .es-tab .es-tab-button {
         cursor:pointer; background:#354350; color:#fff; border:1px solid #efefef; display:inline-block; height:40px; line-height:40px; padding:0px 40px; font-family: 'Crimson Roman Bold'; cursor:pointer;
@@ -305,4 +305,28 @@ export default {
     .es-panel .es-panel-footer { display:flex; background:#f5f8fa; border-top:1px solid #e0e5ee; height:40px; line-height:40px; padding:0px 0px; }
     .es-panel .es-panel-footer .cta { font-weight:600; cursor:pointer; text-align:center; width:50%;}
     .es-panel .es-panel-footer .cta:first-child {  border-right:1px solid #e0e5ee; }
+
+    .es-chapter-details-tab { display:flex; border-bottom:1px solid #ccc; padding:0px 30px; height:70px; background:#fff; }
+    .es-chapter-details-tab .es-chapter-details-tab-item { height:30px; line-height:30px; margin-top:40px; margin-right:25px; cursor:pointer; position:relative; }
+    .es-chapter-details-tab .es-chapter-details-tab-item:after { content:''; position:absolute; bottom:0px; left:0px; height:3px;  width:100%; background:transparent;}
+    .es-chapter-details-tab .es-chapter-details-tab-item.active:after { background:#922c39;  }
+
+    .es-chapter-details-tab-content { position:relative; padding:30px; background:#fff; height:calc(100vh - 247px); overflow-y:auto; display:none; }
+    .es-chapter-details-tab-content.no-padding { padding:0px; }
+    .es-chapter-details-tab-content.active { display:block; }
+
+    .es-chapter-details-versions-list { position:absolute; top:0px; left:0px; border-right:1px solid #e0e5ee; width:300px; height:100%; overflow:auto; }
+    .es-chapter-details-versions-list .es-chapter-details-versions-list-item { background:#fff; cursor:pointer; padding:10px 20px; padding-right:5px; width:100%; border-bottom:1px solid #e0e5ee; }
+    .es-chapter-details-versions-list .es-chapter-details-versions-list-item .icon { float:right;font-size:20px; }
+    .es-chapter-details-versions-list .es-chapter-details-versions-list-item.active { background:#324553; color:#fff; }
+
+    .es-chapter-details-version-content { padding:10px 30px; padding-left:330px; }
+
+    .es-chapter-details-version-header { padding:5px 10px; padding-left:310px; background:#f5f8fa; border-bottom: 1px solid #e0e5ee; }
+    .es-chapter-details-version-header.transparent { opacity:0; }
+    .es-chapter-details-version-header h4 { color:#324553; margin:0px; font-size:22px; }
+
+    .cta-container { margin-top:20px; }
+    .cta-container .btn-dark { background:#324553; color:#fff; border:1px solid #324553; height:30px; line-height:30px; padding:0px 10px; }
+    .cta-container .btn-light { background:#fff; color:#324553; border:1px solid #496d7d; height:30px; line-height:30px; padding:0px 10px; }
 </style>

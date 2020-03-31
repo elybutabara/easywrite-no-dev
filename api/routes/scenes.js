@@ -4,7 +4,15 @@ const path = require('path')
 const express = require('express')
 const router = express.Router()
 
-const { SceneController, SceneVersionController, SceneCharacterController } = require(path.join(__dirname, '..', 'controllers'))
+const { SceneController, SceneVersionController, SceneCharacterController, SceneLocationController, SceneItemController } = require(path.join(__dirname, '..', 'controllers'))
+
+router.get('/:sceneId/items', async function (req, res) {
+  const sceneItems = await SceneItemController.getAllSceneItemsBySceneId(req.params.sceneId)
+
+  res
+    .status(200)
+    .json(sceneItems)
+})
 
 router.get('/:sceneId/characters', async function (req, res) {
   const sceneCharacters = await SceneCharacterController.getAllSceneCharactersBySceneId(req.params.sceneId)
@@ -12,6 +20,14 @@ router.get('/:sceneId/characters', async function (req, res) {
   res
     .status(200)
     .json(sceneCharacters)
+})
+
+router.get('/:sceneId/locations', async function (req, res) {
+  const sceneLocations = await SceneLocationController.getAllSceneLocationsBySceneId(req.params.sceneId)
+
+  res
+    .status(200)
+    .json(sceneLocations)
 })
 
 router.get('/:sceneId/versions', async function (req, res) {

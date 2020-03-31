@@ -87,7 +87,8 @@ export default {
         tags: '',
         description: ''
       },
-      file: ''
+      file: '',
+      tempDescription: ''
     }
   },
   components: {
@@ -98,7 +99,7 @@ export default {
     setDescription (value) {
       var scope = this
 
-      scope.data.description = value
+      scope.tempDescription = value
     },
     displayImage: function () {
       var scope = this
@@ -157,7 +158,7 @@ export default {
     },
     saveLocation () {
       var scope = this
-
+      scope.data.description = scope.tempDescription
       scope.axios
         .post('http://localhost:3000/locations', scope.data)
         .then(response => {

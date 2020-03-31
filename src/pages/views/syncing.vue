@@ -257,15 +257,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    .page-syncing.fullscreen .es-page-content {
-        position: fixed;
-        top: 0px;
-        left: 0px;
-        background: rgba(31,46,58,0.8);
-        width: 100%;
-        height: 100vh;
-        z-index: 999;
-    }
+    .page-syncing.fullscreen .es-page-content {  position: fixed; top: 0px; left: 0px;  background: rgba(31,46,58,0.8); width: 100%; height: 100vh; z-index: 999; }
+    .page-syncing.fullscreen .es-card { margin-top:100px; }
+
     .es-card { width:calc(100% - 40px); max-width:750px; margin:0px auto; margin-top:10px; color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
     .es-card .es-card-content { position:relative; padding:20px; min-height:150px; text-align:center; }
     .es-card .es-card-content .intro-message { padding:80px 10px; }

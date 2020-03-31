@@ -4,9 +4,10 @@ const path = require('path')
 const { Location } = require(path.join(__dirname, '..', 'models'))
 
 class LocationController {
-  static getAllByBookId (bookId) {
+  static getAllByBookId (param) {
     var locations = Location.query()
-      .where('book_id', bookId)
+      .where('book_id', param.bookId)
+      .where('location', 'like', '%' + param.search + '%')
       .withGraphJoined('book')
       .whereNull('book_locations.deleted_at')
 

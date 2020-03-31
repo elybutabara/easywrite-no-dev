@@ -12,7 +12,7 @@ function checkAuth (to, from, next) {
   // check if route is protected
   if (to.meta.protected) {
     var isAuthenticated = StoreAuth.state.isAuthenticated
-    console.log('routerjs:' + isAuthenticated)
+    console.log('routerjs-isAuthenticated:' + isAuthenticated)
     if (isAuthenticated) {
       next() // allow to enter route
     } else {

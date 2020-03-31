@@ -6,6 +6,22 @@ const router = express.Router()
 
 const { SceneItemController } = require(path.join(__dirname, '..', 'controllers'))
 
+router.delete('/:sceneItemId', async function (req, res) {
+  const sceneItem = await SceneItemController.delete(req.params.sceneItemId)
+
+  res
+    .status(200)
+    .json(sceneItem)
+})
+
+router.post('/', async function (req, res) {
+  const sceneItem = await SceneItemController.save(req.body)
+
+  res
+    .status(200)
+    .json(sceneItem)
+})
+
 router.post('/sync', async function (req, res) {
   const row = await SceneItemController.sync(req.body)
 

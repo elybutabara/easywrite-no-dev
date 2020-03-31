@@ -43,8 +43,8 @@ class BookController {
     return book
   }
 
-  static delete (bookId) {
-    const book = Book.query().findById(bookId).softDelete()
+  static async delete (bookId) {
+    const book = await Book.query().softDeleteById(bookId)
 
     return book
   }

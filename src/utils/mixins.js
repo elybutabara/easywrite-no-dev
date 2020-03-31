@@ -7,6 +7,14 @@ export default {
     }
   },
   methods: {
+    UNIQUE: function () {
+      let key = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        // eslint-disable-next-line one-var
+        var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8)
+        return v.toString(16)
+      })
+      return key
+    },
     CHANGE_COMPONENT: function (tabComponent, tabData = null, tabTitle = 'New Tab', newTab = false, tabIndex = 0) {
       var scope = this
       if (newTab) {

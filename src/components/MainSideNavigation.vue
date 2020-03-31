@@ -10,10 +10,10 @@
         <div class="es-tree-view">
             <ul class="level-1">
                 <li v-bind:class="{ 'open' : (book.is_open == true) }" v-bind:key="book.id" v-for="(book,book_index)  in GET_BOOKS_BY_AUTHOR()">
-                    <div class="label" @dblclick="TOGGLE_TREE('books', book_index, book.is_open, book)"><span><img src="@/assets/img/icons/book.svg"> {{ book.title || 'Untitled' }}</span></div>
+                    <div class="label" @click="TOGGLE_TREE('books', book_index, book.is_open, book)"><span><img src="@/assets/img/icons/book.svg"> {{ book.title || 'Untitled' }}</span></div>
                     <ul v-if="book.is_open == true" class="level-2">
                         <li v-bind:class="{ 'open' : book.chapter_folder.is_open  == true }">
-                            <div @dblclick="TOGGLE_TREE('chapters',book_index, book.chapter_folder.is_open, book)" class="label">
+                            <div @click="TOGGLE_TREE('chapters',book_index, book.chapter_folder.is_open, book)" class="label">
                                 <span>
                                     <img v-if="book.chapter_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
@@ -22,17 +22,17 @@
                             </div>
                             <ul class="level-3">
                                 <li v-bind:class="{ 'open' : chapter.is_open  == true }" v-bind:key="chapter.id" v-for="chapter in GET_CHAPTERS_BY_BOOK(book.uuid)">
-                                    <div @dblclick="getSceneByChapter(chapter),CHANGE_COMPONENT('chapter-details', { book_id: book.uuid, chapter: chapter }, chapter.title)" class="label"><span><img  src="@/assets/img/icons/chapter.svg"> {{ chapter.title }}</span></div>
+                                    <div @click="CHANGE_COMPONENT('chapter-details', { book_id: book.uuid, chapter: chapter }, chapter.title),getSceneByChapter(chapter)" class="label"><span><img  src="@/assets/img/icons/chapter.svg"> {{ chapter.title }}</span></div>
                                     <ul v-if="chapter.is_open  == true " class="level-4">
                                         <li v-bind:key="scene.id" v-for="scene in chapter.scenes.rows">
-                                            <div @dblclick="CHANGE_COMPONENT('scene-details',{ book_id: book.uuid, scene: scene}, scene.title )" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title || 'Untitled' }}</span></div>
+                                            <div @click="CHANGE_COMPONENT('scene-details',{ book_id: book.uuid, scene: scene}, scene.title )" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title || 'Untitled' }}</span></div>
                                         </li>
                                     </ul>
                                 </li>
                             </ul>
                         </li>
                         <li v-bind:class="{ 'open' : book.item_folder.is_open  == true }">
-                            <div @dblclick="TOGGLE_TREE('items',book_index, book.item_folder.is_open, book)" class="label">
+                            <div @click="TOGGLE_TREE('items',book_index, book.item_folder.is_open, book)" class="label">
                                 <span>
                                     <img v-if="book.item_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
@@ -41,12 +41,12 @@
                             </div>
                             <ul class="level-3">
                                 <li v-bind:key="item.id" v-for="item in GET_ITEMS_BY_BOOK(book.uuid)">
-                                    <div @dblclick="CHANGE_COMPONENT('item-details', {  book_id: book.uuid, item: item }, item.itemname, true)" class="label"><span><img  src="@/assets/img/icons/item.svg"> {{ item.itemname || 'Untitled' }}</span></div>
+                                    <div @click="CHANGE_COMPONENT('item-details', {  book_id: book.uuid, item: item }, item.itemname, true)" class="label"><span><img  src="@/assets/img/icons/item.svg"> {{ item.itemname || 'Untitled' }}</span></div>
                                 </li>
                             </ul>
                         </li>
                         <li v-bind:class="{ 'open' : book.character_folder.is_open  == true }">
-                            <div @dblclick="TOGGLE_TREE('characters',book_index, book.character_folder.is_open, book)"  class="label">
+                            <div @click="TOGGLE_TREE('characters',book_index, book.character_folder.is_open, book)"  class="label">
                                 <span>
                                     <img v-if="book.character_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
@@ -55,12 +55,12 @@
                             </div>
                             <ul class="level-3">
                                 <li v-bind:key="character.id" v-for="character in GET_CHARACTERS_BY_BOOK(book.uuid)">
-                                    <div @dblclick="CHANGE_COMPONENT('character-details', {  book_id: book.uuid, character: character }, character.fullname)" class="label"><span><img  src="@/assets/img/icons/character.svg"> {{ character.fullname || 'Unamed' }}</span></div>
+                                    <div @click="CHANGE_COMPONENT('character-details', {  book_id: book.uuid, character: character }, character.fullname)" class="label"><span><img  src="@/assets/img/icons/character.svg"> {{ character.fullname || 'Unamed' }}</span></div>
                                 </li>
                             </ul>
                         </li>
                         <li v-bind:class="{ 'open' : book.location_folder.is_open  == true }">
-                            <div @dblclick="TOGGLE_TREE('locations',book_index, book.location_folder.is_open, book)" class="label">
+                            <div @click="TOGGLE_TREE('locations',book_index, book.location_folder.is_open, book)" class="label">
                                 <span>
                                     <img v-if="book.location_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
@@ -69,12 +69,12 @@
                             </div>
                             <ul class="level-3">
                                 <li v-bind:key="location.id" v-for="location in GET_LOCATIONS_BY_BOOK(book.uuid)">
-                                    <div @dblclick="CHANGE_COMPONENT('location-details', {  book_id: book.uuid, location: location }, location.location, true)" class="label"><span><img  src="@/assets/img/icons/location.svg"> {{ location.location || 'Untitled' }}</span></div>
+                                    <div @click="CHANGE_COMPONENT('location-details', {  book_id: book.uuid, location: location }, location.location, true)" class="label"><span><img  src="@/assets/img/icons/location.svg"> {{ location.location || 'Untitled' }}</span></div>
                                 </li>
                             </ul>
                         </li>
                         <li v-bind:class="{ 'open' : book.scene_folder.is_open  == true }">
-                            <div @dblclick="TOGGLE_TREE('scenes',book_index, book.scene_folder.is_open, book)" class="label">
+                            <div @click="TOGGLE_TREE('scenes',book_index, book.scene_folder.is_open, book)" class="label">
                                 <span>
                                     <img v-if="book.scene_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
@@ -83,7 +83,7 @@
                             </div>
                             <ul class="level-4">
                                 <li  v-bind:key="scene.id" v-for="scene in GET_SCENES_BY_BOOK(book.uuid)">
-                                    <div @dblclick="changeComponent('scene-details',scene.id, scene.title)" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title || 'Untitled' }}</span></div>
+                                    <div @click="changeComponent('scene-details',{ scene: scene }, scene.title)" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title || 'Untitled' }}</span></div>
                                 </li>
                             </ul>
                         </li>

@@ -8,7 +8,7 @@
                     <small>Below are the list of scenes under {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="saveBook()">New Scene</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT('scene-form',{ uuid: properties.uuid },'New Scenes')">New Scene</button>
                 </div>
             </div>
         </div>
@@ -22,9 +22,9 @@
                             <i class="description">{{ scene.short_description || 'No Short Description...'  }}</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-"><i class="lar la-eye"></i> VIEW</button>
-                            <button class="btn-"><i class="las la-pencil-alt"></i> EDIT</button>
-                            <button class="btn-delete"><i class="las la-trash-alt"></i> DELETE</button>
+                            <button @click="CHANGE_COMPONENT('scene-details',{ book_id: scene.book_uuid, scene: scene}, scene.title )" class="btn-"><i class="lar la-eye"></i> VIEW</button>
+                            <button @click="CHANGE_COMPONENT('scene-form',{ book_id: scene.book_uuid, scene: scene}, 'Edit ' + scene.title )" class="btn-"><i class="las la-pencil-alt"></i> EDIT</button>
+                            <button @click="DELETE_FROM_LIST('scenes', scene)" class="btn-delete"><i class="las la-trash-alt"></i> DELETE</button>
                         </div>
                     </div>
                 </div>

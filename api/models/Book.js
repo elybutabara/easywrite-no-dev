@@ -17,7 +17,8 @@ class Book extends BaseModel {
       join: {
         from: 'books.uuid',
         to: 'book_genre_collections.book_id'
-      }
+      },
+      softDelete: true
     },
     genre: {
       relation: BaseModel.ManyToManyRelation,

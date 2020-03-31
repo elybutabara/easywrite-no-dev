@@ -156,7 +156,8 @@ export default {
       ],
       options_character_id_vp: [
         {text: 'Author', value: '-1'}
-      ]
+      ],
+      tempSceneVersionContent: ''
     }
   },
   components: {
@@ -167,7 +168,8 @@ export default {
     setContent (value) {
       var scope = this
 
-      scope.data.scene_version.content = value
+      // scope.data.scene_version.content = value
+      scope.tempSceneVersionContent = value
     },
     setNotes (value) {
       var scope = this
@@ -182,7 +184,8 @@ export default {
     saveScene () {
       var scope = this
 
-      scope.data.chapter_id = scope.selected_chapter.uuid
+      scope.data.scene_version.content = scope.tempSceneVersionContent
+      scope.data.chapter_id = (scope.selected_chapter !== 'undefined' && scope.selected_chapter !== null) ? scope.selected_chapter.uuid : null
       scope.data.typeofscene = scope.selected_typeofscene.value
       scope.data.importance = scope.selected_importance.value
       scope.data.status = scope.selected_status.value

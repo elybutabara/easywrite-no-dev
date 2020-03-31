@@ -52,3 +52,9 @@
     font-display: swap;
 }
 
+@font-face {
+    font-family: 'Digital';
+    src: url("../fonts/digital/DSDIGI.woff");
+    font-display: swap;
+}
+

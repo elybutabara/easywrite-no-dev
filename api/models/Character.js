@@ -18,6 +18,15 @@ class Character extends BaseModel {
         from: 'book_characters.book_id',
         to: 'books.uuid'
       }
+    },
+    scene_item: {
+      relation: BaseModel.HasManyRelation,
+      modelClass: path.join(__dirname, 'SceneCharacter'),
+      join: {
+        from: 'book_characters.uuid',
+        to: 'book_scene_characters.book_character_id'
+      },
+      softDelete: true
     }
   }
 }

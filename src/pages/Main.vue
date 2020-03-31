@@ -23,12 +23,12 @@
                 <location-listing v-if="tab.component == 'location-listing'" :properties="tab.data"></location-listing>
                 <character-listing v-if="tab.component == 'character-listing'" :properties="tab.data"></character-listing>
 
-                <book-details v-if="tab.component == 'book-details'" :properties="tab.data"></book-details>
-                <chapter-details v-if="tab.component == 'chapter-details'" :properties="tab.data"></chapter-details>
-                <scene-details v-if="tab.component == 'scene-details'" :properties="tab.data"></scene-details>
-                <item-details v-if="tab.component == 'item-details'" :properties="tab.data"></item-details>
-                <location-details v-if="tab.component == 'location-details'" :properties="tab.data"></location-details>
-                <character-details v-if="tab.component == 'character-details'" :properties="tab.data"></character-details>
+                <book-details :key="UNIQUE()" v-if="tab.component == 'book-details'" :properties="tab.data"></book-details>
+                <chapter-details :key="UNIQUE()" v-if="tab.component == 'chapter-details'" :properties="tab.data"></chapter-details>
+                <scene-details :key="UNIQUE()" v-if="tab.component == 'scene-details'" :properties="tab.data"></scene-details>
+                <item-details :key="UNIQUE()" v-if="tab.component == 'item-details'" :properties="tab.data"></item-details>
+                <location-details :key="UNIQUE()" v-if="tab.component == 'location-details'" :properties="tab.data"></location-details>
+                <character-details :key="UNIQUE()" v-if="tab.component == 'character-details'" :properties="tab.data"></character-details>
 
                 <book-form v-if="tab.component == 'book-form'" :properties="tab.data"></book-form>
                 <location-form v-if="tab.component == 'location-form'" :properties="tab.data"></location-form>
