@@ -9,7 +9,7 @@
             </div>
             <div class="actions">
                 <button class="es-button-white" @click="newVersion()">SAVE AS NEW VERSION</button>
-                <button class="es-button-white" @click="CHANGE_COMPONENT('chapter-form', {  book_id: properties.chapter.book_id, chapter:  properties.chapter }, 'Edit - ' +  properties.chapter.title)">EDIT</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT('chapter-form', {  book_id: properties.chapter.book_id, chapter:  properties.chapter }, 'Edit - ' +  properties.chapter.title, true)">EDIT</button>
                 <button class="es-button-white" @click="DELETE_FROM_LIST('chapters',  properties.chapter)">DELETE</button>
             </div>
         </div>
@@ -123,7 +123,11 @@ export default {
       var scope = this
       this.busy = true
 
+      // get the latest version content
+      var latestContent = (scope.chapter_versions.length > 0) ? scope.chapter_versions[scope.chapter_versions.length - 1].content : ''
+
       scope.active_version.change_description = ''
+      scope.active_version.content = latestContent
       scope.active_version.id = null
       scope.active_version.uuid = null
       scope.editing_version = true

@@ -20,7 +20,7 @@
                         <div class="es-card-actions">
                             <button class="btn-circle" @click="CHANGE_COMPONENT('chapter-form', {  book_id: properties.uuid, chapter: chapter }, 'Edit - ' + chapter.title, true)"><i class="las la-pencil-alt"></i></button>
                             <button class="btn-circle" @click="DELETE_FROM_LIST('chapters', chapter)"><i class="las la-trash-alt"></i></button>
-                            <button class="btn-circle" @click="CHANGE_COMPONENT('chapter-details', {  book_id: properties.uuid, chapter: chapter }, 'View - ' + chapter.title, true)"><i class="lar la-eye"></i></button>
+                            <button class="btn-circle" @click="CHANGE_COMPONENT('chapter-details', {  book_id: properties.uuid, chapter: chapter }, 'View - ' + chapter.title)"><i class="lar la-eye"></i></button>
                         </div>
                         <p class="title">{{ displayTitle(chapter.title) }}</p>
                         <i class="description">{{ chapter.short_description || 'No Short Description...'  }}</i>

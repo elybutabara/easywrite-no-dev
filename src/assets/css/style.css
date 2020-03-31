@@ -14,6 +14,18 @@ button:focus {
 
 body { margin:0px !important; background:#f2f6fa; font-family:'EW Regular' !important; }
 
+.custom-control-input:checked ~ .custom-control-label::before { 
+    border-color: #293742;
+    background-color: #293742;
+}
+
+.pomodoro-expired-alert .swal2-popup  { background: #f27474 !important; }
+.pomodoro-expired-alert .swal2-popup  .swal2-icon { display:none !important; }
+.pomodoro-expired-alert .swal2-popup  .swal2-title { font-size: 30px !important; padding-bottom: 0px !important; color: #fff !important; padding-top: 30px !important; }
+.pomodoro-expired-alert .swal2-popup  .swal2-html-container { font-size: 20px !important; color:#fff !important; }
+.pomodoro-expired-alert .swal2-popup  .swal2-confirm { border-radius:4px !important; border-radius: 2px !important; padding: 0px 10px; width: 120px; height: 35px; line-height: 35px;}
+
+
 .es-right-side-content { text-align:left; padding-left:320px; }
 
 .es-left-content { width:300px; background:#fff; min-height:100vh; height:100%; position:fixed; top:0px; left:0px; border-right:1px solid #e8e7e7; }
@@ -130,6 +142,7 @@ ul { margin-left:0px; list-style:none;  }
 .es-row .es-col { width:25%; padding:10px; }
 
 .es-top-nav { background:#293742; border-left:1px solid #324553; border-bottom:1px solid #506d84; height:40px; line-height:40px; padding:0px 10px; text-align:right; }
+
 .es-top-nav button { 
     color: rgb(255, 255, 255);
     padding: 0px 0px 0px 10px;

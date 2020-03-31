@@ -6,7 +6,7 @@
       <h3>{{ properties.scene.title }}</h3>
       <p>{{ properties.scene.short_description }}</p>
     </div>
-    <b-button @click="CHANGE_COMPONENT('scene-form',{ book_id: properties.scene.book_uuid, scene: properties.scene}, properties.scene.title )" variant="dark">Edit</b-button>
+    <b-button @click="CHANGE_COMPONENT('scene-form',{ book_id: properties.scene.book_uuid, scene: properties.scene}, properties.scene.title, true )" variant="dark">Edit</b-button>
     <b-button ref="button" :disabled="busy" @click="newVersion" variant="dark">Save as New Version</b-button>
   </div>
   <hr/>

@@ -5,7 +5,7 @@ export default {
     tabs: {
       active_index: 0,
       items: [
-        { title: 'Dashboard', component: 'dashboard', data: { autosync: true } }
+        { title: 'Dashboard', component: 'dashboard', data: { autosync: false } }
       ]
     }
   },
