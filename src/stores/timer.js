@@ -12,8 +12,8 @@ export default {
     },
 
     pmdTimer: {
-      pmd_min: 0,
-      pmd_sec: 5
+      pmd_min: 25,
+      pmd_sec: 0
     },
 
     togglePMD: {
