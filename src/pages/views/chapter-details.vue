@@ -1,5 +1,5 @@
 <template>
-<div class="page-chapter-details">
+<div v-if="page.is_ready" class="page-chapter-details">
     <div class="es-page-head">
         <div class="inner">
             <div class="details">
@@ -20,29 +20,29 @@
         <div v-bind:class="{ 'active' : tab.active == 'scenes' }" @click="changeTab('scenes')" class="es-chapter-details-tab-item">SCENES</div>
         <div v-bind:class="{ 'active' : tab.active == 'versions' }" @click="changeTab('versions')" class="es-chapter-details-tab-item">VERSION</div>
     </div>
-
     <div v-bind:class="{ 'active' : tab.active == 'content' }" class="es-chapter-details-tab-content">
         <div v-if="chapter_versions !== 'undefined' && chapter_versions.length > 0" v-html="chapter_versions[chapter_versions.length - 1].content" class="description" ></div>
     </div>
-    <div v-bind:class="{ 'active' : tab.active == 'scenes' }" class="es-chapter-details-tab-content">
-        <div class="chapter-scenes-list">
-            <div class="row">
-                <div class="col-12 col-lg-4 col-md-6 col-sm-6 fadeIn animated" v-for="scene in chapter_scenes" v-bind:key="scene.id">
-                <div class="item" >
-                    <div class="header"><i class="las la-bookmark"></i> {{ scene.title }}</div>
-                    <div class="content" >
-                    <strong>{{ scene.short_description }}</strong>
-                    <div v-html="scene.notes" class="description" >{{ scene.notes }}</div>
-                    <button @click="CHANGE_COMPONENT('scene-details',{ book_id: scene.book_uuid, scene: scene}, scene.title )" type="button">VIEW</button>
-                    <button @click="CHANGE_COMPONENT('scene-form',{ book_id: scene.book_uuid, scene: scene}, scene.title )" type="button">EDIT</button>
-                    <button @click="deleteScene(scene.uuid)" type="button">DELETE</button>
+    <div v-bind:class="{ 'active' : tab.active == 'scenes' }"  class="es-chapter-details-tab-content scene-listing">
+        <div style="padding:0px 10px; text-align:right; margin-bottom:20px;">
+            <button @click="CHANGE_COMPONENT('scene-form',{ book_id: chapter.book_id, chapter: chapter}, 'New Scene', true)" class="btn-new-scene"><i class="las la-plus"></i> ADD NEW SCENE</button>
+        </div>
+        <div class="es-row">
+            <div class="es-col fadeIn animated" v-for="scene in GET_SCENES_BY_CHAPTER(chapter.uuid)" v-bind:key="scene.id">
+                <div class="es-card">
+                    <div class="es-card-content">
+                        <p class="title">{{ scene.title || 'Untitled' }}</p>
+                        <i class="description">{{ scene.short_description || 'No Short Description...'  }}</i>
                     </div>
-                </div>
+                    <div class="es-card-footer">
+                        <button @click="CHANGE_COMPONENT('scene-details',{ book_id: scene.book_uuid, scene: scene}, scene.title )" class="btn-"><i class="lar la-eye"></i> VIEW</button>
+                        <button @click="CHANGE_COMPONENT('scene-form',{ book_id: scene.book_uuid, scene: scene}, 'Edit ' + scene.title )" class="btn-"><i class="las la-pencil-alt"></i> EDIT</button>
+                        <button @click="DELETE_FROM_LIST('scenes', scene)" class="btn-delete"><i class="las la-trash-alt"></i> DELETE</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
     <div v-bind:class="{ 'active' : tab.active == 'versions' }" class="es-chapter-details-tab-content no-padding">
         <div class="es-chapter-details-versions-list">
             <div v-bind:class="{ 'active' : active_version.uuid === version.uuid }" @click="viewChapterVersion(version, index)" v-for="(version, index) in chapter_versions.slice().reverse()" v-bind:key="version.id" :active="index==0"  class="es-chapter-details-versions-list-item">
@@ -89,7 +89,8 @@ export default {
   data: function () {
     return {
       page: {
-        title: ''
+        title: '',
+        is_ready: false
       },
       editing_version: false,
       chapter: null,
@@ -267,9 +268,10 @@ export default {
   },
   mounted () {
     var scope = this
-    scope.page.title = scope.properties.chapter.title
     scope.getAllChapterVersions(scope.properties.chapter)
     scope.getSceneByChapter(scope.properties.chapter.uuid)
+    scope.page.title = scope.properties.chapter.title
+    scope.page.is_ready = true
   }
 }
 </script>
@@ -333,4 +335,19 @@ export default {
     .cta-container { margin-top:20px; }
     .cta-container .btn-dark { background:#324553; color:#fff; border:1px solid #324553; height:30px; line-height:30px; padding:0px 10px; }
     .cta-container .btn-light { background:#fff; color:#324553; border:1px solid #496d7d; height:30px; line-height:30px; padding:0px 10px; }
+
+    .scene-listing { background:transparent; }
+    .scene-listing .btn-new-scene { background:#fff; color:#324553; border:1px solid #496d7d; height:30px; line-height:30px; padding:0px 10px; }
+    .scene-listing .es-card { color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
+    .scene-listing .es-card .es-card-content { position:relative; padding:20px; min-height:150px; }
+    .scene-listing .es-card .es-card-content .title { font-size:18px; font-weight:900; margin:0px; padding-right:110px; }
+    .scene-listing .es-card .es-card-content .description { display:inline-block; padding-top:15px; color:#4b6273; }
+
+    .scene-listing .es-card .es-card-content .es-card-actions { position:absolute; top:20px; right:20px; text-align:right; }
+
+    .scene-listing .es-card .es-card-footer { position:relative; background:#f5f8fa; height:40px; line-height:40px; padding:0px 0px; border-top:1px solid #e0e5ee; }
+    .scene-listing .es-card .es-card-footer button { font-weight:600; background:transparent; border:none; height:40px; line-height:32px; text-align:center; font-size:14px; padding:0px 8px; }
+    .scene-listing .es-card .es-card-footer button:hover { background:#e0e5ee; }
+    .scene-listing .es-card .es-card-footer button i { font-size:18px; }
+    .scene-listing .es-card .es-card-footer button.btn-delete { font-weight:600; color:#8f2c39; border-left:1px solid #e0e5ee; position:absolute; top:0px; right:0px; }
 </style>

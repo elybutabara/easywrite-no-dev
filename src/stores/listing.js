@@ -44,6 +44,12 @@ export default {
         return state.scenes[bookUUID].rows
       }
       return []
+    },
+    getScenesByChapter: state => (chapterUUID) => {
+      if (state.scenes.hasOwnProperty(chapterUUID)) {
+        return state.scenes[chapterUUID].rows
+      }
+      return []
     }
   },
   mutations: {
@@ -138,6 +144,57 @@ export default {
           })
       }
     },
+    loadList (state, payload) {
+      if (payload.model === 'chapters') {
+        let bookID = payload.data.uuid
+        Vue.set(state.items, bookID, { rows: [] })
+        axios
+          .get('http://localhost:3000/books/' + bookID + '/chapters')
+          .then(response => {
+            state.chapters[bookID] = { rows: response.data }
+          })
+      } else if (payload.model === 'items') {
+        let bookID = payload.data.uuid
+        Vue.set(state.items, bookID, { rows: [] })
+        axios
+          .get('http://localhost:3000/books/' + bookID + '/items')
+          .then(response => {
+            state.items[bookID] = { rows: response.data }
+          })
+      } else if (payload.model === 'locations') {
+        let bookID = payload.data.uuid
+        Vue.set(state.locations, bookID, { rows: [] })
+        axios
+          .get('http://localhost:3000/books/' + bookID + '/locations')
+          .then(response => {
+            state.locations[bookID] = { rows: response.data }
+          })
+      } else if (payload.model === 'characters') {
+        let bookID = payload.data.uuid
+        Vue.set(state.characters, bookID, { rows: [] })
+        axios
+          .get('http://localhost:3000/books/' + bookID + '/characters')
+          .then(response => {
+            state.characters[bookID] = { rows: response.data }
+          })
+      } else if (payload.model === 'scenes') {
+        let bookID = payload.data.uuid
+        Vue.set(state.scenes, bookID, { rows: [] })
+        axios
+          .get('http://localhost:3000/books/' + bookID + '/scenes')
+          .then(response => {
+            state.scenes[bookID] = { rows: response.data }
+          })
+      } else if (payload.model === 'chapter-scenes') {
+        let chapterID = payload.data.uuid
+        Vue.set(state.scenes, chapterID, { rows: [] })
+        axios
+          .get('http://localhost:3000/chapters/' + chapterID + '/scenes')
+          .then(response => {
+            state.scenes[chapterID] = { rows: response.data }
+          })
+      }
+    },
     addToList (state, payload) {
       if (payload.model === 'books') {
 
@@ -154,8 +211,12 @@ export default {
         let bookID = payload.data.book_id
         state.characters[bookID].rows.push(payload.data)
       } else if (payload.model === 'scenes') {
-        let bookID = payload.data.book_id
-        state.scenes[bookID].rows.push(payload.data)
+        // parent can be chapter or book (other scenes)
+        let PARENT = (payload.data.chapter_id !== null) ? payload.data.chapter_id : payload.data.book_id
+        let PARENT_IS = (payload.data.chapter_id !== null) ? 'chapter' : 'book'
+        console.log('PARENT IS ' + PARENT_IS)
+        console.log('PARENT ID ' + PARENT)
+        state.scenes[PARENT].rows.push(payload.data)
       }
     },
     updateFromList (state, payload) {
@@ -190,10 +251,11 @@ export default {
           }
         }
       } else if (payload.model === 'scenes') {
-        let bookID = payload.data.book_id
-        for (let i = 0; i <= (state.scenes[payload.data.book_id].rows.length - 1); i++) {
-          if (state.scenes[bookID].rows[i].uuid === payload.data.uuid) {
-            Vue.set(state.scenes[bookID].rows, i, payload.data)
+        // parent can be chapter or book (other scenes)
+        let PARENT = (payload.data.chapter_id !== null) ? payload.data.chapter_id : payload.data.book_id
+        for (let i = 0; i <= (state.scenes[PARENT].rows.length - 1); i++) {
+          if (state.scenes[PARENT].rows[i].uuid === payload.data.uuid) {
+            Vue.set(state.scenes[PARENT].rows, i, payload.data)
           }
         }
       }
@@ -280,6 +342,9 @@ export default {
     },
     addToList ({ commit, state }, payload) {
       commit('addToList', payload)
+    },
+    loadList ({ commit, state }, payload) {
+      commit('loadList', payload)
     },
     updateFromList ({ commit, state }, payload) {
       commit('updateFromList', payload)

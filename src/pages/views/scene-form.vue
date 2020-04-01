@@ -107,6 +107,8 @@ export default {
   data: function () {
     return {
       data: {
+        id: null,
+        uuid: null,
         book_id: this.properties.uuid,
         chapter_id: '',
         title: '',
@@ -203,7 +205,20 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              scope.$parent.changeComponent('scene-details', { scene: response.data })
+              // scope.$parent.changeComponent('scene-details', { scene: response.data })
+              if (scope.data.uuid === null) {
+                console.log('ADDDDDDD')
+                scope.$set(scope.data, 'id', response.data.id)
+                scope.$set(scope.data, 'uuid', response.data.uuid)
+                scope.$set(scope.data, 'updated_at', response.data.updated_at)
+                scope.ADD_TO_LIST('scenes', response.data)
+              } else {
+                console.log('UPPPDATEDD')
+                scope.$set(scope.data, 'id', response.data.id)
+                scope.$set(scope.data, 'uuid', response.data.uuid)
+                scope.$set(scope.data, 'updated_at', response.data.updated_at)
+                scope.UPDATE_FROM_LIST('scenes', response.data)
+              }
             })
           }
         })
@@ -264,7 +279,7 @@ export default {
   },
   mounted () {
     var scope = this
-    if (scope.data.id) {
+    if (scope.data.id !== null) {
       window.$('.page-scene-form .page-title h3').html('Update ' + scope.properties.scene.title)
       scope.loadScene(scope.data.uuid)
     }
