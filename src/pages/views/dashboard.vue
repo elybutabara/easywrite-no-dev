@@ -143,9 +143,15 @@ export default {
   },
   watch: {
     selected: function () {
-      // console.log(this.selected)
-      this.$store.commit('setPmdTimer', this.selected)
+      this.on_dashboard += 1
+
+      this.$store.commit('SetSelectedPmdTimer', this.selected)
+
+      if (this.on_dashboard > 2) {
+        this.$store.commit('setPmdTimer', this.selected)
+      }
     }
+
   },
   data: function () {
     return {
@@ -154,7 +160,8 @@ export default {
         autostart: false,
         open: false
       },
-      selected: '25',
+      selected: '',
+      on_dashboard: '',
       options: [
         { text: '25 min', value: '25' },
         { text: '50 min', value: '50' }
@@ -201,10 +208,8 @@ export default {
     resetPomodoro: function () {
       var scope = this
       scope.actionmutateStart('reset')
-      // let el = document.getElementById('start_pause')
       scope.$store.commit('mutateToggle', 'Start')
       scope.$store.commit('setPmdTimer', this.selected)
-      // el.innerHTML = scope.pmdtogglestatus.pmd_toggle
     },
     checkerPomodoro: function () {
       var scope = this
@@ -226,6 +231,8 @@ export default {
     }
   },
   mounted () {
+    this.on_dashboard = 1
+    this.selected = this.pmdtimer.pmd_selected
   }
 }
 </script>
