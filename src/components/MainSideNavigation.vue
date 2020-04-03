@@ -90,8 +90,11 @@
                     </ul>
                 </li>
             </ul>
-          <div class="updateVersion" v-if="updateInfo.hasUpdate == true">
-            <span @click="updateVersion()" href='#' ><i class="las la-code-branch icon" v-html="' Upgrade to version: ' + updateInfo.version"></i></span>
+          <div class="updateVersion" >
+            <span v-if="auto_update.downloaded == true" @click="updateVersion()" href='#' ><i class="las la-code-branch icon" v-html="' Upgrade to version: ' + auto_update.version"></i></span>
+            <b-progress v-if="auto_update.available == true" :max="100">
+              <b-progress-bar :value="auto_update.progress" :label="`${((auto_update.progress / 100) * 100).toFixed(2)}%`"></b-progress-bar>
+            </b-progress>
           </div>
         </div>
     </div>
@@ -100,7 +103,7 @@
 <script>
 const electron = window.require('electron')
 const log = window.require('electron-log')
-const remote = electron.remote
+// const remote = electron.remote
 const { ipcRenderer } = electron
 
 // In renderer process (web page).
@@ -113,7 +116,12 @@ export default {
       items: [],
       locations: [],
       other_scenes: [],
-      updateInfo: remote.getGlobal('updateInfo')
+      auto_update: {
+        available: false,
+        downloaded: 0,
+        version: '',
+        progress: 0
+      }
     }
   },
   methods: {
@@ -271,10 +279,30 @@ export default {
           ipcRenderer.send('install-update')
         }
       })
+    },
+    checkAppUpdate: function () {
+      var scope = this
+      scope.checkHasUpdate()
+      ipcRenderer.on('AUTO_UPDATE:downloadProgress', function (event, data) {
+        scope.auto_update.progress = data.progress
+        scope.auto_update.available = (data.progress <= 0 || data.progress >= 100) || true
+        if (scope.auto_update.progress === 100) {
+          scope.checkHasUpdate()
+        }
+      })
+    },
+    checkHasUpdate: function () {
+      var scope = this
+      ipcRenderer.send('AUTO_UPDATE:checkHasUpdate')
+      ipcRenderer.on('AUTO_UPDATE:downloaded', function (event, data) {
+        scope.auto_update.downloaded = true
+        scope.auto_update.version = data.version
+      })
     }
   },
   mounted () {
-    // var scope = this
+    var scope = this
+    scope.checkAppUpdate()
   }
 }
 </script>
@@ -285,7 +313,7 @@ export default {
 .new-book { font-family: 'Crimson Roman'; color:#abc4d7; font-size: 14px; cursor: pointer }
 .new-book:hover  { color:#fff; }
 
-.updateVersion{ width:320px;background: #324553;position: fixed;bottom: 0;left: 0;text-align: center;margin-left: -5px;}
+.updateVersion{ padding-left:5px;width:325px;background: #324553;position: fixed;bottom: 0;left: 0;text-align: center;margin-left: -5px;}
 .updateVersion span{ font-family: 'Crimson Roman'; color:#abc4d7; font-size: 14px; cursor: pointer }
 .updateVersion span:hover  { color:#fff; }
 </style>

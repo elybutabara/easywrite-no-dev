@@ -73,6 +73,7 @@ function createWindow () {
     mainWindow.setSize(1280, 920);
     mainWindow.center();
   })
+  appUpdate.processUpdate(mainWindow)
 }
 
 /*
