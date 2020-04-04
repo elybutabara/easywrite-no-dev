@@ -22,7 +22,7 @@
                             </div>
                             <ul class="level-3">
                                 <li v-bind:class="{ 'open' : chapter.is_open  == true }" v-bind:key="chapter.id" v-for="chapter in GET_CHAPTERS_BY_BOOK(book.uuid)">
-                                    <div @click="CHANGE_COMPONENT('chapter-details', { book_id: book.uuid, chapter: chapter }, chapter.title);toggle(chapter);LOAD_LIST('chapter-scenes',chapter);" class="label"><span><img  src="@/assets/img/icons/chapter.svg"> {{ chapter.title }}</span></div>
+                                    <div @click="CHANGE_COMPONENT('chapter-details', { book_id: book.uuid, chapter: chapter }, chapter.title),toggle(chapter),LOAD_LIST('chapter-scenes',chapter)" class="label"><span><img  src="@/assets/img/icons/chapter.svg"> {{ chapter.title }}</span></div>
                                     <ul v-if="chapter.is_open  == true " class="level-4">
                                         <li v-bind:key="scene.id" v-for="scene in GET_SCENES_BY_CHAPTER(chapter.uuid)">
                                             <div @click="CHANGE_COMPONENT('scene-details',{ book_id: book.uuid, scene: scene}, scene.title )" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title || 'Untitled' }}</span></div>

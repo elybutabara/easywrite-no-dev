@@ -144,8 +144,7 @@ export default {
   watch: {
     selected: function () {
       this.on_dashboard += 1
-
-      this.$store.commit('SetSelectedPmdTimer', this.selected)
+      this.$store.commit('setSelectedPmdTimer', this.selected)
 
       if (this.on_dashboard > 2) {
         this.$store.commit('setPmdTimer', this.selected)

@@ -57,14 +57,6 @@ router.post('/', async function (req, res) {
     .json(scene)
 })
 
-router.get('/:sceneId', async function (req, res) {
-  const scene = await SceneController.getSceneById(req.params.sceneId)
-
-  res
-    .status(200)
-    .json(scene)
-})
-
 router.delete('/:sceneId', async function (req, res) {
   const scene = await SceneController.delete(req.params.sceneId)
 
@@ -73,12 +65,28 @@ router.delete('/:sceneId', async function (req, res) {
     .json(scene)
 })
 
+router.get('/syncable', async function (req, res) {
+  const rows = await SceneController.getSyncable(req.query.userID)
+
+  res
+    .status(200)
+    .json(rows)
+})
+
 router.post('/sync', async function (req, res) {
   const row = await SceneController.sync(req.body)
 
   res
     .status(200)
     .json(row)
+})
+
+router.get('/:sceneId', async function (req, res) {
+  const scene = await SceneController.getSceneById(req.params.sceneId)
+
+  res
+    .status(200)
+    .json(scene)
 })
 
 module.exports = router

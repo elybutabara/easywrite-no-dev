@@ -97,8 +97,7 @@ export default {
       clearInterval(this.clock)
       state.togglePMD.pmd_toggle = 'Start'
     },
-
-    SetSelectedPmdTimer (state, payload) {
+    setSelectedPmdTimer (state, payload) {
       state.pmdTimer.pmd_selected = payload
     }
 

@@ -20,6 +20,9 @@ export default {
     },
     getUserToken: state => {
       return state.user.data.token
+    },
+    getUserSyncedDate: state => {
+      return state.user.data.synced_at
     }
   },
   mutations: {
@@ -27,6 +30,9 @@ export default {
       state.isAuthenticated = true
       state.user.data = payload.user
       state.user.author = payload.author
+    },
+    updateSyncedAt (state, payload) {
+      state.user.data.synced_at = payload.syncedAt
     }
   }
 }

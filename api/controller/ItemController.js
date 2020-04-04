@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
 
-const { Item } = require(path.join(__dirname, '..', 'models'))
+const { User, Book, Item } = require(path.join(__dirname, '..', 'models'))
 
 class ItemController {
   static getAllByBookId (param) {
@@ -36,6 +36,30 @@ class ItemController {
     const item = await Item.query().softDeleteById(itemId)
 
     return item
+  }
+
+  static async getSyncable (userId) {
+    const user = await User.query()
+      .findById(userId)
+      .withGraphJoined('author', { maxBatchSize: 1 })
+
+    const books = await Book.query()
+      .select('uuid')
+      .where('author_id', user.author.uuid)
+      .whereNull('books.deleted_at')
+      // .where('books.updated_at', '>', user.synced_at)
+
+    var bookUUIDs = []
+
+    for (let i = 0; i < books.length; i++) {
+      bookUUIDs.push(books[i].uuid)
+    }
+
+    const rows = await Item.query()
+      .whereIn('book_id', bookUUIDs)
+      .where('updated_at', '>', user.synced_at)
+
+    return rows
   }
 
   static async sync (row) {

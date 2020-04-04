@@ -128,6 +128,14 @@ router.post('/', async function (req, res) {
     .json(book)
 })
 
+router.get('/syncable', async function (req, res) {
+  const rows = await BookController.getSyncable(req.query.userID)
+
+  res
+    .status(200)
+    .json(rows)
+})
+
 router.post('/sync', async function (req, res) {
   const book = await BookController.sync(req.body)
 

@@ -1,5 +1,6 @@
 'use strict'
 const path = require('path')
+const moment = require('moment')
 
 // eslint-disable-next-line no-unused-vars
 const { Author, User, Book } = require(path.join(__dirname, '..', 'models'))
@@ -47,6 +48,18 @@ class UserController {
       .withGraphJoined('genre')
       .findById(saveBook.id)
     */
+
+    return data
+  }
+
+  static async saveSyncedDate (params) {
+    console.log('USER UUID:')
+    console.log(params.uuid)
+    var data = await User.query()
+      .patch({synced_at: moment().add(20, 'seconds').format('YYYY-MM-DD hh:mm:ss').toString()})
+      .where('uuid', '=', params.uuid)
+
+    data = await User.query().findById(params.uuid)
 
     return data
   }

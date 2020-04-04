@@ -14,12 +14,12 @@ router.post('/', async function (req, res) {
     .json(relation)
 })
 
-router.get('/', async function (req, res) {
-  const relations = await RelationController.getAll()
+router.get('/syncable', async function (req, res) {
+  const rows = await RelationController.getSyncable(req.query.userID)
 
   res
     .status(200)
-    .json(relations)
+    .json(rows)
 })
 
 router.post('/sync', async function (req, res) {
@@ -28,6 +28,14 @@ router.post('/sync', async function (req, res) {
   res
     .status(200)
     .json(row)
+})
+
+router.get('/', async function (req, res) {
+  const relations = await RelationController.getAll()
+
+  res
+    .status(200)
+    .json(relations)
 })
 
 module.exports = router

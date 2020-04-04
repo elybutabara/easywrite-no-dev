@@ -22,6 +22,14 @@ router.delete('/:relationDetailId', async function (req, res) {
     .json(relationDetail)
 })
 
+router.get('/syncable', async function (req, res) {
+  const rows = await RelationDetailController.getSyncable(req.query.userID)
+
+  res
+    .status(200)
+    .json(rows)
+})
+
 router.post('/sync', async function (req, res) {
   const row = await RelationDetailController.sync(req.body)
 

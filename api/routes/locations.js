@@ -18,6 +18,30 @@ router.post('/', async function (req, res) {
     .json(location)
 })
 
+router.delete('/:locationId', async function (req, res) {
+  const location = await LocationController.delete(req.params.locationId)
+
+  res
+    .status(200)
+    .json(location)
+})
+
+router.get('/syncable', async function (req, res) {
+  const rows = await LocationController.getSyncable(req.query.userID)
+
+  res
+    .status(200)
+    .json(rows)
+})
+
+router.post('/sync', async function (req, res) {
+  const row = await LocationController.sync(req.body)
+
+  res
+    .status(200)
+    .json(row)
+})
+
 router.get('/:locationId', async function (req, res) {
   const location = await LocationController.getByLocationId(req.params.locationId)
 
@@ -28,22 +52,6 @@ router.get('/:locationId', async function (req, res) {
   res
     .status(200)
     .json(location)
-})
-
-router.delete('/:locationId', async function (req, res) {
-  const location = await LocationController.delete(req.params.locationId)
-
-  res
-    .status(200)
-    .json(location)
-})
-
-router.post('/sync', async function (req, res) {
-  const row = await LocationController.sync(req.body)
-
-  res
-    .status(200)
-    .json(row)
 })
 
 module.exports = router

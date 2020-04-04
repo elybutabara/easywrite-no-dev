@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
 
-const { ChapterVersion } = require(path.join(__dirname, '..', 'models'))
+const { Book, Chapter, ChapterVersion, User } = require(path.join(__dirname, '..', 'models'))
 
 class ChapterVersionController {
   static getAllChapterVersionsByChapterId (chapterId) {
@@ -17,6 +17,40 @@ class ChapterVersionController {
     const chapterVersion = await ChapterVersion.query().upsertGraphAndFetch([data]).first()
 
     return chapterVersion
+  }
+
+  static async getSyncable (userId) {
+    const user = await User.query()
+      .findById(userId)
+      .withGraphJoined('author', { maxBatchSize: 1 })
+
+    const books = await Book.query()
+      .select('uuid')
+      .where('author_id', user.author.uuid)
+      .whereNull('books.deleted_at')
+      // .where('books.updated_at', '>', user.synced_at)
+
+    var bookUUIDs = []
+
+    for (let i = 0; i < books.length; i++) {
+      bookUUIDs.push(books[i].uuid)
+    }
+
+    const chapters = await Chapter.query()
+      .whereIn('book_id', bookUUIDs)
+      .whereNull('deleted_at')
+
+    var chapterUUIDs = []
+
+    for (let i = 0; i < chapters.length; i++) {
+      chapterUUIDs.push(chapters[i].uuid)
+    }
+
+    const rows = await ChapterVersion.query()
+      .whereIn('chapter_id', chapterUUIDs)
+      .where('updated_at', '>', user.synced_at)
+
+    return rows
   }
 
   static async sync (row) {

@@ -22,6 +22,14 @@ router.post('/', async function (req, res) {
     .json(sceneLocation)
 })
 
+router.get('/syncable', async function (req, res) {
+  const rows = await SceneLocationController.getSyncable(req.query.userID)
+
+  res
+    .status(200)
+    .json(rows)
+})
+
 router.post('/sync', async function (req, res) {
   const row = await SceneLocationController.sync(req.body)
 

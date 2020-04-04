@@ -49,6 +49,18 @@ class BookController {
     return book
   }
 
+  static async getSyncable (userId) {
+    const user = await User.query()
+      .findById(userId)
+      .withGraphJoined('author', { maxBatchSize: 1 })
+
+    const rows = Book.query()
+      .where('author_id', user.author.uuid)
+      .where('updated_at', '>', user.synced_at)
+
+    return rows
+  }
+
   static async sync (row) {
     var data = await Book.query()
       .patch(row)

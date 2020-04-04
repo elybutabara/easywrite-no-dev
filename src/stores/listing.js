@@ -145,7 +145,14 @@ export default {
       }
     },
     loadList (state, payload) {
-      if (payload.model === 'chapters') {
+      if (payload.model === 'books') {
+        let userID = payload.data.uuid
+        axios
+          .get('http://localhost:3000/users/' + userID + '/books')
+          .then(response => {
+            state.books = response.data
+          })
+      } else if (payload.model === 'chapters') {
         let bookID = payload.data.uuid
         Vue.set(state.items, bookID, { rows: [] })
         axios
@@ -213,9 +220,6 @@ export default {
       } else if (payload.model === 'scenes') {
         // parent can be chapter or book (other scenes)
         let PARENT = (payload.data.chapter_id !== null) ? payload.data.chapter_id : payload.data.book_id
-        let PARENT_IS = (payload.data.chapter_id !== null) ? 'chapter' : 'book'
-        console.log('PARENT IS ' + PARENT_IS)
-        console.log('PARENT ID ' + PARENT)
         state.scenes[PARENT].rows.push(payload.data)
       }
     },
@@ -292,10 +296,11 @@ export default {
           }
         }
       } else if (payload.model === 'scenes') {
-        let bookID = payload.data.book_id
-        for (let i = 0; i <= (state.scenes[payload.data.book_id].rows.length - 1); i++) {
-          if (state.scenes[bookID].rows[i].uuid === payload.data.uuid) {
-            state.scenes[payload.data.book_id].rows.splice(i, 1)
+        let PARENT = (payload.data.chapter_id !== null) ? payload.data.chapter_id : payload.data.book_id
+
+        for (let i = 0; i <= (state.scenes[PARENT].rows.length - 1); i++) {
+          if (state.scenes[PARENT].rows[i].uuid === payload.data.uuid) {
+            state.scenes[PARENT].rows.splice(i, 1)
           }
         }
       }

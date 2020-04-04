@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
 
-const { Relation } = require(path.join(__dirname, '..', 'models'))
+const { Relation, User } = require(path.join(__dirname, '..', 'models'))
 
 class RelationController {
   static async getAll () {
@@ -15,6 +15,19 @@ class RelationController {
   static async save (data) {
     const save = await Relation.query().upsertGraph([data]).first()
     return save
+  }
+
+  static async getSyncable (userId) {
+    const user = await User.query()
+      .findById(userId)
+      .withGraphJoined('author', { maxBatchSize: 1 })
+
+    const rows = Relation.query()
+      .where('author_id', user.author.uuid)
+      .where('updated_at', '>', user.synced_at)
+      // .where('updated_at', '>', user.synced_at)
+
+    return rows
   }
 
   static async sync (row) {

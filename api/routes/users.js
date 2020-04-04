@@ -33,6 +33,14 @@ router.post('/', async function (req, res) {
     .json(user)
 })
 
+router.post('/synced', async function (req, res) {
+  const user = await UserController.saveSyncedDate(req.body)
+
+  res
+    .status(200)
+    .json(user)
+})
+
 router.get('/:userId/books', async function (req, res) {
   const books = await BookController.getAllBooksByUserId(req.params.userId)
 

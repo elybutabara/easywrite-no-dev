@@ -94,6 +94,7 @@ ul { margin-left:0px; list-style:none;  }
 .left-side-bar .search-box input:focus, .search-box input:active{ background:#324553; }
 .left-side-bar .search-box input::placeholder { color: #506d84; }
 
+/*
 .es-tree-view { padding:10px 5px; }
 
 .es-tree-view ul { padding-left:10px; text-align: left; }
@@ -136,7 +137,21 @@ ul { margin-left:0px; list-style:none;  }
 
 .es-tree-view .level-3 li ul, .es-tree-view .level-3 li > ul > li { display:none; }
 .es-tree-view .level-3 li.open ul, .es-tree-view .level-3 li.open > ul > li{ display:block; }
-
+*/
+.es-tree-view, .es-tree-view  ul { margin:0; padding:0; list-style:none; }
+.es-tree-view ul { margin-left:1em; position:relative }
+.es-tree-view ul.level-1 { margin-left: 0em; }
+.es-tree-view ul ul { margin-left:.5em }
+.es-tree-view ul:before { content:""; display:block; width:0; position:absolute; top:0; bottom:0; left:0; border-left:1px dotted; }
+.es-tree-view ul.level-1:before { display:none; }
+.es-tree-view li { margin:0; padding:0 1em; line-height:2em; color:#abc4d7; position:relative; cursor:pointer; }
+.es-tree-view ul li:before { content:""; display:block; width:10px; height:0; border-top:1px dotted; margin-top:-1px; position:absolute; top:1em; left:0 }
+.es-tree-view > ul.level-1 > li:before { display:none; }
+.es-tree-view ul li:last-child:before { background:#293742; height:auto; top:1em; bottom:0 }
+.es-tree-view ul li img { height:14px; }
+.es-tree-view li a { text-decoration: none; color:#369; }
+.es-tree-view .level-1 li ul, .es-tree-view .level-1 li > ul > li { display:none; }
+.es-tree-view .level-1 li.open ul, .es-tree-view .level-1 li.open > ul > li{ display:block; }
 
 .es-row { display:flex; flex-wrap: wrap; }
 .es-row .es-col { width:25%; padding:10px; }
@@ -144,16 +159,7 @@ ul { margin-left:0px; list-style:none;  }
 .es-top-nav { background:#293742; border-left:1px solid #324553; border-bottom:1px solid #506d84; height:40px; line-height:40px; padding:0px 10px; text-align:right; }
 
 .es-top-nav button { 
-    color: rgb(255, 255, 255);
-    padding: 0px 0px 0px 10px;
-    margin: 0px;
-    border: none;
-    font-size: 12px;
-    padding: 0px 15px;
-    height: 30px;
-    line-height: 30px;
-    background: #496d7d;
-    text-transform: uppercase;
+    color: rgb(255, 255, 255); padding: 0px 0px 0px 10px; margin: 0px; border: none; font-size: 12px; padding: 0px 15px; height: 30px; line-height: 30px; background: #496d7d; text-transform: uppercase;
  }
 
 .es-tab-nav { background:#324553; border-bottom:2px solid #293742; display:flex; }

@@ -42,14 +42,6 @@ router.post('/', async function (req, res) {
     .json(chapter)
 })
 
-router.get('/:chapterId', async function (req, res) {
-  const chapter = await ChapterController.getChapterById(req.params.chapterId)
-
-  res
-    .status(200)
-    .json(chapter)
-})
-
 router.delete('/:chapterId', async function (req, res) {
   const chapter = await ChapterController.delete(req.params.chapterId)
 
@@ -58,12 +50,28 @@ router.delete('/:chapterId', async function (req, res) {
     .json(chapter)
 })
 
+router.get('/syncable', async function (req, res) {
+  const rows = await ChapterController.getSyncable(req.query.userID)
+
+  res
+    .status(200)
+    .json(rows)
+})
+
 router.post('/sync', async function (req, res) {
   const row = await ChapterController.sync(req.body)
 
   res
     .status(200)
     .json(row)
+})
+
+router.get('/:chapterId', async function (req, res) {
+  const chapter = await ChapterController.getChapterById(req.params.chapterId)
+
+  res
+    .status(200)
+    .json(chapter)
 })
 
 module.exports = router
