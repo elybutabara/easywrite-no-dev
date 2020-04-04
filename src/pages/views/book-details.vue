@@ -1,5 +1,5 @@
 <template>
-<div class="page-book-details">
+<div v-if="page.is_ready" class="page-book-details">
     <div class="es-page-head">
         <div class="inner">
             <div class="details">
@@ -7,8 +7,8 @@
                 <small>Date Modified: {{ properties.created_at }}</small>
             </div>
             <div class="actions">
-                <button class="es-button-white" @click="CHANGE_COMPONENT('book-form', properties, 'Story Board - ' + properties.title, true)">STORY BOARD</button>
-                <button class="es-button-white" @click="CHANGE_COMPONENT('book-form', properties, 'Edit - ' + properties.title, true)">EDIT</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT('book-form', page.data, 'Story Board - ' + properties.title, true)">STORY BOARD</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT('book-form', page.data, 'Edit - ' + properties.title, true)">EDIT</button>
                 <button class="es-button-red" @click="deleteBook()">DELETE</button>
             </div>
         </div>
@@ -28,6 +28,11 @@ export default {
   props: ['properties'],
   data: function () {
     return {
+      page: {
+        is_ready: false,
+        title: '',
+        data: null
+      }
     }
   },
   methods: {
@@ -71,7 +76,10 @@ export default {
     }
   },
   mounted () {
-    // var scope = this
+    var scope = this
+    scope.page.title = scope.properties.title
+    scope.page.data = scope.properties
+    scope.page.is_ready = true
   }
 }
 </script>

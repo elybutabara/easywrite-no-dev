@@ -104,7 +104,6 @@ export default {
     },
     saveBook: function () {
       var scope = this
-
       scope.data.about = scope.tempAbout
 
       scope.genre_collection.forEach(function (item, index) {
@@ -163,22 +162,16 @@ export default {
   beforeMount () {
     var scope = this
     scope.data.author_id = this.$store.getters.getAuthorID
-
-    scope.getGenre()
-
-    if (scope.properties) {
+    if (scope.properties !== null) {
       scope.$set(scope.data, 'id', scope.properties.id)
       scope.$set(scope.data, 'uuid', scope.properties.uuid)
     }
   },
   mounted () {
     var scope = this
-    console.log('HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE' + scope.properties)
-
-    if (scope.data.id) {
+    scope.getGenre()
+    if (scope.data.id !== null) {
       scope.loadBook()
-    } else {
-      console.log('aaaaa')
     }
   }
 }

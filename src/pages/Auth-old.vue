@@ -4,6 +4,7 @@
     <div class="login-form text-center">
       <form v-on:submit.prevent="authenticate()">
         <h1 class="no-margin">Easy Write</h1>
+        <h6 class="version no-margin" style="color: white;font-size: small" v-html="'Version ' + version"></h6>
         <p><small>Welcome Back! Please login to continue.</small></p><br>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
@@ -30,7 +31,7 @@
                </div>
                <div class="content">
                    <form v-on:submit.prevent="authenticate()">
-                       <h6 class="version no-margin" style="color: white;font-size: small" v-html="'Version ' + version"></h6>
+                     <h6 class="version no-margin" style="color: white;font-size: small" v-html="'Version ' + version"></h6>
                        <p class="welcome">Welcome to EasyWrite, please login to your account to continue.</p>
                        <div class="input-group line">
                            <label>Username</label>
@@ -53,9 +54,10 @@
 
 <script>
 // In renderer process (web page).
-import { mapActions } from 'vuex'
 const electron = window.require('electron')
+
 const {ipcRenderer} = electron
+
 const remote = electron.remote
 
 export default {
@@ -69,7 +71,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions({ actionmutateTimer: 'mutateDefaultTimer' }),
     closeForm () {
       this.window.close()
     },
@@ -82,12 +83,9 @@ export default {
             user: response.data.user,
             author: response.data.author
           })
-          setTimeout(function () {
-            ipcRenderer.send('RESIZE_MAIN_WINDOW', response)
-            // start time worked counter
-            scope.actionmutateTimer()
-            scope.$router.push({name: 'Main'})
-          }, 100)
+          ipcRenderer.send('RESIZE_MAIN_WINDOW', response)
+          scope.$router.push({name: 'Main'})
+          // this.window.close()
         })
         .catch(error => {
           if (error.response.status === 401) {
@@ -97,7 +95,7 @@ export default {
     },
     authenticateAPI: function () {
       var scope = this
-      scope.axios.post(window.API_URL + '/login', {
+      scope.axios.post('https://api-pilot.orosage.com/dev/login', {
         username: scope.username,
         password: scope.password
       })
@@ -125,6 +123,7 @@ export default {
         .post('http://localhost:3000/users', data)
         .then(response => {
           if (response.data) {
+            console.log(response.data)
             window.swal.fire({
               position: 'center',
               icon: 'success',
@@ -132,18 +131,12 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              console.log('SAVE USER RESPONSE:')
-              console.log(response.data)
               scope.$store.commit('authenticate', {
                 user: response.data,
                 author: response.data.author
               })
-              setTimeout(function () {
-                ipcRenderer.send('RESIZE_MAIN_WINDOW', response)
-                // start time worked counter
-                scope.actionmutateTimer()
-                scope.$router.push({name: 'Main'})
-              }, 100)
+              ipcRenderer.send('RESIZE_MAIN_WINDOW', response)
+              scope.$router.push({name: 'Main'})
             })
           }
         })
@@ -203,13 +196,14 @@ body { background:#293742 !important; }
 .login-form button {
   width: 154px;
 }
+<<<<<<< HEAD
 */
 .version{
-    color: white;
-    font-size: x-small;
-    bottom: 0;
-    right: 0;
-    position: absolute;
-    padding: 5px;
+  color: white;
+  font-size: x-small;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  padding: 5px;
 }
 </style>

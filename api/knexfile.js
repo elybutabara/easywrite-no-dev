@@ -6,8 +6,10 @@ let srcPath = (process.env.NODE_ENV === 'production') ? app.getPath('userData') 
 
 // TODO delete this if stable is release
 if (process.env.NODE_ENV === 'production') {
+  srcPath = (process.env.TEST_PROD) ? path.resolve(__dirname, '../../') : srcPath
   log.info('kenxfile:' + process.env.NODE_ENV)
-  log.info('kenxfile:' + path.resolve(srcPath, 'resources', 'db', 'easywrite.db'))
+  log.info('kenxfile:' + srcPath)
+  log.info('act:testSrc:' + path.resolve(srcPath, 'resources', 'db', 'easywrite.db'))
 }
 
 module.exports = {

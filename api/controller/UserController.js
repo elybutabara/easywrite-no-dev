@@ -39,22 +39,12 @@ class UserController {
         .where('uuid', '=', author.uuid)
     }
 
-    data = await User.query().findById(row.uuid)
+    user = await User.query().findById(row.uuid).withGraphJoined('author')
 
-    // const saveUser = await User.query().upsertGraph([row]).first()
-
-    /*
-    const book = Book.query()
-      .withGraphJoined('genre')
-      .findById(saveBook.id)
-    */
-
-    return data
+    return user
   }
 
   static async saveSyncedDate (params) {
-    console.log('USER UUID:')
-    console.log(params.uuid)
     var data = await User.query()
       .patch({synced_at: moment().add(20, 'seconds').format('YYYY-MM-DD hh:mm:ss').toString()})
       .where('uuid', '=', params.uuid)

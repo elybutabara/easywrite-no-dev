@@ -30,12 +30,12 @@
                 <location-details :key="UNIQUE()" v-if="tab.component == 'location-details'" :properties="tab.data"></location-details>
                 <character-details :key="UNIQUE()" v-if="tab.component == 'character-details'" :properties="tab.data"></character-details>
 
-                <book-form v-if="tab.component == 'book-form'" :properties="tab.data"></book-form>
-                <location-form v-if="tab.component == 'location-form'" :properties="tab.data"></location-form>
-                <item-form v-if="tab.component == 'item-form'" :properties="tab.data"></item-form>
-                <character-form v-if="tab.component == 'character-form'" :properties="tab.data"></character-form>
-                <chapter-form v-if="tab.component == 'chapter-form'" :properties="tab.data"></chapter-form>
-                <scene-form v-if="tab.component == 'scene-form'" :properties="tab.data"></scene-form>
+                <book-form :key="UNIQUE()" v-if="tab.component == 'book-form'" :properties="tab.data"></book-form>
+                <location-form :key="UNIQUE()" v-if="tab.component == 'location-form'" :properties="tab.data"></location-form>
+                <item-form :key="UNIQUE()" v-if="tab.component == 'item-form'" :properties="tab.data"></item-form>
+                <character-form :key="UNIQUE()" v-if="tab.component == 'character-form'" :properties="tab.data"></character-form>
+                <chapter-form :key="UNIQUE()" v-if="tab.component == 'chapter-form'" :properties="tab.data"></chapter-form>
+                <scene-form :key="UNIQUE()" v-if="tab.component == 'scene-form'" :properties="tab.data"></scene-form>
 
                 <syncing v-if="tab.component == 'syncing'" :properties="tab.data"></syncing>
             </div>

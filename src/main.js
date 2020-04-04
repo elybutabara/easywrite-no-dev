@@ -5,7 +5,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import App from './App'
-import Auth from './pages/Auth'
+// import Auth from './pages/Auth'
 import router from './router'
 import mixins from './utils/mixins'
 import Notifications from 'vue-notification'
@@ -70,8 +70,8 @@ window.$ = window.jQuery = require('jquery')
 window.moment = require('moment')
 window.swal = require('sweetalert2')
 
-// window.API_URL = (process.env.NODE_ENV === 'production') ? 'https://api.pilotleser.no/dev' : 'https://api-pilot.orosage.com/dev'
-window.API_URL = (process.env.NODE_ENV === 'production') ? 'https://api.pilotleser.no/live' : 'https://api.pilotleser.no/live'
+window.API_URL = (process.env.NODE_ENV === 'production') ? 'https://api.pilotleser.no/dev' : 'https://api-pilot.orosage.com/dev'
+// window.API_URL = (process.env.NODE_ENV === 'production') ? 'https://api.pilotleser.no/live' : 'https://api.pilotleser.no/live'
 
 // window.$.fn.select2.defaults.set('theme', 'bootstrap')
 
@@ -112,13 +112,13 @@ new Vue({
 * Vues below here is for MPA
 * declare here the vues , put the html ins "src/html"
 * */
-if (process.env.NODE_ENV === 'production') {
-  // eslint-disable-next-line no-new
-  new Vue({
-    el: '#auth',
-    router,
-    store,
-    components: { Auth },
-    template: '<Auth/>'
-  })
-}
+// if (process.env.NODE_ENV === 'production') {
+//   // eslint-disable-next-line no-new
+//   new Vue({
+//     el: '#auth',
+//     router,
+//     store,
+//     components: { Auth },
+//     template: '<Auth/>'
+//   })
+// }

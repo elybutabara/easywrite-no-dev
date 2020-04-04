@@ -11,7 +11,7 @@ resources/
 /package-lock.json
 
 # Ignore all db file
-api/base.db
+api/base-old.db
 api/es.db
 src/assets/base.db
 
