@@ -3,10 +3,13 @@
     <div v-if="ready">
         <main-side-navigation></main-side-navigation>
         <div class="es-right-side-content">
-            <div class="es-top-nav">
-                <button @click="CHANGE_COMPONENT('dashboard', null, 'Dashboard')"> Dashboard</button>
-                <button @click="CHANGE_COMPONENT('syncing', null, 'Syncing', true)">Sync Data</button>
-                <button @click="CHANGE_COMPONENT('book-form', null, 'New Book', true)"> New Book</button>
+            <div class="es-top-parent">
+               <pomodoro-timer></pomodoro-timer>
+                <div class="es-top-nav">
+                    <button @click="CHANGE_COMPONENT('dashboard', null, 'Dashboard')"> Dashboard</button>
+                    <button @click="CHANGE_COMPONENT('syncing', null, 'Syncing', true)">Sync Data</button>
+                    <button @click="CHANGE_COMPONENT('book-form', null, 'New Book', true)"> New Book</button>
+                </div>
             </div>
             <div class="es-tab-nav">
                 <div class="es-tab-nav-item"  v-bind:class="{ 'active': index == tabs.active_index }" v-for="(tab,index) in tabs.items" v-bind:key="index">
@@ -69,6 +72,7 @@ import ItemForm from '@/pages/views/item-form'
 import CharacterForm from '@/pages/views/character-form'
 import SceneForm from '@/pages/views/scene-form'
 import ChapterForm from '@/pages/views/chapter-form'
+import PomodoroTimer from '@/pages/views/pomodoro-timer'
 
 // const electron = window.require('electron')
 // const remote = electron.remote
@@ -111,7 +115,8 @@ export default {
     'item-form': ItemForm,
     'chapter-form': ChapterForm,
     'scene-form': SceneForm,
-    'character-form': CharacterForm
+    'character-form': CharacterForm,
+    'pomodoro-timer': PomodoroTimer
   },
   methods: {
     changeComponent: function (component, data) {
@@ -152,5 +157,7 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-p { }
+.es-top-parent{ position: relative; background:#293742; border-left:1px solid #324553; border-bottom:1px solid #506d84; height:40px; line-height:40px; padding:0px 10px; text-align:right;}
+.es-top-nav { position: absolute; right: 10px;}
+.pomodoro-nav {position: absolute; height:40px; line-height:40px; padding:0px 10px; text-align: center;}
 </style>
