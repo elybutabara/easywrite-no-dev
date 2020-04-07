@@ -71,13 +71,25 @@ export default {
       return this.$store.getters.getScenesByBook(uuid)
     },
     GET_SCENES_BY_CHAPTER: function (uuid = '') {
-      console.log('CHAPTER SCENES:')
-      console.log(uuid)
       return this.$store.getters.getScenesByChapter(uuid)
+    },
+    GET_CHAPTER_VERSIONS_BY_CHAPTER: function (uuid = '') {
+      return this.$store.getters.getChapterVersions(uuid)
+    },
+    GET_SCENE_VERSIONS_BY_SCENE: function (uuid = '') {
+      return this.$store.getters.getSceneVersions(uuid)
+    },
+    GET_SCENE_LOCATIONS_BY_SCENE: function (uuid = '') {
+      return this.$store.getters.getSceneLocations(uuid)
+    },
+    GET_SCENE_ITEMS_BY_SCENE: function (uuid = '') {
+      return this.$store.getters.getSceneItems(uuid)
+    },
+    GET_SCENE_CHARACTERS_BY_SCENE: function (uuid = '') {
+      return this.$store.getters.getSceneCharacters(uuid)
     },
     LOAD_LIST: function (model = '', data) {
       var scope = this
-      console.log('LIST LOADED ' + model)
       scope.$store.dispatch('loadList', {model: model, data: data})
     },
     ADD_TO_LIST: function (model = '', data) {

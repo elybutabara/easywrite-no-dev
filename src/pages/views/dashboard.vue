@@ -4,7 +4,7 @@
    <div class="es-page-head">
         <div class="inner">
             <div class="details">
-                <h4>Welcome John!</h4>
+                <h4>Welcome Sven!</h4>
                 <small>Last Login: January 01, 2020</small>
             </div>
             <div class="actions">

@@ -1,5 +1,6 @@
 'use strict'
 const path = require('path')
+const moment = require('moment')
 
 const { Book, Scene, SceneCharacter, User } = require(path.join(__dirname, '..', 'models'))
 
@@ -20,6 +21,33 @@ class SceneCharacterController {
       .first()
 
     return save
+  }
+
+  static async saveBatch (data) {
+    // eslint-disable-next-line no-unused-vars
+    var items = await SceneCharacter.query()
+      .patch({ deleted_at: moment().format('YYYY-MM-DD hh:mm:ss').toString() })
+      .where('book_scene_id', '=', data.book_scene_id)
+      .whereNotIn('book_character_id', data.rows)
+
+    var count = 0
+    for (let i = 0; i < data.rows.length; i++) {
+      var row = data.rows[i]
+
+      // eslint-disable-next-line no-redeclare
+      var saved = await SceneCharacter.query()
+        .patch({ deleted_at: null, book_scene_id: data.book_scene_id, book_character_id: row })
+        .where('book_scene_id', '=', data.book_scene_id)
+        .where('book_character_id', '=', row)
+
+      if (!saved || saved === 0) {
+        saved = await SceneCharacter.query().insert({ book_scene_id: data.book_scene_id, book_character_id: row })
+      }
+
+      count++
+    }
+
+    return count
   }
 
   static async delete (sceneCharacterId) {

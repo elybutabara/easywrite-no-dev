@@ -9,7 +9,12 @@ export default {
     items: {},
     characters: {},
     locations: {},
-    scenes: {}
+    scenes: {},
+    chapter_versions: { rows: [] },
+    scene_versions: { rows: [] },
+    scene_locations: { rows: [] },
+    scene_items: { rows: [] },
+    scene_characters: { rows: [] }
   },
   getters: {
     getBooks: state => {
@@ -50,6 +55,69 @@ export default {
         return state.scenes[chapterUUID].rows
       }
       return []
+    },
+    getChapterVersions: state => (chapterUUID) => {
+      if (state.chapter_versions.hasOwnProperty(chapterUUID)) {
+        return state.chapter_versions[chapterUUID].rows
+      }
+      return []
+    },
+    getChapterContent: state => (chapterUUID) => {
+      if (state.chapter_versions[chapterUUID] !== 'undefined' && state.chapter_versions[chapterUUID].rows.length > 0) {
+        var index = state.chapter_versions[chapterUUID].rows.length - 1
+        return state.chapter_versions[chapterUUID].rows[index].content
+      } else {
+        return ''
+      }
+    },
+    getChapterVersionContent: state => (chapterVersionUUID) => {
+      if (state.chapter_versions[chapterVersionUUID] !== 'undefined' && state.chapter_versions[chapterVersionUUID].rows.length > 0) {
+        var index = state.chapter_versions[chapterVersionUUID].rows.length - 1
+        return state.chapter_versions[chapterVersionUUID].rows[index].content
+      } else {
+        return ''
+      }
+    },
+    findChapterVersion: state => (chapterVersionUUID) => {
+      if (state.chapter_versions[chapterVersionUUID] !== 'undefined' && state.chapter_versions[chapterVersionUUID].rows.length > 0) {
+        var index = state.chapter_versions[chapterVersionUUID].rows.length - 1
+        return state.chapter_versions[chapterVersionUUID].rows[index]
+      } else {
+        return null
+      }
+    },
+    getSceneLocations: state => (sceneUUID) => {
+      if (state.scene_locations.hasOwnProperty(sceneUUID)) {
+        return state.scene_locations[sceneUUID].rows
+      }
+      return []
+    },
+    getSceneItems: state => (sceneUUID) => {
+      if (state.scene_items.hasOwnProperty(sceneUUID)) {
+        return state.scene_items[sceneUUID].rows
+      }
+      return []
+    },
+    getSceneCharacters: state => (sceneUUID) => {
+      if (state.scene_characters.hasOwnProperty(sceneUUID)) {
+        return state.scene_characters[sceneUUID].rows
+      }
+      return []
+    },
+    getSceneVersions: state => (sceneUUID) => {
+      console.log('LOADING SCENE VERSION FROM VUEX ' + sceneUUID)
+      if (state.scene_versions.hasOwnProperty(sceneUUID)) {
+        return state.scene_versions[sceneUUID].rows
+      }
+      return []
+    },
+    getSceneContent: state => (sceneUUID) => {
+      if (state.scene_versions[sceneUUID] !== 'undefined' && state.scene_versions[sceneUUID].rows.length > 0) {
+        var index = state.scene_versions[sceneUUID].rows.length - 1
+        return state.scene_versions[sceneUUID].rows[index].content
+      } else {
+        return ''
+      }
     }
   },
   mutations: {
@@ -200,6 +268,48 @@ export default {
           .then(response => {
             state.scenes[chapterID] = { rows: response.data }
           })
+      } else if (payload.model === 'chapter-versions') {
+        let chapterID = payload.data.uuid
+        Vue.set(state.chapter_versions, chapterID, { rows: [] })
+        axios
+          .get('http://localhost:3000/chapters/' + chapterID + '/versions')
+          .then(response => {
+            state.chapter_versions[chapterID] = { rows: response.data }
+          })
+      } else if (payload.model === 'scene-versions') {
+        let sceneID = payload.data.uuid
+        Vue.set(state.scene_versions, sceneID, { rows: [] })
+        axios
+          .get('http://localhost:3000/scenes/' + sceneID + '/versions')
+          .then(response => {
+            state.scene_versions[sceneID] = { rows: response.data }
+          })
+      } else if (payload.model === 'scene-locations') {
+        let sceneID = payload.data.uuid
+        Vue.set(state.scene_locations, sceneID, { rows: [] })
+        axios
+          .get('http://localhost:3000/scenes/' + sceneID + '/locations')
+          .then(response => {
+            state.scene_locations[sceneID] = { rows: response.data }
+          })
+      } else if (payload.model === 'scene-items') {
+        let sceneID = payload.data.uuid
+        Vue.set(state.scene_items, sceneID, { rows: [] })
+        axios
+          .get('http://localhost:3000/scenes/' + sceneID + '/items')
+          .then(response => {
+            state.scene_items[sceneID] = { rows: response.data }
+            console.log('SCENE ITEMS: ')
+            console.log(state.scene_items[sceneID])
+          })
+      } else if (payload.model === 'scene-characters') {
+        let sceneID = payload.data.uuid
+        Vue.set(state.scene_characters, sceneID, { rows: [] })
+        axios
+          .get('http://localhost:3000/scenes/' + sceneID + '/characters')
+          .then(response => {
+            state.scene_characters[sceneID] = { rows: response.data }
+          })
       }
     },
     addToList (state, payload) {
@@ -221,6 +331,33 @@ export default {
         // parent can be chapter or book (other scenes)
         let PARENT = (payload.data.chapter_id !== null) ? payload.data.chapter_id : payload.data.book_id
         state.scenes[PARENT].rows.push(payload.data)
+      } else if (payload.model === 'chapter-versions') {
+        let chapterID = payload.data.chapter_id
+        state.chapter_versions[chapterID].rows.push(payload.data)
+      } else if (payload.model === 'scene-locations') {
+        let sceneID = payload.data.book_scene_id
+
+        if (state.scene_locations[sceneID].rows === 'undefined' || state.scene_locations[sceneID].rows == null) {
+          Vue.set(state.scene_locations, sceneID, { rows: [] })
+        }
+
+        state.scene_locations[sceneID].rows.push(payload.data)
+      } else if (payload.model === 'scene-items') {
+        let sceneID = payload.data.book_scene_id
+
+        if (state.scene_items[sceneID] === 'undefined' || state.scene_items[sceneID] === null) {
+          Vue.set(state.scene_items, sceneID, { rows: [] })
+        }
+
+        state.scene_items[sceneID].rows.push(payload.data)
+      } else if (payload.model === 'scene-characters') {
+        let sceneID = payload.data.book_scene_id
+
+        if (state.scene_characters[sceneID].rows === 'undefined' || state.scene_characters[sceneID].rows == null) {
+          Vue.set(state.scene_items, sceneID, { rows: [] })
+        }
+
+        state.scene_characters[sceneID].rows.push(payload.data)
       }
     },
     updateFromList (state, payload) {
@@ -228,28 +365,28 @@ export default {
 
       } else if (payload.model === 'chapters') {
         let bookID = payload.data.book_id
-        for (let i = 0; i <= (state.chapters[payload.data.book_id].rows.length - 1); i++) {
+        for (let i = 0; i <= (state.chapters[bookID].rows.length - 1); i++) {
           if (state.chapters[bookID].rows[i].uuid === payload.data.uuid) {
             Vue.set(state.chapters[bookID].rows, i, payload.data)
           }
         }
       } else if (payload.model === 'items') {
         let bookID = payload.data.book_id
-        for (let i = 0; i <= (state.items[payload.data.book_id].rows.length - 1); i++) {
+        for (let i = 0; i <= (state.items[bookID].rows.length - 1); i++) {
           if (state.items[bookID].rows[i].uuid === payload.data.uuid) {
             Vue.set(state.items[bookID].rows, i, payload.data)
           }
         }
       } else if (payload.model === 'locations') {
         let bookID = payload.data.book_id
-        for (let i = 0; i <= (state.locations[payload.data.book_id].rows.length - 1); i++) {
+        for (let i = 0; i <= (state.locations[bookID].rows.length - 1); i++) {
           if (state.locations[bookID].rows[i].uuid === payload.data.uuid) {
             Vue.set(state.locations[bookID].rows, i, payload.data)
           }
         }
       } else if (payload.model === 'characters') {
         let bookID = payload.data.book_id
-        for (var i = 0; i <= (state.characters[payload.data.book_id].rows.length - 1); i++) {
+        for (let i = 0; i <= (state.characters[bookID].rows.length - 1); i++) {
           if (state.characters[bookID].rows[i].uuid === payload.data.uuid) {
             Vue.set(state.characters[bookID].rows, i, payload.data)
           }
@@ -262,6 +399,13 @@ export default {
             Vue.set(state.scenes[PARENT].rows, i, payload.data)
           }
         }
+      } else if (payload.model === 'chapter-versions') {
+        let chapterID = payload.data.chapter_id
+        for (let i = 0; i <= (state.chapter_versions[chapterID].rows.length - 1); i++) {
+          if (state.chapter_versions[chapterID].rows[i].uuid === payload.data.uuid) {
+            Vue.set(state.chapter_versions[chapterID].rows, i, payload.data)
+          }
+        }
       }
     },
     removeFromList (state, payload) {
@@ -269,30 +413,30 @@ export default {
 
       } else if (payload.model === 'chapters') {
         let bookID = payload.data.book_id
-        for (var i = 0; i <= (state.chapters[payload.data.book_id].rows.length - 1); i++) {
+        for (var i = 0; i <= (state.chapters[bookID].rows.length - 1); i++) {
           if (state.chapters[bookID].rows[i].uuid === payload.data.uuid) {
-            state.chapters[payload.data.book_id].rows.splice(i, 1)
+            state.chapters[bookID].rows.splice(i, 1)
           }
         }
       } else if (payload.model === 'items') {
         let bookID = payload.data.book_id
-        for (let i = 0; i <= (state.items[payload.data.book_id].rows.length - 1); i++) {
+        for (let i = 0; i <= (state.items[bookID].rows.length - 1); i++) {
           if (state.items[bookID].rows[i].uuid === payload.data.uuid) {
-            state.items[payload.data.book_id].rows.splice(i, 1)
+            state.items[bookID].rows.splice(i, 1)
           }
         }
       } else if (payload.model === 'locations') {
         let bookID = payload.data.book_id
-        for (let i = 0; i <= (state.locations[payload.data.book_id].rows.length - 1); i++) {
+        for (let i = 0; i <= (state.locations[bookID].rows.length - 1); i++) {
           if (state.locations[bookID].rows[i].uuid === payload.data.uuid) {
-            state.locations[payload.data.book_id].rows.splice(i, 1)
+            state.locations[bookID].rows.splice(i, 1)
           }
         }
       } else if (payload.model === 'characters') {
         let bookID = payload.data.book_id
-        for (let i = 0; i <= (state.characters[payload.data.book_id].rows.length - 1); i++) {
+        for (let i = 0; i <= (state.characters[bookID].rows.length - 1); i++) {
           if (state.characters[bookID].rows[i].uuid === payload.data.uuid) {
-            state.characters[payload.data.book_id].rows.splice(i, 1)
+            state.characters[bookID].rows.splice(i, 1)
           }
         }
       } else if (payload.model === 'scenes') {
@@ -301,6 +445,34 @@ export default {
         for (let i = 0; i <= (state.scenes[PARENT].rows.length - 1); i++) {
           if (state.scenes[PARENT].rows[i].uuid === payload.data.uuid) {
             state.scenes[PARENT].rows.splice(i, 1)
+          }
+        }
+      } else if (payload.model === 'chapter-versions') {
+        let chapterID = payload.data.chapter_id
+        for (let i = 0; i <= (state.chapter_versions[chapterID].rows.length - 1); i++) {
+          if (state.chapter_versions[chapterID].rows[i].uuid === payload.data.uuid) {
+            state.chapter_versions[chapterID].rows.splice(i, 1)
+          }
+        }
+      } else if (payload.model === 'scene-locations') {
+        let sceneID = payload.data.book_scene_id
+        for (let i = 0; i <= (state.scene_locations[sceneID].rows.length - 1); i++) {
+          if (state.scene_locations[sceneID].rows[i].uuid === payload.data.uuid) {
+            state.scene_locations[sceneID].rows.splice(i, 1)
+          }
+        }
+      } else if (payload.model === 'scene-items') {
+        let sceneID = payload.data.book_scene_id
+        for (let i = 0; i <= (state.scene_items[sceneID].rows.length - 1); i++) {
+          if (state.scene_items[sceneID].rows[i].uuid === payload.data.uuid) {
+            state.scene_items[sceneID].rows.splice(i, 1)
+          }
+        }
+      } else if (payload.model === 'scene-characters') {
+        let sceneID = payload.data.book_scene_id
+        for (let i = 0; i <= (state.scene_characters[sceneID].rows.length - 1); i++) {
+          if (state.scene_characters[sceneID].rows[i].uuid === payload.data.uuid) {
+            state.scene_characters[sceneID].rows.splice(i, 1)
           }
         }
       }
@@ -318,15 +490,6 @@ export default {
       console.log(bookID)
       console.log(state.chapters[bookID])
       state.chapters[bookID].rows.push({title: 'traaayydooorrr'})
-
-      console.log(state.chapters[bookID])
-      /*
-        axios
-          .get('http://localhost:3000/books/' + bookID + '/chapters')
-          .then(response => {
-            state.books = response.data
-          })
-        */
     },
     mutateCharacter (state, payload) {
       state.character.data = payload.character

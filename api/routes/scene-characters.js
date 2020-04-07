@@ -14,6 +14,14 @@ router.delete('/:sceneCharacterId', async function (req, res) {
     .json(sceneCharacter)
 })
 
+router.post('/batch', async function (req, res) {
+  const sceneCharacter = await SceneCharacterController.saveBatch(req.body)
+
+  res
+    .status(200)
+    .json(sceneCharacter)
+})
+
 router.post('/', async function (req, res) {
   const sceneCharacter = await SceneCharacterController.save(req.body)
 

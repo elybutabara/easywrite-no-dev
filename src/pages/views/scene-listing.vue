@@ -8,7 +8,7 @@
                     <small>Below are the list of scenes under {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT('scene-form',{ uuid: properties.uuid },'New Scenes', true)">New Scene</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT('scene-form',{ book_id: properties.uuid , uuid: properties.uuid },'New Scenes', true)">New Scene</button>
                 </div>
             </div>
         </div>

@@ -14,6 +14,14 @@ router.delete('/:sceneLocationId', async function (req, res) {
     .json(sceneCLocation)
 })
 
+router.post('/batch', async function (req, res) {
+  const sceneLocation = await SceneLocationController.saveBatch(req.body)
+
+  res
+    .status(200)
+    .json(sceneLocation)
+})
+
 router.post('/', async function (req, res) {
   const sceneLocation = await SceneLocationController.save(req.body)
 

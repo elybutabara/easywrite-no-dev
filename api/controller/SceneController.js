@@ -21,6 +21,10 @@ class SceneController {
       update: ['scene_version']
     }
 
+    if (data.updated_at !== 'undefined' && data.updated_at !== null) {
+      delete data.updated_at
+    }
+
     const saveScene = await Scene.query().upsertGraph([data], upsertGraphOptions).first()
 
     const scene = Scene.query()
@@ -64,7 +68,7 @@ class SceneController {
     const books = await Book.query()
       .select('uuid')
       .where('author_id', user.author.uuid)
-      .whereNull('books.deleted_at')
+      // .whereNull('books.deleted_at')
       // .where('books.updated_at', '>', user.synced_at)
 
     var bookUUIDs = []

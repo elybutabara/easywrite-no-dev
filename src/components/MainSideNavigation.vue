@@ -83,7 +83,7 @@
                             </div>
                             <ul class="level-4">
                                 <li  v-bind:key="scene.id" v-for="scene in GET_SCENES_BY_BOOK(book.uuid)">
-                                    <div @click="changeComponent('scene-details',{ scene: scene }, scene.title)" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title || 'Untitled' }}</span></div>
+                                    <div @click="changeComponent('scene-details',{ book_id: book.uuid, scene: scene }, scene.title)" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title || 'Untitled' }}</span></div>
                                 </li>
                             </ul>
                         </li>
