@@ -150,38 +150,42 @@ function checkFreshInstallation () {
     src = path.resolve('./api', 'base.db')
     dist = path.resolve(__dirname,'config', 'db', 'development.db')
   }else{
-    process.env.DEMO = true;
+    process.env.DEMO = true
+    src = path.join(process.resourcesPath, 'app.asar', 'api', 'base.db')
     if(process.env.DEMO){
-      src = path.join(process.resourcesPath, 'app.asar', 'api', 'base.db')
-      // info: for MAC put demo in app_data since some user folder are restricted
-      dist = (process.platform == 'darwin' ) ? path.resolve(app.getPath('userData'), 'demo', 'db', 'demo.db') : path.resolve(process.resourcesPath, 'demo', 'db', 'demo.db')
+      /*
+      * Application is not installed and running in downloaded folder
+      * */
+      if(process.platform == 'darwin' ){
+        //db is place in userData since some userdata is retricted to write in mac
+        dist = path.resolve(app.getPath('userData'), 'demo', 'db', 'demo.db')
+
+        let deleteRecursive = function (path) {
+          if( fs.existsSync(path) ) {
+            log.info('exist delte')
+            log.info(path)
+            fs.readdirSync(path).forEach(function(file,index){
+              let curPath = path + "/" + file;
+              if(fs.lstatSync(curPath).isDirectory()) { // recurse
+                log.info('rescures')
+                deleteRecursive(curPath);
+              } else { // delete file
+                fs.unlinkSync(curPath);
+              }
+            });
+            fs.rmdirSync(path);
+          }
+        }
+        deleteRecursive(path.resolve(app.getPath('userData'), 'demo'))
+      }else{
+        dist = path.resolve(process.resourcesPath, 'demo', 'db', 'demo.db')
+      }
     }else{
-      src = path.join(process.resourcesPath, 'app.asar', 'api', 'base.db')
       dist = path.resolve(app.getPath('userData'), 'resources', 'db', 'easywrite.db')
     }
   }
 
-  //%USERPROFILE%\AppData\Roaming\{app name}\logs\{process type}.log
-
-  if(process.env.DEMO && process.platform == 'darwin'){
-    let deleteRecursive = function (path) {
-      if( fs.existsSync(path) ) {
-        log.info('exist delte')
-        log.info(path)
-        fs.readdirSync(path).forEach(function(file,index){
-          let curPath = path + "/" + file;
-          if(fs.lstatSync(curPath).isDirectory()) { // recurse
-            log.info('rescures')
-            deleteRecursive(curPath);
-          } else { // delete file
-            fs.unlinkSync(curPath);
-          }
-        });
-        fs.rmdirSync(path);
-      }
-    }
-    deleteRecursive(path.resolve(app.getPath('userData'), 'demo'))
-  }
+  process.env.dblocation = dist
 
   if (
     fs.existsSync(src) &&
@@ -202,7 +206,6 @@ function checkFreshInstallation () {
 function checkForVersionUpdates(){
   let knexMigrate = require('knex-migrate')
   let data = {
-    knexfile : path.resolve(__dirname, './api/knexfile.js'),
     migrations : path.resolve(__dirname, './api/migrations')
   }
 
