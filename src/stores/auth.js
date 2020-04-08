@@ -21,6 +21,9 @@ export default {
     getUserToken: state => {
       return state.user.data.token
     },
+    getAuthorName: state => {
+      return state.user.author.first_name
+    },
     getUserSyncedDate: state => {
       return state.user.data.synced_at
     }

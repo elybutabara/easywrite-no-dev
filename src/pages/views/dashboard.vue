@@ -4,7 +4,7 @@
    <div class="es-page-head">
         <div class="inner">
             <div class="details">
-                <h4>Welcome Sven!</h4>
+                <h4>Welcome {{ getAuthorName }}!</h4>
                 <small>Last Login: January 01, 2020</small>
             </div>
             <div class="actions">
@@ -139,7 +139,10 @@ export default {
   name: 'dashboard',
   props: ['properties'],
   computed: {
-    ...mapGetters({ defaulttimer: 'getDefaultTimer', pmdtimer: 'getPmdTimer', pmdtogglestatus: 'getToggle' })
+    ...mapGetters({ defaulttimer: 'getDefaultTimer', pmdtimer: 'getPmdTimer', pmdtogglestatus: 'getToggle' }),
+    getAuthorName: function () {
+      return this.$store.getters.getAuthorName
+    }
   },
   watch: {
     selected: function () {
