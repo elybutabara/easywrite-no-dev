@@ -14,8 +14,11 @@ class SceneVersionController {
   }
 
   static async save (data) {
-    const sceneVersion = await SceneVersion.query().upsertGraphAndFetch([data]).first()
+    if (data.updated_at !== 'undefined' && data.updated_at !== null) {
+      delete data.updated_at
+    }
 
+    const sceneVersion = await SceneVersion.query().upsertGraphAndFetch([data]).first()
     return sceneVersion
   }
 
@@ -38,7 +41,7 @@ class SceneVersionController {
 
     const scenes = await Scene.query()
       .whereIn('book_id', bookUUIDs)
-      .whereNull('deleted_at')
+      // .whereNull('deleted_at')
 
     var sceneUUIDs = []
 

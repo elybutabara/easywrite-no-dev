@@ -25,6 +25,10 @@ class SceneController {
       delete data.updated_at
     }
 
+    if (data.scene_version.updated_at !== 'undefined' && data.scene_version.updated_at !== null) {
+      delete data.scene_version.updated_at
+    }
+
     const saveScene = await Scene.query().upsertGraph([data], upsertGraphOptions).first()
 
     const scene = Scene.query()
