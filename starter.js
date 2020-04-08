@@ -150,23 +150,38 @@ function checkFreshInstallation () {
     src = path.resolve('./api', 'base.db')
     dist = path.resolve(__dirname,'config', 'db', 'development.db')
   }else{
-    process.env.TEST_PROD = true;
-    if(process.env.TEST_PROD){
+    process.env.DEMO = true;
+    if(process.env.DEMO){
       src = path.join(process.resourcesPath, 'app.asar', 'api', 'base.db')
-      dist = path.resolve(process.resourcesPath, 'resources', 'db', 'easywrite.db')
-
-      log.info('starter:' + process.env.NODE_ENV)
-      log.info('starter:' + dist)
+      // info: for MAC put demo in app_data since some user folder are restricted
+      dist = (process.platform == 'darwin' ) ? path.resolve(app.getPath('userData'), 'demo', 'db', 'demo.db') : path.resolve(process.resourcesPath, 'demo', 'db', 'demo.db')
     }else{
       src = path.join(process.resourcesPath, 'app.asar', 'api', 'base.db')
       dist = path.resolve(app.getPath('userData'), 'resources', 'db', 'easywrite.db')
-
-      log.info('starter:' + process.env.NODE_ENV)
-      log.info('starter:' + dist)
     }
   }
 
   //%USERPROFILE%\AppData\Roaming\{app name}\logs\{process type}.log
+
+  if(process.env.DEMO && process.platform == 'darwin'){
+    let deleteRecursive = function (path) {
+      if( fs.existsSync(path) ) {
+        log.info('exist delte')
+        log.info(path)
+        fs.readdirSync(path).forEach(function(file,index){
+          let curPath = path + "/" + file;
+          if(fs.lstatSync(curPath).isDirectory()) { // recurse
+            log.info('rescures')
+            deleteRecursive(curPath);
+          } else { // delete file
+            fs.unlinkSync(curPath);
+          }
+        });
+        fs.rmdirSync(path);
+      }
+    }
+    deleteRecursive(path.resolve(app.getPath('userData'), 'demo'))
+  }
 
   if (
     fs.existsSync(src) &&
