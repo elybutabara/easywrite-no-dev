@@ -1,7 +1,7 @@
 <template>
     <div v-if="page.is_ready" class="page-chapter-scenes fadeIn animated">
         <div style="padding:0px 10px; text-align:right; margin-bottom:20px;">
-            <button @click="CHANGE_COMPONENT('scene-form',{ book_id: page.data.book_id, chapter: page.data.chapter}, 'New Scene', true)" class="btn-new-scene">
+            <button @click="CHANGE_COMPONENT('scene-form',{ book_id: chapter.book_id, chapter: chapter }, 'New Scene', true)" class="btn-new-scene">
                 <i class="las la-plus"></i> ADD NEW SCENE
             </button>
         </div>
@@ -13,8 +13,8 @@
                         <i class="description">{{ scene.short_description || 'No Short Description...'  }}</i>
                     </div>
                     <div class="es-card-footer">
-                        <button @click="CHANGE_COMPONENT('scene-details',{ book_id: scene.book_uuid, scene: scene}, scene.title , true)" class="btn-"><i class="lar la-eye"></i> VIEW</button>
-                        <button @click="CHANGE_COMPONENT('scene-form',{ book_id: scene.book_uuid, scene: scene}, 'Edit ' + scene.title )" class="btn-"><i class="las la-pencil-alt"></i> EDIT</button>
+                        <button @click="CHANGE_COMPONENT('scene-details',{ book_id: scene.book_id, scene: scene}, scene.title , true)" class="btn-"><i class="lar la-eye"></i> VIEW</button>
+                        <button @click="CHANGE_COMPONENT('scene-form',{ book_id: scene.book_id, scene: scene}, 'Edit ' + scene.title )" class="btn-"><i class="las la-pencil-alt"></i> EDIT</button>
                         <button @click="DELETE_FROM_LIST('scenes', scene)" class="btn-delete"><i class="las la-trash-alt"></i> DELETE</button>
                     </div>
                 </div>

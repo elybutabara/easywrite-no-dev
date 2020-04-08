@@ -41,7 +41,7 @@
                             </div>
                             <ul class="level-3">
                                 <li v-bind:key="item.id" v-for="item in GET_ITEMS_BY_BOOK(book.uuid)">
-                                    <div @click="CHANGE_COMPONENT('item-details', {  book_id: book.uuid, item: item }, item.itemname, true)" class="label"><span><img  src="@/assets/img/icons/item.svg"> {{ item.itemname || 'Untitled' }}</span></div>
+                                    <div @click="CHANGE_COMPONENT('item-details', {  book_id: book.uuid, item: item }, item.itemname)" class="label"><span><img  src="@/assets/img/icons/item.svg"> {{ item.itemname || 'Untitled' }}</span></div>
                                 </li>
                             </ul>
                         </li>
@@ -69,7 +69,7 @@
                             </div>
                             <ul class="level-3">
                                 <li v-bind:key="location.id" v-for="location in GET_LOCATIONS_BY_BOOK(book.uuid)">
-                                    <div @click="CHANGE_COMPONENT('location-details', {  book_id: book.uuid, location: location }, location.location, true)" class="label"><span><img  src="@/assets/img/icons/location.svg"> {{ location.location || 'Untitled' }}</span></div>
+                                    <div @click="CHANGE_COMPONENT('location-details', {  book_id: book.uuid, location: location }, location.location)" class="label"><span><img  src="@/assets/img/icons/location.svg"> {{ location.location || 'Untitled' }}</span></div>
                                 </li>
                             </ul>
                         </li>

@@ -22,8 +22,8 @@
                             <i class="description">{{ scene.short_description || 'No Short Description...'  }}</i>
                         </div>
                         <div class="es-card-footer">
-                            <button @click="CHANGE_COMPONENT('scene-details',{ book_id: scene.book_uuid, scene: scene}, scene.title )" class="btn-"><i class="lar la-eye"></i> VIEW</button>
-                            <button @click="CHANGE_COMPONENT('scene-form',{ book_id: scene.book_uuid, scene: scene}, 'Edit ' + scene.title )" class="btn-"><i class="las la-pencil-alt"></i> EDIT</button>
+                            <button @click="CHANGE_COMPONENT('scene-details',{ book_id: scene.book_id, scene: scene}, scene.title )" class="btn-"><i class="lar la-eye"></i> VIEW</button>
+                            <button @click="CHANGE_COMPONENT('scene-form',{ book_id: scene.book_id, scene: scene}, 'Edit ' + scene.title )" class="btn-"><i class="las la-pencil-alt"></i> EDIT</button>
                             <button @click="DELETE_FROM_LIST('scenes', scene)" class="btn-delete"><i class="las la-trash-alt"></i> DELETE</button>
                         </div>
                     </div>

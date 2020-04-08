@@ -46,7 +46,8 @@
                                 <button class="btn-delete" @click="deleteRelationDetail(item, index)"><i class="las la-trash-alt"></i></button>
                                 <div class="avatar"></div>
                                 <div class="name">{{ item.character_relation.fullname }}</div>
-                                <div class="relation">({{ item.relation.relation }})</div>
+                                <div class="relation" v-if="item.relation !== null">({{ item.relation.relation }})</div>
+                                <div class="relation" v-else>(&nbsp;)</div>
                             </div>
                         </div>
                     </div>

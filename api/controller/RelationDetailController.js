@@ -1,5 +1,6 @@
 'use strict'
 const path = require('path')
+const moment = require('moment')
 
 const { Book, Character, RelationDetail, User } = require(path.join(__dirname, '..', 'models'))
 
@@ -25,9 +26,12 @@ class RelationDetailController {
   }
 
   static async delete (relationDetailId) {
-    const relationDetail = await RelationDetail.query().softDeleteById(relationDetailId)
+    // const relationDetail = await RelationDetail.query().softDeleteById(relationDetailId)
+    var data = await RelationDetail.query()
+      .patch({ deleted_at: moment().format('YYYY-MM-DD hh:mm:ss').toString() })
+      .where('uuid', '=', relationDetailId)
 
-    return relationDetail
+    return data
   }
 
   static async getSyncable (userId) {

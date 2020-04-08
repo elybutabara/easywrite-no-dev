@@ -45,6 +45,15 @@
                             <b-form-input v-model="data.short_description" placeholder="Short Description"></b-form-input>
                         </b-col>
                     </b-row>
+                    <b-row class="margin-bottom-1rem">
+                        <b-col>
+                            <label>Content: </label>
+                            <tiny-editor :initValue="data.scene_version.content"
+                                        v-on:getEditorContent="setContent"
+                                        class="form-control"
+                            />
+                        </b-col>
+                    </b-row>
                 </div>
             </div>
             <div class="item" v-bind:class="{'active': accordion['more-details'] === 'active'}">
@@ -145,7 +154,9 @@
                 </div>
                 <div class="content fadeIn animated">
                     <p>Click to add items to the scene</p>
-                    <div @click="toggleChild('items',item)" v-bind:class="{'selected' : selected_items.includes(item.uuid) }" class="es-toggle-select" v-bind:key="item.id" v-for="item in GET_ITEMS_BY_BOOK(properties.book_id)">{{ item.itemname }}</div>
+                    <div @click="toggleChild('items',item)" v-bind:class="{'selected' : selected_items.includes(item.uuid) }" class="es-toggle-select" v-bind:key="item.id" v-for="item in GET_ITEMS_BY_BOOK(properties.book_id)">
+                        <i v-if="selected_items.includes(item.uuid)" class="fas fa-check"></i> &nbsp;{{ item.itemname }}
+                    </div>
                 </div>
             </div>
             <div class="item" v-bind:class="{'active': accordion['characters'] === 'active'}">
@@ -158,7 +169,9 @@
                 </div>
                 <div class="content fadeIn animated">
                     <p>Click to add characters to the scene</p>
-                    <div @click="toggleChild('characters',character)" v-bind:class="{'selected' : selected_characters.includes(character.uuid) }" class="es-toggle-select" v-bind:key="character.id" v-for="character in GET_CHARACTERS_BY_BOOK(properties.book_id)">{{ character.fullname }}</div>
+                    <div @click="toggleChild('characters',character)" v-bind:class="{'selected' : selected_characters.includes(character.uuid) }" class="es-toggle-select" v-bind:key="character.id" v-for="character in GET_CHARACTERS_BY_BOOK(properties.book_id)">
+                        <i v-if="selected_characters.includes(character.uuid)" class="fas fa-check"></i> &nbsp;{{ character.fullname }}
+                    </div>
                 </div>
             </div>
             <div class="item" v-bind:class="{'active': accordion['locations'] === 'active'}">
@@ -171,7 +184,9 @@
                 </div>
                 <div class="content fadeIn animated">
                     <p>Click to add locations to the scene</p>
-                    <div @click="toggleChild('locations',location)" v-bind:class="{'selected' : selected_locations.includes(location.uuid) }" class="es-toggle-select" v-bind:key="location.id" v-for="location in GET_LOCATIONS_BY_BOOK(properties.book_id)">{{ location.location }}</div>
+                    <div @click="toggleChild('locations',location)" v-bind:class="{'selected' : selected_locations.includes(location.uuid) }" class="es-toggle-select" v-bind:key="location.id" v-for="location in GET_LOCATIONS_BY_BOOK(properties.book_id)">
+                        <i v-if="selected_locations.includes(location.uuid)" class="fas fa-check"></i> &nbsp;{{ location.location }}
+                    </div>
                 </div>
             </div>
         </div>
