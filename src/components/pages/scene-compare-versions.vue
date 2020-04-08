@@ -6,16 +6,16 @@
         <div class="settings">
             <span class="heading">COMPARISON SETTINGS</span>
             <br/>
-            <select @change="changeSceneVersion1()" v-model="v1.uuid">
+            <select @change="changeSceneVersion1(),showDifference()" v-model="v1.uuid">
                 <option value="null">SELECT A VERSION</option>
                 <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">Version {{ index + 1 }}</option>
             </select>
-            <select @change="changeSceneVersion2()" v-model="v2.uuid">
+            <select @change="changeSceneVersion2(),showDifference()" v-model="v2.uuid">
                 <option value="null">SELECT A VERSION</option>
                 <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">Version {{ index + 1 }}</option>
             </select>
             <div style="margin-top:15px;">
-                <button @click="showDifference()" class="btn-red btn-block">COMPARE VERSIONS</button>
+                <button style="display:none;" @click="showDifference()" class="btn-red btn-block">COMPARE VERSIONS</button>
                 <button @click="stopComparing()" class="btn-white btn-block">BACK</button>
             </div>
         </div>
@@ -222,7 +222,7 @@ export default {
 
     .scene-version-difference { display:flex; justify-content: space-between; }
     .scene-version-difference .scene-version-difference-content { width:calc(100% - 320px); height:calc(100vh - 310px); overflow-y:auto; }
-    .scene-version-difference .settings { width:280px; height:230px; background:#324553; border:1px solid #ccc; padding:10px 15px; }
+    .scene-version-difference .settings { width:280px; height:200px; background:#324553; border:1px solid #ccc; padding:10px 15px; }
     .scene-version-difference .settings .heading { color:#fff; font-size:14px; }
     .scene-version-difference .settings select { margin-top:10px; padding:5px 7px; width:100%; }
 
