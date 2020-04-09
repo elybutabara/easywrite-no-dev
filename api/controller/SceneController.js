@@ -1,5 +1,6 @@
 'use strict'
 const path = require('path')
+const moment = require('moment')
 
 const { Book, Scene, User } = require(path.join(__dirname, '..', 'models'))
 
@@ -10,6 +11,7 @@ class SceneController {
       .withGraphJoined('scene_version', {maxBatchSize: 1})
       .whereNull('book_scenes.deleted_at')
       .whereRaw('chapter_id IS NULL OR chapter_id = 0')
+      .orderBy('order')
 
     return scenes
   }
@@ -22,11 +24,11 @@ class SceneController {
     }
 
     if (data.updated_at !== 'undefined' && data.updated_at !== null) {
-      delete data.updated_at
+      data.updated_at = moment().format('YYYY-MM-DD HH:mm:ss').toString()
     }
 
     if (data.scene_version.updated_at !== 'undefined' && data.scene_version.updated_at !== null) {
-      delete data.scene_version.updated_at
+      data.scene_version.updated_at = moment().format('YYYY-MM-DD HH:mm:ss').toString()
     }
 
     const saveScene = await Scene.query().upsertGraph([data], upsertGraphOptions).first()
@@ -44,6 +46,7 @@ class SceneController {
       .withGraphJoined('scene_version', {maxBatchSize: 1})
       .where('book_scenes.chapter_id', chapterId)
       .whereNull('book_scenes.deleted_at')
+      .orderBy('order')
 
     return scenes
   }

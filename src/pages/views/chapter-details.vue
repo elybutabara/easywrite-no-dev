@@ -24,7 +24,6 @@
     </div>
 
     <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
-        {{ test }}
         <div v-html="getChapterContent" class="description" ></div>
     </div>
     <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
