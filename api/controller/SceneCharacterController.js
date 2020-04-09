@@ -26,7 +26,7 @@ class SceneCharacterController {
   static async saveBatch (data) {
     // eslint-disable-next-line no-unused-vars
     var items = await SceneCharacter.query()
-      .patch({ deleted_at: moment().format('YYYY-MM-DD hh:mm:ss').toString() })
+      .patch({ deleted_at: moment().format('YYYY-MM-DD HH:mm:ss').toString() })
       .where('book_scene_id', '=', data.book_scene_id)
       .whereNotIn('book_character_id', data.rows)
 

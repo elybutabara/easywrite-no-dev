@@ -40,7 +40,7 @@ class CharacterController {
       .where('character_id', characterId)
       .orWhere('character_relation_id', characterId)
       .patch({
-        deleted_at: moment().format('YYYY-MM-DD hh:mm:ss').toString()
+        deleted_at: moment().format('YYYY-MM-DD HH:mm:ss').toString()
       })
 
     return character
