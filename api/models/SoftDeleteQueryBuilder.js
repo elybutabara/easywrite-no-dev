@@ -27,7 +27,7 @@ class SoftDeleteQueryBuilder extends Model.QueryBuilder {
     * */
   softDelete () {
     return this.patch({
-      deleted_at: moment().format('YYYY-MM-DD hh:mm:ss').toString()
+      deleted_at: moment().format('YYYY-MM-DD HH:mm:ss').toString()
     })
   }
 
@@ -61,7 +61,7 @@ class SoftDeleteQueryBuilder extends Model.QueryBuilder {
 
     // softdelete model
     return this.where('uuid', id).patch({
-      deleted_at: moment().format('YYYY-MM-DD hh:mm:ss').toString()
+      deleted_at: moment().format('YYYY-MM-DD HH:mm:ss').toString()
     })
   }
 

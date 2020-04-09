@@ -28,7 +28,7 @@ class RelationDetailController {
   static async delete (relationDetailId) {
     // const relationDetail = await RelationDetail.query().softDeleteById(relationDetailId)
     var data = await RelationDetail.query()
-      .patch({ deleted_at: moment().format('YYYY-MM-DD hh:mm:ss').toString() })
+      .patch({ deleted_at: moment().format('YYYY-MM-DD HH:mm:ss').toString() })
       .where('uuid', '=', relationDetailId)
 
     return data
