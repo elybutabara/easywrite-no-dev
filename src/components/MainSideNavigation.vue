@@ -91,10 +91,11 @@
                 </li>
             </ul>
           <div class="updateVersion" >
-            <span v-if="auto_update.downloaded == true" @click="updateVersion()" href='#' ><i class="las la-code-branch icon" v-html="' Upgrade to version: ' + auto_update.version"></i></span>
-            <b-progress v-if="auto_update.available == true" :max="100">
+            <span v-if="auto_update.downloaded == true" @click="installNewVersion()" href='#' ><i class="las la-code-branch icon" v-html="' Upgrade to version: ' + auto_update.version"></i></span>
+            <b-progress v-if="auto_update.progress > 0" :max="100">
               <b-progress-bar :value="auto_update.progress" :label="`${((auto_update.progress / 100) * 100).toFixed(2)}%`"></b-progress-bar>
             </b-progress>
+            <span v-if="auto_update.available == true" @click="downloadAppUpdate()" href='#' ><i class="las la-code-branch icon" v-html="auto_update.text"></i></span>
           </div>
         </div>
     </div>
@@ -120,7 +121,8 @@ export default {
         available: false,
         downloaded: 0,
         version: '',
-        progress: 0
+        progress: 0,
+        text: ''
       }
     }
   },
@@ -264,7 +266,7 @@ export default {
       }
       // scope.changeComponent('chapter-details', chapter, 'Scenes | ' + chapter.title)
     },
-    updateVersion: function () {
+    installNewVersion: function () {
       window.swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -280,20 +282,43 @@ export default {
         }
       })
     },
+    downloadAppUpdate: function () {
+      ipcRenderer.send('AUTO_UPDATE:downloadAppUpdate')
+    },
     checkAppUpdate: function () {
       var scope = this
-      scope.checkHasUpdate()
+      ipcRenderer.send('AUTO_UPDATE:checkHasUpdate')
+      ipcRenderer.on('AUTO_UPDATE:updateAvailable', function (event, data) {
+        scope.auto_update.available = true
+        scope.auto_update.version = data.version
+        scope.auto_update.text = 'Download new version: ' + data.version
+      })
+      ipcRenderer.on('AUTO_UPDATE:prepareDownload', function (event, data) {
+        scope.auto_update.text = 'Preparing download ...'
+      })
+      ipcRenderer.on('AUTO_UPDATE:error', function (event, data) {
+        scope.auto_update.progress = false
+        scope.auto_update.available = true
+        scope.auto_update.text = 'Download new version: ' + scope.auto_update.version
+        scope.$notify({
+          group: 'notification',
+          title: 'Downloading new version Failed!',
+          text: data.error,
+          type: 'warn'
+        })
+      })
+      scope.checkUpdateDownloaded()
       ipcRenderer.on('AUTO_UPDATE:downloadProgress', function (event, data) {
+        scope.auto_update.available = false
         scope.auto_update.progress = data.progress
-        scope.auto_update.available = (data.progress <= 0 || data.progress >= 100) || true
         if (scope.auto_update.progress === 100) {
-          scope.checkHasUpdate()
+          scope.checkUpdateDownloaded()
         }
       })
     },
-    checkHasUpdate: function () {
+    checkUpdateDownloaded: function () {
       var scope = this
-      ipcRenderer.send('AUTO_UPDATE:checkHasUpdate')
+      ipcRenderer.send('AUTO_UPDATE:checkUpdateDownloaded')
       ipcRenderer.on('AUTO_UPDATE:downloaded', function (event, data) {
         scope.auto_update.downloaded = true
         scope.auto_update.version = data.version
