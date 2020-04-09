@@ -24,6 +24,7 @@
     </div>
 
     <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
+        {{ test }}
         <div v-html="getChapterContent" class="description" ></div>
     </div>
     <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
@@ -44,6 +45,7 @@ import TinyMCE from '../../components/TinyMCE'
 import ChapterScenes from '@/components/pages/chapter-scenes'
 import ChapterVersions from '@/components/pages/chapter-versions'
 import ChapterCompareVersions from '@/components/pages/chapter-compare-versions'
+import moment from 'moment'
 
 export default {
   name: 'chapter-details',
@@ -71,6 +73,11 @@ export default {
       var scope = this
       var chapterID = scope.page.data.chapter.uuid
       return this.$store.getters.getChapterContent(chapterID)
+    },
+    test: function () {
+      var stillUtc = moment.utc('2020-04-09 13:51:40').toDate()
+      var date = moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss')
+      return moment('2020-04-09 21:51:40').utc().format('YYYY-MM-DD HH:mm:ss').toString() + ' ---> ' + date
     }
   },
   methods: {
@@ -86,7 +93,6 @@ export default {
     var scope = this
     scope.page.data = scope.properties
     scope.LOAD_LIST('chapter-versions', scope.page.data.chapter)
-
     scope.page.title = scope.properties.chapter.title
     scope.page.is_ready = true
   }

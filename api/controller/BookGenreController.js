@@ -20,7 +20,7 @@ class BookGenreController {
 
       // update uuid to match web
       data = await BookGenre.query()
-        .patch({ 'uuid': row.uuid })
+        .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
         .where('uuid', '=', data.uuid)
     }
 

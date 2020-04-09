@@ -102,6 +102,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   name: 'syncing',
   props: ['properties'],
@@ -265,9 +267,13 @@ export default {
 
       scope.progress_message = 'Uploading ' + endpoint.title + ' Data...'
       scope.progress_message = 'Uploading ' + endpoint.title + ' Data (' + scope.upload.index + ' of ' + (endpoint.packed.length + 1) + ')...'
+      var data = endpoint.packed[scope.upload.index]
+
+      data.created_at = scope.timeConvertToUTC(data.created_at)
+      data.updated_at = scope.timeConvertToUTC(data.updated_at)
 
       scope.axios
-        .post(window.API_URL + '/' + endpoint.api + '', endpoint.packed[scope.upload.index],
+        .post(window.API_URL + '/' + endpoint.api + '', data,
           {
             'headers': {
               'X-Requested-With': 'XMLHttpRequest',
@@ -298,6 +304,14 @@ export default {
         .finally(function () {
           // always executed
         })
+    },
+    timeConvertFromUTC: function (datetime) {
+      var stillUtc = moment.utc(datetime).toDate()
+      var date = moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss')
+      return date
+    },
+    timeConvertToUTC: function (datetime) {
+      return moment(datetime).utc().format('YYYY-MM-DD HH:mm:ss').toString()
     },
     startDownloadData: function () {
       var scope = this
@@ -367,8 +381,12 @@ export default {
         return
       }
 
+      var data = endpoint.downloaded[scope.saving.index]
+      data.created_at = scope.timeConvertToUTC(data.created_at)
+      data.updated_at = scope.timeConvertToUTC(data.updated_at)
+
       scope.axios
-        .post('http://localhost:3000/' + endpoint.local + '/sync', endpoint.downloaded[scope.saving.index])
+        .post('http://localhost:3000/' + endpoint.local + '/sync', data)
         .then(function (response) {
           // eslint-disable-next-line valid-typeof
           scope.saving.index++
