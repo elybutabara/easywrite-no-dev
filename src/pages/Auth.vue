@@ -62,8 +62,8 @@ export default {
   name: 'Auth',
   data () {
     return {
-      username: 'Support',
-      password: '123QazQaz',
+      username: '',
+      password: '',
       window: remote.getCurrentWindow(),
       version: remote.app.getVersion()
     }
@@ -147,10 +147,25 @@ export default {
             })
           }
         })
+    },
+
+    getUser: function () {
+      var scope = this
+      scope.axios
+        .get('http://localhost:3000/users/' + '/getUser')
+        .then(response => {
+          if (!Object.keys(response.data).length) {
+            console.log('no data found')
+          } else {
+            scope.username = response.data[0].username
+            scope.password = response.data[0].password
+          }
+        })
     }
   },
   mounted () {
-    // this.IPCSendSync('/books/get', { id: 1, title: 'The Book' })
+    var scope = this
+    scope.getUser()
   }
 }
 </script>

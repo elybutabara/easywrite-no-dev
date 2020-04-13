@@ -16,6 +16,11 @@ class UserController {
     return user
   }
 
+  static getUser () {
+    var user = User.query()
+    return user
+  }
+
   static async save (row) {
     var data = await User.query()
       .patch(row)
