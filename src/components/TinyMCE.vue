@@ -27,6 +27,17 @@ export default {
         branding: false,
         autoresize_on_init: false,
         forced_root_block: false,
+
+        init_instance_callback: function (editor) {
+          editor.shortcuts.add('ctrl+l', 'A New Way To leftChev', function () {
+            editor.insertContent('&#171;')
+          })
+          editor.shortcuts.add('ctrl+r', 'A New Way To rightChev', function () {
+            editor.insertContent('&#187;')
+          })
+          editor.shortcuts.add('ctrl+s', 'A New Way To Bold', 'Bold')
+        },
+
         setup: function (editor) {
           editor.ui.registry.addButton('leftChev', {
             text: '<<',
