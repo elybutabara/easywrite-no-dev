@@ -62,8 +62,8 @@ export default {
   name: 'Auth',
   data () {
     return {
-      username: 'Support',
-      password: '123QazQaz',
+      username: '',
+      password: '',
       window: remote.getCurrentWindow(),
       version: remote.app.getVersion()
     }
@@ -86,6 +86,7 @@ export default {
             ipcRenderer.send('RESIZE_MAIN_WINDOW', response)
             // start time worked counter
             scope.actionmutateTimer()
+            scope.COOKIE_SET('username', scope.username, 365)
             scope.$router.push({name: 'Main'})
           }, 100)
         })
@@ -104,7 +105,7 @@ export default {
         .then(function (response) {
           delete response.data.user.id
           delete response.data.author.id
-
+          scope.COOKIE_SET('username', scope.username, 365)
           scope.$set(response.data.user, 'password', scope.password)
           scope.$set(response.data.user, 'token', response.data.success.token)
           scope.$set(response.data.user, 'author', response.data.author)
@@ -150,7 +151,8 @@ export default {
     }
   },
   mounted () {
-    // this.IPCSendSync('/books/get', { id: 1, title: 'The Book' })
+    var scope = this
+    scope.username = scope.COOKIE_GET('username')
   }
 }
 </script>

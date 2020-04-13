@@ -126,7 +126,6 @@ export default {
       var isOpen = false
       if (payload.model === 'books') {
         isOpen = !((typeof state.books[index].is_open !== 'undefined' && state.books[index].is_open))
-
         Vue.set(state.books[index], 'is_open', isOpen)
         Vue.set(state.books[index], 'chapter_folder', { is_open: false })
         Vue.set(state.books[index], 'character_folder', { is_open: false })

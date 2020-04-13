@@ -8,6 +8,7 @@ import App from './App'
 // import Auth from './pages/Auth'
 import router from './router'
 import mixins from './utils/mixins'
+import cookie from './utils/cookie'
 import Notifications from 'vue-notification'
 import Multiselect from 'vue-multiselect'
 import { BootstrapVue } from 'bootstrap-vue'
@@ -98,6 +99,7 @@ const store = new Vuex.Store({
 
 // all global functions goes here...
 Vue.mixin(mixins)
+Vue.mixin(cookie)
 
 // eslint-disable-next-line no-new
 new Vue({

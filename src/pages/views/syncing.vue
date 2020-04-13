@@ -322,13 +322,16 @@ export default {
         scope.saveDownloadedData()
         return
       }
+
       // get the current pointed endpoint
       let endpoint = scope.endpoints[scope.download.pointer]
       scope.progress_message = 'Downloading ' + endpoint.title + '...'
+
+      var lastSyncedDate = scope.timeConvertToUTC(this.$store.getters.getUserSyncedDate)
       scope.axios.get(window.API_URL + '/' + endpoint.api,
         {
           params: {
-            synced_at: this.$store.getters.getUserSyncedDate
+            synced_at: lastSyncedDate
           },
           'headers': {
             'X-Requested-With': 'XMLHttpRequest',
