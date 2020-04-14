@@ -52,4 +52,24 @@ exports.processUpdate = (window) => {
     event.reply('AUTO_UPDATE:prepareDownload')
   })
 
+  // //TEST AREA //TODO REMOVE THIS AFTER STABLE
+  // let percent = 90
+  // ipcMain.on('AUTO_UPDATE:downloadAppUpdate', (event) => {
+  //
+  //   // autoUpdater.downloadUpdate().then(() => {}).catch((err) => {log.error(err)})
+  //   if(percent <= 100) {
+  //     setInterval(function () {
+  //       percent++
+  //       window.webContents.send('AUTO_UPDATE:downloadProgress', {progress: percent})
+  //     }, 1000)
+  //   }
+  //   event.reply('AUTO_UPDATE:prepareDownload')
+  // })
+  //
+  // ipcMain.on('AUTO_UPDATE:checkUpdateDownloaded', (event) => {
+  //   // autoUpdater.on('update-downloaded', function (data) {
+  //   if(percent >= 100)
+  //     event.reply('AUTO_UPDATE:downloaded', {version:'0.0.2'})
+  //   // })
+  // })
 }
