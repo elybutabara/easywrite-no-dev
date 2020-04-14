@@ -322,6 +322,7 @@ export default {
         scope.auto_update.status = 'downloadProgress'
         scope.auto_update.progress = data.progress
         if (scope.auto_update.progress > 100) {
+          scope.auto_update.status = 'downloaded'
           scope.checkUpdateDownloaded()
         }
       })
