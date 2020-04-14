@@ -41,16 +41,21 @@ exports.processUpdate = (window) => {
   })
 
   autoUpdater.on('update-available',function (data) {
-    ipcMain.on('AUTO_UPDATE:checkHasUpdate', (event) => {
+    ipcMain.on('AUTO_UPDATE:checkUpdateAvailable', (event) => {
       version = data.version
       event.reply('AUTO_UPDATE:updateAvailable',{version: data.version})
     })
+    window.webContents.send('AUTO_UPDATE:updateAvailable',{version: data.version})
   })
 
   ipcMain.on('AUTO_UPDATE:downloadAppUpdate', (event) => {
     autoUpdater.downloadUpdate().then(() => {}).catch((err) => {log.error(err)})
     event.reply('AUTO_UPDATE:prepareDownload')
   })
+
+  setTimeout(function () {
+    autoUpdater.checkForUpdates().then(() => {}).catch((err) => {log.error(err)})
+  }, 1 * 60 * 1000);//checking update every minute
 
   // //TEST AREA //TODO REMOVE THIS AFTER STABLE
   // let percent = 90

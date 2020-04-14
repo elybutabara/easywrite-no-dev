@@ -289,18 +289,23 @@ export default {
     },
     checkAppUpdate: function () {
       var scope = this
-      ipcRenderer.send('AUTO_UPDATE:checkHasUpdate')
+      // check available update
+      ipcRenderer.send('AUTO_UPDATE:checkUpdateAvailable')
       ipcRenderer.on('AUTO_UPDATE:updateAvailable', function (event, data) {
         scope.auto_update.status = 'updateAvailable'
         scope.auto_update.version = data.version
         scope.auto_update.text = 'Download new version: ' + data.version
       })
+
+      // show prepate since there is a time delay in downloading
       ipcRenderer.on('AUTO_UPDATE:prepareDownload', function (event, data) {
         scope.auto_update.text = 'Preparing download ...'
       })
+
+      // show error via notification
       ipcRenderer.on('AUTO_UPDATE:error', function (event, data) {
         log.warn(data.error)
-        ipcRenderer.send('AUTO_UPDATE:checkHasUpdate')
+        ipcRenderer.send('AUTO_UPDATE:checkUpdateAvailable')
         scope.$notify({
           group: 'notification',
           title: 'Downloading new version Failed!',
@@ -308,7 +313,11 @@ export default {
           type: 'warn'
         })
       })
+
+      // will check if update is already downloaded
       scope.checkUpdateDownloaded()
+
+      // show download progress
       ipcRenderer.on('AUTO_UPDATE:downloadProgress', function (event, data) {
         scope.auto_update.status = 'downloadProgress'
         scope.auto_update.progress = data.progress
