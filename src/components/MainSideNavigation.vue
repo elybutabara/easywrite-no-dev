@@ -94,8 +94,9 @@
             <!--avaialable update-->
             <span v-if="auto_update.status == 'updateAvailable'" @click="downloadAppUpdate()" href='#' ><i class="las la-code-branch icon" v-html="auto_update.text"></i></span>
             <!--progress-->
+            <span v-if="(auto_update.status == 'downloadProgress')" v-html="'Downloading v' + auto_update.version"></span>
             <b-progress v-if="(auto_update.status == 'downloadProgress')" :max="100">
-              <b-progress-bar :value="auto_update.progress" :label="`${((auto_update.progress / 100) * 100).toFixed(2)}%`"></b-progress-bar>
+              <b-progress-bar :value="(auto_update.progress < 7) ? 7 :auto_update.progress" :label="`  ${((auto_update.progress / 100) * 100).toFixed(2)}%`"></b-progress-bar>
             </b-progress>
             <!--install update-->
             <span v-if="auto_update.status == 'downloaded'" @click="installNewVersion()" href='#' ><i class="las la-code-branch icon" v-html="' Install new version: ' + auto_update.version"></i></span>
@@ -321,11 +322,16 @@ export default {
       ipcRenderer.on('AUTO_UPDATE:downloadProgress', function (event, data) {
         scope.auto_update.status = 'downloadProgress'
         scope.auto_update.progress = data.progress
-        if (scope.auto_update.progress > 100) {
+        if (scope.auto_update.progress >= 100) {
           scope.auto_update.status = 'downloaded'
           scope.checkUpdateDownloaded()
         }
       })
+
+      // checking update every minute
+      setInterval(function () {
+        ipcRenderer.send('AUTO_UPDATE:checkForUpdate')
+      }, 1 * 60 * 1000)
     },
     checkUpdateDownloaded: function () {
       var scope = this

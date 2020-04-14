@@ -53,9 +53,9 @@ exports.processUpdate = (window) => {
     event.reply('AUTO_UPDATE:prepareDownload')
   })
 
-  setTimeout(function () {
-    autoUpdater.checkForUpdates().then(() => {}).catch((err) => {log.error(err)})
-  }, 1 * 60 * 1000);//checking update every minute
+  ipcMain.on('AUTO_UPDATE:checkForUpdate', (event) => {
+    autoUpdater.checkForUpdates().then(() => {log.info('autoUpdater checkForudpate')}).catch((err) => {log.error(err)})
+  })
 
   // //TEST AREA //TODO REMOVE THIS AFTER STABLE
   // let percent = 90

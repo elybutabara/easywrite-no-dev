@@ -25,7 +25,7 @@ let mainWindow, loginWindow
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    title: app.getName()+' '+app.getVersion(),
+    title: app.name+' v'+app.getVersion(),
     width : 500,
     height: 600,
     icon: path.resolve('src/assets/img/easywrite.png'),

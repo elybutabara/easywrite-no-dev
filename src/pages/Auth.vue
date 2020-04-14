@@ -30,7 +30,7 @@
                </div>
                <div class="content">
                    <form v-on:submit.prevent="authenticate()">
-                       <h6 class="version no-margin" style="color: white;font-size: small" v-html="'Version ' + version"></h6>
+<!--                       <h6 class="version no-margin" style="color: white;font-size: small" v-html="'Version ' + version"></h6>-->
                        <p class="welcome">Welcome to EasyWrite, please login to your account to continue.</p>
                        <div class="input-group line">
                            <label>Username</label>
