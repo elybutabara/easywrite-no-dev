@@ -26,26 +26,38 @@ exports.check = () => {
 
 exports.processUpdate = (window) => {
   let version
+  let in_progress = false
+  let downloaded_version
   autoUpdater.on('update-downloaded', function (data) {
+    in_progress = false
+    downloaded_version = data.version
+    window.webContents.send('AUTO_UPDATE:downloaded', data)
     ipcMain.on('AUTO_UPDATE:checkUpdateDownloaded', (event) => {
       event.reply('AUTO_UPDATE:downloaded', data)
     })
   })
 
   autoUpdater.on('download-progress', function (d) {
+    in_progress = true
     window.webContents.send('AUTO_UPDATE:downloadProgress',{progress:d.percent})
   })
 
   autoUpdater.on('error',function (err) {
-    window.webContents.send('AUTO_UPDATE:error',{error:err.message,version:version})
+    in_progress = false
+    window.webContents.send('AUTO_UPDATE:error',{error:err.message})
   })
 
   autoUpdater.on('update-available',function (data) {
+    // check available update
     ipcMain.on('AUTO_UPDATE:checkUpdateAvailable', (event) => {
       version = data.version
-      event.reply('AUTO_UPDATE:updateAvailable',{version: data.version})
+      if(downloaded_version != version){
+        event.reply('AUTO_UPDATE:updateAvailable',{version: data.version})
+      }
     })
-    window.webContents.send('AUTO_UPDATE:updateAvailable',{version: data.version})
+    if(downloaded_version != version) {
+      window.webContents.send('AUTO_UPDATE:updateAvailable', {version: data.version})
+    }
   })
 
   ipcMain.on('AUTO_UPDATE:downloadAppUpdate', (event) => {
@@ -53,28 +65,14 @@ exports.processUpdate = (window) => {
     event.reply('AUTO_UPDATE:prepareDownload')
   })
 
-  ipcMain.on('AUTO_UPDATE:checkForUpdate', (event) => {
-    autoUpdater.checkForUpdates().then(() => {log.info('autoUpdater checkForudpate')}).catch((err) => {log.error(err)})
-  })
-
-  // //TEST AREA //TODO REMOVE THIS AFTER STABLE
-  // let percent = 90
-  // ipcMain.on('AUTO_UPDATE:downloadAppUpdate', (event) => {
-  //
-  //   // autoUpdater.downloadUpdate().then(() => {}).catch((err) => {log.error(err)})
-  //   if(percent <= 100) {
-  //     setInterval(function () {
-  //       percent++
-  //       window.webContents.send('AUTO_UPDATE:downloadProgress', {progress: percent})
-  //     }, 1000)
-  //   }
-  //   event.reply('AUTO_UPDATE:prepareDownload')
-  // })
-  //
-  // ipcMain.on('AUTO_UPDATE:checkUpdateDownloaded', (event) => {
-  //   // autoUpdater.on('update-downloaded', function (data) {
-  //   if(percent >= 100)
-  //     event.reply('AUTO_UPDATE:downloaded', {version:'0.0.2'})
-  //   // })
-  // })
+  // checking update every minute
+  setInterval(function () {
+    if(!in_progress){
+      autoUpdater.checkForUpdates().then((data) => {
+        // log.info(data)
+      }).catch((err) => {
+        log.error(err)
+      })
+    }
+  }, 30000)
 }

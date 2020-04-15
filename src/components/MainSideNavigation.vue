@@ -123,6 +123,7 @@ export default {
       other_scenes: [],
       auto_update: {
         version: '',
+        downloaded_version: '',
         progress: 0,
         status: '',
         text: ''
@@ -293,9 +294,16 @@ export default {
       // check available update
       ipcRenderer.send('AUTO_UPDATE:checkUpdateAvailable')
       ipcRenderer.on('AUTO_UPDATE:updateAvailable', function (event, data) {
-        scope.auto_update.status = 'updateAvailable'
-        scope.auto_update.version = data.version
-        scope.auto_update.text = 'Download new version: ' + data.version
+        // show downloaded version if the downloaded version is not the same as the update version
+        if (
+          scope.auto_update.downloaded_version !== data.version &&
+          scope.auto_update.status !== 'downloadProgress' &&
+          scope.auto_update.status !== 'downloaded'
+        ) {
+          scope.auto_update.status = 'updateAvailable'
+          scope.auto_update.version = data.version
+          scope.auto_update.text = 'Download new version: ' + data.version
+        }
       })
 
       // show prepate since there is a time delay in downloading
@@ -315,30 +323,19 @@ export default {
         })
       })
 
-      // will check if update is already downloaded
-      scope.checkUpdateDownloaded()
-
       // show download progress
       ipcRenderer.on('AUTO_UPDATE:downloadProgress', function (event, data) {
         scope.auto_update.status = 'downloadProgress'
         scope.auto_update.progress = data.progress
         if (scope.auto_update.progress >= 100) {
           scope.auto_update.status = 'downloaded'
-          scope.checkUpdateDownloaded()
         }
       })
 
-      // checking update every minute
-      setInterval(function () {
-        ipcRenderer.send('AUTO_UPDATE:checkForUpdate')
-      }, 1 * 60 * 1000)
-    },
-    checkUpdateDownloaded: function () {
-      var scope = this
-      ipcRenderer.send('AUTO_UPDATE:checkUpdateDownloaded')
+      // after 100 and checking after app is re-open with finish download
       ipcRenderer.on('AUTO_UPDATE:downloaded', function (event, data) {
         scope.auto_update.status = 'downloaded'
-        scope.auto_update.version = data.version
+        scope.auto_update.downloaded_version = data.version
       })
     }
   },
