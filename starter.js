@@ -25,9 +25,10 @@ let mainWindow, loginWindow
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
+    title: app.name+' v'+app.getVersion(),
     width : 500,
     height: 600,
-    icon: path.resolve('src/assets/img/easywrite.png'),
+    icon: path.resolve('src/assets/img/easywrite-white-bg.png'),
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true,

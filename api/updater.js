@@ -9,7 +9,7 @@ const log = require('electron-log')
 autoUpdater.logger = null
 autoUpdater.autoInstallOnAppQuit = true
 autoUpdater.autoDownload = false
-
+// console.log = log.log
 exports.check = () => {
   global.updateInfo = {
     hasUpdate: false,
@@ -26,25 +26,42 @@ exports.check = () => {
 
 exports.processUpdate = (window) => {
   let version
+  let in_progress = false
+  let downloaded_version
   autoUpdater.on('update-downloaded', function (data) {
+    in_progress = false
+    downloaded_version = data.version
+    window.webContents.send('AUTO_UPDATE:downloaded', data)
     ipcMain.on('AUTO_UPDATE:checkUpdateDownloaded', (event) => {
       event.reply('AUTO_UPDATE:downloaded', data)
     })
   })
 
   autoUpdater.on('download-progress', function (d) {
+    in_progress = true
     window.webContents.send('AUTO_UPDATE:downloadProgress',{progress:d.percent})
   })
 
   autoUpdater.on('error',function (err) {
-    window.webContents.send('AUTO_UPDATE:error',{error:err.message,version:version})
+    in_progress = false
+    window.webContents.send('AUTO_UPDATE:error',{error:err.message})
   })
 
   autoUpdater.on('update-available',function (data) {
-    ipcMain.on('AUTO_UPDATE:checkHasUpdate', (event) => {
-      version = data.version
-      event.reply('AUTO_UPDATE:updateAvailable',{version: data.version})
+    // check available update
+    version = data.version
+    ipcMain.on('AUTO_UPDATE:checkUpdateAvailable', (event) => {
+      console.log('checkUpdateAvailable-downloaded_version:' + downloaded_version)
+      console.log('checkUpdateAvailable-version:' + version)
+      if(downloaded_version != version){
+        event.reply('AUTO_UPDATE:updateAvailable',{version: data.version})
+      }
     })
+    console.log('checkUpdateAvailable-downloaded_version:' + downloaded_version)
+    console.log('checkUpdateAvailable-version:' + version)
+    if(downloaded_version != version) {
+      window.webContents.send('AUTO_UPDATE:updateAvailable', {version: data.version})
+    }
   })
 
   ipcMain.on('AUTO_UPDATE:downloadAppUpdate', (event) => {
@@ -52,4 +69,15 @@ exports.processUpdate = (window) => {
     event.reply('AUTO_UPDATE:prepareDownload')
   })
 
+  // checking update every minute
+  setInterval(function () {
+    if(!in_progress){
+      autoUpdater.checkForUpdates().then((data) => {
+        console.log('checking for update')
+        // log.info(data)
+      }).catch((err) => {
+        log.error(err)
+      })
+    }
+  }, 30000)
 }

@@ -65,7 +65,7 @@ let buildOptions = {
         ]
       }
     ],
-    "icon": "build/icons/win/easywrite.ico",
+    "icon": "build/icons/win/easywrite-white-bg.png",
     "publish" : [{
       "provider": "github",
       "private": true,
