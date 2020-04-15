@@ -192,6 +192,7 @@ export default {
       // show error via notification
       ipcRenderer.on('AUTO_UPDATE:error', function (event, data) {
         log.warn(data.error)
+        scope.auto_update.status = 'updateAvailable'
         ipcRenderer.send('AUTO_UPDATE:checkUpdateAvailable')
         scope.$notify({
           group: 'notification',

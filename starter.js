@@ -28,7 +28,7 @@ function createWindow () {
     title: app.name+' v'+app.getVersion(),
     width : 500,
     height: 600,
-    icon: path.resolve('src/assets/img/easywrite-white-bg.png'),
+    icon: path.resolve('src/assets/img/easywrite2.png'),
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true,

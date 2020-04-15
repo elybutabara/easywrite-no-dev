@@ -79,5 +79,5 @@ exports.processUpdate = (window) => {
         log.error(err)
       })
     }
-  }, 30000)
+  }, 1 * 60 * 1000)
 }
