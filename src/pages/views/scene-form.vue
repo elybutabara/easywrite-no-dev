@@ -272,6 +272,7 @@ export default {
       ],
       tempSceneVersionContent: '',
       tempSceneNotes: '',
+      tempViewpointDescription: '',
       accordion: {
         'scene-details': 'active',
         'content': 'inactive',
@@ -391,14 +392,14 @@ export default {
     },
     setViewpointDescription (value) {
       var scope = this
-
-      scope.data.viewpoint_description = value
+      scope.tempViewpointDescription = value
     },
     saveScene () {
       var scope = this
 
       scope.data.scene_version.content = scope.tempSceneVersionContent
       scope.data.notes = scope.tempSceneNotes
+      scope.data.viewpoint_description = scope.tempViewpointDescription
       scope.data.chapter_id = (scope.selected_chapter !== 'undefined' && scope.selected_chapter !== null) ? scope.selected_chapter.uuid : null
       scope.data.typeofscene = scope.selected_typeofscene.value
       scope.data.importance = scope.selected_importance.value
@@ -424,12 +425,16 @@ export default {
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
                 scope.saveChild(response.data.uuid)
                 scope.ADD_TO_LIST('scenes', response.data)
+                // refresh vuex to update all related records
+                scope.LOAD_LIST('scene-versions', scope.data)
               } else {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
                 scope.saveChild(response.data.uuid)
                 scope.UPDATE_FROM_LIST('scenes', response.data)
+                // refresh vuex to update all related records
+                scope.LOAD_LIST('scene-versions', scope.data)
               }
             })
           }
@@ -455,6 +460,10 @@ export default {
           scope.data = scene
           if (scene.scene_version[scene.scene_version.length - 1]) {
             scope.data.scene_version = scene.scene_version[scene.scene_version.length - 1]
+
+            scope.tempSceneVersionContent = scope.data.scene_version.content
+            scope.tempSceneNotes = scope.data.notes
+            scope.tempViewpointDescription = scope.data.viewpoint_description
           }
         })
     },
@@ -496,6 +505,7 @@ export default {
       scope.LOAD_LIST('scene-locations', scope.properties.scene)
       scope.LOAD_LIST('scene-items', scope.properties.scene)
       scope.LOAD_LIST('scene-characters', scope.properties.scene)
+
       setTimeout(function () {
         scope.setSelectedChild()
       }, 500)

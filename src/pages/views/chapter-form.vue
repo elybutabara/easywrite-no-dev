@@ -163,6 +163,10 @@ export default {
             scope.data.chapter_version.id = chapter.chapter_version[chapter.chapter_version.length - 1].id
             scope.data.chapter_version.uuid = chapter.chapter_version[chapter.chapter_version.length - 1].uuid
             scope.data.chapter_version.content = chapter.chapter_version[chapter.chapter_version.length - 1].content
+            scope.chapterVersionCont = scope.data.chapter_version.content
+
+            // refresh vuex to update all related records
+            scope.LOAD_LIST('chapter-versions', chapter)
           }
         })
     }

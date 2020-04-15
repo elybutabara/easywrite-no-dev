@@ -85,18 +85,22 @@ export default {
     changeTab: function (tab) {
       var scope = this
       scope.tab.active = tab
+    },
+    initializeData: function () {
+      var scope = this
+      scope.page.data = scope.properties
+      scope.LOAD_LIST('scene-versions', scope.page.data.scene)
+      scope.LOAD_LIST('scene-locations', scope.page.data.scene)
+      scope.LOAD_LIST('scene-items', scope.page.data.scene)
+      scope.LOAD_LIST('scene-characters', scope.page.data.scene)
+      setTimeout(function () {
+        scope.page.is_ready = true
+      }, 500)
     }
   },
   mounted () {
     var scope = this
-    scope.page.data = scope.properties
-    scope.LOAD_LIST('scene-versions', scope.page.data.scene)
-    scope.LOAD_LIST('scene-locations', scope.page.data.scene)
-    scope.LOAD_LIST('scene-items', scope.page.data.scene)
-    scope.LOAD_LIST('scene-characters', scope.page.data.scene)
-    setTimeout(function () {
-      scope.page.is_ready = true
-    }, 500)
+    scope.initializeData()
   }
 }
 </script>
