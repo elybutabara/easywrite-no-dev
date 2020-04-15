@@ -44,7 +44,7 @@
                         <div v-for="(item, index) in relation_detail" v-bind:key="item.id" class="col-4">
                             <div class="grid-character-relation">
                                 <button class="btn-delete" @click="deleteRelationDetail(item, index)"><i class="las la-trash-alt"></i></button>
-                                <div class="avatar"></div>
+                                <div class="avatar"><img :src="item.character_relation.picture_src"></div>
                                 <div class="name">{{ item.character_relation.fullname }}</div>
                                 <div class="relation" v-if="item.relation !== null">({{ item.relation.relation }})</div>
                                 <div class="relation" v-else>(&nbsp;)</div>
@@ -326,7 +326,9 @@ export default {
 
   .grid-character-relation { border:2px solid #f5f8fa; margin-top:10px; padding:10px 0px; position:relative; background:#f5f8fa; }
   .grid-character-relation .btn-delete { position:absolute; top:0px; right:0px; background:#922c39; color:#fff; padding:5px; border:1px solid #e0e5ee; }
-  .grid-character-relation .avatar { display:inline-block; background:#293742; border-radius:50%; width:100px; height:100px; }
+  .grid-character-relation .avatar { position: relative; display:inline-block; background:#293742; border-radius:50%; width:100px; height:100px; overflow: hidden; }
+  /*.grid-character-relation .avatar img { width: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }*/
+  .grid-character-relation .avatar img { width: 100%; height: 100% }
   .grid-character-relation .name { font-weight:600; }
   .grid-character-relation .relation { font-weight:600; color:#922c39; }
 

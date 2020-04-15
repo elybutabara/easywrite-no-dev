@@ -32,6 +32,7 @@
     "express": "latest",
     "fs-extra": "^8.1.0",
     "fs-jetpack": "^2.2.3",
+    "he": "^1.2.0",
     "jquery": "^3.4.1",
     "knex": "^0.20.10",
     "knex-migrate": "^1.7.4",

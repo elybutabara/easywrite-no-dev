@@ -23,13 +23,13 @@
                             <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + chapter.uuid, tabComponent: 'chapter-details',  tabData: { book_id: properties.uuid, chapter: chapter }, tabTitle: 'View - ' + chapter.title})"><i class="lar la-eye"></i></button>
                         </div>
                         <p class="title">{{ displayTitle(chapter.title) }}</p>
-                        <i class="description">{{ chapter.short_description || 'No Short Description...'  }}</i>
+                        <i class="description ellipsis-2">{{ chapter.short_description || 'No Short Description...'  }}</i>
                     </div>
                     <div class="es-card-footer">
-                        <small>Scenes: 10</small>
+                        <small>Scenes: {{ GET_SCENES_BY_CHAPTER(chapter.uuid).length }}</small>
                         &nbsp; &bull; &nbsp;
-                        <small>Versions: 32</small>
-                        <small style="float:right;">Word Count: 1023</small>
+                        <small>Versions: {{ chapter.chapter_version.length }}</small>
+                        <small style="float:right;">Word Count: {{ WORD_COUNT(chapter.chapter_version[0].content) }}</small>
                     </div>
                 </div>
             </div>

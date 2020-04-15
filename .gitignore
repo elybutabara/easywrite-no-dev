@@ -26,3 +26,4 @@ src/assets/base.db
 output/
 private/
 *.diff
+!*api/base.db

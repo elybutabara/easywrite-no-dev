@@ -71,6 +71,7 @@ import TinyMCE from './components/TinyMCE'
 window.$ = window.jQuery = require('jquery')
 window.moment = require('moment')
 window.swal = require('sweetalert2')
+window.he = require('he')
 
 window.API_URL = (process.env.NODE_ENV === 'production') ? 'https://api.pilotleser.no/dev' : 'https://api-pilot.orosage.com/dev'
 // window.API_URL = (process.env.NODE_ENV === 'production') ? 'https://api.pilotleser.no/live' : 'https://api.pilotleser.no/live'

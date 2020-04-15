@@ -12,6 +12,7 @@
                 <button class="es-button-red" @click="deleteBook()">DELETE</button>
             </div>
         </div>
+        <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>
     </div>
     <div class="es-page-content">
         <div class="es-panel">
@@ -91,6 +92,11 @@ export default {
 .book-genre { padding:3px 10px; font-size:12px; font-size:10px; font-family:'Crimson Roman Bold'; text-transform: uppercase; margin-right: 3px; }
 .book-genre:nth-child(odd) { background:#e1e7fe; color:#9098c5; }
 .book-genre:nth-child(even) { background:#feedda; color:#d6a67f; }
+
+.es-page-head {
+  height: 110px;
+}
+
 @media only screen and (max-width: 968px) {
   .book-stats { display:none; }
 }

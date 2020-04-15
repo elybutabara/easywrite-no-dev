@@ -9,6 +9,10 @@ const { RelationDetailController } = require(path.join(__dirname, '..', 'control
 router.post('/', async function (req, res) {
   const relationDetail = await RelationDetailController.save(req.body)
 
+  if (relationDetail.character_relation.picture) {
+    relationDetail.character_relation.picture_src = 'file://' + path.resolve(__dirname, '../..', 'resources', 'images', 'characters', relationDetail.character_relation.picture)
+  }
+
   res
     .status(200)
     .json(relationDetail)

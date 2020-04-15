@@ -94,6 +94,21 @@ export default {
     GET_SCENE_CHARACTERS_BY_SCENE: function (uuid = '') {
       return this.$store.getters.getSceneCharacters(uuid)
     },
+    WORD_COUNT: function (content = '') {
+      if (!content) {
+        return 0
+      }
+      // eslint-disable-next-line no-useless-escape
+      var stripedHtml = content.replace(/<br\s*[\/]?>/gi, ' ')
+      stripedHtml = stripedHtml.replace(/<[^>]+>/g, '') // Remove html tags
+      // stripedHtml = stripedHtml.replace(/[0-9]/gi, '') // Remove numbers
+      stripedHtml = stripedHtml.replace(/\n/g, ' ') // exclude newline with a start spacings
+      stripedHtml = stripedHtml.replace(/(^\s*)|(\s*$)/gi, '')// exclude  start and end white-space
+      stripedHtml = stripedHtml.replace(/[ ]{2,}/gi, ' ')// 2 or more space to 1
+      stripedHtml = stripedHtml.replace(/[^\w\s] [^\w\s] /gi, ' ') // Remove all special char
+
+      return stripedHtml.split(' ').filter(function (str) { return str !== '' }).length
+    },
     LOAD_LIST: function (model = '', data) {
       var scope = this
       scope.$store.dispatch('loadList', {model: model, data: data})
