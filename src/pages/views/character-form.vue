@@ -119,7 +119,9 @@ export default {
         birthdate: ''
       },
       file: '',
-      tempDescription: ''
+      tempDescription: '',
+      tempBio: '',
+      tempGoals: ''
     }
   },
   components: {
@@ -133,13 +135,11 @@ export default {
     },
     setBio (value) {
       var scope = this
-
-      scope.data.bio = value
+      scope.tempBio = value
     },
     setGoals (value) {
       var scope = this
-
-      scope.data.goals = value
+      scope.tempGoals = value
     },
     displayImage: function () {
       var scope = this
@@ -199,6 +199,9 @@ export default {
     saveCharacter () {
       var scope = this
       scope.data.description = scope.tempDescription
+      scope.data.bio = scope.tempBio
+      scope.data.goals = scope.tempGoals
+
       scope.axios
         .post('http://localhost:3000/characters', scope.data)
         .then(response => {
@@ -240,6 +243,10 @@ export default {
           scope.data.bio = character.bio
           scope.data.goals = character.goals
           scope.data.birthdate = character.birthdate
+
+          scope.tempDescription = character.description
+          scope.tempBio = character.bio
+          scope.tempGoals = character.goals
 
           if (character.picture) {
             scope.$set(scope.data, 'picture', character.picture)

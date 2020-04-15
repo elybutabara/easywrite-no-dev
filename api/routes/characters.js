@@ -9,6 +9,12 @@ const { CharacterController, RelationDetailController } = require(path.join(__di
 router.get('/:characterId/relations', async function (req, res) {
   const relationDetail = await RelationDetailController.getRelationDetailByCharacterId(req.params.characterId)
 
+  relationDetail.forEach(function (item, index) {
+    if (item.character_relation.picture) {
+      relationDetail[index].character_relation.picture_src = 'file://' + path.resolve(__dirname, '../..', 'resources', 'images', 'characters', item.character_relation.picture)
+    }
+  })
+
   res
     .status(200)
     .json(relationDetail)

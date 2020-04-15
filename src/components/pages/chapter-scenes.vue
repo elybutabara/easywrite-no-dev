@@ -9,13 +9,17 @@
             <div class="es-col fadeIn animated" v-for="scene in scenes" v-bind:key="scene.id">
                 <div class="es-card">
                     <div class="es-card-content">
+                      <div class="es-card-actions">
+                        <button class="btn-circle" @click="CHANGE_COMPONENT('scene-form',{ book_id: scene.book_id, scene: scene}, 'Edit ' + scene.title )"><i class="las la-pencil-alt"></i></button>
+                        <button class="btn-circle" @click="DELETE_FROM_LIST('scenes', scene)"><i class="las la-trash-alt"></i></button>
+                        <button class="btn-circle" @click="CHANGE_COMPONENT('scene-details',{ book_id: scene.book_id, scene: scene}, scene.title , true)"><i class="lar la-eye"></i></button>
+                      </div>
                         <p class="title">{{ scene.title || 'Untitled' }}</p>
-                        <i class="description">{{ scene.short_description || 'No Short Description...'  }}</i>
+                        <i class="description ellipsis-2">{{ scene.short_description || 'No Short Description...'  }}</i>
                     </div>
                     <div class="es-card-footer">
-                        <button @click="CHANGE_COMPONENT('scene-details',{ book_id: scene.book_id, scene: scene}, scene.title , true)" class="btn-"><i class="lar la-eye"></i> VIEW</button>
-                        <button @click="CHANGE_COMPONENT('scene-form',{ book_id: scene.book_id, scene: scene}, 'Edit ' + scene.title )" class="btn-"><i class="las la-pencil-alt"></i> EDIT</button>
-                        <button @click="DELETE_FROM_LIST('scenes', scene)" class="btn-delete"><i class="las la-trash-alt"></i> DELETE</button>
+                      <small>Versions: {{ scene.scene_version.length }}</small>
+                      <small style="float:right;">Word Count: {{ WORD_COUNT(scene.scene_version[0].content) }}</small>
                     </div>
                 </div>
             </div>
@@ -48,6 +52,8 @@ export default {
     scope.chapter = scope.properties.chapter
     scope.scenes = scope.GET_SCENES_BY_CHAPTER(scope.chapter.uuid)
 
+    console.log(scope.scenes)
+
     setTimeout(function () {
       scope.page.is_ready = true
     }, 500)
@@ -70,4 +76,8 @@ export default {
     .scene-listing .es-card .es-card-footer button:hover { background:#e0e5ee; }
     .scene-listing .es-card .es-card-footer button i { font-size:18px; }
     .scene-listing .es-card .es-card-footer button.btn-delete { font-weight:600; color:#8f2c39; border-left:1px solid #e0e5ee; position:absolute; top:0px; right:0px; }
+
+    .scene-listing .es-card .es-card-content .es-card-actions { position:absolute; top:20px; right:20px; text-align:right; }
+    .scene-listing .es-card .es-card-content .es-card-actions .btn-circle { background:transparent; border:1px solid #e0e5ee; border-radius:50%; width:30px; height:30px; line-height:22px; text-align:center; font-size:15px; }
+    .scene-listing .es-card .es-card-footer { background:#f5f8fa; height:40px; line-height:40px; padding:0px 20px; border-top:1px solid #e0e5ee; }
 </style>
