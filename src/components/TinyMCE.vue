@@ -55,7 +55,8 @@ export default {
             'Align center': 'Midtstill',
             'Align right': 'H\u00f8yrejuster',
             'Justify': 'Blokkjuster',
-            'Clear formatting': 'Fjern formateringer'
+            'Clear formatting': 'Fjern formateringer',
+            'Print': 'Print (ctrl+p)'
           })
 
           editor.ui.registry.addButton('leftChev', {
