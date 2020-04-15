@@ -11,16 +11,17 @@ export default {
     return {
       initConfig: {
         selector: 'input.tiny-area',
+        language: 'custom_lang',
         min_height: 400,
         resize: false,
         hidden_input: false,
         plugins: [
           'autolink link lists charmap hr anchor',
           'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime nonbreaking',
-          'table contextmenu directionality template paste textcolor'// remove autoresize
+          'table contextmenu directionality template paste textcolor print'// remove autoresize
         ],
         toolbar: [
-          'undo | redo | print | copy | cut | paste | bold | italic | underline | strikethrough | backcolor | leftChev | rightChev | enDash | numlist | bullist | alignleft | aligncenter | alignright'
+          'undo | redo | fontselect | fontsizeselect | copy | cut | paste | bold | italic | underline | strikethrough | forecolor | backcolor | leftChev | rightChev | enDash | numlist | bullist | alignleft | aligncenter | alignright | alignjustify | removeformat | print'
         ],
         browser_spellcheck: true,
         menubar: false,
@@ -35,13 +36,31 @@ export default {
           editor.shortcuts.add('ctrl+r', 'A New Way To rightChev', function () {
             editor.insertContent('&#187;')
           })
-          editor.shortcuts.add('ctrl+s', 'A New Way To Bold', 'Bold')
+          editor.shortcuts.add('ctrl+e', 'A New Way To endash', function () {
+            editor.insertContent('&#8211;')
+          })
+          editor.shortcuts.add('ctrl+s', 'A New Way To Strikethrough', 'Strikethrough')
         },
 
         setup: function (editor) {
+          editor.editorManager.addI18n('custom_lang', {
+            'Copy': 'Kopier (ctrl+c)',
+            'Cut': 'Klipp ut (ctrl+x)',
+            'Paste': 'Lim inn (ctrl+v)',
+            'Bold': 'Fet (ctrl+b)',
+            'Italic': 'Kursiv (ctrl+i)',
+            'Underline': 'Understreking (ctrl+u)',
+            'Strikethrough': 'Gjennomstreking (ctrl+s)',
+            'Align left': 'Venstrejuster',
+            'Align center': 'Midtstill',
+            'Align right': 'H\u00f8yrejuster',
+            'Justify': 'Blokkjuster',
+            'Clear formatting': 'Fjern formateringer'
+          })
+
           editor.ui.registry.addButton('leftChev', {
             text: '<<',
-            tooltip: 'leftChev',
+            tooltip: 'leftChev (ctrl+l)',
             onAction: function (_) {
               editor.insertContent('&#171;')
             }
@@ -49,7 +68,7 @@ export default {
 
           editor.ui.registry.addButton('rightChev', {
             text: '>>',
-            tooltip: 'rightChev',
+            tooltip: 'rightChev (ctrl+r)',
             onAction: function (_) {
               editor.insertContent('&#187;')
             }
@@ -57,9 +76,18 @@ export default {
 
           editor.ui.registry.addButton('enDash', {
             text: '-',
-            tooltip: 'en dash',
+            tooltip: 'en dash (ctrl+e)',
             onAction: function (_) {
               editor.insertContent('&#8211;')
+            }
+          })
+
+          editor.on('keydown', function (ed) {
+            if (ed.keyCode === 9) { // tab pressed
+              editor.insertContent('&emsp;') // tab code
+              ed.preventDefault()
+              ed.stopPropagation()
+              return false
             }
           })
 

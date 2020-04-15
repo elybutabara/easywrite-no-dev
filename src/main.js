@@ -63,6 +63,7 @@ import 'tinymce/plugins/template'
 import 'tinymce/plugins/paste'
 import 'tinymce/plugins/textcolor'
 import 'tinymce/plugins/wordcount'
+import 'tinymce/plugins/print'
 
 import TinyMCE from './components/TinyMCE'
 
