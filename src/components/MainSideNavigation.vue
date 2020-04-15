@@ -272,8 +272,8 @@ export default {
     },
     installNewVersion: function () {
       window.swal.fire({
-        title: 'Restart and install update?',
-        text: "You won't be able to revert this!",
+        title: 'Are you sure you want to install update?',
+        text: "Please save all your work before you install. You won't be able to revert this!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
