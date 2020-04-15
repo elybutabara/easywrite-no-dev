@@ -28,6 +28,21 @@ class ChapterController {
       .whereNull('deleted_at')
   }
 
+  static async sort (data) {
+    var count = 0
+    for (let i = 0; i < data.length; i++) {
+      var row = data[i]
+      // eslint-disable-next-line no-unused-vars
+      var item = await Chapter.query()
+        .patch({ order: count })
+        .where('uuid', '=', row.uuid)
+
+      count++
+    }
+
+    return count
+  }
+
   static async save (data) {
     const upsertGraphOptions = {
       relate: ['chapter_version'],

@@ -10,7 +10,7 @@
             <i class="description" v-else>No Description</i>
         </div>
         <div class="es-panel-footer">
-            <div class="cta" @click="CHANGE_COMPONENT('item-form', {  book_id: properties.uuid, item: properties.item }, 'Edit - ' + properties.item.itemname, true)">EDIT</div>
+            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + properties.item.uuid, tabComponent: 'item-form', tabData: { book_id: properties.uuid, item: properties.item }, tabTitle: 'Edit - ' + properties.item.itemname, newTab: true})">EDIT</div>
             <div class="cta" @click="DELETE_FROM_LIST('items', properties.item)">DELETE</div>
         </div>
     </div>

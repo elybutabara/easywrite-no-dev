@@ -8,33 +8,35 @@
                     <small>Below are the list of scenes under {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT('scene-form',{ book_id: properties.uuid , uuid: properties.uuid },'New Scenes', true)">New Scene</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.uuid, tabComponent: 'scene-form', tabData: { book_id: properties.uuid , uuid: properties.uuid }, tabTitle: 'New Scenes', newTab: true})">New Scene</button>
                 </div>
             </div>
         </div>
 
         <div class="es-page-content">
-            <div class="es-row">
-                <div class="es-col fadeIn animated" v-for="scene in GET_SCENES_BY_BOOK(bookUUID)" v-bind:key="scene.id">
+            <draggable v-model="scenes" draggable=".es-col" class="es-row">
+                <div class="es-col fadeIn animated" v-for="scene in scenes" v-bind:key="scene.id">
                     <div class="es-card">
                         <div class="es-card-content">
                             <p class="title">{{ scene.title || 'Untitled' }}</p>
                             <i class="description">{{ scene.short_description || 'No Short Description...'  }}</i>
                         </div>
                         <div class="es-card-footer">
-                            <button @click="CHANGE_COMPONENT('scene-details',{ book_id: scene.book_id, scene: scene}, scene.title )" class="btn-"><i class="lar la-eye"></i> VIEW</button>
-                            <button @click="CHANGE_COMPONENT('scene-form',{ book_id: scene.book_id, scene: scene}, 'Edit ' + scene.title )" class="btn-"><i class="las la-pencil-alt"></i> EDIT</button>
+                            <button @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + scene.uuid, tabComponent: 'scene-details', tabData: {book_id: scene.book_id, scene: scene}, tabTitle: scene.title})" class="btn-"><i class="lar la-eye"></i> VIEW</button>
+                            <button @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + scene.uuid , tabComponent: 'scene-form', tabData: {book_id: scene.book_id, scene: scene}, tabTitle: 'Edit - ' + scene.title, newTab: true})" class="btn-"><i class="las la-pencil-alt"></i> EDIT</button>
                             <button @click="DELETE_FROM_LIST('scenes', scene)" class="btn-delete"><i class="las la-trash-alt"></i> DELETE</button>
                         </div>
                     </div>
                 </div>
-            </div>
+            </draggable>
         </div>
    </div>
 </div>
 </template>
 
 <script>
+import draggable from 'vuedraggable'
+
 export default {
   name: 'scene-listing',
   props: ['properties'],
@@ -42,6 +44,22 @@ export default {
     return {
       otherScenes: [],
       bookUUID: ''
+    }
+  },
+  components: {
+    draggable
+  },
+  computed: {
+    scenes: {
+      get () {
+        let scope = this
+        let scenes = scope.GET_SCENES_BY_BOOK(scope.bookUUID)
+        return scenes
+      },
+      set (value) {
+        let scope = this
+        this.$store.commit('sortScenes', { PARENT: scope.bookUUID, data: value })
+      }
     }
   },
   methods: {

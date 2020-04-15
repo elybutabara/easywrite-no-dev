@@ -73,6 +73,14 @@ router.get('/syncable', async function (req, res) {
     .json(rows)
 })
 
+router.post('/sort', async function (req, res) {
+  const scenes = await SceneController.sort(req.body)
+
+  res
+    .status(200)
+    .json(scenes)
+})
+
 router.post('/sync', async function (req, res) {
   const row = await SceneController.sync(req.body)
 

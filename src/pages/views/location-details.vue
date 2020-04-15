@@ -11,7 +11,7 @@
             <i class="description" v-else>No Description</i>
         </div>
         <div class="es-panel-footer">
-            <div class="cta" @click="CHANGE_COMPONENT('location-form', {  book_id: properties.uuid, location: properties.location }, 'Edit - ' + properties.location.location, true)">EDIT</div>
+            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + properties.location.uuid, tabComponent: 'location-form', tabData: { book_id: properties.uuid, location: properties.location }, tabTitle: 'Edit - ' + properties.location.location, newTab: true})">EDIT</div>
             <div class="cta" @click="DELETE_FROM_LIST('locations', properties.location)">DELETE</div>
         </div>
     </div>

@@ -8,7 +8,7 @@
                     <small>Below are the list of items under {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT('item-form', { list_index: -1, book_id: properties.uuid, item: null }, 'New Item', true)">New Item</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'item-form', tabComponent: 'item-form', tabData: { list_index: -1, book_id: properties.uuid, item: null }, tabTitle: 'New Item', newTab: true })">New Item</button>
                 </div>
             </div>
         </div>
@@ -23,8 +23,8 @@
                             <i class="description" v-else>No Description</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-" @click="CHANGE_COMPONENT('item-details', {  book_id: properties.uuid, item: item }, item.itemname)"><i class="lar la-eye"></i> VIEW</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT('item-form', { book_id: properties.uuid, item: item }, 'Edit - ' + item.itemname, true)"><i class="las la-pencil-alt"></i> EDIT</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-details-' + item.uuid, tabComponent: 'item-details', tabData: { book_id: properties.uuid, item: item }, tabTitle: item.itemname})"><i class="lar la-eye"></i> VIEW</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + item.uuid, tabComponent: 'item-form', tabData: { book_id: properties.uuid, item: item }, tabTitle: 'Edit - ' + item.itemname, newTab: true})"><i class="las la-pencil-alt"></i> EDIT</button>
                             <button class="btn-delete" @click="DELETE_FROM_LIST('items', item)"><i class="las la-trash-alt"></i> DELETE</button>
                         </div>
                     </div>

@@ -8,7 +8,7 @@
                     <small>Below are the list of locations under {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT('location-form', { list_index: -1, book_id: properties.uuid, location: null }, 'New Location', true)">New Location</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'location-form', tabComponent: 'location-form', tabData: { list_index: -1, book_id: properties.uuid, location: null }, tabTitle: 'New Location', newTab: true})">New Location</button>
                 </div>
             </div>
         </div>
@@ -23,8 +23,8 @@
                             <i class="description" v-else>No Description</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-"  @click="CHANGE_COMPONENT('location-details', {  book_id: properties.uuid, location: location }, location.location, true)"><i class="lar la-eye"></i> VIEW</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT('location-form', {  book_id: properties.uuid, location: location }, 'Edit - ' + location.location, true)"><i class="las la-pencil-alt"></i> EDIT</button>
+                            <button class="btn-"  @click="CHANGE_COMPONENT({tabKey: 'location-details-' + location.uuid, tabComponent: 'location-details', tabData: { book_id: properties.uuid, location: location }, tabTitle:  location.location, newTab})"><i class="lar la-eye"></i> VIEW</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + location.uuid, tabComponent: 'location-form', tabData: { book_id: properties.uuid, location: location }, tabTitle: 'Edit - ' + location.location, newTab: true})"><i class="las la-pencil-alt"></i> EDIT</button>
                             <button class="btn-delete"  @click="DELETE_FROM_LIST('locations', location)"><i class="las la-trash-alt"></i> DELETE</button>
                         </div>
                     </div>

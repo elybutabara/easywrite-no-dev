@@ -20,28 +20,49 @@
 
   <div class="es-page-content">
         <div class="container">
-            <div class="es-panel">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label>Title: </label>
-                            <input v-model="data.title" type="text" class="form-control" placeholder="Chapter Title">
+            <div class="es-accordion">
+                <div class="item" v-bind:class="{'active': accordion['chapter-details'] === 'active'}">
+                    <div class="label" @click="toggleAccordion('chapter-details')">
+                        CHAPTER DETAILS
+                        <div class="icon">
+                            <i v-if="accordion['chapter-details'] === 'active'" class="fas fa-chevron-down"></i>
+                            <i v-if="accordion['chapter-details'] !== 'active'" class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="content ">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Title: </label>
+                                    <input v-model="data.title" type="text" class="form-control" placeholder="Chapter Title">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Short Description: </label>
+                                    <input v-model.trim="data.short_description" type="text" class="form-control" placeholder="Short Description">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label>Short Description: </label>
-                            <input v-model.trim="data.short_description" type="text" class="form-control" placeholder="Short Description">
+                <div class="item" v-bind:class="{'active': accordion['content'] === 'active'}">
+                    <div class="label" @click="toggleAccordion('content')">
+                        CONTENT
+                        <div class="icon">
+                            <i v-if="accordion['content'] === 'active'" class="fas fa-chevron-down"></i>
+                            <i v-if="accordion['content'] !== 'active'" class="fas fa-chevron-right"></i>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label>Content: </label>
-                            <tiny-editor :initValue="data.chapter_version.content" v-on:getEditorContent="setContent" class="form-control" />
+                    <div class="content ">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <tiny-editor :initValue="data.chapter_version.content" v-on:getEditorContent="setContent" class="form-control" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -70,13 +91,25 @@ export default {
           content: ''
         }
       },
-      chapterVersionCont: ''
+      chapterVersionCont: '',
+      accordion: {
+        'chapter-details': 'active',
+        'content': 'inactive'
+      }
     }
   },
   components: {
     TinyMCE
   },
   methods: {
+    toggleAccordion: function (key) {
+      var scope = this
+      if (scope.accordion[key] === 'active') {
+        scope.accordion[key] = 'inactive'
+      } else {
+        scope.accordion[key] = 'active'
+      }
+    },
     // Required for geting value from TinyMCE content
     setContent (value) {
       var scope = this
@@ -103,13 +136,13 @@ export default {
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
                 scope.ADD_TO_LIST('chapters', response.data)
-                scope.CHANGE_COMPONENT('chapter-details', { book_id: response.data.book_id, chapter: response.data }, 'View - ' + response.data.title, false, scope.$store.getters.getActiveTab)
+                scope.CHANGE_COMPONENT({tabKey: 'chapter-details-' + response.data.uuid, tabComponent: 'chapter-details', tabData: { book_id: response.data.book_id, chapter: response.data }, tabTitle: 'View - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
                 scope.UPDATE_FROM_LIST('chapters', response.data)
-                scope.CHANGE_COMPONENT('chapter-details', { book_id: response.data.book_id, chapter: response.data }, 'View - ' + response.data.title, false, scope.$store.getters.getActiveTab)
+                scope.CHANGE_COMPONENT({tabKey: 'chapter-details-' + response.data.uuid, tabComponent: 'chapter-details', tabData: { book_id: response.data.book_id, chapter: response.data }, tabTitle: 'View - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
               }
             })
           }
@@ -154,14 +187,18 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .page-chapter-form { padding:20px; }
+    .page-title { font-family: 'Crimson Roman Bold'; position:relative; padding-top:20px; }
+    .page-title h3 { font-size:35px; }
 
-  .page-title { font-family: 'Crimson Roman Bold'; position:relative; padding-top:20px; }
-  .page-title h3 { font-size:35px; }
+    .single-picture-file { display: none }
+    .uploaded-file-preview { width:100%; cursor: pointer; }
+    .uploaded-file-preview img { width:100%; }
+    .uploaded-file-preview .default-preview { min-height: 180px; background-color: #293742; color: #fff; text-align: center; }
+    .uploaded-file-preview .default-preview i { font-size: 105px; line-height: 180px; opacity: 0.8; }
 
-  .single-picture-file { display: none }
-  .uploaded-file-preview { width:100%; cursor: pointer; }
-  .uploaded-file-preview img { width:100%; }
-  .uploaded-file-preview .default-preview { min-height: 180px; background-color: #293742; color: #fff; text-align: center; }
-  .uploaded-file-preview .default-preview i { font-size: 105px; line-height: 180px; opacity: 0.8; }
+    .es-accordion .item { background:#fafafa; border-bottom:2px solid #e0e5ee; padding:10px 15px; }
+    .es-accordion .item .label { position:relative; cursor:pointer; }
+    .es-accordion .item .label .icon { position:absolute; top:0px; right:0px; }
+    .es-accordion .item .content { display:none; margin-top:20px; margin-bottom:20px; }
+    .es-accordion .item.active .content { display:block; }
 </style>

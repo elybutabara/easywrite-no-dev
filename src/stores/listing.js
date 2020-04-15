@@ -476,6 +476,22 @@ export default {
         }
       }
     },
+    sortChapters (state, payload) {
+      axios
+        .post('http://localhost:3000/chapters/sort', payload.data)
+        .then(response => {
+          console.log('chapters sorted!')
+        })
+      state.chapters[payload.bookUUID].rows = payload.data
+    },
+    sortScenes (state, payload) {
+      axios
+        .post('http://localhost:3000/scenes/sort', payload.data)
+        .then(response => {
+          console.log('scenes sorted!')
+        })
+      state.scenes[payload.PARENT].rows = payload.data
+    },
     mutateBook (state, payload) {
       var userID = payload
       axios
@@ -521,6 +537,9 @@ export default {
     },
     getBooksByAuthorID ({ commit, state }, payload) {
       commit('mutateBook', payload)
+    },
+    sortChapters ({ commit, state }, payload) {
+      commit('sortChapters', payload)
     }
   }
 }

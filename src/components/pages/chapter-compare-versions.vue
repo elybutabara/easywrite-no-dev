@@ -1,5 +1,5 @@
 <template>
-<div v-if="page.is_ready" class="page-chapter-compare-versions fadeIn animated">
+<div v-if="page.is_ready" class="page-chapter-compare-versions ">
 
     <div v-if="comparing" class="chapter-version-difference">
         <div class="chapter-version-difference-content" v-html="diff_content"></div>

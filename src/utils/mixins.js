@@ -15,12 +15,18 @@ export default {
       })
       return key
     },
-    CHANGE_COMPONENT: function (tabComponent, tabData = null, tabTitle = 'New Tab', newTab = false, tabIndex = 0) {
+    CHANGE_COMPONENT: function (data) {
       var scope = this
-      if (newTab) {
-        scope.$store.dispatch('newTab', { title: tabTitle, component: tabComponent, data: tabData })
+      let isNewTab = data.newTab
+      let tabIndex = (data.tabIndex === null || data.tabIndex === undefined) ? 0 : data.tabIndex
+      let settings = { key: data.tabKey, component: data.tabComponent, data: data.tabData, title: data.tabTitle, index: tabIndex }
+
+      if (isNewTab) {
+        // scope.$store.dispatch('newTab', { key: key, title: tabTitle, component: tabComponent, data: tabData })
+        scope.$store.dispatch('newTab', settings)
       } else {
-        scope.$store.dispatch('changeTabContent', { title: tabTitle, component: tabComponent, data: tabData, index: tabIndex })
+        // scope.$store.dispatch('changeTabContent', { key: key, title: tabTitle, component: tabComponent, data: tabData, index: tabIndex })
+        scope.$store.dispatch('changeTabContent', settings)
       }
     },
     TOGGLE_TREE: function (model, index, isOpen, data) {
@@ -30,17 +36,17 @@ export default {
       // only change componenent when opening
       if (!isOpen) {
         if (model === 'books') {
-          scope.CHANGE_COMPONENT('book-details', data, data.title)
+          scope.CHANGE_COMPONENT({tabKey: 'book-details-' + data.uuid, tabComponent: 'book-details', tabData: data, tabTitle: data.title})
         } else if (model === 'chapters') {
-          scope.CHANGE_COMPONENT('chapter-listing', data, 'Chapters - ' + data.title)
+          scope.CHANGE_COMPONENT({tabKey: 'chapter-listing-' + data.uuid, tabComponent: 'chapter-listing', tabData: data, tabTitle: 'Chapters - ' + data.title})
         } else if (model === 'items') {
-          scope.CHANGE_COMPONENT('item-listing', data, 'Items - ' + data.title)
+          scope.CHANGE_COMPONENT({tabKey: 'item-listing-' + data.uuid, tabComponent: 'item-listing', tabData: data, tabTitle: 'Items - ' + data.title})
         } else if (model === 'locations') {
-          scope.CHANGE_COMPONENT('location-listing', data, 'Location - ' + data.title)
+          scope.CHANGE_COMPONENT({tabKey: 'location-listing-' + data.uuid, tabComponent: 'location-listing', tabData: data, tabTitle: 'Location - ' + data.title})
         } else if (model === 'characters') {
-          scope.CHANGE_COMPONENT('character-listing', data, 'Character - ' + data.title)
+          scope.CHANGE_COMPONENT({tabKey: 'character-listing-' + data.uuid, tabComponent: 'character-listing', tabData: data, tabTitle: 'Character - ' + data.title})
         } else if (model === 'scenes') {
-          scope.CHANGE_COMPONENT('scene-listing', data, 'Scenes - ' + data.title)
+          scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + data.uuid, tabComponent: 'scene-listing', tabData: data, tabTitle: 'Scenes - ' + data.title})
         }
       }
     },
