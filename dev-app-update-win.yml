@@ -3,4 +3,4 @@ repo: easywrite-v2-updater
 provider: github
 private: true
 token: dfd1c61fcb090ecba24909875e177c5326ad449d
-updaterCacheDirName: easywriteapp-updater
+updaterCacheDirName: easywrite-updater

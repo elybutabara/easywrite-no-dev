@@ -9,7 +9,7 @@ const log = require('electron-log')
 autoUpdater.logger = null
 autoUpdater.autoInstallOnAppQuit = true
 autoUpdater.autoDownload = false
-
+// console.log = log.log
 exports.check = () => {
   global.updateInfo = {
     hasUpdate: false,
@@ -49,12 +49,16 @@ exports.processUpdate = (window) => {
 
   autoUpdater.on('update-available',function (data) {
     // check available update
+    version = data.version
     ipcMain.on('AUTO_UPDATE:checkUpdateAvailable', (event) => {
-      version = data.version
+      console.log('checkUpdateAvailable-downloaded_version:' + downloaded_version)
+      console.log('checkUpdateAvailable-version:' + version)
       if(downloaded_version != version){
         event.reply('AUTO_UPDATE:updateAvailable',{version: data.version})
       }
     })
+    console.log('checkUpdateAvailable-downloaded_version:' + downloaded_version)
+    console.log('checkUpdateAvailable-version:' + version)
     if(downloaded_version != version) {
       window.webContents.send('AUTO_UPDATE:updateAvailable', {version: data.version})
     }
@@ -69,6 +73,7 @@ exports.processUpdate = (window) => {
   setInterval(function () {
     if(!in_progress){
       autoUpdater.checkForUpdates().then((data) => {
+        console.log('checking for update')
         // log.info(data)
       }).catch((err) => {
         log.error(err)

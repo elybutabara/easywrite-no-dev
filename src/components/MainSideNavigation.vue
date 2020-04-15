@@ -295,6 +295,9 @@ export default {
       ipcRenderer.send('AUTO_UPDATE:checkUpdateAvailable')
       ipcRenderer.on('AUTO_UPDATE:updateAvailable', function (event, data) {
         // show downloaded version if the downloaded version is not the same as the update version
+        // log.info('scope.auto_update.downloaded_version !== data.version: ' + (scope.auto_update.downloaded_version !== data.version))
+        // log.info('scope.auto_update.status !== downloadProgress: ' + (scope.auto_update.status !== 'downloadProgress'))
+        // log.info('scope.auto_update.status !== downloaded: ' + (scope.auto_update.status !== 'downloaded'))
         if (
           scope.auto_update.downloaded_version !== data.version &&
           scope.auto_update.status !== 'downloadProgress' &&
