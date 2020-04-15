@@ -1,11 +1,11 @@
 <template>
 <div>
-    <div v-if="page.is_ready" class="page-scene-characters fadeIn animated">
+    <div v-if="page.is_ready" class="page-scene-characters ">
         <div class="es-scene-children-wrapper" style="">
             <button @click="showChildrenItemList()" class="btn-dark" style="float:right;">ADD SCENE CHARACTER</button>
             <div class="heading">CHARACTERS</div>
             <div class="es-row">
-                <div class="es-col fadeIn animated" v-for="scene_character in GET_SCENE_CHARACTERS_BY_SCENE(scene.uuid)" v-bind:key="scene_character.id">
+                <div class="es-col " v-for="scene_character in GET_SCENE_CHARACTERS_BY_SCENE(scene.uuid)" v-bind:key="scene_character.id">
                     <div class="es-card">
                         <div class="es-card-content">
                             <p class="title">{{ scene_character.character.fullname || 'Untitled' }}</p>
@@ -13,8 +13,8 @@
                             <i class="description" v-else>No Description</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-" @click="CHANGE_COMPONENT('character-details', {  book_id: scene.book_id, character: scene_character.character }, scene_character.character.fullname)"><i class="lar la-eye"></i> VIEW</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT('character-form', { book_id: scene.book_id, character: character }, 'Edit - ' + scene_character.character.fullname, true)"><i class="las la-pencil-alt"></i> EDIT</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-details-'+ scene_character.uuiid , tabComponent: 'character-details',  tabData: {  book_id: scene.book_id, character: scene_character.character }, tabTitle: scene_character.character.fullname})"><i class="lar la-eye"></i> VIEW</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-form-' + scene_character.character.uuid, tabComponent: 'character-form',  tabData: { book_id: scene.book_id, character: scene_character.character }, tabTitle: 'Edit - ' + scene_character.character.fullname, newTab: true})"><i class="las la-pencil-alt"></i> EDIT</button>
                             <button class="btn-delete" @click="DELETE_FROM_LIST('scene-characters', scene_character)"><i class="las la-trash-alt"></i> DELETE</button>
                         </div>
                     </div>

@@ -8,7 +8,7 @@
                     <small>Below are the list of characters under {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT('character-form', { list_index: -1, book_id: properties.uuid, character: null }, 'New Character', true)">New Character</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form', tabData: { list_index: -1, book_id: properties.uuid, character: null }, tabTitle: 'New Character', newTab: true})">New Character</button>
                 </div>
             </div>
         </div>
@@ -23,8 +23,8 @@
                             <i class="description" v-else>No Description</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-" @click="CHANGE_COMPONENT('character-details', {  book_id: properties.uuid, character: character }, character.fullname)"><i class="lar la-eye"></i> VIEW</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT('character-form', { book_id: properties.uuid, character: character }, 'Edit - ' + character.fullname, true)"><i class="las la-pencil-alt"></i> EDIT</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-details-' + character.uuid, tabComponent: 'character-details',  tabData: { book_id: properties.uuid, character: character }, tabTitle: character.fullname})"><i class="lar la-eye"></i> VIEW</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-form-' + character.uuid, tabComponent: 'character-form',  tabData: { book_id: properties.uuid, character: character }, tabTitle: 'Edit - ' + character.fullname, newTab: true})"><i class="las la-pencil-alt"></i> EDIT</button>
                             <button class="btn-delete" @click="DELETE_FROM_LIST('characters', item)"><i class="las la-trash-alt"></i> DELETE</button>
                         </div>
                     </div>

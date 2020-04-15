@@ -55,7 +55,7 @@
             </div>
         </div>
         <div class="es-panel-footer">
-            <div class="cta" @click="CHANGE_COMPONENT('character-form', {  book_id: properties.uuid, character: properties.character }, 'Edit - ' + properties.character.fullname, true)">EDIT</div>
+            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form',  tabData: { book_id: properties.uuid, character: properties.character }, tabTitle: 'Edit - ' + properties.character.fullname })">EDIT</div>
             <div class="cta" @click="DELETE_FROM_LIST('characters', properties.character)">DELETE</div>
         </div>
     </div>

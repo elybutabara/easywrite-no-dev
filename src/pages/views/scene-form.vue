@@ -28,7 +28,7 @@
                         <i v-if="accordion['scene-details'] !== 'active'" class="fas fa-chevron-right"></i>
                     </div>
                 </div>
-                <div class="content fadeIn animated">
+                <div class="content ">
                     <b-row class="margin-bottom-1rem">
                         <b-col>
                             <label>Title: </label>
@@ -45,9 +45,19 @@
                             <b-form-input v-model="data.short_description" placeholder="Short Description"></b-form-input>
                         </b-col>
                     </b-row>
+                </div>
+            </div>
+            <div class="item" v-bind:class="{'active': accordion['content'] === 'active'}">
+                <div class="label" @click="toggleAccordion('content')">
+                    CONTENT
+                    <div class="icon">
+                        <i v-if="accordion['scene-details'] === 'active'" class="fas fa-chevron-down"></i>
+                        <i v-if="accordion['scene-details'] !== 'active'" class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+                <div class="content ">
                     <b-row class="margin-bottom-1rem">
                         <b-col>
-                            <label>Content: </label>
                             <tiny-editor :initValue="data.scene_version.content"
                                         v-on:getEditorContent="setContent"
                                         class="form-control"
@@ -64,7 +74,7 @@
                         <i v-if="accordion['more-details'] !== 'active'" class="fas fa-chevron-right"></i>
                     </div>
                 </div>
-                <div class="content fadeIn animated">
+                <div class="content ">
                     <b-row class="margin-bottom-1rem">
                     <b-col>
                         <label>Type of Scene: </label>
@@ -95,9 +105,9 @@
                         <i v-if="accordion['notes'] !== 'active'" class="fas fa-chevron-right"></i>
                     </div>
                 </div>
-                <div class="content fadeIn animated">
-                    <tiny-editor :initValue="data.scene_version.content"
-                                v-on:getEditorContent="setContent"
+                <div class="content ">
+                    <tiny-editor :initValue="data.notes"
+                                v-on:getEditorContent="setNotes"
                                 class="form-control"
                     />
                 </div>
@@ -110,7 +120,7 @@
                         <i v-if="accordion['viewpoint'] !== 'active'" class="fas fa-chevron-right"></i>
                     </div>
                 </div>
-                <div class="content fadeIn animated">
+                <div class="content ">
                     <b-row class="margin-bottom-1rem">
                     <b-col cols="6">
                         <label>Type: </label>
@@ -152,7 +162,7 @@
                         <i v-if="accordion['items'] !== 'active'" class="fas fa-chevron-right"></i>
                     </div>
                 </div>
-                <div class="content fadeIn animated">
+                <div class="content ">
                     <p>Click to add items to the scene</p>
                     <div @click="toggleChild('items',item)" v-bind:class="{'selected' : selected_items.includes(item.uuid) }" class="es-toggle-select" v-bind:key="item.id" v-for="item in GET_ITEMS_BY_BOOK(properties.book_id)">
                         <i v-if="selected_items.includes(item.uuid)" class="fas fa-check"></i> &nbsp;{{ item.itemname }}
@@ -167,7 +177,7 @@
                         <i v-if="accordion['characters'] !== 'active'" class="fas fa-chevron-right"></i>
                     </div>
                 </div>
-                <div class="content fadeIn animated">
+                <div class="content ">
                     <p>Click to add characters to the scene</p>
                     <div @click="toggleChild('characters',character)" v-bind:class="{'selected' : selected_characters.includes(character.uuid) }" class="es-toggle-select" v-bind:key="character.id" v-for="character in GET_CHARACTERS_BY_BOOK(properties.book_id)">
                         <i v-if="selected_characters.includes(character.uuid)" class="fas fa-check"></i> &nbsp;{{ character.fullname }}
@@ -182,7 +192,7 @@
                         <i v-if="accordion['locations'] !== 'active'" class="fas fa-chevron-right"></i>
                     </div>
                 </div>
-                <div class="content fadeIn animated">
+                <div class="content ">
                     <p>Click to add locations to the scene</p>
                     <div @click="toggleChild('locations',location)" v-bind:class="{'selected' : selected_locations.includes(location.uuid) }" class="es-toggle-select" v-bind:key="location.id" v-for="location in GET_LOCATIONS_BY_BOOK(properties.book_id)">
                         <i v-if="selected_locations.includes(location.uuid)" class="fas fa-check"></i> &nbsp;{{ location.location }}
@@ -261,8 +271,10 @@ export default {
         {text: 'Author', value: '-1'}
       ],
       tempSceneVersionContent: '',
+      tempSceneNotes: '',
       accordion: {
         'scene-details': 'active',
+        'content': 'inactive',
         'more-details': 'inactive',
         'notes': 'inactive',
         'viewpoint': 'inactive',
@@ -375,7 +387,7 @@ export default {
     setNotes (value) {
       var scope = this
 
-      scope.data.notes = value
+      scope.tempSceneNotes = value
     },
     setViewpointDescription (value) {
       var scope = this
@@ -386,6 +398,7 @@ export default {
       var scope = this
 
       scope.data.scene_version.content = scope.tempSceneVersionContent
+      scope.data.notes = scope.tempSceneNotes
       scope.data.chapter_id = (scope.selected_chapter !== 'undefined' && scope.selected_chapter !== null) ? scope.selected_chapter.uuid : null
       scope.data.typeofscene = scope.selected_typeofscene.value
       scope.data.importance = scope.selected_importance.value

@@ -385,8 +385,8 @@ export default {
       }
 
       var data = endpoint.downloaded[scope.saving.index]
-      data.created_at = scope.timeConvertToUTC(data.created_at)
-      data.updated_at = scope.timeConvertToUTC(data.updated_at)
+      data.created_at = scope.timeConvertFromUTC(data.created_at)
+      data.updated_at = scope.timeConvertFromUTC(data.updated_at)
 
       scope.axios
         .post('http://localhost:3000/' + endpoint.local + '/sync', data)

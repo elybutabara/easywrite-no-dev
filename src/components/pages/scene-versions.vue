@@ -1,6 +1,6 @@
 <template>
 <div>
-<div v-if="page.is_ready" class="page-scene-versions fadeIn animated">
+<div v-if="page.is_ready" class="page-scene-versions ">
     <div class="switch-version">
         <select @change="changeSceneVersion()" v-model="version.uuid" style="padding:5px 7px;">
             <option value="null">SELECT A VERSION</option>

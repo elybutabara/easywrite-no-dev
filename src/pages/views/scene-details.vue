@@ -9,7 +9,7 @@
             </div>
             <div class="actions">
                 <button class="es-button-white" @click="newVersion()">SAVE AS NEW VERSION</button>
-                <button class="es-button-white" @click="CHANGE_COMPONENT('scene-form', {  book_id: properties.scene.book_id, scene:  properties.scene }, 'Edit - ' +  properties.scene.title, true)">EDIT</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.scene.uuid, tabComponent: 'scene-form', tabData: { book_id: properties.scene.book_id, scene: properties.scene }, tabTitle: 'Edit - ' +  properties.scene.title, newTab: true})">EDIT</button>
                 <button class="es-button-white" @click="DELETE_FROM_LIST('scenes',  properties.scene)">DELETE</button>
             </div>
         </div>

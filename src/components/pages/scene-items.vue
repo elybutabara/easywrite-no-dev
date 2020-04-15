@@ -1,11 +1,11 @@
 <template>
 <div>
-    <div v-if="page.is_ready" class="page-scene-items fadeIn animated">
+    <div v-if="page.is_ready" class="page-scene-items ">
         <div class="es-scene-children-wrapper" style="">
             <button @click="showChildrenItemList()" class="btn-dark" style="float:right;">ADD SCENE ITEM</button>
             <div class="heading">ITEMS</div>
             <div class="es-row">
-                <div class="es-col fadeIn animated" v-bind:key="scene_item.id" v-for="scene_item in GET_SCENE_ITEMS_BY_SCENE(scene.uuid)">
+                <div class="es-col " v-bind:key="scene_item.id" v-for="scene_item in GET_SCENE_ITEMS_BY_SCENE(scene.uuid)">
                     <div class="es-card">
                         <div class="es-card-content">
                             <p class="title">{{ scene_item.item.itemname || 'Untitled' }}</p>
@@ -13,8 +13,8 @@
                             <i class="description" v-else>No Description</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-" @click="CHANGE_COMPONENT('item-details', {  book_id: scene.book_id, item: scene_item.item }, scene_item.item.itemname)"><i class="lar la-eye"></i> VIEW</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT('item-form', { book_id: scene.book_id, item: scene_item.item }, 'Edit - ' + scene_item.item.itemname, true)"><i class="las la-pencil-alt"></i> EDIT</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-details-' + scene_item.item.uuid, tabComponent: 'item-details',  tabData: {  book_id: scene.book_id, item: scene_item.item }, tabTitle: scene_item.item.itemname})"><i class="lar la-eye"></i> VIEW</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + scene_item.item.uuid, tabComponent: 'item-form',  tabData: { book_id: scene.book_id, item: scene_item.item }, tabTitle: scene_item.item.itemname, newTab: true})"><i class="las la-pencil-alt"></i> EDIT</button>
                             <button class="btn-delete" @click="DELETE_FROM_LIST('scene-items', scene_item)"><i class="las la-trash-alt"></i> DELETE</button>
                         </div>
                     </div>

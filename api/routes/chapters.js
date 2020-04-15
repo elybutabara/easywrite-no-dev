@@ -58,6 +58,14 @@ router.get('/syncable', async function (req, res) {
     .json(rows)
 })
 
+router.post('/sort', async function (req, res) {
+  const chapters = await ChapterController.sort(req.body)
+
+  res
+    .status(200)
+    .json(chapters)
+})
+
 router.post('/sync', async function (req, res) {
   const row = await ChapterController.sync(req.body)
 

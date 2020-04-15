@@ -7,20 +7,20 @@
                 <small>Below are the list of chapters under {{ properties.title }}</small>
             </div>
             <div class="actions">
-                <button class="es-button-white" @click="CHANGE_COMPONENT('chapter-form', {  book_id: properties.uuid, chapter: null }, 'New Chapter', true)">New Chapter</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book_id: properties.uuid, chapter: null }, tabTitle: 'New Chapter', newTab: true})">New Chapter</button>
             </div>
         </div>
     </div>
 
     <div class="es-page-content">
-        <div class="es-row">
-            <div class="es-col fadeIn animated" v-for="chapter in GET_CHAPTERS_BY_BOOK(bookUUID)" v-bind:key="chapter.id">
+            <draggable v-model="chapters" draggable=".es-col" class="es-row">
+            <div class="es-col fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
                 <div class="es-card">
                     <div class="es-card-content">
                         <div class="es-card-actions">
-                            <button class="btn-circle" @click="CHANGE_COMPONENT('chapter-form', {  book_id: properties.uuid, chapter: chapter }, 'Edit - ' + chapter.title, true)"><i class="las la-pencil-alt"></i></button>
+                            <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'chapter-form-' + chapter.uuid, tabComponent: 'chapter-form',  tabData: { book_id: properties.uuid, chapter: chapter }, tabTitle: 'Edit - ' + chapter.title, newTab: true })"><i class="las la-pencil-alt"></i></button>
                             <button class="btn-circle" @click="DELETE_FROM_LIST('chapters', chapter)"><i class="las la-trash-alt"></i></button>
-                            <button class="btn-circle" @click="CHANGE_COMPONENT('chapter-details', {  book_id: properties.uuid, chapter: chapter }, 'View - ' + chapter.title)"><i class="lar la-eye"></i></button>
+                            <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + chapter.uuid, tabComponent: 'chapter-details',  tabData: { book_id: properties.uuid, chapter: chapter }, tabTitle: 'View - ' + chapter.title})"><i class="lar la-eye"></i></button>
                         </div>
                         <p class="title">{{ displayTitle(chapter.title) }}</p>
                         <i class="description">{{ chapter.short_description || 'No Short Description...'  }}</i>
@@ -33,19 +33,36 @@
                     </div>
                 </div>
             </div>
-        </div>
+            </draggable>
     </div>
 </div>
 
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 export default {
   name: 'chapter-listing',
   props: ['properties'],
+  components: {
+    draggable
+  },
   data: function () {
     return {
       bookUUID: ''
+    }
+  },
+  computed: {
+    chapters: {
+      get () {
+        let scope = this
+        let chapters = scope.GET_CHAPTERS_BY_BOOK(scope.bookUUID)
+        return chapters
+      },
+      set (value) {
+        let scope = this
+        this.$store.commit('sortChapters', { bookUUID: scope.bookUUID, data: value })
+      }
     }
   },
   methods: {

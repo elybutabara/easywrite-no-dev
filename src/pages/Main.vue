@@ -6,9 +6,9 @@
             <div class="es-top-parent">
                <pomodoro-timer></pomodoro-timer>
                 <div class="es-top-nav">
-                    <button @click="CHANGE_COMPONENT('dashboard', null, 'Dashboard')"> Dashboard</button>
-                    <button @click="CHANGE_COMPONENT('syncing', null, 'Syncing', true)">Sync Data</button>
-                    <button @click="CHANGE_COMPONENT('book-form', null, 'New Book', true)"> New Book</button>
+                    <button @click="CHANGE_COMPONENT({tabKey: 'dashboard', tabComponent: 'dashboard',  tabData: null, tabTitle: 'Dashboard'})"> Dashboard</button>
+                    <button @click="CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing',  tabData: null, tabTitle: 'Syncing', newTab: true})">Sync Data</button>
+                    <button @click="CHANGE_COMPONENT({tabKey: 'book-form', tabComponent: 'book-form',  tabData: null, tabTitle: 'New Book'})"> New Book</button>
                 </div>
             </div>
             <div class="es-tab-nav">
@@ -19,28 +19,28 @@
             </div>
 
             <div class="es-item-content" v-bind:class="{ 'active': index == tabs.active_index }" v-for="(tab,index) in tabs.items"  v-bind:key="'content-' + index" >
-                <dashboard v-if="tab.component == 'dashboard'" :properties="tab.data"></dashboard>
-                <chapter-listing v-if="tab.component == 'chapter-listing'" :properties="tab.data"></chapter-listing>
-                <scene-listing v-if="tab.component == 'scene-listing'" :properties="tab.data"></scene-listing>
-                <item-listing v-if="tab.component == 'item-listing'" :properties="tab.data"></item-listing>
-                <location-listing v-if="tab.component == 'location-listing'" :properties="tab.data"></location-listing>
-                <character-listing v-if="tab.component == 'character-listing'" :properties="tab.data"></character-listing>
+                <dashboard :key="tab.key" v-if="tab.component == 'dashboard'" :properties="tab.data"></dashboard>
+                <chapter-listing :key="tab.key" v-if="tab.component == 'chapter-listing'" :properties="tab.data"></chapter-listing>
+                <scene-listing :key="tab.key" v-if="tab.component == 'scene-listing'" :properties="tab.data"></scene-listing>
+                <item-listing :key="tab.key" v-if="tab.component == 'item-listing'" :properties="tab.data"></item-listing>
+                <location-listing :key="tab.key" v-if="tab.component == 'location-listing'" :properties="tab.data"></location-listing>
+                <character-listing :key="tab.key" v-if="tab.component == 'character-listing'" :properties="tab.data"></character-listing>
 
-                <book-details :key="UNIQUE()" v-if="tab.component == 'book-details'" :properties="tab.data"></book-details>
-                <chapter-details :key="UNIQUE()" v-if="tab.component == 'chapter-details'" :properties="tab.data"></chapter-details>
-                <scene-details :key="UNIQUE()" v-if="tab.component == 'scene-details'" :properties="tab.data"></scene-details>
-                <item-details :key="UNIQUE()" v-if="tab.component == 'item-details'" :properties="tab.data"></item-details>
-                <location-details :key="UNIQUE()" v-if="tab.component == 'location-details'" :properties="tab.data"></location-details>
-                <character-details :key="UNIQUE()" v-if="tab.component == 'character-details'" :properties="tab.data"></character-details>
+                <book-details :key="tab.key" v-if="tab.component == 'book-details'" :properties="tab.data"></book-details>
+                <chapter-details :key="tab.key" v-if="tab.component == 'chapter-details'" :properties="tab.data"></chapter-details>
+                <scene-details :key="tab.key" v-if="tab.component == 'scene-details'" :properties="tab.data"></scene-details>
+                <item-details :key="tab.key" v-if="tab.component == 'item-details'" :properties="tab.data"></item-details>
+                <location-details :key="tab.key" v-if="tab.component == 'location-details'" :properties="tab.data"></location-details>
+                <character-details :key="tab.key" v-if="tab.component == 'character-details'" :properties="tab.data"></character-details>
 
-                <book-form :key="UNIQUE()" v-if="tab.component == 'book-form'" :properties="tab.data"></book-form>
-                <location-form :key="UNIQUE()" v-if="tab.component == 'location-form'" :properties="tab.data"></location-form>
-                <item-form :key="UNIQUE()" v-if="tab.component == 'item-form'" :properties="tab.data"></item-form>
-                <character-form :key="UNIQUE()" v-if="tab.component == 'character-form'" :properties="tab.data"></character-form>
-                <chapter-form :key="UNIQUE()" v-if="tab.component == 'chapter-form'" :properties="tab.data"></chapter-form>
-                <scene-form :key="UNIQUE()" v-if="tab.component == 'scene-form'" :properties="tab.data"></scene-form>
+                <book-form :key="tab.key" v-if="tab.component == 'book-form'" :properties="tab.data"></book-form>
+                <location-form :key="tab.key" v-if="tab.component == 'location-form'" :properties="tab.data"></location-form>
+                <item-form :key="tab.key" v-if="tab.component == 'item-form'" :properties="tab.data"></item-form>
+                <character-form :key="tab.key" v-if="tab.component == 'character-form'" :properties="tab.data"></character-form>
+                <chapter-form :key="tab.key" v-if="tab.component == 'chapter-form'" :properties="tab.data"></chapter-form>
+                <scene-form :key="tab.key" v-if="tab.component == 'scene-form'" :properties="tab.data"></scene-form>
 
-                <syncing v-if="tab.component == 'syncing'" :properties="tab.data"></syncing>
+                <syncing :key="tab.key" v-if="tab.component == 'syncing'" :properties="tab.data"></syncing>
             </div>
         </div>
     </div>

@@ -5,7 +5,7 @@ export default {
     tabs: {
       active_index: 0,
       items: [
-        { title: 'Dashboard', component: 'dashboard', data: { autosync: false } }
+        { key: 'dashboard', title: 'Dashboard', component: 'dashboard', data: { autosync: true } }
       ]
     }
   },
@@ -22,17 +22,42 @@ export default {
   },
   mutations: {
     newTab (state, payload) {
-      state.tabs.items.push(payload)
-      state.tabs.active_index = (state.tabs.items.length - 1)
+      for (let i = 0; i < state.tabs.items.length; i++) {
+        var item = state.tabs.items[i]
+        if (item.key === payload.key) {
+          state.tabs.active_index = i
+          break
+        } else if (i === (state.tabs.items.length - 1) && item.key !== payload.key) {
+          state.tabs.items.push(payload)
+          state.tabs.active_index = (state.tabs.items.length - 1)
+          break
+        }
+      }
     },
     changeTab (state, payload) {
       state.tabs.active_index = payload
     },
     changeTabContent (state, payload) {
-      state.tabs.active_index = payload.index
-      state.tabs.items[payload.index].title = payload.title
-      state.tabs.items[payload.index].component = payload.component
-      state.tabs.items[payload.index].data = payload.data
+      for (let i = 0; i < state.tabs.items.length; i++) {
+        var item = state.tabs.items[i]
+        if (payload.index !== 0) {
+          state.tabs.active_index = payload.index
+          state.tabs.items[payload.index].title = payload.title
+          state.tabs.items[payload.index].component = payload.component
+          state.tabs.items[payload.index].data = payload.data
+          state.tabs.items[payload.index].key = payload.key
+        } else if (item.key === payload.key) {
+          state.tabs.active_index = i
+          break
+        } else if (i === (state.tabs.items.length - 1) && item.key !== payload.key) {
+          state.tabs.active_index = payload.index
+          state.tabs.items[payload.index].title = payload.title
+          state.tabs.items[payload.index].component = payload.component
+          state.tabs.items[payload.index].data = payload.data
+          state.tabs.items[payload.index].key = payload.key
+          break
+        }
+      }
     },
     removeTab (state, payload) {
       let next = 0

@@ -10,7 +10,7 @@
             </div>
             <div class="actions">
                 <button class="es-button-white" @click="newVersion()">SAVE AS NEW VERSION</button>
-                <button class="es-button-white" @click="CHANGE_COMPONENT('chapter-form', {  book_id: properties.chapter.book_id, chapter:  properties.chapter }, 'Edit - ' +  properties.chapter.title, true)">EDIT</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT({ tabKey: 'chapter-form-' + properties.chapter.uuid, tabComponent: 'chapter-form',  tabData: { book_id: properties.chapter.book_id, chapter:  properties.chapter }, tabTitle: 'Edit - ' +  properties.chapter.title, newTab: true })">EDIT</button>
                 <button class="es-button-white" @click="DELETE_FROM_LIST('chapters',  properties.chapter)">DELETE</button>
             </div>
         </div>
