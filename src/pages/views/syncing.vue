@@ -92,6 +92,7 @@
                            Downloaded {{ endpoint.downloaded.length}} <strong>{{ endpoint.title }}</strong>
                         </p>
                        <button v-if="autostart" class="syncer-button" @click="backToDashboard()">OK</button>
+                       <button v-else class="syncer-button" @click="backToIntro()">OK</button>
                    </div>
                 </div>
             </div>
@@ -441,9 +442,60 @@ export default {
           // always executed
         })
     },
+    backToIntro: function () {
+      var scope = this
+      scope.resetInitialData()
+    },
     backToDashboard: function () {
       var scope = this
       scope.$parent.closeSyncer()
+    },
+    resetInitialData: function () {
+      var scope = this
+      scope.stage = 'intro'
+      scope.current = 0
+      scope.progress_message = 'Initializing...'
+
+      scope.download.pointer = 0
+      scope.download.progress = 0
+      scope.download.total = 0
+      scope.download.error = false
+
+      scope.upload.pointer = 1
+      scope.upload.index = 0
+      scope.upload.counter = 0
+      scope.upload.progress = 0
+      scope.upload.total = 0
+      scope.upload.error = false
+
+      scope.packing.pointer = 1
+      scope.packing.progress = 0
+      scope.packing.total = 0
+      scope.packing.error = false
+
+      scope.saving.pointer = 0
+      scope.saving.index = 0
+      scope.saving.counter = 0
+      scope.saving.progress = 0
+      scope.saving.total = 0
+      scope.saving.error = false
+      scope.endpoints = [
+        { title: 'Genres', api: 'book-genres', local: 'book-genres', downloaded: [], packed: [] },
+        { title: 'Relations', api: 'book-relations', local: 'relations', downloaded: [], packed: [] },
+        { title: 'Books', api: 'books', local: 'books', downloaded: [], packed: [] },
+        { title: 'Items', api: 'book-items', local: 'items', downloaded: [], packed: [] },
+        { title: 'Locations', api: 'book-locations', local: 'locations', downloaded: [], packed: [] },
+        { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: [], packed: [] },
+        { title: 'Chapters', api: 'book-chapters', local: 'chapters', downloaded: [], packed: [] },
+        { title: 'Chapter Version', api: 'book-chapter-versions', local: 'chapter-versions', downloaded: [], packed: [] },
+        { title: 'Characters', api: 'book-characters', local: 'characters', downloaded: [], packed: [] },
+        { title: 'Relationships', api: 'book-relation-details', local: 'relation-details', downloaded: [], packed: [] },
+        { title: 'Scenes', api: 'book-scenes', local: 'scenes', downloaded: [], packed: [] },
+        { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: [], packed: [] },
+        { title: 'Scene Items', api: 'book-scene-items', local: 'scene-items', downloaded: [], packed: [] },
+        { title: 'Scene Locations', api: 'book-scene-locations', local: 'scene-locations', downloaded: [], packed: [] },
+        { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: [], packed: [] }
+      ]
     }
   },
   beforeMount () {
