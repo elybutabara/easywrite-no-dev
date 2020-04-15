@@ -41,14 +41,6 @@ router.post('/synced', async function (req, res) {
     .json(user)
 })
 
-router.get('/getuser', async function (req, res) {
-  const user = await UserController.getUser()
-
-  res
-    .status(200)
-    .json(user)
-})
-
 router.get('/:userId/books', async function (req, res) {
   const books = await BookController.getAllBooksByUserId(req.params.userId)
 

@@ -62,8 +62,8 @@ export default {
   name: 'Auth',
   data () {
     return {
-      username: '',
-      password: '',
+      username: 'devteam',
+      password: 'easywrite123',
       window: remote.getCurrentWindow(),
       version: remote.app.getVersion()
     }
@@ -147,25 +147,10 @@ export default {
             })
           }
         })
-    },
-
-    getUser: function () {
-      var scope = this
-      scope.axios
-        .get('http://localhost:3000/users/' + '/getUser')
-        .then(response => {
-          if (!Object.keys(response.data).length) {
-            console.log('no data found')
-          } else {
-            scope.username = response.data[0].username
-            scope.password = response.data[0].password
-          }
-        })
     }
   },
   mounted () {
-    var scope = this
-    scope.getUser()
+
   }
 }
 </script>
