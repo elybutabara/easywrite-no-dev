@@ -46,7 +46,7 @@ let buildOptions = {
   "mac": {
     "category": "public.app-category.productivity",
     "target": "dmg",
-    "icon": "build/icons/mac/easywrite.icns",
+    "icon": path.resolve('src/assets/img/easywrite.png'),
     "publish" : [{
       "provider": "github",
       "private": true,
@@ -65,7 +65,7 @@ let buildOptions = {
         ]
       }
     ],
-    "icon": "build/icons/win/easywrite.png",
+    "icon": path.resolve('src/assets/img/easywrite.png'),
     "publish" : [{
       "provider": "github",
       "private": true,
