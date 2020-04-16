@@ -2,7 +2,7 @@
 require('./check-versions')()
 
 process.env.NODE_ENV = 'production'
-const appVersion = require('../package').version;
+const app = require('../package');
 const ora = require('ora')
 const rm = require('rimraf')
 const path = require('path')
@@ -18,9 +18,9 @@ spinner.start()
 
 let buildOptions = {
   "appId": "com.forfatterskolen.easywrite",
-  "productName": "EasyWriteApp",
+  "productName": app.name,
   "directories": {
-    "output": "output/" + appVersion +'-'+ moment().format('YYYY-MM-DD-hhmmss').toString()
+    "output": "output/" + app.version +'-'+ moment().format('YYYY-MM-DD-hhmmss').toString()
   },
   "extraResources": [
     {
@@ -65,13 +65,14 @@ let buildOptions = {
         ]
       }
     ],
-    "icon": "build/icons/win/easywrite-white-bg.png",
+    "icon": "build/icons/win/easywrite2.png",
     "publish" : [{
       "provider": "github",
       "private": true,
       "token": "dfd1c61fcb090ecba24909875e177c5326ad449d",
       "owner": "rancorfloydz",
       "repo": "easywrite-v2-updater"
+      // "repo": "easywrite"
     }],
     "certificateFile" : "private/easywrite-v2.pfx",
     "verifyUpdateCodeSignature" : false,
@@ -80,6 +81,8 @@ let buildOptions = {
   "nsis": {
     "allowToChangeInstallationDirectory": true,
     "oneClick": false
+    // "allowToChangeInstallationDirectory": false,//for release update
+    // "oneClick": true //for release update
   }
 }
 
