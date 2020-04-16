@@ -163,12 +163,12 @@ function checkFreshInstallation () {
 
         let deleteRecursive = function (path) {
           if( fs.existsSync(path) ) {
-            log.info('exist delte')
-            log.info(path)
+            // log.info('exist delte')
+            // log.info(path)
             fs.readdirSync(path).forEach(function(file,index){
               let curPath = path + "/" + file;
               if(fs.lstatSync(curPath).isDirectory()) { // recurse
-                log.info('rescures')
+                // log.info('rescures')
                 deleteRecursive(curPath);
               } else { // delete file
                 fs.unlinkSync(curPath);
