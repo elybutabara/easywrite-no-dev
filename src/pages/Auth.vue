@@ -30,7 +30,7 @@
                </div>
                <div class="content">
                    <form v-on:submit.prevent="authenticate()">
-<!--                       <h6 class="version no-margin" style="color: white;font-size: small" v-html="'Version ' + version"></h6>-->
+                       <h6 class="version no-margin" style="color: white;font-size: small" v-html="'Version ' + version"></h6>
                        <p class="welcome">Welcome to EasyWrite, please login to your account to continue.</p>
                        <div class="input-group line">
                            <label>Username</label>
@@ -86,7 +86,8 @@ export default {
             ipcRenderer.send('RESIZE_MAIN_WINDOW', response)
             // start time worked counter
             scope.actionmutateTimer()
-            scope.COOKIE_SET('username', scope.username, 365)
+            // scope.COOKIE_SET('username', scope.username, 365)
+            localStorage.setItem('username', scope.username)
             scope.$router.push({name: 'Main'})
           }, 100)
         })
@@ -105,7 +106,8 @@ export default {
         .then(function (response) {
           delete response.data.user.id
           delete response.data.author.id
-          scope.COOKIE_SET('username', scope.username, 365)
+          // scope.COOKIE_SET('username', scope.username, 365)
+          localStorage.setItem('username', scope.username)
           scope.$set(response.data.user, 'password', scope.password)
           scope.$set(response.data.user, 'token', response.data.success.token)
           scope.$set(response.data.user, 'author', response.data.author)
@@ -133,8 +135,8 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              console.log('SAVE USER RESPONSE:')
-              console.log(response.data)
+              // console.log('SAVE USER RESPONSE:')
+              // console.log(response.data)
               scope.$store.commit('authenticate', {
                 user: response.data,
                 author: response.data.author
@@ -152,7 +154,7 @@ export default {
   },
   mounted () {
     var scope = this
-    scope.username = scope.COOKIE_GET('username')
+    scope.username = localStorage.getItem('username')
   }
 }
 </script>
