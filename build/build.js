@@ -65,24 +65,24 @@ let buildOptions = {
         ]
       }
     ],
-    "icon": "build/icons/win/easywrite2.png",
+    "icon": "build/icons/win/easywrite.png",
     "publish" : [{
       "provider": "github",
       "private": true,
       "token": "dfd1c61fcb090ecba24909875e177c5326ad449d",
       "owner": "rancorfloydz",
-      "repo": "easywrite-v2-updater"
-      // "repo": "easywrite"
+      //"repo": "easywrite-v2-updater"
+      "repo": "easywrite"
     }],
     "certificateFile" : "private/easywrite-v2.pfx",
     "verifyUpdateCodeSignature" : false,
     "publisherName" : "easywrite-v2"
   },
   "nsis": {
-    "allowToChangeInstallationDirectory": true,
-    "oneClick": false
-    // "allowToChangeInstallationDirectory": false,//for release update
-    // "oneClick": true //for release update
+    // "allowToChangeInstallationDirectory": true,
+    // "oneClick": false
+    "allowToChangeInstallationDirectory": false,//for release update
+    "oneClick": true //for release update
   }
 }
 

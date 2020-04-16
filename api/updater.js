@@ -82,7 +82,7 @@ exports.processUpdate = (window) => {
         // log.info(data)
       })
     }
-  }, 1 * 10 * 1000)
+  }, 1 * 60 * 1000)
 
   function isNetworkError(errorObject) {
     return errorObject.message === "net::ERR_INTERNET_DISCONNECTED" ||
