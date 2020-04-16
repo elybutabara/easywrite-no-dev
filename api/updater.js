@@ -44,7 +44,12 @@ exports.processUpdate = (window) => {
 
   autoUpdater.on('error',function (err) {
     in_progress = false
-    window.webContents.send('AUTO_UPDATE:error',{error:err.message})
+    //this will throw Network error : TODO : enhance Network Error only
+    if(isNetworkError(err)){
+      window.webContents.send('AUTO_UPDATE:error',{error:err.message})
+    }else{
+      log.error(err)
+    }
   })
 
   autoUpdater.on('update-available',function (data) {
@@ -75,9 +80,16 @@ exports.processUpdate = (window) => {
       autoUpdater.checkForUpdates().then((data) => {
         console.log('checking for update')
         // log.info(data)
-      }).catch((err) => {
-        log.error(err)
       })
     }
-  }, 1 * 60 * 1000)
+  }, 1 * 10 * 1000)
+
+  function isNetworkError(errorObject) {
+    return errorObject.message === "net::ERR_INTERNET_DISCONNECTED" ||
+      errorObject.message === "net::ERR_PROXY_CONNECTION_FAILED" ||
+      errorObject.message === "net::ERR_CONNECTION_RESET" ||
+      errorObject.message === "net::ERR_CONNECTION_CLOSE" ||
+      errorObject.message === "net::ERR_NAME_NOT_RESOLVED" ||
+      errorObject.message === "net::ERR_CONNECTION_TIMED_OUT";
+  }
 }
