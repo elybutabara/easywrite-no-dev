@@ -81,6 +81,7 @@ let buildOptions = {
   "nsis": {
     // "allowToChangeInstallationDirectory": true,
     // "oneClick": false
+    "installerIcon": path.resolve('build/icons/win/installer.ico'),
     "allowToChangeInstallationDirectory": false,//for release update
     "oneClick": true //for release update
   }
