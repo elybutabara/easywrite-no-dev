@@ -70,11 +70,15 @@ function createWindow () {
 
   // resize after authentication
   ipcMain.on('RESIZE_MAIN_WINDOW', function (e, cat) {
-    Menu.setApplicationMenu(menu)
+    Menu.setApplicationMenu(menu.getMenu(mainWindow))
     mainWindow.setSize(1280, 920);
     mainWindow.center();
   })
   appUpdate.processUpdate(mainWindow)
+
+  ipcMain.on('REFRESH_MENUITEMS', function (e, cat) {
+    Menu.setApplicationMenu(menu.getMenu(mainWindow))
+  })
 }
 
 /*

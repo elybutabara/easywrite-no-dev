@@ -17,7 +17,7 @@
                                 <span>
                                     <img v-if="book.chapter_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
-                                    Chapters
+                                    {{ $tc('chapter', 2) }}
                                 </span>
                             </div>
                             <ul class="level-3">
