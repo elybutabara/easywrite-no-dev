@@ -10,13 +10,13 @@
       <div class="col-12 col-md-3">
         <div style="text-align:center; padding:40px 40px; background:#f5f8fa; border:1px solid #cbd6e2;">
           <h3>{{ numberFormat(GET_AUTHOR_PERSONAL_PROGRESS('monthly')) }}</h3>
-          <p style="margin:0px;">Monthly Word Count</p>
+          <p style="margin:0px;">This Month Word Count</p>
         </div>
       </div>
       <div class="col-12 col-md-3">
         <div style="text-align:center; padding:40px 40px; background:#f5f8fa; border:1px solid #cbd6e2;">
           <h3>{{ numberFormat(GET_AUTHOR_PERSONAL_PROGRESS('yearly')) }}</h3>
-          <p style="margin:0px;">Yearly Word Count</p>
+          <p style="margin:0px;">This Year Word Count</p>
         </div>
       </div>
       <div class="col-12 col-md-3">
