@@ -65,7 +65,7 @@ let buildOptions = {
         ]
       }
     ],
-    "icon": path.resolve('src/assets/img/easywrite.png'),
+    "icon": path.resolve('build/icons/win/easywrite-new.ico'),
     "publish" : [{
       "provider": "github",
       "private": true,
@@ -79,10 +79,12 @@ let buildOptions = {
     "publisherName" : "easywrite-v2"
   },
   "nsis": {
-    // "allowToChangeInstallationDirectory": true,
     // "oneClick": false
+    "perMachine": true,
+    "installerIcon": path.resolve('build/icons/win/installer.ico'),
+    "uninstallerIcon": path.resolve('build/icons/win/installer.ico'),
     "allowToChangeInstallationDirectory": false,//for release update
-    "oneClick": true //for release update
+    "oneClick": false //for release update
   }
 }
 
