@@ -65,7 +65,7 @@ let buildOptions = {
         ]
       }
     ],
-    "icon": path.resolve('src/assets/img/easywrite.png'),
+    "icon": path.resolve('build/icons/win/easywrite-new.ico'),
     "publish" : [{
       "provider": "github",
       "private": true,
