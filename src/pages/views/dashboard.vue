@@ -20,34 +20,7 @@
         <div class="es-panel">
             <h4>Reports</h4>
             <hr/>
-            <div class="container">
-                <div class="row">
-                    <div class="col-12 col-md-3">
-                        <div style="text-align:center; padding:40px 40px; background:#f5f8fa; border:1px solid #cbd6e2;">
-                            <h3>260</h3>
-                            <p style="margin:0px;">Daily Word Count</p>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <div style="text-align:center; padding:40px 40px; background:#f5f8fa; border:1px solid #cbd6e2;">
-                            <h3>1,560</h3>
-                            <p style="margin:0px;">Monthly Word Count</p>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <div style="text-align:center; padding:40px 40px; background:#f5f8fa; border:1px solid #cbd6e2;">
-                            <h3>6,260</h3>
-                            <p style="margin:0px;">Yearly Word Count</p>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <div style="text-align:center; padding:40px 40px; background:#f5f8fa; border:1px solid #cbd6e2;">
-                            <h3>12,260</h3>
-                            <p style="margin:0px;">All Time Word Count</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <report />
         </div>
 
         <div style="margin-top:10px; margin-bottom:20px; max-width: 1320px; display:flex; width:calc(100% - 40px); margin:0px auto; justify-content: space-between;">
@@ -134,6 +107,7 @@
 <script>
 import Syncing from '@/pages/views/syncing'
 import { mapGetters, mapActions } from 'vuex'
+import Report from '../../components/Report'
 
 export default {
   name: 'dashboard',
@@ -171,6 +145,7 @@ export default {
     }
   },
   components: {
+    'report': Report,
     'syncing': Syncing
   },
   methods: {

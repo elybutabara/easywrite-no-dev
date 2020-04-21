@@ -92,9 +92,16 @@ export default {
         }
       },
       chapterVersionCont: '',
+      baseContentCount: '',
       accordion: {
         'chapter-details': 'active',
         'content': 'inactive'
+      },
+      authorProgress: {
+        author_id: '',
+        relation_id: '',
+        is_for: 'chapter',
+        total_words: 0
       }
     }
   },
@@ -114,12 +121,12 @@ export default {
     setContent (value) {
       var scope = this
 
-      // scope.data.chapter_version.content = value
       scope.chapterVersionCont = value
     },
     saveChapter () {
       var scope = this
       scope.data.chapter_version.content = scope.chapterVersionCont
+
       scope.axios
         .post('http://localhost:3000/chapters', scope.data)
         .then(response => {
@@ -131,6 +138,7 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
+              scope.saveAuthorPersonalProgress(response.data.uuid)
               if (scope.data.uuid === null) {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
@@ -146,6 +154,24 @@ export default {
               }
             })
           }
+        })
+    },
+    saveAuthorPersonalProgress (relationId) {
+      let scope = this
+
+      if (scope.authorProgress.uuid) {
+        scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.WORD_COUNT(scope.chapterVersionCont) - scope.baseContentCount)
+      } else {
+        scope.authorProgress.author_id = scope.$store.getters.getAuthorID
+        scope.authorProgress.relation_id = relationId
+        scope.authorProgress.total_words = scope.WORD_COUNT(scope.chapterVersionCont) - scope.baseContentCount
+      }
+
+      scope.axios
+        .post('http://localhost:3000/author-personal-progress', scope.authorProgress)
+        .then(response => {
+          scope.authorProgress = response
+          scope.$store.dispatch('loadAuthorPersonalProgress', { authorId: this.$store.getters.getAuthorID })
         })
     },
     saveNewVersion () {
@@ -165,8 +191,19 @@ export default {
             scope.data.chapter_version.content = chapter.chapter_version[chapter.chapter_version.length - 1].content
             scope.chapterVersionCont = scope.data.chapter_version.content
 
+            scope.baseContentCount = scope.WORD_COUNT(scope.chapterVersionCont)
+
             // refresh vuex to update all related records
             scope.LOAD_LIST('chapter-versions', chapter)
+          }
+        })
+
+      scope.axios
+        .get('http://localhost:3000/authors/' + scope.$store.getters.getAuthorID + '/chapter/' + scope.data.uuid + '/personal-progress/today')
+        .then(response => {
+          if (response.data) {
+            console.log(response.data)
+            scope.authorProgress = response.data
           }
         })
     }

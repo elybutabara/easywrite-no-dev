@@ -285,7 +285,14 @@ export default {
       },
       selected_items: [],
       selected_characters: [],
-      selected_locations: []
+      selected_locations: [],
+      baseContentCount: '',
+      authorProgress: {
+        author_id: '',
+        relation_id: '',
+        is_for: 'scene',
+        total_words: 0
+      }
     }
   },
   components: {
@@ -377,6 +384,21 @@ export default {
         .then(response => {
           console.log('scene characters added')
         })
+
+      if (scope.authorProgress.uuid) {
+        scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.WORD_COUNT(scope.tempSceneVersionContent) - scope.baseContentCount)
+      } else {
+        scope.authorProgress.author_id = scope.$store.getters.getAuthorID
+        scope.authorProgress.relation_id = bookSceneID
+        scope.authorProgress.total_words = scope.WORD_COUNT(scope.tempSceneVersionContent) - scope.baseContentCount
+      }
+
+      scope.axios
+        .post('http://localhost:3000/author-personal-progress', scope.authorProgress)
+        .then(response => {
+          scope.authorProgress = response
+          scope.$store.dispatch('loadAuthorPersonalProgress', { authorId: this.$store.getters.getAuthorID })
+        })
     },
     // Required for geting value from TinyMCE content
     setContent (value) {
@@ -464,6 +486,16 @@ export default {
             scope.tempSceneVersionContent = scope.data.scene_version.content
             scope.tempSceneNotes = scope.data.notes
             scope.tempViewpointDescription = scope.data.viewpoint_description
+
+            scope.baseContentCount = scope.WORD_COUNT(scope.tempSceneVersionContent)
+          }
+        })
+
+      scope.axios
+        .get('http://localhost:3000/authors/' + scope.$store.getters.getAuthorID + '/scene/' + sceneId + '/personal-progress/today')
+        .then(response => {
+          if (response.data) {
+            scope.authorProgress = response.data
           }
         })
     },

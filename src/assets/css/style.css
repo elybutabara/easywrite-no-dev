@@ -200,6 +200,15 @@ ul { margin-left:0px; list-style:none;  }
 .swal2-confirm { background-color: #293742 !important; }
 .swal2-cancel { background-color: #792e3b !important; }
 
+.ellipsis-1 {
+  word-wrap: break-word;
+  display: -webkit-box!important;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .ellipsis-2 {
   word-wrap: break-word;
   display: -webkit-box!important;

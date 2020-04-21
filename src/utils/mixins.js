@@ -109,6 +109,9 @@ export default {
 
       return stripedHtml.split(' ').filter(function (str) { return str !== '' }).length
     },
+    GET_AUTHOR_PERSONAL_PROGRESS: function (progress = 'all_time') {
+      return this.$store.getters.getAuthorPersonaProgress(progress)
+    },
     LOAD_LIST: function (model = '', data) {
       var scope = this
       scope.$store.dispatch('loadList', {model: model, data: data})

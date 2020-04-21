@@ -14,7 +14,13 @@ export default {
     scene_versions: { rows: [] },
     scene_locations: { rows: [] },
     scene_items: { rows: [] },
-    scene_characters: { rows: [] }
+    scene_characters: { rows: [] },
+    author_personal_progress: {
+      today: 0,
+      monthly: 0,
+      yearly: 0,
+      all_time: 0
+    }
   },
   getters: {
     getBooks: state => {
@@ -118,6 +124,15 @@ export default {
       } else {
         return ''
       }
+    },
+    getAuthorPersonaProgress: state => (progress) => {
+      return state.author_personal_progress[progress]
+      // if (progress === 'daily') {
+      //   totalProgress = 200
+      // } else {
+      //   totalProgress = 12809
+      // }
+      // return totalProgress.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
     }
   },
   mutations: {
@@ -492,6 +507,14 @@ export default {
         })
       state.scenes[payload.PARENT].rows = payload.data
     },
+    loadAuthorPersonalProgress (state, payload) {
+      axios
+        .get('http://localhost:3000/authors/' + payload.authorId + '/personal-progress')
+        .then(response => {
+          console.log('Author personal progress loaded!')
+          state.author_personal_progress = response.data
+        })
+    },
     mutateBook (state, payload) {
       var userID = payload
       axios
@@ -540,6 +563,9 @@ export default {
     },
     sortChapters ({ commit, state }, payload) {
       commit('sortChapters', payload)
+    },
+    loadAuthorPersonalProgress ({ commit, state }, payload) {
+      commit('loadAuthorPersonalProgress', payload)
     }
   }
 }

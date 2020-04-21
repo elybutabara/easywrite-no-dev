@@ -48,6 +48,7 @@ const upload = multer({
   // you might also want to set some limits: https://github.com/expressjs/multer#limits
 })
 
+app.use('/authors', require('./routes/authors'))
 app.use('/users', require('./routes/users'))
 app.use('/book-genres', require('./routes/book-genres'))
 app.use('/relations', require('./routes/relations'))
@@ -64,6 +65,7 @@ app.use('/scene-versions', require('./routes/scene-versions'))
 app.use('/scene-items', require('./routes/scene-items'))
 app.use('/scene-locations', require('./routes/scene-locations'))
 app.use('/scene-characters', require('./routes/scene-characters'))
+app.use('/author-personal-progress', require('./routes/author-personal-progress'))
 
 app.post(
   '/upload/:imgOf/image',
