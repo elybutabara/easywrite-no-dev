@@ -225,15 +225,11 @@ function checkForVersionUpdates(){
 
       directory_pathName = migration.split(path.sep)
     }).then(function () {
+      const { v1: uuidv1 } = require('uuid')
       /*generate_UID*/
-      /* TODO replace this with function for generating UID*/
-      let uuidGenerationRaw = knexConnection.client.config.client === 'sqlite3' ?
-        `(lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6))))` :
-        `uuid_generate_v4()`;
-
       if(Array.isArray(directory_pathName)){
           knexConnection.table('migration_version_control').insert({
-            'version_uid' : knexConnection.raw(uuidGenerationRaw),
+            'version_uid' : uuidv1(),
             'full_path' : data.migrations,
             'directory': directory_pathName[0],
             'name' : directory_pathName[1],

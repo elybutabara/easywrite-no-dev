@@ -44,6 +44,11 @@ router.get('/:authorId/personal-progress', async function (req, res) {
     personalProgress.yearly = yearly.words_count
   }
 
+  let allTime = await AuthorPersonalProgressController.getAuthorPersonalProgressWordsCount(req.params.authorId, 'all')
+  if (allTime.words_count) {
+    personalProgress.all_time = allTime.words_count
+  }
+
   res
     .status(200)
     .json(personalProgress)

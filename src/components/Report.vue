@@ -34,7 +34,7 @@ export default {
   name: 'Report',
   methods: {
     numberFormat: function (number) {
-      return number.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+      return number.toLocaleString()
     }
   },
   beforeMount () {
