@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, Menu, ipcMain } = require('electron')
+const { app, BrowserWindow, Menu, ipcMain , systemPreferences} = require('electron')
 const path = require('path')
 const fs = require('fs')
 const log = require('electron-log')
@@ -17,6 +17,9 @@ const route = require('./api/server')
 const listener = require('./api/listener.js')
 const menu = require('./menu');
 
+//disable unwanted Emoji and Dictation in Menu
+systemPreferences.setUserDefault('NSDisabledDictationMenuItem', 'boolean', true)
+systemPreferences.setUserDefault('NSDisabledCharacterPaletteMenuItem', 'boolean', true)
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
