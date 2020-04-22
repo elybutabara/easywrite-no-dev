@@ -139,7 +139,7 @@ new Vue({
 const electron = window.require('electron')
 const { ipcRenderer } = electron
 
-ipcRenderer.on('translate', function (event, data) {
+ipcRenderer.on('TRANSLATE', function (event, data) {
   i18n.locale = data
 })
 

@@ -36,7 +36,7 @@
                                 <span>
                                     <img v-if="book.item_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
-                                    Items
+                                    {{ $tc('item', 2) }}
                                 </span>
                             </div>
                             <ul class="level-3">
@@ -50,7 +50,7 @@
                                 <span>
                                     <img v-if="book.character_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
-                                    Characters
+                                    {{ $tc('character', 2) }}
                                 </span>
                             </div>
                             <ul class="level-3">
@@ -64,7 +64,7 @@
                                 <span>
                                     <img v-if="book.location_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
-                                    Locations
+                                    {{ $tc('location', 2) }}
                                 </span>
                             </div>
                             <ul class="level-3">
@@ -78,7 +78,7 @@
                                 <span>
                                     <img v-if="book.scene_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
-                                    Other Scenes
+                                    {{ $t('other_scenes') }}
                                 </span>
                             </div>
                             <ul class="level-4">

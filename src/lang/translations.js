@@ -1,6 +1,11 @@
 export default {
   // English
   en: {
+    welcome_to_easywrite: 'Welcome to EasyWrite, please login to your account to continue.',
+    login: 'Login',
+    username: 'Username',
+    password: 'Password',
+    about: 'About',
     description: 'Description',
     aka: 'AKA',
     new_item: 'New Item',
@@ -27,6 +32,11 @@ export default {
   },
   // Danish
   da: {
+    welcome_to_easywrite: 'Welcome to EasyWrite, please login to your account to continue.',
+    login: 'Login',
+    username: 'Username',
+    password: 'Password',
+    about: 'About',
     description: 'Description',
     aka: 'AKA',
     new_item: 'New Item',
@@ -53,6 +63,11 @@ export default {
   },
   // Finnish
   fi: {
+    welcome_to_easywrite: 'Welcome to EasyWrite, please login to your account to continue.',
+    login: 'Login',
+    username: 'Username',
+    password: 'Password',
+    about: 'About',
     description: 'Description',
     aka: 'AKA',
     new_item: 'New Item',
@@ -79,6 +94,11 @@ export default {
   },
   // Icelandic
   is: {
+    welcome_to_easywrite: 'Welcome to EasyWrite, please login to your account to continue.',
+    login: 'Login',
+    username: 'Username',
+    password: 'Password',
+    about: 'About',
     description: 'Description',
     aka: 'AKA',
     new_item: 'New Item',
@@ -105,6 +125,11 @@ export default {
   },
   // Norwegian
   nb: {
+    welcome_to_easywrite: 'Velkommen til EasyWrite, vennligst logg inn på kontoen din for å fortsette.',
+    login: 'Logg Inn',
+    username: 'Brukernavn',
+    password: 'Passord',
+    about: 'Om',
     description: 'Description',
     aka: 'Alias',
     new_item: 'Ny Gjenstand',
@@ -131,6 +156,11 @@ export default {
   },
   // Spanish
   es: {
+    welcome_to_easywrite: 'Welcome to EasyWrite, please login to your account to continue.',
+    login: 'Login',
+    username: 'Username',
+    password: 'Password',
+    about: 'About',
     aka: 'AKA',
     new_item: 'New Item',
     chapter: 'Capítulo | Capítulos',
@@ -156,6 +186,11 @@ export default {
   },
   // Swedish
   sv: {
+    welcome_to_easywrite: 'Velkommen til EasyWrite, vennligst logg inn på kontoen din for å fortsette.',
+    login: 'Logg Inn',
+    username: 'Brukernavn',
+    password: 'Passord',
+    about: 'Om',
     aka: 'AKA',
     new_item: 'New Item',
     chapter: 'Kapitel | Kapitler',

@@ -79,7 +79,12 @@ function createWindow () {
   ipcMain.on('REFRESH_MENUITEMS', function (e, cat) {
     Menu.setApplicationMenu(menu.getMenu(mainWindow))
   })
+
 }
+
+ipcMain.on('SET_DEFAULT_LANG', function (e, cat) {
+  menu.setMenu(cat)
+})
 
 /*
 function createLoginWindow () {

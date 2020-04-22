@@ -30,18 +30,18 @@
                </div>
                <div class="content">
                    <form v-on:submit.prevent="authenticate()">
-                       <h6 class="version no-margin" style="color: white;font-size: small" v-html="'Version ' + version"></h6>
-                       <p class="welcome">Welcome to EasyWrite, please login to your account to continue.</p>
+                       <h6 class="version no-margin" style="color: white;font-size: small">{{ $tc('version', 1) }} {{ version }}</h6>
+                       <p class="welcome">{{ $t('welcome_to_easywrite') }}</p>
                        <div class="input-group line">
                            <label>Username</label>
-                           <input v-model="username" type="text" placeholder="Enter your username here...">
+                           <input v-model="username" type="text" :placeholder = " $tc('version', 1) ">
                        </div>
                        <div class="input-group line">
                            <label>Password</label>
                            <input v-model="password" type="password" placeholder="Enter your password here...">
                        </div>
                        <div class="input-group">
-                           <button type="submit">Login</button>
+                           <button type="submit">{{ $t('login') }}</button>
                        </div>
                    </form>
                </div>
@@ -63,9 +63,11 @@ export default {
   data () {
     return {
       username: '',
-      password: '',
+      password: 'easywrite123',
       window: remote.getCurrentWindow(),
-      version: remote.app.getVersion()
+      version: remote.app.getVersion(),
+      menuval: 0,
+      translation: ''
     }
   },
   methods: {
@@ -150,13 +152,48 @@ export default {
             })
           }
         })
+    },
+
+    getMenuLang: function (data) {
+      var scope = this
+
+      if (data === 'en') {
+        scope.menuval = 0
+      } else if (data === 'da') {
+        scope.menuval = 1
+      } else if (data === 'fi') {
+        scope.menuval = 2
+      } else if (data === 'is') {
+        scope.menuval = 3
+      } else if (data === 'nb') {
+        scope.menuval = 4
+      } else if (data === 'es') {
+        scope.menuval = 5
+      } else if (data === 'sv') {
+        scope.menuval = 6
+      }
     }
+
   },
   mounted () {
     var scope = this
+    let cultureInfo = ''
+
+    if (localStorage.getItem('translation') == null | localStorage.getItem('translation') === 'null') {
+      cultureInfo = navigator.language.slice(0, 2)
+    } else {
+      cultureInfo = localStorage.getItem('translation')
+    }
+
+    scope.getMenuLang(cultureInfo)
+    scope.$i18n.locale = cultureInfo
+    ipcRenderer.send('SET_DEFAULT_LANG', scope.menuval)
+    ipcRenderer.send('REFRESH_MENUITEMS')
+
     scope.username = localStorage.getItem('username')
   }
 }
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

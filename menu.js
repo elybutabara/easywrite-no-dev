@@ -1,6 +1,7 @@
 'use strict'
 let mainWindow
 const { Menu } = require('electron');
+
 // const {ipcRenderer} = window.require('electron')
 let tray = null
 // Create menu templete
@@ -18,8 +19,9 @@ const mainMenuTemplate = [
        type: 'checkbox',
        checked: true,
         click() {
-          mainWindow.webContents.send('REFRESH_MENU', ControlState(0))
-          mainWindow.webContents.send('translate','en')
+          mainWindow.webContents.send('REFRESH_MENU', ControlState(0)) // main.js then to starter to refresh menu
+          mainWindow.webContents.send('TRANSLATE','en') //main.js
+          mainWindow.webContents.send('SET_TRANSLATION_DOM','en') // Main.vue
         }
       },
       {label: "Danish",
@@ -27,7 +29,8 @@ const mainMenuTemplate = [
         checked: false,
         click() {
           mainWindow.webContents.send('REFRESH_MENU', ControlState(1))
-          mainWindow.webContents.send('translate','da')
+          mainWindow.webContents.send('TRANSLATE','da')
+          mainWindow.webContents.send('SET_TRANSLATION_DOM','da')
 
         },
       },
@@ -36,7 +39,8 @@ const mainMenuTemplate = [
         checked: false,
         click() {
           mainWindow.webContents.send('REFRESH_MENU', ControlState(2))
-          mainWindow.webContents.send('translate','fi')
+          mainWindow.webContents.send('TRANSLATE','fi')
+          mainWindow.webContents.send('SET_TRANSLATION_DOM','fi')
         }
       },
       {label: "Icelandic",
@@ -44,7 +48,8 @@ const mainMenuTemplate = [
         checked: false,
         click() {
           mainWindow.webContents.send('REFRESH_MENU', ControlState(3))
-          mainWindow.webContents.send('translate','is')
+          mainWindow.webContents.send('TRANSLATE','is')
+          mainWindow.webContents.send('SET_TRANSLATION_DOM','is')
         }
       },
       {label: "Norwegian",
@@ -52,7 +57,8 @@ const mainMenuTemplate = [
         checked: false,
         click() {
           mainWindow.webContents.send('REFRESH_MENU', ControlState(4))
-          mainWindow.webContents.send('translate','nb')
+          mainWindow.webContents.send('TRANSLATE','nb')
+          mainWindow.webContents.send('SET_TRANSLATION_DOM','nb')
         }
       },
       {label: "Spanish",
@@ -60,7 +66,8 @@ const mainMenuTemplate = [
         checked: false,
         click() {
           mainWindow.webContents.send('REFRESH_MENU', ControlState(5))
-          mainWindow.webContents.send('translate','es')
+          mainWindow.webContents.send('TRANSLATE','es')
+          mainWindow.webContents.send('SET_TRANSLATION_DOM','es')
         }
       },
       {label: "Swedish",
@@ -68,7 +75,8 @@ const mainMenuTemplate = [
         checked: false,
         click() {
           mainWindow.webContents.send('REFRESH_MENU', ControlState(6))
-          mainWindow.webContents.send('translate','sv')
+          mainWindow.webContents.send('TRANSLATE','sv')
+          mainWindow.webContents.send('SET_TRANSLATION_DOM','sv')
         }
       }
     ]
@@ -114,4 +122,8 @@ if(process.env.NODE_ENV!=='production') {
 exports.getMenu = function (window) {
   mainWindow = window
   return (process.env.NODE_ENV == 'production') ? Menu.buildFromTemplate([]) : Menu.buildFromTemplate(mainMenuTemplate)
+}
+
+exports.setMenu = function (data) {
+  ControlState(data)
 }

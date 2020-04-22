@@ -6,9 +6,9 @@
             <div class="es-top-parent">
                <pomodoro-timer></pomodoro-timer>
                 <div class="es-top-nav">
-                    <button @click="CHANGE_COMPONENT({tabKey: 'dashboard', tabComponent: 'dashboard',  tabData: null, tabTitle: 'Dashboard'})"> Dashboard</button>
-                    <button @click="CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing',  tabData: null, tabTitle: 'Syncing', newTab: true})">Sync Data</button>
-                    <button @click="CHANGE_COMPONENT({tabKey: 'book-form', tabComponent: 'book-form',  tabData: null, tabTitle: 'New Book'})"> New Book</button>
+                    <button @click="CHANGE_COMPONENT({tabKey: 'dashboard', tabComponent: 'dashboard',  tabData: null, tabTitle: $t('dashboard')})"> {{ $t('dashboard') }}</button>
+                    <button @click="CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing',  tabData: null, tabTitle: 'Syncing', newTab: true})">{{ $t('sync_data') }}</button>
+                    <button @click="CHANGE_COMPONENT({tabKey: 'book-form', tabComponent: 'book-form',  tabData: null, tabTitle: 'New Book', newTab: true})">{{ $t('new_book') }}</button>
                 </div>
             </div>
             <div class="es-tab-nav">
@@ -77,6 +77,8 @@ import PomodoroTimer from '@/pages/views/pomodoro-timer'
 // const electron = window.require('electron')
 // const remote = electron.remote
 // const loginInfo = remote.getGlobal('loginInfo')
+const electron = window.require('electron')
+const {ipcRenderer} = electron
 
 export default {
   name: 'Main',
@@ -148,12 +150,16 @@ export default {
     var scope = this
     var userID = this.$store.getters.getUserID
     scope.$store.dispatch('getBooksByAuthorID', userID)
-
+    console.log(scope)
     setTimeout(function () {
       scope.ready = true
     }, 1000)
   }
 }
+
+ipcRenderer.on('SET_TRANSLATION_DOM', function (event, data) {
+  localStorage.setItem('translation', data)
+})
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
