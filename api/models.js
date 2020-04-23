@@ -25,6 +25,8 @@ const { SceneCharacter } = require(path.join(__dirname, 'models/SceneCharacter')
 const { SceneItem } = require(path.join(__dirname, 'models/SceneItem'))
 const { SceneLocation } = require(path.join(__dirname, 'models/SceneLocation'))
 const { AuthorPersonalProgress } = require(path.join(__dirname, 'models/AuthorPersonalProgress'))
+const { BookChapterHistory } = require(path.join(__dirname, 'models/BookChapterHistory'))
+const { BookSceneHistory } = require(path.join(__dirname, 'models/BookSceneHistory'))
 const { SoftDeleteQueryBuilder } = require(path.join(__dirname, 'models/SoftDeleteQueryBuilder'))
 
 Model.knex(knexConnection)
@@ -48,5 +50,7 @@ module.exports = {
   SceneItem,
   SceneLocation,
   AuthorPersonalProgress,
+  BookChapterHistory,
+  BookSceneHistory,
   SoftDeleteQueryBuilder
 }

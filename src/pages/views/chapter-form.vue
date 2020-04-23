@@ -139,6 +139,7 @@ export default {
               timer: 1500
             }).then(() => {
               scope.saveAuthorPersonalProgress(response.data.uuid)
+              scope.saveChapterHistory(response.data.uuid)
               if (scope.data.uuid === null) {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
@@ -154,6 +155,20 @@ export default {
               }
             })
           }
+        })
+    },
+    saveChapterHistory (chapterId) {
+      let scope = this
+
+      let chapterHistory = {
+        chapter_id: chapterId,
+        content: scope.data.chapter_version.content
+      }
+
+      scope.axios
+        .post('http://localhost:3000/book-chapter-history', chapterHistory)
+        .then(response => {
+          console.log('Chapter history saved!')
         })
     },
     saveAuthorPersonalProgress (relationId) {
@@ -173,9 +188,6 @@ export default {
           scope.authorProgress = response
           scope.$store.dispatch('loadAuthorPersonalProgress', { authorId: this.$store.getters.getAuthorID })
         })
-    },
-    saveNewVersion () {
-
     },
     loadChapter () {
       var scope = this

@@ -9,7 +9,7 @@
                 </div>
             </div>
             <div class="actions">
-                <button class="es-button-white" @click="newVersion()">SAVE AS NEW VERSION</button>
+                <button class="es-button-white" :disabled="busy" @click="newVersion">SAVE AS NEW VERSION</button>
                 <button class="es-button-white" @click="CHANGE_COMPONENT({ tabKey: 'chapter-form-' + properties.chapter.uuid, tabComponent: 'chapter-form',  tabData: { book_id: properties.chapter.book_id, chapter:  properties.chapter }, tabTitle: 'Edit - ' +  properties.chapter.title, newTab: true })">EDIT</button>
                 <button class="es-button-white" @click="DELETE_FROM_LIST('chapters',  properties.chapter)">DELETE</button>
             </div>
@@ -36,6 +36,39 @@
         <chapter-compare-versions :properties="{ chapter: page.data.chapter }"></chapter-compare-versions>
     </div>
 </div>
+<b-overlay :show="busy" no-wrap fixed @shown="onShown" @hidden="onHidden">
+  <template v-slot:overlay>
+    <div
+      id="overlay-background"
+      ref="dialog"
+      tabindex="-1"
+      role="dialog"
+      aria-modal="false"
+      aria-labelledby="form-confirm-label"
+      class="p-3"
+    >
+      <b-container class="bv-example-row">
+        <b-row style="margin-bottom: 1rem;">
+          <b-col>
+            <label>Description: </label>
+            <tiny-editor :initValue="chapter_version.change_description"
+                         v-on:getEditorContent="setDescription"
+                         class="form-control"
+            />
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col>
+            <div class="text-right">
+              <b-button variant="outline-dark" class="mr-3" @click="onCancel">Cancel</b-button>
+              <b-button variant="dark" @click="saveNewVersion">Save</b-button>
+            </div>
+          </b-col>
+        </b-row>
+      </b-container>
+    </div>
+  </template>
+</b-overlay>
 </div>
 </template>
 
@@ -51,6 +84,11 @@ export default {
   props: ['properties'],
   data: function () {
     return {
+      chapter_version: {
+        chapter_id: this.properties.uuid,
+        content: '',
+        change_description: ''
+      },
       page: {
         title: '',
         is_ready: false,
@@ -58,7 +96,8 @@ export default {
       },
       tab: {
         active: 'content'
-      }
+      },
+      busy: false
     }
   },
   components: {
@@ -83,6 +122,63 @@ export default {
     changeTab: function (active) {
       var scope = this
       scope.tab.active = active
+    },
+    newVersion: function () {
+      var scope = this
+      this.busy = true
+
+      if (scope.chapter_version.id) {
+        delete (scope.chapter_version.id)
+        delete (scope.chapter_version.uuid)
+      }
+    },
+    onShown () {
+      // Focus the dialog prompt
+      this.$refs.dialog.focus()
+    },
+    onHidden () {
+      // In this case, we return focus to the submit button
+      // You may need to alter this based on your application requirements
+      this.$refs.button.focus()
+    },
+    onCancel () {
+      this.busy = false
+    },
+    saveNewVersion () {
+      var scope = this
+
+      scope.chapter_version.change_description = scope.tempVersionDesc
+
+      scope.axios
+        .post('http://localhost:3000/chapter-versions', scope.chapter_version)
+        .then(response => {
+          if (response.data) {
+            scope.getAllChapterVersions(scope.properties)
+            this.busy = false
+            window.swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Chapter version successfuly saved',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              scope.tabIndex = scope.tabs.findIndex(tab => tab === '#versions')
+            })
+          }
+        })
+    },
+    getAllChapterVersions: function (chapter) {
+      var scope = this
+      scope.chapter = chapter
+      scope.axios
+        .get('http://localhost:3000/chapters/' + chapter.uuid + '/versions')
+        .then(response => {
+          scope.chapter.chapter_version = response.data
+
+          scope.chapter_version.chapter_id = chapter.uuid
+          scope.chapter_version.change_description = ''
+          scope.chapter_version.content = scope.chapter.chapter_version[response.data.length - 1].content
+        })
     }
   },
   beforeUpdate () {
