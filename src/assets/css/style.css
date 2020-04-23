@@ -218,6 +218,16 @@ ul { margin-left:0px; list-style:none;  }
   text-overflow: ellipsis;
 }
 
+.b-overlay .position-absolute {
+  width: 75%;
+}
+
+.b-overlay .bg-light{ background-color: #324553!important; width: 100% }
+
+/*.container, .container-sm, .container-md, .container-lg, .container-xl {*/
+/*  max-width: 1200px;*/
+/*}*/
+
 @media screen and (max-width: 1300px) {
 	.es-content { padding-right:10px;  }
 	.es-content .header .cta-container { display:none;  }

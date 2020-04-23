@@ -63,7 +63,7 @@ export default {
   data () {
     return {
       username: '',
-      password: 'easywrite123',
+      password: '',
       window: remote.getCurrentWindow(),
       version: remote.app.getVersion(),
       menuval: 0,

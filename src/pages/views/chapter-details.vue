@@ -1,42 +1,76 @@
 <template>
-<div>
-<div v-if="page.is_ready" class="page-chapter-details">
-    <div class="es-page-head">
+  <div>
+    <div v-if="page.is_ready" class="page-chapter-details">
+      <div class="es-page-head">
         <div class="inner">
-            <div class="details">
-                <div>
-                    <h4><strong>{{ page.title }}</strong></h4>
-                </div>
+          <div class="details">
+            <div>
+              <h4><strong>{{ page.title }}</strong></h4>
             </div>
-            <div class="actions">
-                <button class="es-button-white" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
-                <button class="es-button-white" @click="CHANGE_COMPONENT({ tabKey: 'chapter-form-' + properties.chapter.uuid, tabComponent: 'chapter-form',  tabData: { book_id: properties.chapter.book_id, chapter:  properties.chapter }, tabTitle: 'Edit - ' +  properties.chapter.title, newTab: true })">{{$t('EDIT').toUpperCase()}}</button>
-                <button class="es-button-white" @click="DELETE_FROM_LIST('chapters',  properties.chapter)">{{$t('DELETE').toUpperCase()}}</button>
-            </div>
+          </div>
+          <div class="actions">
+            <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
+            <button class="es-button-white" @click="CHANGE_COMPONENT({ tabKey: 'chapter-form-' + properties.chapter.uuid, tabComponent: 'chapter-form',  tabData: { book_id: properties.chapter.book_id, chapter:  properties.chapter }, tabTitle: 'Edit - ' +  properties.chapter.title, newTab: true })">{{$t('EDIT').toUpperCase()}}</button>
+            <button class="es-button-white" @click="DELETE_FROM_LIST('chapters',  properties.chapter)">{{$t('DELETE').toUpperCase()}}</button>
+          </div>
         </div>
-    </div>
-
-    <div class="es-chapter-details-tab">
+      </div>
+      <div class="es-chapter-details-tab">
         <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-chapter-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
         <div v-bind:class="{ 'active' : tab.active == 'scenes' }" @click="changeTab('scenes')" class="es-chapter-details-tab-item">{{$tc('SCENE', 2).toUpperCase()}}</div>
         <div v-bind:class="{ 'active' : tab.active == 'versions' }" @click="changeTab('versions')" class="es-chapter-details-tab-item">{{$tc('VERSION', 2).toUpperCase()}}</div>
         <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-chapter-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
-    </div>
-
-    <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
+      </div>
+      <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
         <div v-html="getChapterContent" class="description" ></div>
-    </div>
-    <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
+      </div>
+      <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
         <chapter-scenes :properties="{ chapter: page.data.chapter }"></chapter-scenes>
-    </div>
-    <div v-if="tab.active === 'versions'"  class="es-chapter-details-tab-content">
+      </div>
+      <div v-if="tab.active === 'versions'"  class="es-chapter-details-tab-content">
         <chapter-versions :properties="{ chapter: page.data.chapter }"></chapter-versions>
-    </div>
-    <div v-if="tab.active === 'compare-versions'"  class="es-chapter-details-tab-content">
+      </div>
+      <div v-if="tab.active === 'compare-versions'"  class="es-chapter-details-tab-content">
         <chapter-compare-versions :properties="{ chapter: page.data.chapter }"></chapter-compare-versions>
+      </div>
     </div>
-</div>
-</div>
+    <b-overlay :show="busy" no-wrap fixed @shown="$refs.dialog.focus()" @hidden="$refs.button.focus()">
+      <template v-slot:overlay>
+        <div
+          id="overlay-background"
+          ref="dialog"
+          tabindex="-1"
+          role="dialog"
+          aria-modal="false"
+          aria-labelledby="form-confirm-label"
+          class="p-3"
+        >
+          <b-container class="bv-example-row">
+            <b-card-group deck>
+              <b-card header="Save as new Version" class="text-center">
+                <b-row style="margin-bottom: 1rem;" class="text-left">
+                  <b-col>
+                    <label>Description: </label>
+                    <tiny-editor :initValue="chapter_version.change_description"
+                                 v-on:getEditorContent="setDescription"
+                                 class="form-control"
+                    />
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col>
+                    <div class="text-right">
+                      <b-button variant="outline-dark" class="mr-2" @click="busy = !busy">Cancel</b-button><b-button variant="dark" @click="saveNewVersion">Save</b-button>
+                    </div>
+                  </b-col>
+                </b-row>
+              </b-card>
+            </b-card-group>
+          </b-container>
+        </div>
+      </template>
+    </b-overlay>
+  </div>
 </template>
 
 <script>
@@ -51,6 +85,11 @@ export default {
   props: ['properties'],
   data: function () {
     return {
+      chapter_version: {
+        chapter_id: null,
+        content: '',
+        change_description: ''
+      },
       page: {
         title: '',
         is_ready: false,
@@ -58,7 +97,9 @@ export default {
       },
       tab: {
         active: 'content'
-      }
+      },
+      busy: false,
+      tempVersionDesc: ''
     }
   },
   components: {
@@ -80,9 +121,51 @@ export default {
     }
   },
   methods: {
+    // Required for geting value from TinyMCE content
+    setDescription (value) {
+      var scope = this
+      scope.tempVersionDesc = value
+    },
     changeTab: function (active) {
       var scope = this
       scope.tab.active = active
+    },
+    newVersion: function () {
+      var scope = this
+      this.busy = true
+
+      scope.chapter_version.change_description = ''
+      if (scope.chapter_version.id) {
+        delete (scope.chapter_version.id)
+        delete (scope.chapter_version.uuid)
+      }
+    },
+    saveNewVersion () {
+      var scope = this
+
+      scope.chapter_version.change_description = scope.tempVersionDesc
+      scope.chapter_version.content = scope.getChapterContent
+      scope.chapter_version.chapter_id = scope.page.data.chapter.uuid
+
+      scope.axios
+        .post('http://localhost:3000/chapter-versions', scope.chapter_version)
+        .then(response => {
+          if (response.data) {
+            // TODO: Insert vuex code that will refresh the chapter version
+            scope.tab.active = 'content'
+            scope.LOAD_LIST('chapter-versions', scope.page.data.chapter)
+            this.busy = false
+            window.swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Chapter version successfuly saved',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              scope.tab.active = 'versions'
+            })
+          }
+        })
     }
   },
   beforeUpdate () {

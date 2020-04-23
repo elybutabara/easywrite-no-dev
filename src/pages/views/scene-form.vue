@@ -399,6 +399,17 @@ export default {
           scope.authorProgress = response
           scope.$store.dispatch('loadAuthorPersonalProgress', { authorId: this.$store.getters.getAuthorID })
         })
+
+      let sceneHistory = {
+        scene_id: bookSceneID,
+        content: scope.data.scene_version.content
+      }
+
+      scope.axios
+        .post('http://localhost:3000/book-scene-history', sceneHistory)
+        .then(response => {
+          console.log('Scene history saved!')
+        })
     },
     // Required for geting value from TinyMCE content
     setContent (value) {
