@@ -4,27 +4,27 @@
        <div class="es-page-head">
             <div class="inner">
                 <div class="details">
-                    <h4>Syncing</h4>
-                    <small>Sync your data from and to web</small>
+                    <h4>{{$t('SYNCING')}}</h4>
+                    <small>{{$t('SYNCING_YOUR_DATA')}}</small>
                 </div>
             </div>
         </div>
 
        <div class="es-page-content">
             <div v-if="stage == 'intro'" class="es-card fadeIn animated">
-                <div class="es-card-header">Data Syncer</div>
+                <div class="es-card-header">{{$t('DATA_SYNCER')}}</div>
                 <div class="es-card-content">
                     <p class="intro-message">
                         <i style="font-size:80px;" class="las la-sync"></i> <br/>
-                        Sync your data from desktop application to web vice versa...
+                        {{$t('SYNCING_YOUR_DATA')}} {{$t('FROM_DESKTOP_TO_WEB_VICE_VERSA')}}...
                         <br/>
                         <br/>
-                        <button class="syncer-button" @click="checkConnection()">Start Syncing</button>
+                        <button class="syncer-button" @click="checkConnection()">{{$t('START_SYNCING')}}</button>
                     </p>
                 </div>
             </div>
             <div v-if="stage == 'connecting'" class="es-card fadeIn animated">
-                <div class="es-card-header">Connecting</div>
+                <div class="es-card-header">{{$t('CONNECTING')}}</div>
                 <div class="es-card-content">
                     <img class="loader" src="@/assets/img/loader-cog.svg">
                     <p>{{ progress_message }}</p>
@@ -33,7 +33,7 @@
                 </div>
             </div>
             <div v-if="stage == 'packing'" class="es-card">
-                <div class="es-card-header">Packing</div>
+                <div class="es-card-header">{{$t('PACKING')}}</div>
                 <div class="es-card-content">
                     <img class="loader" src="@/assets/img/loader-cog.svg">
                     <p style="font-size:20px;">{{ packingProgess }}%</p>
@@ -46,7 +46,7 @@
                 </div>
             </div>
             <div v-if="stage == 'uploading'" class="es-card">
-                <div class="es-card-header">Uploading Data</div>
+                <div class="es-card-header">{{$t('UPLOADING_DATA')}}</div>
                 <div class="es-card-content">
                     <img class="loader" src="@/assets/img/loader-cog.svg">
                     <p style="font-size:20px;">{{ uploadProgess }}%</p>
@@ -59,7 +59,7 @@
                 </div>
             </div>
             <div v-if="stage == 'downloading'" class="es-card">
-                <div class="es-card-header">Downloading</div>
+                <div class="es-card-header">{{$t('DOWNLOADING_DATA')}}</div>
                 <div class="es-card-content">
                     <img class="loader" src="@/assets/img/loader-cog.svg">
                     <p style="font-size:20px;">{{ downloadProgess }}%</p>
@@ -72,7 +72,7 @@
                 </div>
             </div>
             <div v-if="stage == 'saving'" class="es-card">
-                <div class="es-card-header">Saving Data</div>
+                <div class="es-card-header">{{$t('SAVING_DATA')}}</div>
                 <div class="es-card-content">
                     <img class="loader" src="@/assets/img/loader-cog.svg">
                     <p style="font-size:20px;">{{ savingProgess }}%</p>
@@ -85,11 +85,11 @@
                 </div>
             </div>
             <div v-if="stage == 'logs'" class="es-card">
-                <div class="es-card-header">Change Logs</div>
+                <div class="es-card-header">{{$t('CHANGE_LOGS')}}</div>
                 <div class="es-card-content">
                    <div style="text-align:left; color:#ccc;">
                         <p style="margin:2px 0px; color:#293742; font-size:12px;" v-for="(endpoint,index) in endpoints" v-bind:key="index">
-                           Downloaded {{ endpoint.downloaded.length}} <strong>{{ endpoint.title }}</strong>
+                           {{$t('DOWNLOADED')}} {{ endpoint.downloaded.length}} <strong>{{ endpoint.title }}</strong>
                         </p>
                        <button v-if="autostart" class="syncer-button" @click="backToDashboard()">OK</button>
                        <button v-else class="syncer-button" @click="backToIntro()">OK</button>

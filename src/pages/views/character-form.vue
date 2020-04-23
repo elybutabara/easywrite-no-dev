@@ -4,16 +4,16 @@
         <div class="inner">
             <div class="details">
                 <div  v-if="data.id != null">
-                    <h4>Edit: <strong>{{ data.fullname }}</strong></h4>
-                    <small>Date Modified: {{ data.updated_at }}</small>
+                    <h4>{{$t('EDIT')}}: <strong>{{ data.fullname }}</strong></h4>
+                    <small>{{$t('DATE_MODIFIED')}}: {{ data.updated_at }}</small>
                 </div>
                 <div v-else>
-                    <h4>Create New Character</h4>
+                    <h4>{{$t('CREATE')}} {{$t('NEW')}} {{$tc('CHARACTER', 1)}}</h4>
                 </div>
             </div>
             <div class="actions">
-                <button v-if="data.id != null" class="es-button-white" @click="uploadImage()">Save Changes</button>
-                <button v-else class="es-button-white" @click="uploadImage()">Save</button>
+                <button v-if="data.id != null" class="es-button-white" @click="uploadImage()">{{$t('SAVE_CHANGES')}}</button>
+                <button v-else class="es-button-white" @click="uploadImage()">{{$t('SAVE')}}</button>
             </div>
         </div>
     </div>
@@ -34,8 +34,8 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>Full Name: </label>
-                                    <b-form-input id="input-live" v-model="data.fullname" :state="null" aria-describedby="input-live-help input-live-feedback" placeholder="Full Name"></b-form-input>
+                                    <label>{{$t('FULLNAME')}}: </label>
+                                    <b-form-input id="input-live" v-model="data.fullname" :state="null" aria-describedby="input-live-help input-live-feedback" :placeholder="$t('FULLNAME')"></b-form-input>
 
                                     <!-- This will only be shown if the preceding input has an invalid state -->
                                     <b-form-invalid-feedback id="input-live-feedback">
@@ -45,14 +45,14 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>Short Name: </label>
-                                    <input v-model="data.shortname" type="text" class="form-control" placeholder="Short Name">
+                                    <label>{{$t('SHORTNAME')}}: </label>
+                                    <input v-model="data.shortname" type="text" class="form-control" :placeholder="$t('SHORTNAME')">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>Nickname: </label>
-                                    <input v-model.trim="data.nickname" type="text" class="form-control" placeholder="Nickname">
+                                    <label>{{$t('NICKNAME')}}: </label>
+                                    <input v-model.trim="data.nickname" type="text" class="form-control" :placeholder="$t('NICKNAME')">
                                 </div>
                             </div>
                         </div>
@@ -61,14 +61,14 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Occupation: </label>
-                            <input v-model="data.occupation" type="text" class="form-control" placeholder="Occupation">
+                            <label>{{$t('OCCUPATION')}}: </label>
+                            <input v-model="data.occupation" type="text" class="form-control" :placeholder="$t('OCCUPATION')">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="birthdate-datepicker">Birthdate: </label>
-                            <b-form-datepicker id="birthdate-datepicker" v-model="data.birthdate" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"></b-form-datepicker>
+                            <label for="birthdate-datepicker">{{$t('BIRTHDATE')}}: </label>
+                            <b-form-datepicker id="birthdate-datepicker" :placeholder="$t('NO')+' '+ $t('SELECTED') + ' ' + $t('DATE')" v-model="data.birthdate" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"></b-form-datepicker>
                         </div>
                     </div>
                 </div>
@@ -76,13 +76,13 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <b-tabs content-class="mt-3" active-nav-item-class="bg-dark text-white">
-                                <b-tab title="Description" active>
+                                <b-tab :title="$t('DESCRIPTION')" active>
                                     <tiny-editor :initValue="data.description" v-on:getEditorContent="setDescription" class="form-control" />
                                 </b-tab>
-                                <b-tab title="Bio">
+                                <b-tab :title="$t('BIO')">
                                     <tiny-editor :initValue="data.bio" v-on:getEditorContent="setBio" class="form-control" />
                                 </b-tab>
-                                <b-tab title="Goals">
+                                <b-tab :title="$t('GOALS')">
                                     <tiny-editor :initValue="data.goals" v-on:getEditorContent="setGoals" class="form-control" />
                                 </b-tab>
                             </b-tabs>

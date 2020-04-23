@@ -2,7 +2,7 @@
     <div v-if="page.is_ready" class="page-chapter-scenes ">
         <div style="padding:0px 10px; text-align:right; margin-bottom:20px;">
             <button @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + chapter.uuid, tabComponent: 'scene-form',  tabData: { book_id: chapter.book_id, chapter: chapter }, tabTitle: 'New Scene', newTab: true})" class="btn-new-scene">
-                <i class="las la-plus"></i> ADD NEW SCENE
+                <i class="las la-plus"></i> {{$t('ADD_NEW_SCENE').toUpperCase()}}
             </button>
         </div>
         <draggable v-model="scenes" draggable=".es-col" class="es-row">
@@ -15,11 +15,11 @@
                         <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + scene.uuid, tabComponent: 'scene-details',  tabData: { book_id: scene.book_id, scene: scene}, tabTitle: scene.title, newTab: true })"><i class="lar la-eye"></i></button>
                       </div>
                         <p class="title">{{ scene.title || 'Untitled' }}</p>
-                        <i class="description ellipsis-2">{{ scene.short_description || 'No Short Description...'  }}</i>
+                        <i class="description ellipsis-2">{{ scene.short_description || $t('NO_SHORT_DESCRIPTION') + '...'  }}</i>
                     </div>
                     <div class="es-card-footer">
-                        <small>Versions: {{ scene.scene_version.length }}</small>
-                        <small style="float:right;">Word Count: {{ WORD_COUNT(scene.scene_version[0].content) }}</small>
+                        <small>{{$tc('VERSION', 2)}}: {{ scene.scene_version.length }}</small>
+                        <small style="float:right;">{{$t('WORD_COUNT')}}: {{ WORD_COUNT(scene.scene_version[0].content) }}</small>
                     </div>
                 </div>
             </div>

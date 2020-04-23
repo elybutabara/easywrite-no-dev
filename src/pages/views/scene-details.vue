@@ -8,19 +8,19 @@
                 </div>
             </div>
             <div class="actions">
-                <button class="es-button-white" @click="newVersion()">SAVE AS NEW VERSION</button>
-                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.scene.uuid, tabComponent: 'scene-form', tabData: { book_id: properties.scene.book_id, scene: properties.scene }, tabTitle: 'Edit - ' +  properties.scene.title, newTab: true})">EDIT</button>
-                <button class="es-button-white" @click="DELETE_FROM_LIST('scenes',  properties.scene)">DELETE</button>
+                <button class="es-button-white" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.scene.uuid, tabComponent: 'scene-form', tabData: { book_id: properties.scene.book_id, scene: properties.scene }, tabTitle: 'Edit - ' +  properties.scene.title, newTab: true})">{{$t('EDIT').toUpperCase()}}</button>
+                <button class="es-button-white" @click="DELETE_FROM_LIST('scenes',  properties.scene)">{{$t('DELETE').toUpperCase()}}</button>
             </div>
         </div>
     </div>
     <div class="es-scene-details-tab">
-        <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-scene-details-tab-item">CONTENT</div>
-        <div v-bind:class="{ 'active' : tab.active == 'locations' }" @click="changeTab('locations')" class="es-scene-details-tab-item">LOCATIONS</div>
-        <div v-bind:class="{ 'active' : tab.active == 'items' }" @click="changeTab('items')" class="es-scene-details-tab-item">ITEMS</div>
-        <div v-bind:class="{ 'active' : tab.active == 'characters' }" @click="changeTab('characters')" class="es-scene-details-tab-item">CHARACTERS</div>
-        <div v-bind:class="{ 'active' : tab.active == 'versions' }" @click="changeTab('versions')" class="es-scene-details-tab-item">VERSIONS</div>
-        <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-scene-details-tab-item">COMPARE VERSIONS</div>
+        <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-scene-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
+        <div v-bind:class="{ 'active' : tab.active == 'locations' }" @click="changeTab('locations')" class="es-scene-details-tab-item">{{$tc('LOCATION', 2).toUpperCase()}}</div>
+        <div v-bind:class="{ 'active' : tab.active == 'items' }" @click="changeTab('items')" class="es-scene-details-tab-item">{{$tc('ITEM', 2).toUpperCase()}}</div>
+        <div v-bind:class="{ 'active' : tab.active == 'characters' }" @click="changeTab('characters')" class="es-scene-details-tab-item">{{$tc('CHARACTER', 2).toUpperCase()}}</div>
+        <div v-bind:class="{ 'active' : tab.active == 'versions' }" @click="changeTab('versions')" class="es-scene-details-tab-item">{{$tc('VERSION', 2).toUpperCase()}}</div>
+        <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-scene-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
     </div>
     <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">
         <div v-html="getSceneContent" class="description" ></div>

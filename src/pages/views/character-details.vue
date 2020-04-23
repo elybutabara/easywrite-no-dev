@@ -13,10 +13,10 @@
             <p class="aka">{{ properties.character.nickname || 'Not Set' }}</p>
 
             <div class="es-panel-tab" style="">
-                <a @click="changeTab('description')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'description'}">Description</a>
-                <a @click="changeTab('bio')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'bio'}">Bio</a>
-                <a @click="changeTab('goals')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'goals'}">Goals</a>
-                <a @click="changeTab('relations')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'relations'}">Relations</a>
+                <a @click="changeTab('description')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'description'}">{{$t('DESCRIPTION')}}</a>
+                <a @click="changeTab('bio')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'bio'}">{{$t('BIO')}}</a>
+                <a @click="changeTab('goals')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'goals'}">{{$t('GOALS')}}</a>
+                <a @click="changeTab('relations')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'relations'}">{{$tc('RELATION', 2)}}</a>
             </div>
             <div class="es-panel-tab-content">
                 <div v-if="tab.active == 'description'">
@@ -37,7 +37,7 @@
                                 <div class="relation">&nbsp;</div>
                                 <div @click="toggleRelationForm()" style="border:2px dashed #c0c6d1; color:#c0c6d1; cursor:pointer; position:absolute; top:0px; left:0px; width:100%; height:100%; background:#f5f8fa; font-size:90px; padding:5px 10px;">
                                     <i class="las la-user-alt"></i>
-                                    <p style="margin-top:-30px; font-size:14px; font-weight:600;">CLICK TO ADD RELATION</p>
+                                    <p style="margin-top:-30px; font-size:14px; font-weight:600;">{{$t('CLICK')}} {{$t('TO_ADD').toLowerCase()}} {{$tc('RELATION', 2)}}</p>
                                 </div>
                             </div>
                         </div>
@@ -55,26 +55,26 @@
             </div>
         </div>
         <div class="es-panel-footer">
-            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form',  tabData: { book_id: properties.uuid, character: properties.character }, tabTitle: 'Edit - ' + properties.character.fullname })">EDIT</div>
-            <div class="cta" @click="DELETE_FROM_LIST('characters', properties.character)">DELETE</div>
+            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form',  tabData: { book_id: properties.uuid, character: properties.character }, tabTitle: 'Edit - ' + properties.character.fullname })">{{$t('EDIT').toUpperCase()}}</div>
+            <div class="cta" @click="DELETE_FROM_LIST('characters', properties.character)">{{$t('DELETE').toUpperCase()}}</div>
         </div>
     </div>
 
     <div class="es-dialog-overlay" v-bind:class="{'open' : relation_form.is_open }">
         <div class="es-dialog-content">
             <div style="margin-bottom:15px;">
-                <label class="typo__label">Relation: </label>
-                <multiselect v-model="selected_relation" :options="relations" placeholder="Select Relation" label="relation" track-by="relation" :taggable="true" @tag="addRelation" tag-placeholder="Press enter to add as new relation" deselectLabel="Press enter to deselect"></multiselect>
+                <label class="typo__label">{{$tc('RELATION', 1)}}: </label>
+                <multiselect v-model="selected_relation" :options="relations" :placeholder="$t('SELECT') + ' '+ $tc('RELATION',1)" label="relation" track-by="relation" :taggable="true" @tag="addRelation" tag-placeholder="Press enter to add as new relation" deselectLabel="Press enter to deselect"></multiselect>
             </div>
 
             <div style="margin-bottom:15px;">
-                <label class="typo__label">Character: </label>
-                <multiselect v-model="selected_character" :options="characters" placeholder="Select Character" label="fullname" track-by="fullname" deselectLabel="Press enter to deselect"></multiselect>
+                <label class="typo__label">{{$tc('CHARACTER', 1)}}: </label>
+                <multiselect v-model="selected_character" :options="characters" :placeholder="$t('SELECT') + ' '+ $tc('CHARACTER',1)" label="fullname" track-by="fullname" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')" ></multiselect>
             </div>
 
              <div style="text-align:right;">
-                <b-button @click="saveRelationDetail()" variant="dark">Save</b-button>
-                <b-button @click="toggleRelationForm()" ref="btn_cancel_relation" v-b-toggle.collapse-1 variant="dark">Cancel</b-button>
+                <b-button @click="saveRelationDetail()" variant="dark">{{$t('SAVE')}}</b-button>
+                <b-button @click="toggleRelationForm()" ref="btn_cancel_relation" v-b-toggle.collapse-1 variant="dark">{{$t('CANCEL')}}</b-button>
             </div>
         </div>
     </div>

@@ -4,19 +4,19 @@
     <div v-if="comparing" class="scene-version-difference">
         <div class="scene-version-difference-content" v-html="diff_content"></div>
         <div class="settings">
-            <span class="heading">COMPARISON SETTINGS</span>
+            <span class="heading">{{$t('COMPARISON_SETTINGS').toUpperCase()}}</span>
             <br/>
             <select @change="changeSceneVersion1(),showDifference()" v-model="v1.uuid">
-                <option value="null">SELECT A VERSION</option>
-                <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">Version {{ index + 1 }}</option>
+                <option value="null">{{$t('SELECT_A_VERSION').toUpperCase()}}</option>
+                <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$tc('VERSION', 1)}} {{ index + 1 }}</option>
             </select>
             <select @change="changeSceneVersion2(),showDifference()" v-model="v2.uuid">
-                <option value="null">SELECT A VERSION</option>
-                <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">Version {{ index + 1 }}</option>
+                <option value="null">{{$t('SELECT_A_VERSION').toUpperCase()}}</option>
+                <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$tc('VERSION', 1)}} {{ index + 1 }}</option>
             </select>
             <div style="margin-top:15px;">
-                <button style="display:none;" @click="showDifference()" class="btn-red btn-block">COMPARE VERSIONS</button>
-                <button @click="stopComparing()" class="btn-white btn-block">BACK</button>
+                <button style="display:none;" @click="showDifference()" class="btn-red btn-block">{{$t('COMPARE_VERSIONS').toUpperCase()}}</button>
+                <button @click="stopComparing()" class="btn-white btn-block">{{$t('BACK').toUpperCase()}}</button>
             </div>
         </div>
     </div>
@@ -24,8 +24,8 @@
     <div v-if="!comparing" class="scene-compare-versions-options" >
         <div class="versions">
             <select @change="changeSceneVersion1()" v-model="v1.uuid">
-                <option value="null">SELECT A VERSION</option>
-                <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">Version {{ index + 1 }}</option>
+                <option value="null">{{$t('SELECT_A_VERSION').toUpperCase()}}</option>
+                <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$tc('VERSION', 1)}} {{ index + 1 }}</option>
             </select>
             <div class="content">
                 <div v-html="v1.content" class="description" ></div>
@@ -33,8 +33,8 @@
         </div>
         <div class="versions">
             <select @change="changeSceneVersion2()" v-model="v2.uuid">
-                <option value="null">SELECT A VERSION</option>
-                <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">Version {{ index + 1 }}</option>
+                <option value="null">{{$t('SELECT_A_VERSION').toUpperCase()}}</option>
+                <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$tc('VERSION', 1)}} {{ index + 1 }}</option>
             </select>
             <div class="content">
                 <div v-html="v2.content" class="description" ></div>
@@ -42,7 +42,7 @@
         </div>
     </div>
     <div v-if="!comparing" style="text-align:center; margin-top:5px;">
-        <button @click="showDifference()" class="btn-dark">COMPARE VERSIONS</button>
+        <button @click="showDifference()" class="btn-dark">{{$t('COMPARE_VERSIONS').toUpperCase()}}</button>
     </div>
 </div>
 </template>

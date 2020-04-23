@@ -4,16 +4,16 @@
         <div class="inner">
             <div class="details">
                 <div  v-if="data.id != null">
-                    <h4>Edit: <strong>{{ data.itemname }}</strong></h4>
-                    <small>Date Modified: {{ data.updated_at }}</small>
+                    <h4>{{$t('EDIT')}}: <strong>{{ data.itemname }}</strong></h4>
+                    <small>{{$t('DATE_MODIFIED')}}: {{ data.updated_at }}</small>
                 </div>
                 <div v-else>
-                    <h4>Create New Item</h4>
+                    <h4>{{$t('CREATE')}} {{$t('NEW')}} {{$tc('ITEM', 1)}}</h4>
                 </div>
             </div>
             <div class="actions">
-                <button v-if="data.id != null" class="es-button-white" @click="uploadImage()">Save Changes</button>
-                <button v-else class="es-button-white" @click="uploadImage()">Save</button>
+                <button v-if="data.id != null" class="es-button-white" @click="uploadImage()">{{$t('SAVE_CHANGES')}}</button>
+                <button v-else class="es-button-white" @click="uploadImage()">{{$t('SAVE')}}</button>
             </div>
         </div>
     </div>
@@ -34,24 +34,24 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>Item Name: </label>
-                                    <input v-model="data.itemname" type="text" class="form-control" placeholder="Item">
+                                    <label>{{$t('ITEM_NAME')}}: </label>
+                                    <input v-model="data.itemname" type="text" class="form-control" :placeholder="$t('ITEM_NAME')">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>AKA: </label>
-                                    <input v-model.trim="data.AKA" type="text" class="form-control" placeholder="AKA">
+                                    <label>{{$t('AKA')}}: </label>
+                                    <input v-model.trim="data.AKA" type="text" class="form-control" :placeholder="$t('AKA')">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>Tags: </label>
-                                    <input v-model="data.tags" type="text" class="form-control" placeholder="Tags">
+                                    <label>{{$t('TAGS')}}: </label>
+                                    <input v-model="data.tags" type="text" class="form-control" :placeholder="$t('TAGS')">
                                 </div>
                             </div>
                         </div>
@@ -60,7 +60,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label>Description: </label>
+                            <label>{{$t('DESCRIPTION')}}: </label>
                             <tiny-editor :initValue="data.description" v-on:getEditorContent="setDescription" class="form-control" />
                         </div>
                     </div>

@@ -4,19 +4,19 @@
         <div class="inner">
             <div class="details">
                 <h4>{{ properties.title }}</h4>
-                <small>Date Modified: {{ properties.created_at }}</small>
+                <small>{{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
             </div>
             <div class="actions">
                 <button class="es-button-white" style="display:none;" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: 'Edit - ' + properties.title, newTab: true})">STORY BOARD</button>
-                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: 'Edit - ' + properties.title, newTab: true})">EDIT</button>
-                <button class="es-button-red" @click="deleteBook()">DELETE</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: 'Edit - ' + properties.title, newTab: true})">{{ $t('EDIT') }}</button>
+                <button class="es-button-red" @click="deleteBook()">{{ $t('DELETE') }}</button>
             </div>
         </div>
         <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>
     </div>
     <div class="es-page-content">
         <div class="es-panel">
-            <h4>About</h4>
+            <h4>{{ $t('ABOUT') }}</h4>
             <div v-html="properties.about"></div>
         </div>
     </div>

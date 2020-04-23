@@ -3,22 +3,22 @@
     <div @click="closeSyncer()" style="position:fixed; top:20px; right:25px; cursor:pointer; font-size:25px;">X</div>
     <div class="steps">
         <div v-if="step == 1" class="item">
-            <h2>Start Syncing</h2>
-            <p class="subheading">Update your data from and to website by pressing the start button below.</p>
+            <h2>{{$t('START_SYNCING')}}</h2>
+            <p class="subheading">{{$t('UPDATE_YOUR_DATA_BY_PRESSING_START_BUTTON')}}.</p>
             <button class="btn-start" @click="next()">Start</button>
         </div>
         <div v-if="step == 2" class="item fadeIn animated">
-            <h2>Connecting</h2>
-            <p class="subheading">Checking your internet connection, Please wait...</p>
+            <h2>{{$t('CONNECTING')}}</h2>
+            <p class="subheading">{{$t('CHECKING_YOUR_INTERNET_CONNECTION')}}, {{$t('PLEASE_WAIT')}}...</p>
             <img class="ajax-loader" src="@/assets/img/loader.svg">
         </div>
         <div v-if="step == 3" class="item fadeIn animated">
-            <h2>Syncing Data</h2>
-            <p class="subheading">This might take a few minutes, Please wait...</p>
+            <h2>{{$t('SYNCING_YOUR_DATA')}}</h2>
+            <p class="subheading">{{$t('THIS_MIGHT_TAKE_A_FEW_MINUTES')}}, {{$t('PLEASE_WAIT')}}...</p>
             <img class="ajax-loader" src="@/assets/img/loader.svg">
         </div>
         <div v-if="step == 4" class="item bg-white text-left">
-            <h2>Changelog</h2>
+            <h2>{{$t('CHANGE_LOGS')}}</h2>
             <p class="subheading">The following items below are the changes</p>
             <p class="subheading">The following items below are the changes</p>
             <p class="subheading">The following items below are the changes</p>

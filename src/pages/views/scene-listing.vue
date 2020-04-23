@@ -4,11 +4,11 @@
         <div class="es-page-head">
             <div class="inner">
                 <div class="details">
-                    <h4>Scenes</h4>
-                    <small>Below are the list of scenes under {{ properties.title }}</small>
+                    <h4>{{$tc('SCENE',2)}}</h4>
+                    <small>{{$t('BELOW_ARE_THE_LIST_OF_CHAPTERS_UNDER')}} {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.uuid, tabComponent: 'scene-form', tabData: { book_id: properties.uuid , uuid: properties.uuid }, tabTitle: 'New Scenes', newTab: true})">New Scene</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.uuid, tabComponent: 'scene-form', tabData: { book_id: properties.uuid , uuid: properties.uuid }, tabTitle: 'New Scenes', newTab: true})">{{$t('NEW').toUpperCase()}} {{$tc('SCENE', 1).toUpperCase()}}</button>
                 </div>
             </div>
         </div>
@@ -24,11 +24,11 @@
                             <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + scene.uuid, tabComponent: 'scene-details',  tabData: { book_id: scene.book_id, scene: scene}, tabTitle: scene.title, newTab: true })"><i class="lar la-eye"></i></button>
                         </div>
                             <p class="title">{{ scene.title || 'Untitled' }}</p>
-                            <i class="description ellipsis-2">{{ scene.short_description || 'No Short Description...'  }}</i>
+                            <i class="description ellipsis-2">{{ scene.short_description || $t('NO_SHORT_DESCRIPTION') + '...'  }}</i>
                         </div>
                         <div class="es-card-footer">
-                            <small>Versions: {{ scene.scene_version.length }}</small>
-                            <small style="float:right;">Word Count: {{ WORD_COUNT(scene.scene_version[0].content) }}</small>
+                            <small>{{$tc('VERSION', 2)}}: {{ scene.scene_version.length }}</small>
+                            <small style="float:right;">{{$t('WORD_COUNT')}}: {{ WORD_COUNT(scene.scene_version[0].content) }}</small>
                         </div>
                     </div>
                 </div>

@@ -4,16 +4,16 @@
         <div class="inner">
             <div class="details">
                 <div  v-if="data.id != null">
-                    <h4>Edit: <strong>{{ data.title }}</strong></h4>
-                    <small>Date Modified: {{ data.updated_at }}</small>
+                    <h4>{{$t('EDIT')}}: <strong>{{ data.title }}</strong></h4>
+                    <small>{{$t('DATE_MODIFIED')}}: {{ data.updated_at }}</small>
                 </div>
                 <div v-else>
-                    <h4>Create New Chapter</h4>
+                    <h4>{{$t('CREATE_NEW_CHAPTER')}}</h4>
                 </div>
             </div>
             <div class="actions">
-                <button v-if="data.id != null" class="es-button-white" @click="saveChapter()">Save Changes</button>
-                <button v-else class="es-button-white" @click="saveChapter()">Save</button>
+                <button v-if="data.id != null" class="es-button-white" @click="saveChapter()">{{$t('SAVE_CHANGES')}}</button>
+                <button v-else class="es-button-white" @click="saveChapter()">{{$t('SAVE')}}</button>
             </div>
         </div>
     </div>
@@ -23,7 +23,7 @@
             <div class="es-accordion">
                 <div class="item" v-bind:class="{'active': accordion['chapter-details'] === 'active'}">
                     <div class="label" @click="toggleAccordion('chapter-details')">
-                        CHAPTER DETAILS
+                        {{$t('CHAPTER_DETAILS').toUpperCase()}}
                         <div class="icon">
                             <i v-if="accordion['chapter-details'] === 'active'" class="fas fa-chevron-down"></i>
                             <i v-if="accordion['chapter-details'] !== 'active'" class="fas fa-chevron-right"></i>
@@ -33,16 +33,16 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>Title: </label>
-                                    <input v-model="data.title" type="text" class="form-control" placeholder="Chapter Title">
+                                    <label>{{$t('TITLE')}}: </label>
+                                    <input v-model="data.title" type="text" class="form-control" :placeholder = "$t('CHAPTER_TITLE')">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>Short Description: </label>
-                                    <input v-model.trim="data.short_description" type="text" class="form-control" placeholder="Short Description">
+                                    <label>{{$t('SHORT_DESCRIPTION')}}: </label>
+                                    <input v-model.trim="data.short_description" type="text" class="form-control" :placeholder = "$t('SHORT_DESCRIPTION')">
                                 </div>
                             </div>
                         </div>
@@ -50,7 +50,7 @@
                 </div>
                 <div class="item" v-bind:class="{'active': accordion['content'] === 'active'}">
                     <div class="label" @click="toggleAccordion('content')">
-                        CONTENT
+                        {{$t('CONTENT').toUpperCase()}}
                         <div class="icon">
                             <i v-if="accordion['content'] === 'active'" class="fas fa-chevron-down"></i>
                             <i v-if="accordion['content'] !== 'active'" class="fas fa-chevron-right"></i>

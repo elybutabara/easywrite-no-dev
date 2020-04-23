@@ -12,6 +12,8 @@ import cookie from './utils/cookie'
 import Notifications from 'vue-notification'
 import Multiselect from 'vue-multiselect'
 import { BootstrapVue } from 'bootstrap-vue'
+import VueI18n from 'vue-i18n'
+import messages from '@/lang/translations'
 
 import tab from './stores/tab'
 import auth from './stores/auth'
@@ -88,6 +90,12 @@ Vue.component('tiny-editor', TinyMCE)
 // Install BootstrapVue
 Vue.use(BootstrapVue)
 // Vue.use(jQuery)
+Vue.use(VueI18n)
+
+const i18n = new VueI18n({
+  fallbackLocale: 'en',
+  messages
+})
 
 const store = new Vuex.Store({
   modules: {
@@ -108,6 +116,7 @@ new Vue({
   el: '#app',
   router,
   store,
+  i18n,
   components: { App },
   template: '<App/>'
 })
@@ -126,3 +135,14 @@ new Vue({
 //     template: '<Auth/>'
 //   })
 // }
+
+const electron = window.require('electron')
+const { ipcRenderer } = electron
+
+ipcRenderer.on('TRANSLATE', function (event, data) {
+  i18n.locale = data
+})
+
+ipcRenderer.on('REFRESH_MENU', function (event, data) {
+  ipcRenderer.send('REFRESH_MENUITEMS', data)
+})
