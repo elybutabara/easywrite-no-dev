@@ -2,20 +2,20 @@
 <div>
     <div v-if="page.is_ready" class="page-scene-characters ">
         <div class="es-scene-children-wrapper" style="">
-            <button @click="showChildrenItemList()" class="btn-dark" style="float:right;">ADD SCENE CHARACTER</button>
-            <div class="heading">CHARACTERS</div>
+            <button @click="showChildrenItemList()" class="btn-dark" style="float:right;">{{$t('ADD_SCENE_CHARACTERS')}}</button>
+            <div class="heading">{{$tc('CHARACTER', 2)}}</div>
             <div class="es-row">
                 <div class="es-col " v-for="scene_character in GET_SCENE_CHARACTERS_BY_SCENE(scene.uuid)" v-bind:key="scene_character.id">
                     <div class="es-card">
                         <div class="es-card-content">
                             <p class="title">{{ scene_character.character.fullname || 'Untitled' }}</p>
                             <i class="description" v-if="scene_character.character.description !== '' && scene_character.character.description !== null" v-html="scene_character.character.description"></i>
-                            <i class="description" v-else>No Description</i>
+                            <i class="description" v-else>{{$t('NO_DESCRIPTION')}}</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-details-'+ scene_character.uuiid , tabComponent: 'character-details',  tabData: {  book_id: scene.book_id, character: scene_character.character }, tabTitle: scene_character.character.fullname})"><i class="lar la-eye"></i> VIEW</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-form-' + scene_character.character.uuid, tabComponent: 'character-form',  tabData: { book_id: scene.book_id, character: scene_character.character }, tabTitle: 'Edit - ' + scene_character.character.fullname, newTab: true})"><i class="las la-pencil-alt"></i> EDIT</button>
-                            <button class="btn-delete" @click="DELETE_FROM_LIST('scene-characters', scene_character)"><i class="las la-trash-alt"></i> DELETE</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-details-'+ scene_character.uuiid , tabComponent: 'character-details',  tabData: {  book_id: scene.book_id, character: scene_character.character }, tabTitle: scene_character.character.fullname})"><i class="lar la-eye"></i> {{$t('VIEW')}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-form-' + scene_character.character.uuid, tabComponent: 'character-form',  tabData: { book_id: scene.book_id, character: scene_character.character }, tabTitle: 'Edit - ' + scene_character.character.fullname, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT')}}</button>
+                            <button class="btn-delete" @click="DELETE_FROM_LIST('scene-characters', scene_character)"><i class="las la-trash-alt"></i> {{$t('DELETE')}}</button>
                         </div>
                     </div>
                 </div>
@@ -23,7 +23,7 @@
             <div v-if="adding" class="scene-children-items slideInRight animated">
                 <div class="note">
                     <i @click="hideChildrenItemList()" class="closer fas fa-times"></i>
-                    Double click the selected character to add to the scene
+                    <strong>{{$t('DOUBLE_CLICK')}}</strong> {{$tc('CHARACTER', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}
                 </div>
                 <div class="scene-children-items-list" >
                     <div v-bind:key="character.id" v-for="character in GET_CHARACTERS_BY_BOOK(scene.book_id)">

@@ -4,11 +4,11 @@
        <div class="es-page-head">
             <div class="inner">
                 <div class="details">
-                    <h4>Locations</h4>
-                    <small>Below are the list of locations under {{ properties.title }}</small>
+                    <h4>{{$tc('LOCATION',2)}}</h4>
+                    <small>{{$t('BELOW_ARE_THE_LIST_OF_LOCATIONS_UNDER')}} {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'location-form', tabComponent: 'location-form', tabData: { list_index: -1, book_id: properties.uuid, location: null }, tabTitle: 'New Location', newTab: true})">New Location</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'location-form', tabComponent: 'location-form', tabData: { list_index: -1, book_id: properties.uuid, location: null }, tabTitle: 'New Location', newTab: true})">{{$t('NEW').toUpperCase()}} {{$tc('LOCATION', 1).toUpperCase()}}</button>
                 </div>
             </div>
         </div>
@@ -20,12 +20,12 @@
                         <div class="es-card-content">
                             <p class="title">{{ location.location || 'Untitled' }}</p>
                             <i class="description" v-if="location.description !== '' && location.description !== null" v-html="location.description"></i>
-                            <i class="description" v-else>No Description</i>
+                            <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}...</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-"  @click="CHANGE_COMPONENT({tabKey: 'location-details-' + location.uuid, tabComponent: 'location-details', tabData: { book_id: properties.uuid, location: location }, tabTitle:  location.location, newTab})"><i class="lar la-eye"></i> VIEW</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + location.uuid, tabComponent: 'location-form', tabData: { book_id: properties.uuid, location: location }, tabTitle: 'Edit - ' + location.location, newTab: true})"><i class="las la-pencil-alt"></i> EDIT</button>
-                            <button class="btn-delete"  @click="DELETE_FROM_LIST('locations', location)"><i class="las la-trash-alt"></i> DELETE</button>
+                            <button class="btn-"  @click="CHANGE_COMPONENT({tabKey: 'location-details-' + location.uuid, tabComponent: 'location-details', tabData: { book_id: properties.uuid, location: location }, tabTitle:  location.location, newTab})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + location.uuid, tabComponent: 'location-form', tabData: { book_id: properties.uuid, location: location }, tabTitle: 'Edit - ' + location.location, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT').toUpperCase()}}</button>
+                            <button class="btn-delete"  @click="DELETE_FROM_LIST('locations', location)"><i class="las la-trash-alt"></i> {{$t('DELETE').toUpperCase()}}</button>
                         </div>
                     </div>
                 </div>

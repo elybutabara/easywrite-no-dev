@@ -5,7 +5,7 @@
         <div class="inner">
             <div class="details">
                 <h4>Welcome {{ getAuthorName }}!</h4>
-                <small>Last Login: January 01, 2020</small>
+                <!-- <small>Last Login: January 01, 2020</small> -->
             </div>
             <div class="actions">
                 <div style="display:none; height:30px; line-height:30px; background:red; padding:0px 10px;">
@@ -18,32 +18,32 @@
     </div>
     <div class="es-page-content">
         <div class="es-panel">
-            <h4>Reports</h4>
+            <h4>{{$t('REPORTS')}}</h4>
             <hr/>
             <div class="container">
                 <div class="row">
                     <div class="col-12 col-md-3">
                         <div style="text-align:center; padding:40px 40px; background:#f5f8fa; border:1px solid #cbd6e2;">
                             <h3>260</h3>
-                            <p style="margin:0px;">Daily Word Count</p>
+                            <p style="margin:0px;">{{$t('WORD_COUNT_FOR_THE_DAY')}}</p>
                         </div>
                     </div>
                     <div class="col-12 col-md-3">
                         <div style="text-align:center; padding:40px 40px; background:#f5f8fa; border:1px solid #cbd6e2;">
                             <h3>1,560</h3>
-                            <p style="margin:0px;">Monthly Word Count</p>
+                            <p style="margin:0px;">{{$t('WORD_COUNT_FOR_THIS_MONTH')}}</p>
                         </div>
                     </div>
                     <div class="col-12 col-md-3">
                         <div style="text-align:center; padding:40px 40px; background:#f5f8fa; border:1px solid #cbd6e2;">
                             <h3>6,260</h3>
-                            <p style="margin:0px;">Yearly Word Count</p>
+                            <p style="margin:0px;">{{$t('WORD_COUNT_FOR_THIS_YEAR')}}</p>
                         </div>
                     </div>
                     <div class="col-12 col-md-3">
                         <div style="text-align:center; padding:40px 40px; background:#f5f8fa; border:1px solid #cbd6e2;">
                             <h3>12,260</h3>
-                            <p style="margin:0px;">All Time Word Count</p>
+                            <p style="margin:0px;">{{$t('OVERALL_WORD_COUNT')}}</p>
                         </div>
                     </div>
                 </div>
@@ -69,7 +69,7 @@
             </div>
             <div style="width:300px;">
                 <div style="padding:0px; text-align:center; background:#fff;  border: 1px solid #e0e5ee; margin-bottom:20px;">
-                    <div style="background:#f5f8fa; font-weight:600; border-bottom:1px solid #e0e5ee; text-align:left; padding:2px 10px;">Time Worked</div>
+                    <div style="background:#f5f8fa; font-weight:600; border-bottom:1px solid #e0e5ee; text-align:left; padding:2px 10px;">{{$t('TIME_WORKED')}}</div>
                     <div style="padding:20px;">
                         <span style="font-family:'Digital'; font-size:20px;">
                             <span style="background:#e0e5ee; display:inline-block; padding:0px 5px; width:35px; text-align:center;">{{ setDefaultHours(defaulttimer.hr) }}</span> :

@@ -4,16 +4,16 @@
         <div class="inner">
             <div class="details">
                 <div  v-if="data.id != null">
-                    <h4>Edit: <strong>{{ data.title }}</strong></h4>
-                    <small>Date Modified: {{ data.updated_at }}</small>
+                    <h4>{{$t('EDIT')}}: <strong>{{ data.title }}</strong></h4>
+                    <small>{{$t('DATE_MODIFIED')}}: {{ data.updated_at }}</small>
                 </div>
                 <div v-else>
-                    <h4>Create New Scene</h4>
+                    <h4>{{$t('CREATE_NEW_SCENE')}}</h4>
                 </div>
             </div>
             <div class="actions">
-                <button v-if="data.id != null" class="es-button-white" @click="saveScene()">Save Changes</button>
-                <button v-else class="es-button-white" @click="saveScene()">Save</button>
+                <button v-if="data.id != null" class="es-button-white" @click="saveScene()">{{$t('SAVE_CHANGES')}}</button>
+                <button v-else class="es-button-white" @click="saveScene()">{{$t('SAVE')}}</button>
             </div>
         </div>
     </div>
@@ -22,7 +22,7 @@
         <div class="es-accordion">
             <div class="item" v-bind:class="{'active': accordion['scene-details'] === 'active'}">
                 <div class="label" @click="toggleAccordion('scene-details')">
-                    SCENE DETAILS
+                    {{$t('SCENE_DETAILS').toUpperCase()}}
                     <div class="icon">
                         <i v-if="accordion['scene-details'] === 'active'" class="fas fa-chevron-down"></i>
                         <i v-if="accordion['scene-details'] !== 'active'" class="fas fa-chevron-right"></i>
@@ -31,25 +31,25 @@
                 <div class="content ">
                     <b-row class="margin-bottom-1rem">
                         <b-col>
-                            <label>Title: </label>
-                            <b-form-input v-model="data.title" placeholder="Title"></b-form-input>
+                            <label>{{$t('TITLE')}}: </label>
+                            <b-form-input v-model="data.title" :placeholder="$t('TITLE')"></b-form-input>
                         </b-col>
                         <b-col>
-                            <label>Chapter: </label>
-                            <multiselect v-model="selected_chapter" :options="chapters" placeholder="Select Chapter" label="title" track-by="uuid" deselectLabel="Press enter to deselect"></multiselect>
+                            <label>{{$tc('CHAPTER',1)}}: </label>
+                            <multiselect v-model="selected_chapter" :options="chapters" :placeholder="$t('SELECT') + ' ' + $tc('CHAPTER',1)" label="title" track-by="uuid" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
                         </b-col>
                     </b-row>
                     <b-row class="margin-bottom-1rem">
                         <b-col>
-                            <label>Short Description: </label>
-                            <b-form-input v-model="data.short_description" placeholder="Short Description"></b-form-input>
+                            <label>{{$t('SHORT_DESCRIPTION')}}: </label>
+                            <b-form-input v-model="data.short_description" :placeholder="$t('SHORT_DESCRIPTION') "></b-form-input>
                         </b-col>
                     </b-row>
                 </div>
             </div>
             <div class="item" v-bind:class="{'active': accordion['content'] === 'active'}">
                 <div class="label" @click="toggleAccordion('content')">
-                    CONTENT
+                    {{$t('CONTENT').toUpperCase()}}
                     <div class="icon">
                         <i v-if="accordion['scene-details'] === 'active'" class="fas fa-chevron-down"></i>
                         <i v-if="accordion['scene-details'] !== 'active'" class="fas fa-chevron-right"></i>
@@ -68,7 +68,7 @@
             </div>
             <div class="item" v-bind:class="{'active': accordion['more-details'] === 'active'}">
                 <div class="label" @click="toggleAccordion('more-details')">
-                    MORE DETAILS
+                    {{$t('MORE').toUpperCase()}} {{$t('DETAILS').toUpperCase()}}
                     <div class="icon">
                         <i v-if="accordion['more-details'] === 'active'" class="fas fa-chevron-down"></i>
                         <i v-if="accordion['more-details'] !== 'active'" class="fas fa-chevron-right"></i>
@@ -77,29 +77,29 @@
                 <div class="content ">
                     <b-row class="margin-bottom-1rem">
                     <b-col>
-                        <label>Type of Scene: </label>
-                        <multiselect v-model="selected_typeofscene" :options="options_typeofscene" placeholder="Select Type of Scene" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true"></multiselect>
+                        <label>{{$t('TYPE_OF_SCENE')}}: </label>
+                        <multiselect v-model="selected_typeofscene" :options="options_typeofscene" placeholder="Select Type of Scene" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
                     </b-col>
                     <b-col>
-                        <label>Importance: </label>
-                        <multiselect v-model="selected_importance" :options="options_importance" placeholder="Select Importance" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true"></multiselect>
+                        <label>{{$t('IMPORTANCE')}}: </label>
+                        <multiselect v-model="selected_importance" :options="options_importance" placeholder="Select Importance" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
                     </b-col>
                     </b-row>
                     <b-row class="margin-bottom-1rem">
                     <b-col>
-                        <label>Tags: </label>
+                        <label>{{$t('TAGS')}}: </label>
                         <b-form-input v-model="data.tags" placeholder="Tags"></b-form-input>
                     </b-col>
                     <b-col>
-                        <label>Status: </label>
-                        <multiselect v-model="selected_status" :options="options_status" placeholder="Select Status" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true"></multiselect>
+                        <label>{{$t('STATUS')}}: </label>
+                        <multiselect v-model="selected_status" :options="options_status" placeholder="Select Status" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
                     </b-col>
                     </b-row>
                 </div>
             </div>
             <div class="item" v-bind:class="{'active': accordion['notes'] === 'active'}">
                 <div class="label" @click="toggleAccordion('notes')">
-                    NOTES
+                    {{$t('NOTES').toUpperCase()}}
                     <div class="icon">
                         <i v-if="accordion['notes'] === 'active'" class="fas fa-chevron-down"></i>
                         <i v-if="accordion['notes'] !== 'active'" class="fas fa-chevron-right"></i>
@@ -114,7 +114,7 @@
             </div>
             <div class="item" v-bind:class="{'active': accordion['viewpoint'] === 'active'}">
                 <div class="label" @click="toggleAccordion('viewpoint')">
-                    TIME/VIEWPOINT
+                    {{$t('TIME_VIEWPOINT').toUpperCase()}}
                     <div class="icon">
                         <i v-if="accordion['viewpoint'] === 'active'" class="fas fa-chevron-down"></i>
                         <i v-if="accordion['viewpoint'] !== 'active'" class="fas fa-chevron-right"></i>
@@ -123,29 +123,29 @@
                 <div class="content ">
                     <b-row class="margin-bottom-1rem">
                     <b-col cols="6">
-                        <label>Type: </label>
-                        <multiselect v-model="selected_weather_type" :options="options_weather_type" placeholder="Select Status" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true"></multiselect>
+                        <label>{{$t('TYPE')}}: </label>
+                        <multiselect v-model="selected_weather_type" :options="options_weather_type" placeholder="Select Status" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
                     </b-col>
                     </b-row>
                     <b-row class="margin-bottom-1rem">
                     <b-col>
-                        <label>Scene Starts: </label>
-                        <b-form-datepicker id="date_starts-datepicker" v-model="data.date_starts" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }" placeholder="Select Date Starts"></b-form-datepicker>
+                        <label>{{$t('SCENE_STARTS')}}: </label>
+                        <b-form-datepicker id="date_starts-datepicker" v-model="data.date_starts" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }" :placeholder="$t('SELECT') + ' ' +$t('SCENE_STARTS')"></b-form-datepicker>
                     </b-col>
                     <b-col>
-                        <label>Scene Ends: </label>
-                        <b-form-datepicker id="date_ends-datepicker" v-model="data.date_ends" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }" placeholder="Select Date Ends"></b-form-datepicker>
+                        <label>{{$t('SCENE_ENDS')}}: </label>
+                        <b-form-datepicker id="date_ends-datepicker" v-model="data.date_ends" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }" :placeholder="$t('SELECT') + ' ' +$t('SCENE_ENDS')"></b-form-datepicker>
                     </b-col>
                     </b-row>
                     <b-row class="margin-bottom-1rem">
                     <b-col cols="6">
-                        <label>Point of View: </label>
-                        <multiselect v-model="selected_character_id_vp" :options="options_character_id_vp" placeholder="Select Point of View" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true"></multiselect>
+                        <label>{{$t('POINT_OF_VIEW')}}: </label>
+                        <multiselect v-model="selected_character_id_vp" :options="options_character_id_vp" :placeholder="$t('SELECT') + ' ' +$t('POINT_OF_VIEW')" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true"></multiselect>
                     </b-col>
                     </b-row>
                     <b-row class="margin-bottom-1rem">
                     <b-col>
-                        <label>Viewpoint Description: </label>
+                        <label>{{$t('VIEWPOINT')}} {{$t('DESCRIPTION')}}: </label>
                         <tiny-editor :initValue="data.viewpoint_description"
                                     v-on:getEditorContent="setViewpointDescription"
                                     class="form-control"
@@ -156,14 +156,14 @@
             </div>
             <div class="item" v-bind:class="{'active': accordion['items'] === 'active'}">
                 <div class="label" @click="toggleAccordion('items')">
-                    ITEMS
+                    {{$tc('ITEM',2).toUpperCase()}}
                     <div class="icon">
                         <i v-if="accordion['items'] === 'active'" class="fas fa-chevron-down"></i>
                         <i v-if="accordion['items'] !== 'active'" class="fas fa-chevron-right"></i>
                     </div>
                 </div>
                 <div class="content ">
-                    <p>Click to add items to the scene</p>
+                    <p><strong>{{$t('CLICK')}}</strong> {{$tc('ITEM', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}</p>
                     <div @click="toggleChild('items',item)" v-bind:class="{'selected' : selected_items.includes(item.uuid) }" class="es-toggle-select" v-bind:key="item.id" v-for="item in GET_ITEMS_BY_BOOK(properties.book_id)">
                         <i v-if="selected_items.includes(item.uuid)" class="fas fa-check"></i> &nbsp;{{ item.itemname }}
                     </div>
@@ -171,14 +171,14 @@
             </div>
             <div class="item" v-bind:class="{'active': accordion['characters'] === 'active'}">
                 <div class="label" @click="toggleAccordion('characters')">
-                    CHARACTERS
+                    {{$tc('CHARACTER',2).toUpperCase()}}
                     <div class="icon">
                         <i v-if="accordion['characters'] === 'active'" class="fas fa-chevron-down"></i>
                         <i v-if="accordion['characters'] !== 'active'" class="fas fa-chevron-right"></i>
                     </div>
                 </div>
                 <div class="content ">
-                    <p>Click to add characters to the scene</p>
+                    <p><strong>{{$t('CLICK')}}</strong> {{$tc('CHARACTER', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}</p>
                     <div @click="toggleChild('characters',character)" v-bind:class="{'selected' : selected_characters.includes(character.uuid) }" class="es-toggle-select" v-bind:key="character.id" v-for="character in GET_CHARACTERS_BY_BOOK(properties.book_id)">
                         <i v-if="selected_characters.includes(character.uuid)" class="fas fa-check"></i> &nbsp;{{ character.fullname }}
                     </div>
@@ -186,14 +186,14 @@
             </div>
             <div class="item" v-bind:class="{'active': accordion['locations'] === 'active'}">
                 <div class="label" @click="toggleAccordion('locations')">
-                    LOCATIONS
+                    {{$tc('LOCATION',2).toUpperCase()}}
                     <div class="icon">
                         <i v-if="accordion['locations'] === 'active'" class="fas fa-chevron-down"></i>
                         <i v-if="accordion['locations'] !== 'active'" class="fas fa-chevron-right"></i>
                     </div>
                 </div>
                 <div class="content ">
-                    <p>Click to add locations to the scene</p>
+                    <p><strong>{{$t('CLICK')}}</strong> {{$tc('LOCATION', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}</p>
                     <div @click="toggleChild('locations',location)" v-bind:class="{'selected' : selected_locations.includes(location.uuid) }" class="es-toggle-select" v-bind:key="location.id" v-for="location in GET_LOCATIONS_BY_BOOK(properties.book_id)">
                         <i v-if="selected_locations.includes(location.uuid)" class="fas fa-check"></i> &nbsp;{{ location.location }}
                     </div>

@@ -5,14 +5,13 @@
         <div class="es-panel-content">
             <div class="image-container"><img :src="properties.location.picture_src" /></div>
             <h2 class="title">{{ properties.location.location  || 'Untitled' }}</h2>
-            <p class="aka">{{ properties.location.AKA }}</p>
-            <div class="tags">{{ properties.location.tags }}</div>
+            <p class="aka">{{ properties.location.AKA || $t('AKA') + ' ' + $t('NOT_SET')}}</p>
             <i class="description" v-if="properties.location.description !== '' && properties.location.description !== null" v-html="properties.location.description" ></i>
-            <i class="description" v-else>No Description</i>
+            <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}</i>
         </div>
         <div class="es-panel-footer">
-            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + properties.location.uuid, tabComponent: 'location-form', tabData: { book_id: properties.uuid, location: properties.location }, tabTitle: 'Edit - ' + properties.location.location, newTab: true})">EDIT</div>
-            <div class="cta" @click="DELETE_FROM_LIST('locations', properties.location)">DELETE</div>
+            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + properties.location.uuid, tabComponent: 'location-form', tabData: { book_id: properties.uuid, location: properties.location }, tabTitle: 'Edit - ' + properties.location.location, newTab: true})">{{$t('EDIT').toUpperCase()}}</div>
+            <div class="cta" @click="DELETE_FROM_LIST('locations', properties.location)">{{$t('DELETE').toUpperCase()}}</div>
         </div>
     </div>
 

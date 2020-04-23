@@ -4,14 +4,13 @@
         <div class="es-panel-content">
             <div class="image-container"><img :src="properties.item.picture_src" /></div>
             <h2 class="title">{{ properties.item.itemname || 'Untitled' }}</h2>
-            <p class="aka">{{ properties.item.AKA || 'Not Set' }}</p>
-            <div class="tags">{{ properties.item.tags || 'No tag is set' }}</div>
+            <p class="aka">{{ properties.item.AKA || $t('AKA') + ' ' + $t('NOT_SET')}}</p>
             <i class="description" v-if="properties.item.description !== '' && properties.item.description !== null" v-html="properties.item.description" ></i>
-            <i class="description" v-else>No Description</i>
+            <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}</i>
         </div>
         <div class="es-panel-footer">
-            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + properties.item.uuid, tabComponent: 'item-form', tabData: { book_id: properties.uuid, item: properties.item }, tabTitle: 'Edit - ' + properties.item.itemname, newTab: true})">EDIT</div>
-            <div class="cta" @click="DELETE_FROM_LIST('items', properties.item)">DELETE</div>
+            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + properties.item.uuid, tabComponent: 'item-form', tabData: { book_id: properties.uuid, item: properties.item }, tabTitle: 'Edit - ' + properties.item.itemname, newTab: true})">{{$t('EDIT').toUpperCase()}}</div>
+            <div class="cta" @click="DELETE_FROM_LIST('items', properties.item)">{{$t('DELETE').toUpperCase()}}</div>
         </div>
     </div>
 </div>

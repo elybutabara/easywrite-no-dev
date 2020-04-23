@@ -2,20 +2,20 @@
 <div>
     <div v-if="page.is_ready" class="page-scene-locations ">
         <div class="es-scene-children-wrapper" style="">
-            <button @click="showChildrenItemList()" class="btn-dark" style="float:right;">ADD SCENE LOCATIONS</button>
-            <div class="heading">LOCATIONS</div>
+            <button @click="showChildrenItemList()" class="btn-dark" style="float:right;">{{$t('ADD_SCENE_LOCATIONS')}}</button>
+            <div class="heading">{{$tc('LOCATION', 2)}}</div>
             <div class="es-row">
                 <div class="es-col " v-bind:key="scene_location.id" v-for="scene_location in GET_SCENE_LOCATIONS_BY_SCENE(scene.uuid)">
                     <div class="es-card">
                         <div class="es-card-content">
                             <p class="title">{{ scene_location.location.location || 'Untitled' }}</p>
                             <i class="description" v-if="scene_location.location.description !== '' && scene_location.location.description !== null" v-html="scene_location.location.description"></i>
-                            <i class="description" v-else>No Description</i>
+                            <i class="description" v-else>{{$t('NO_DESCRIPTION')}}</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-details-' + scene_location.location.uuid, tabComponent: 'location-details',  tabData: { book_id: scene.book_id, location: scene_location.location }, tabTitle: scene_location.location.location})"><i class="lar la-eye"></i> VIEW</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + scene_location.location.uuid, tabComponent: 'location-form',  tabData: { book_id: properties.uuid, location: scene_location.location }, tabTitle: 'Edit - ' + scene_location.location.location, newTab: true})"><i class="las la-pencil-alt"></i> EDIT</button>
-                            <button class="btn-delete"  @click="DELETE_FROM_LIST('scene-locations', scene_location)"><i class="las la-trash-alt"></i> DELETE</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-details-' + scene_location.location.uuid, tabComponent: 'location-details',  tabData: { book_id: scene.book_id, location: scene_location.location }, tabTitle: scene_location.location.location})"><i class="lar la-eye"></i> {{$t('VIEW')}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + scene_location.location.uuid, tabComponent: 'location-form',  tabData: { book_id: properties.uuid, location: scene_location.location }, tabTitle: 'Edit - ' + scene_location.location.location, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT')}}</button>
+                            <button class="btn-delete"  @click="DELETE_FROM_LIST('scene-locations', scene_location)"><i class="las la-trash-alt"></i> {{$t('DELETE')}}</button>
                         </div>
                     </div>
                 </div>
@@ -23,7 +23,7 @@
             <div v-if="adding" class="scene-children-items slideInRight animated">
                 <div class="note">
                     <i @click="hideChildrenItemList()" class="closer fas fa-times"></i>
-                    Double click the selected location to add to the scene
+                    <strong>{{$t('DOUBLE_CLICK')}}</strong> {{$tc('LOCATION', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}
                 </div>
                 <div class="scene-children-items-list" >
                     <div v-bind:key="location.id" v-for="location in GET_LOCATIONS_BY_BOOK(scene.book_id)">

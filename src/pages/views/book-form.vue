@@ -5,15 +5,15 @@
             <div class="details">
                 <div  v-if="properties != null">
                     <h4>{{ properties.title }}</h4>
-                    <small>Date Modified: {{ properties.created_at }}</small>
+                    <small>{{$t('DATE_MODIFIED')}}: {{ properties.created_at }}</small>
                 </div>
                 <div v-else>
-                    <h4>Create New Book</h4>
+                    <h4>{{$t('CREATE_NEW_BOOK')}}</h4>
                 </div>
             </div>
             <div class="actions">
-                <button v-if="properties != null" class="es-button-white" @click="saveBook()">Save Changes</button>
-                <button v-else class="es-button-white" @click="saveBook()">Save</button>
+                <button v-if="properties != null" class="es-button-white" @click="saveBook()">{{$t('SAVE_CHANGES')}}</button>
+                <button v-else class="es-button-white" @click="saveBook()">{{$t('SAVE')}}</button>
             </div>
         </div>
     </div>
@@ -23,23 +23,23 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label>Title: </label>
-                            <input v-model="data.title" type="text" class="form-control" placeholder="Title">
+                            <label>{{$t('TITLE')}}: </label>
+                            <input v-model="data.title" type="text" class="form-control" :placeholder= "$t('TITLE')">
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label>Genre: </label>
-                            <multiselect v-model="genre_collection" @select="selectGenre" @remove="removeGenre" :multiple="true" :taggable="true" label="name" track-by="uuid" :options="genres"></multiselect>
+                            <label>{{$t('GENRE')}}: </label>
+                            <multiselect v-model="genre_collection" @select="selectGenre" @remove="removeGenre" :multiple="true" :taggable="true" label="name" track-by="uuid" :options="genres" :placeholder = "$t('SELECT_OPTION')"></multiselect>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label>Description: </label>
+                            <label>{{$t('DESCRIPTION')}}: </label>
                             <tiny-editor :initValue="data.about" v-on:getEditorContent="setAboutValue" class="form-control" />
                         </div>
                     </div>

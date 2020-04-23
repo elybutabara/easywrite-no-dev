@@ -30,18 +30,18 @@
                </div>
                <div class="content">
                    <form v-on:submit.prevent="authenticate()">
-                       <h6 class="version no-margin" style="color: white;font-size: small">{{ $tc('version', 1) }} {{ version }}</h6>
-                       <p class="welcome">{{ $t('welcome_to_easywrite') }}</p>
+                       <h6 class="version no-margin" style="color: white;font-size: small">{{ $tc('VERSION', 1) }} {{ version }}</h6>
+                       <p class="welcome">{{ $t('WELCOME_TO_EASYWRITE') }}</p>
                        <div class="input-group line">
                            <label>Username</label>
-                           <input v-model="username" type="text" :placeholder = " $tc('version', 1) ">
+                           <input v-model="username" type="text" :placeholder = " $t('ENTER_YOUR_USERNAME_HERE') ">
                        </div>
                        <div class="input-group line">
                            <label>Password</label>
-                           <input v-model="password" type="password" placeholder="Enter your password here...">
+                           <input v-model="password" type="password" :placeholder = " $t('ENTER_YOUR_PASSWORD_HERE') ">
                        </div>
                        <div class="input-group">
-                           <button type="submit">{{ $t('login') }}</button>
+                           <button type="submit">{{ $t('LOGIN') }}</button>
                        </div>
                    </form>
                </div>

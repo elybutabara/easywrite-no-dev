@@ -4,7 +4,7 @@
             <img src="@/assets/img/es-logo-white.png">
         </div>
         <div class="search-box">
-            <input type="text" placeholder="Search keyword...">
+            <input type="text" :placeholder = " $t('SEARCH_KEYWORD')">
             <i class="las la-search icon"></i>
         </div>
         <div class="es-tree-view">
@@ -17,7 +17,7 @@
                                 <span>
                                     <img v-if="book.chapter_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
-                                    {{ $tc('chapter', 2) }}
+                                    {{ $tc('CHAPTER', 2) }}
                                 </span>
                             </div>
                             <ul class="level-3">
@@ -36,7 +36,7 @@
                                 <span>
                                     <img v-if="book.item_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
-                                    {{ $tc('item', 2) }}
+                                    {{ $tc('ITEM', 2) }}
                                 </span>
                             </div>
                             <ul class="level-3">
@@ -50,7 +50,7 @@
                                 <span>
                                     <img v-if="book.character_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
-                                    {{ $tc('character', 2) }}
+                                    {{ $tc('CHARACTER', 2) }}
                                 </span>
                             </div>
                             <ul class="level-3">
@@ -64,7 +64,7 @@
                                 <span>
                                     <img v-if="book.location_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
-                                    {{ $tc('location', 2) }}
+                                    {{ $tc('LOCATION', 2) }}
                                 </span>
                             </div>
                             <ul class="level-3">
@@ -78,7 +78,7 @@
                                 <span>
                                     <img v-if="book.scene_folder.is_open" src="@/assets/img/icons/folder-open.svg">
                                     <img v-else src="@/assets/img/icons/folder.svg">
-                                    {{ $t('other_scenes') }}
+                                    {{ $t('OTHER_SCENES') }}
                                 </span>
                             </div>
                             <ul class="level-4">

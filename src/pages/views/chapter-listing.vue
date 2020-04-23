@@ -4,10 +4,10 @@
         <div class="inner">
             <div class="details">
                 <h4>{{ properties.title }}</h4>
-                <small>Below are the list of chapters under {{ properties.title }}</small>
+                <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ properties.title }}</small>
             </div>
             <div class="actions">
-                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book_id: properties.uuid, chapter: null }, tabTitle: 'New Chapter', newTab: true})">New Chapter</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book_id: properties.uuid, chapter: null }, tabTitle: 'New Chapter', newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
             </div>
         </div>
     </div>
@@ -23,13 +23,13 @@
                             <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + chapter.uuid, tabComponent: 'chapter-details',  tabData: { book_id: properties.uuid, chapter: chapter }, tabTitle: 'View - ' + chapter.title})"><i class="lar la-eye"></i></button>
                         </div>
                         <p class="title">{{ displayTitle(chapter.title) }}</p>
-                        <i class="description ellipsis-2">{{ chapter.short_description || 'No Short Description...'  }}</i>
+                        <i class="description ellipsis-2">{{ chapter.short_description || $t('NO_SHORT_DESCRIPTION') + '...' }}</i>
                     </div>
                     <div class="es-card-footer">
-                        <small>Scenes: {{ GET_SCENES_BY_CHAPTER(chapter.uuid).length }}</small>
+                        <small>{{$tc('SCENE', 2)}}: {{ GET_SCENES_BY_CHAPTER(chapter.uuid).length }}</small>
                         &nbsp; &bull; &nbsp;
-                        <small>Versions: {{ chapter.chapter_version.length }}</small>
-                        <small style="float:right;">Word Count: {{ WORD_COUNT(chapter.chapter_version[0].content) }}</small>
+                        <small>{{$tc('VERSION', 2)}}: {{ chapter.chapter_version.length }}</small>
+                        <small style="float:right;">{{$t('WORD_COUNT')}}: {{ WORD_COUNT(chapter.chapter_version[0].content) }}</small>
                     </div>
                 </div>
             </div>

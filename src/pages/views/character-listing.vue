@@ -4,11 +4,11 @@
         <div class="es-page-head">
             <div class="inner">
                 <div class="details">
-                    <h4>Characters</h4>
-                    <small>Below are the list of characters under {{ properties.title }}</small>
+                    <h4>{{$tc('CHARACTER',2)}}</h4>
+                    <small>{{$t('BELOW_ARE_THE_LIST_OF_CHARACTERS_UNDER')}} {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form', tabData: { list_index: -1, book_id: properties.uuid, character: null }, tabTitle: 'New Character', newTab: true})">New Character</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form', tabData: { list_index: -1, book_id: properties.uuid, character: null }, tabTitle: 'New Character', newTab: true})">{{$t('NEW').toUpperCase()}} {{$tc('CHARACTER', 1).toUpperCase()}}</button>
                 </div>
             </div>
         </div>
@@ -20,12 +20,12 @@
                         <div class="es-card-content">
                             <p class="title">{{ character.fullname || 'Untitled' }}</p>
                             <i class="description" v-if="character.description !== '' && character.description !== null" v-html="character.description"></i>
-                            <i class="description" v-else>No Description</i>
+                            <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}...</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-details-' + character.uuid, tabComponent: 'character-details',  tabData: { book_id: properties.uuid, character: character }, tabTitle: character.fullname})"><i class="lar la-eye"></i> VIEW</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-form-' + character.uuid, tabComponent: 'character-form',  tabData: { book_id: properties.uuid, character: character }, tabTitle: 'Edit - ' + character.fullname, newTab: true})"><i class="las la-pencil-alt"></i> EDIT</button>
-                            <button class="btn-delete" @click="DELETE_FROM_LIST('characters', item)"><i class="las la-trash-alt"></i> DELETE</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-details-' + character.uuid, tabComponent: 'character-details',  tabData: { book_id: properties.uuid, character: character }, tabTitle: character.fullname})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-form-' + character.uuid, tabComponent: 'character-form',  tabData: { book_id: properties.uuid, character: character }, tabTitle: 'Edit - ' + character.fullname, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT').toUpperCase()}}</button>
+                            <button class="btn-delete" @click="DELETE_FROM_LIST('characters', character)"><i class="las la-trash-alt"></i> {{$t('DELETE').toUpperCase()}}</button>
                         </div>
                     </div>
                 </div>

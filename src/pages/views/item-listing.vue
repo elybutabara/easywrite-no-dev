@@ -4,11 +4,11 @@
        <div class="es-page-head">
             <div class="inner">
                 <div class="details">
-                    <h4>Items</h4>
-                    <small>Below are the list of items under {{ properties.title }}</small>
+                    <h4>{{$tc('ITEM',2)}}</h4>
+                    <small>{{$t('BELOW_ARE_THE_LIST_OF_ITEMS_UNDER')}} {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'item-form', tabComponent: 'item-form', tabData: { list_index: -1, book_id: properties.uuid, item: null }, tabTitle: 'New Item', newTab: true })">New Item</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'item-form', tabComponent: 'item-form', tabData: { list_index: -1, book_id: properties.uuid, item: null }, tabTitle: 'New Item', newTab: true })">{{$t('NEW').toUpperCase()}} {{$tc('ITEM', 1).toUpperCase()}}</button>
                 </div>
             </div>
         </div>
@@ -20,12 +20,12 @@
                         <div class="es-card-content">
                             <p class="title">{{ item.itemname || 'Untitled' }}</p>
                             <i class="description" v-if="item.description !== '' && item.description !== null" v-html="item.description"></i>
-                            <i class="description" v-else>No Description</i>
+                            <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}...</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-details-' + item.uuid, tabComponent: 'item-details', tabData: { book_id: properties.uuid, item: item }, tabTitle: item.itemname})"><i class="lar la-eye"></i> VIEW</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + item.uuid, tabComponent: 'item-form', tabData: { book_id: properties.uuid, item: item }, tabTitle: 'Edit - ' + item.itemname, newTab: true})"><i class="las la-pencil-alt"></i> EDIT</button>
-                            <button class="btn-delete" @click="DELETE_FROM_LIST('items', item)"><i class="las la-trash-alt"></i> DELETE</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-details-' + item.uuid, tabComponent: 'item-details', tabData: { book_id: properties.uuid, item: item }, tabTitle: item.itemname})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + item.uuid, tabComponent: 'item-form', tabData: { book_id: properties.uuid, item: item }, tabTitle: 'Edit - ' + item.itemname, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT').toUpperCase()}}</button>
+                            <button class="btn-delete" @click="DELETE_FROM_LIST('items', item)"><i class="las la-trash-alt"></i> {{$t('DELETE').toUpperCase()}}</button>
                         </div>
                     </div>
                 </div>

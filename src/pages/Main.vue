@@ -6,9 +6,9 @@
             <div class="es-top-parent">
                <pomodoro-timer></pomodoro-timer>
                 <div class="es-top-nav">
-                    <button @click="CHANGE_COMPONENT({tabKey: 'dashboard', tabComponent: 'dashboard',  tabData: null, tabTitle: $t('dashboard')})"> {{ $t('dashboard') }}</button>
-                    <button @click="CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing',  tabData: null, tabTitle: 'Syncing', newTab: true})">{{ $t('sync_data') }}</button>
-                    <button @click="CHANGE_COMPONENT({tabKey: 'book-form', tabComponent: 'book-form',  tabData: null, tabTitle: 'New Book', newTab: true})">{{ $t('new_book') }}</button>
+                    <button @click="CHANGE_COMPONENT({tabKey: 'dashboard', tabComponent: 'dashboard',  tabData: null, tabTitle: $t('DASHBOARD')})"> {{ $t('DASHBOARD') }}</button>
+                    <button @click="CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing',  tabData: null, tabTitle: $t('SYNC_DATA'), newTab: true})">{{ $t('SYNC_DATA') }}</button>
+                    <button @click="CHANGE_COMPONENT({tabKey: 'book-form', tabComponent: 'book-form',  tabData: null, tabTitle: $t('NEW_BOOK'), newTab: true})">{{ $t('NEW_BOOK') }}</button>
                 </div>
             </div>
             <div class="es-tab-nav">
@@ -72,7 +72,7 @@ import ItemForm from '@/pages/views/item-form'
 import CharacterForm from '@/pages/views/character-form'
 import SceneForm from '@/pages/views/scene-form'
 import ChapterForm from '@/pages/views/chapter-form'
-import PomodoroTimer from '@/pages/views/pomodoro-timer'
+import PomodoroTimer from '@/components/PomodoroTimer'
 
 // const electron = window.require('electron')
 // const remote = electron.remote
