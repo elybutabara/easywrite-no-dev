@@ -50,5 +50,8 @@ if(process.env.NODE_ENV!=='production') {
 
 
 /*remove taskbar top menu*/
-//module.exports = (process.env.NODE_ENV == 'production') ? Menu.buildFromTemplate([]) : Menu.buildFromTemplate(mainMenuTemplate);
-module.exports = Menu.buildFromTemplate(mainMenuTemplate);
+if(process.platform == "darwin"){
+  module.exports = Menu.buildFromTemplate(mainMenuTemplate)
+}else{
+  module.exports = (process.env.NODE_ENV == 'production') ? Menu.buildFromTemplate([]) : Menu.buildFromTemplate(mainMenuTemplate)
+}
