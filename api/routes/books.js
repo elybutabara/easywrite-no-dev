@@ -38,7 +38,7 @@ router.get('/:bookId/items', async function (req, res) {
   items.forEach(function (item, index) {
     items[index].picture_src = ''
     if (item.pictures) {
-      items[index].picture_src = 'file://' + path.resolve(__dirname, '../..', 'resources', 'images', 'items', item.pictures)
+      items[index].picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'items', item.pictures)
     }
   })
 
@@ -62,7 +62,7 @@ router.get('/:bookId/characters', async function (req, res) {
   characters.forEach(function (item, index) {
     characters[index].picture_src = ''
     if (item.picture) {
-      characters[index].picture_src = 'file://' + path.resolve(__dirname, '../..', 'resources', 'images', 'characters', item.picture)
+      characters[index].picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'characters', item.picture)
     }
   })
 
@@ -86,7 +86,7 @@ router.get('/:bookId/locations', async function (req, res) {
   locations.forEach(function (item, index) {
     locations[index].picture_src = ''
     if (item.pictures) {
-      locations[index].picture_src = 'file://' + path.resolve(__dirname, '../..', 'resources', 'images', 'locations', item.pictures)
+      locations[index].picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'locations', item.pictures)
     }
   })
 

@@ -11,7 +11,7 @@ router.get('/:characterId/relations', async function (req, res) {
 
   relationDetail.forEach(function (item, index) {
     if (item.character_relation.picture) {
-      relationDetail[index].character_relation.picture_src = 'file://' + path.resolve(__dirname, '../..', 'resources', 'images', 'characters', item.character_relation.picture)
+      relationDetail[index].character_relation.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'characters', item.character_relation.picture)
     }
   })
 
@@ -24,7 +24,7 @@ router.post('/', async function (req, res) {
   const character = await CharacterController.save(req.body)
 
   if (character.pictures) {
-    character.picture_src = 'file://' + path.resolve(__dirname, '../..', 'resources', 'images', 'characters', character.pictures)
+    character.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'characters', character.pictures)
   }
 
   res
@@ -60,7 +60,7 @@ router.get('/:characterId', async function (req, res) {
   const character = await CharacterController.getByCharacterId(req.params.characterId)
 
   if (character.picture) {
-    character.picture_src = 'file://' + path.resolve(__dirname, '../..', 'resources', 'images', 'characters', character.picture)
+    character.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'characters', character.picture)
   }
 
   res

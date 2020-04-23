@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, Menu, ipcMain } = require('electron')
+const { app, BrowserWindow, Menu, ipcMain , systemPreferences} = require('electron')
 const path = require('path')
 const fs = require('fs')
 const log = require('electron-log')
@@ -7,7 +7,7 @@ const appUpdate = require('./api/updater')
 
 if(fs.existsSync(path.join(process.resourcesPath || '','prod.env'))){
   process.env.NODE_ENV = 'production'
-  global.resourcePath = process.resourcesPath
+  global.resourcePath = app.getPath('userData')
 }else{
   process.env.NODE_ENV = 'development'
   global.resourcePath = path.resolve('./resources')
@@ -17,6 +17,11 @@ const route = require('./api/server')
 const listener = require('./api/listener.js')
 const menu = require('./menu');
 
+//disable unwanted Emoji and Dictation in Menu before calling app event
+if(process.platform == "darwin"){
+  systemPreferences.setUserDefault('NSDisabledDictationMenuItem', 'boolean', true)
+  systemPreferences.setUserDefault('NSDisabledCharacterPaletteMenuItem', 'boolean', true)
+}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

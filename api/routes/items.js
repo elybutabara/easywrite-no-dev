@@ -10,7 +10,7 @@ router.post('/', async function (req, res) {
   const item = await ItemController.save(req.body)
 
   if (item.pictures) {
-    item.picture_src = 'file://' + path.resolve(__dirname, '../..', 'resources', 'images', 'items', item.pictures)
+    item.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'items', item.pictures)
   }
 
   res
@@ -46,7 +46,7 @@ router.get('/:itemId', async function (req, res) {
   const item = await ItemController.getByItemId(req.params.itemId)
 
   if (item.pictures) {
-    item.picture_src = 'file://' + path.resolve(__dirname, '../..', 'resources', 'images', 'items', item.pictures)
+    item.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'items', item.pictures)
   }
 
   res
