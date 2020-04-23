@@ -7,7 +7,7 @@ const appUpdate = require('./api/updater')
 
 if(fs.existsSync(path.join(process.resourcesPath || '','prod.env'))){
   process.env.NODE_ENV = 'production'
-  global.resourcePath = process.resourcesPath
+  global.resourcePath = app.getPath('userData')
 }else{
   process.env.NODE_ENV = 'development'
   global.resourcePath = path.resolve('./resources')

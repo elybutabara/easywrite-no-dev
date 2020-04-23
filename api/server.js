@@ -37,7 +37,7 @@ const upload = multer({
     destination: (req, file, callback) => {
       let imgOf = req.params.imgOf
       // eslint-disable-next-line camelcase
-      let img_path = path.join('resources', 'images', imgOf)
+      let img_path = path.resolve(resourcePath,'resources', 'images', imgOf)
       fs.mkdirsSync(img_path)
       callback(null, img_path)
     },
