@@ -36,7 +36,7 @@
         <chapter-compare-versions :properties="{ chapter: page.data.chapter }"></chapter-compare-versions>
     </div>
 </div>
-<b-overlay :show="busy" no-wrap fixed @shown="onShown" @hidden="onHidden">
+<b-overlay :show="busy" no-wrap fixed @shown="onShown">
   <template v-slot:overlay>
     <div
       id="overlay-background"
@@ -48,23 +48,26 @@
       class="p-3"
     >
       <b-container class="bv-example-row">
-        <b-row style="margin-bottom: 1rem;">
-          <b-col>
-            <label>Description: </label>
-            <tiny-editor :initValue="chapter_version.change_description"
-                         v-on:getEditorContent="setDescription"
-                         class="form-control"
-            />
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col>
-            <div class="text-right">
-              <b-button variant="outline-dark" class="mr-3" @click="onCancel">Cancel</b-button>
-              <b-button variant="dark" @click="saveNewVersion">Save</b-button>
-            </div>
-          </b-col>
-        </b-row>
+        <b-card-group deck>
+          <b-card header="Save as new Version" class="text-center">
+            <b-row style="margin-bottom: 1rem;" class="text-left">
+              <b-col>
+                <label>Description: </label>
+                <tiny-editor :initValue="chapter_version.change_description"
+                             v-on:getEditorContent="setDescription"
+                             class="form-control"
+                />
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col>
+                <div class="text-right">
+                  <b-button variant="outline-dark" class="mr-2" @click="onCancel">Cancel</b-button><b-button variant="dark" @click="saveNewVersion">Save</b-button>
+                </div>
+              </b-col>
+            </b-row>
+          </b-card>
+        </b-card-group>
       </b-container>
     </div>
   </template>
@@ -85,7 +88,7 @@ export default {
   data: function () {
     return {
       chapter_version: {
-        chapter_id: this.properties.uuid,
+        chapter_id: null,
         content: '',
         change_description: ''
       },
@@ -97,7 +100,8 @@ export default {
       tab: {
         active: 'content'
       },
-      busy: false
+      busy: false,
+      tempVersionDesc: ''
     }
   },
   components: {
@@ -119,6 +123,11 @@ export default {
     }
   },
   methods: {
+    // Required for geting value from TinyMCE content
+    setDescription (value) {
+      var scope = this
+      scope.tempVersionDesc = value
+    },
     changeTab: function (active) {
       var scope = this
       scope.tab.active = active
@@ -136,11 +145,6 @@ export default {
       // Focus the dialog prompt
       this.$refs.dialog.focus()
     },
-    onHidden () {
-      // In this case, we return focus to the submit button
-      // You may need to alter this based on your application requirements
-      this.$refs.button.focus()
-    },
     onCancel () {
       this.busy = false
     },
@@ -148,12 +152,14 @@ export default {
       var scope = this
 
       scope.chapter_version.change_description = scope.tempVersionDesc
+      scope.chapter_version.content = scope.getChapterContent
+      scope.chapter_version.chapter_id = scope.page.data.chapter.uuid
 
       scope.axios
         .post('http://localhost:3000/chapter-versions', scope.chapter_version)
         .then(response => {
           if (response.data) {
-            scope.getAllChapterVersions(scope.properties)
+            // TODO: Insert vuex code that will refresh the chapter version
             this.busy = false
             window.swal.fire({
               position: 'center',
@@ -162,22 +168,9 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              scope.tabIndex = scope.tabs.findIndex(tab => tab === '#versions')
+              scope.tab.active = 'versions'
             })
           }
-        })
-    },
-    getAllChapterVersions: function (chapter) {
-      var scope = this
-      scope.chapter = chapter
-      scope.axios
-        .get('http://localhost:3000/chapters/' + chapter.uuid + '/versions')
-        .then(response => {
-          scope.chapter.chapter_version = response.data
-
-          scope.chapter_version.chapter_id = chapter.uuid
-          scope.chapter_version.change_description = ''
-          scope.chapter_version.content = scope.chapter.chapter_version[response.data.length - 1].content
         })
     }
   },
