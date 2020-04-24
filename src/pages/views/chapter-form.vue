@@ -123,9 +123,24 @@ export default {
 
       scope.chapterVersionCont = value
     },
+    makeToast (variant = null, content) {
+      this.$bvToast.toast(content.message, {
+        title: content.title,
+        variant: variant,
+        solid: true
+      })
+    },
     saveChapter () {
       var scope = this
       scope.data.chapter_version.content = scope.chapterVersionCont
+
+      if (!scope.data.title) {
+        scope.makeToast('danger', {
+          title: 'Error!',
+          message: 'Title is required'
+        })
+        return false
+      }
 
       scope.axios
         .post('http://localhost:3000/chapters', scope.data)
