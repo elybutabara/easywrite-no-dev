@@ -43,10 +43,7 @@ export default {
   mounted () {
     var scope = this
     scope.chapter = scope.properties
-
-    setTimeout(function () {
-      scope.component.is_ready = true
-    }, 500)
+    scope.component.is_ready = true
   }
 }
 </script>

@@ -53,9 +53,7 @@ export default {
     var scope = this
     scope.book = scope.properties
 
-    setTimeout(function () {
-      scope.component.is_ready = true
-    }, 500)
+    scope.component.is_ready = true
   }
 }
 </script>
