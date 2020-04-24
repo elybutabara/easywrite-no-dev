@@ -11,7 +11,7 @@
                     <div class="es-card-content">
                       <div class="es-card-actions">
                         <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + scene.uuid, tabComponent: 'scene-form',  tabData: { book_id: scene.book_id, scene: scene}, tabTitle: 'Edit ' + scene.title, newTab: true })"><i class="las la-pencil-alt"></i></button>
-                        <button class="btn-circle" @click="DELETE_FROM_LIST('scenes', scene)"><i class="las la-trash-alt"></i></button>
+                        <button class="btn-circle" @click="deleteScene(scene)"><i class="las la-trash-alt"></i></button>
                         <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + scene.uuid, tabComponent: 'scene-details',  tabData: { book_id: scene.book_id, scene: scene}, tabTitle: scene.title, newTab: true })"><i class="lar la-eye"></i></button>
                       </div>
                         <p class="title">{{ scene.title || 'Untitled' }}</p>
@@ -59,7 +59,36 @@ export default {
     }
   },
   methods: {
-
+    deleteScene: function (scene) {
+      var scope = this
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/scenes/' + scene.uuid)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Scene successfuly deleted',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.$store.dispatch('removeSceneFromList', scene)
+                })
+              }
+            })
+        }
+      })
+    }
   },
   beforeUpdate () {
     // var scope = this
@@ -67,7 +96,7 @@ export default {
   mounted () {
     var scope = this
     scope.chapter = scope.properties.chapter
-    scope.scenes = scope.GET_SCENES_BY_CHAPTER(scope.chapter.uuid)
+    scope.scenes = scope.$store.dispatch('loadScenesByChapter', scope.chapter.uuid)
     setTimeout(function () {
       scope.page.is_ready = true
     }, 500)

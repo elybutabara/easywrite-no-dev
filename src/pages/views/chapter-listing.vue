@@ -25,10 +25,10 @@
                     <i class="description ellipsis-2">{{ chapter.short_description || 'No Short Description...'  }}</i>
                 </div>
                 <div class="es-card-footer">
-                    <small>{{$tc('SCENE', 2)}}: {{ GET_SCENES_BY_CHAPTER(chapter.uuid).length }}</small>
+                    <small>{{$tc('SCENE', 2)}}: {{ $store.getters.getScenesByChapter(chapter.uuid).length }}</small>
                     &nbsp; &bull; &nbsp;
-                    <small>{{$tc('VERSION', 2)}}: {{ chapter.chapter_version.length }}</small>
-                    <small style="float:right;">{{$t('WORD_COUNT')}}: {{ WORD_COUNT(chapter.chapter_version[0].content) }}</small>
+                    <small>{{$tc('VERSION', 2)}}: {{ $store.getters.getChapterVersions(chapter.uuid).length }}</small>
+                    <small style="float:right;">{{$t('WORD_COUNT')}}: {{ WORD_COUNT($store.getters.getChapterContent(chapter.uuid)) }}</small>
                 </div>
             </div>
         </div>
