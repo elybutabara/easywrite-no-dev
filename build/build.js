@@ -84,7 +84,7 @@ let buildOptions = {
     "installerIcon": path.resolve('build/icons/win/installer.ico'),
     "uninstallerIcon": path.resolve('build/icons/win/installer.ico'),
     "allowToChangeInstallationDirectory": false,//for release update
-    "oneClick": false //for release update
+    "oneClick": true //for release update
   }
 }
 

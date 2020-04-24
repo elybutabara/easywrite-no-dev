@@ -50,7 +50,9 @@ exports.processUpdate = (window) => {
     if(isNetworkError(err)){
       window.webContents.send('AUTO_UPDATE:error',{error:err.message})
     }else{
-      log.error(err)
+      if(err.code != 'ERR_UPDATER_LATEST_VERSION_NOT_FOUND'){
+        log.error(err)
+      }
     }
   })
 
