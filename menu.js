@@ -136,11 +136,7 @@ if(process.env.NODE_ENV!=='production') {
 // module.exports = (process.env.NODE_ENV == 'production') ? Menu.buildFromTemplate([]) : Menu.buildFromTemplate(mainMenuTemplate);
 exports.getMenu = function (window) {
   mainWindow = window
-  if(process.platform == "darwin"){
-    return Menu.buildFromTemplate(mainMenuTemplate)
-  }else{
-    return (process.env.NODE_ENV == 'production') ? Menu.buildFromTemplate([]) : Menu.buildFromTemplate(mainMenuTemplate)
-  }
+  return Menu.buildFromTemplate(mainMenuTemplate)
 }
 
 exports.setMenu = function (data) {
