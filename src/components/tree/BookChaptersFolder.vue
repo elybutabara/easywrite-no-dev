@@ -4,7 +4,7 @@
             <span>
                 <img v-if="$store.getters.isBookChaptersFolderOpen(book)" src="@/assets/img/icons/folder-open.svg">
                 <img v-else src="@/assets/img/icons/folder.svg">
-                Chapters
+                {{ $tc('CHAPTER', 2) }}
             </span>
         </div>
         <draggable tag="ul"  v-model="chapters" draggable=".handle" class="level-3">
