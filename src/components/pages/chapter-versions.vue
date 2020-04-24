@@ -85,7 +85,7 @@ export default {
   mounted () {
     var scope = this
     scope.chapter = scope.properties.chapter
-    scope.versions = scope.GET_CHAPTER_VERSIONS_BY_CHAPTER(scope.chapter.uuid)
+    scope.versions = scope.$store.getters.getChapterVersions(scope.chapter.uuid)
 
     setTimeout(function () {
       scope.getLatestVersion()

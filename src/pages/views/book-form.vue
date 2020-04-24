@@ -3,7 +3,7 @@
     <div class="es-page-head">
         <div class="inner">
             <div class="details">
-                <div  v-if="properties != null">
+                <div v-if="properties != null">
                     <h4>{{ properties.title }}</h4>
                     <small>Date Modified: {{ properties.created_at }}</small>
                 </div>

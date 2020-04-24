@@ -1,5 +1,5 @@
 <template>
-<div class="page-character-form">
+<div v-if="page.is_ready" class="page-character-form">
     <div class="es-page-head">
         <div class="inner">
             <div class="details">
@@ -105,6 +105,9 @@ export default {
   },
   data: function () {
     return {
+      page: {
+        is_ready: false
+      },
       data: {
         id: null,
         uuid: null,
@@ -218,44 +221,16 @@ export default {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
-                scope.ADD_TO_LIST('characters', response.data)
+                scope.$store.dispatch('updateCharacterList', response.data)
+                scope.CHANGE_COMPONENT({tabKey: 'character-form-' + response.data.uuid, tabComponent: 'character-form', tabData: { book_id: response.data.book_id, character: response.data }, tabTitle: 'Edit  - ' + response.data.fullname, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
-                scope.UPDATE_FROM_LIST('characters', response.data)
+                scope.$store.dispatch('updateCharacterList', response.data)
+                scope.$store.dispatch('changeTabTitle', { key: 'character-form-' + response.data.uuid, title: 'Edit - ' + response.data.fullname })
               }
             })
-          }
-        })
-    },
-    loadCharacter () {
-      var scope = this
-      scope.axios
-        .get('http://localhost:3000/characters/' + scope.data.uuid)
-        .then(response => {
-          let character = response.data
-          scope.data.shortname = character.shortname
-          scope.data.fullname = character.fullname
-          scope.data.nickname = character.nickname
-          scope.data.occupation = character.occupation
-          scope.data.description = character.description
-          scope.data.bio = character.bio
-          scope.data.goals = character.goals
-          scope.data.birthdate = character.birthdate
-
-          scope.tempDescription = character.description
-          scope.tempBio = character.bio
-          scope.tempGoals = character.goals
-
-          if (character.picture) {
-            scope.$set(scope.data, 'picture', character.picture)
-
-            const image = new Image()
-            image.src = character.picture_src
-            image.setAttribute('width', '100%')
-
-            window.$('.uploaded-file-preview').html(image)
           }
         })
     }
@@ -271,10 +246,36 @@ export default {
   },
   mounted () {
     var scope = this
+    if (scope.data.uuid) {
+      setTimeout(function () {
+        let character = scope.$store.getters.findCharacter(scope.properties.character)
+        scope.data.shortname = character.shortname
+        scope.data.fullname = character.fullname
+        scope.data.nickname = character.nickname
+        scope.data.occupation = character.occupation
+        scope.data.description = character.description
+        scope.data.bio = character.bio
+        scope.data.goals = character.goals
+        scope.data.birthdate = character.birthdate
 
-    if (scope.data.id) {
-      scope.loadCharacter()
+        scope.tempDescription = character.description
+        scope.tempBio = character.bio
+        scope.tempGoals = character.goals
+        if (character.picture) {
+          scope.$set(scope.data, 'picture', character.picture)
+
+          const image = new Image()
+          image.src = character.picture_src
+          image.setAttribute('width', '100%')
+
+          window.$('.uploaded-file-preview').html(image)
+        }
+      }, 500)
     }
+
+    setTimeout(function () {
+      scope.page.is_ready = true
+    }, 550)
   }
 }
 </script>

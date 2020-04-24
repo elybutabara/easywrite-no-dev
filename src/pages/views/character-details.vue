@@ -55,8 +55,8 @@
             </div>
         </div>
         <div class="es-panel-footer">
-            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form',  tabData: { book_id: properties.uuid, character: properties.character }, tabTitle: 'Edit - ' + properties.character.fullname })">EDIT</div>
-            <div class="cta" @click="DELETE_FROM_LIST('characters', properties.character)">DELETE</div>
+            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'character-form-' + properties.character.uuid, tabComponent: 'character-form',  tabData: { book_id: properties.uuid, character: properties.character }, tabTitle: 'Edit - ' + properties.character.fullname })">EDIT</div>
+            <div class="cta" @click="deleteCharacter(properties.character)">DELETE</div>
         </div>
     </div>
 
@@ -232,7 +232,7 @@ export default {
       var scope = this
       scope.$parent.changeComponent('character-form', { character: character })
     },
-    deleteCharacter: function (characterId) {
+    deleteCharacter: function (character) {
       var scope = this
       window.swal.fire({
         title: 'Are you sure?',
@@ -245,7 +245,7 @@ export default {
       }).then((result) => {
         if (result.value) {
           scope.axios
-            .delete('http://localhost:3000/characters/' + characterId)
+            .delete('http://localhost:3000/characters/' + character.uuid)
             .then(response => {
               if (response.data) {
                 window.swal.fire({
@@ -255,7 +255,8 @@ export default {
                   showConfirmButton: false,
                   timer: 1500
                 }).then(() => {
-                  scope.$parent.changeComponent('character-listing', scope.character.book)
+                  scope.$store.dispatch('removeCharacterFromList', character)
+                  scope.CHANGE_COMPONENT({tabKey: 'character-listing-' + character.book_id, tabComponent: 'character-listing', tabData: { uuid: character.book_id }, tabTitle: 'Character List', tabIndex: scope.$store.getters.getActiveTab})
                 })
               }
             })

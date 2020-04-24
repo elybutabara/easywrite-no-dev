@@ -146,8 +146,10 @@ export default {
   },
   mounted () {
     var scope = this
-    var userID = this.$store.getters.getUserID
-    scope.$store.dispatch('getBooksByAuthorID', userID)
+    var userUUID = this.$store.getters.getUserID
+    var authorUUID = this.$store.getters.getAuthorID
+    scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+    // scope.$store.dispatch('getBooksByAuthorID', userID)
 
     setTimeout(function () {
       scope.ready = true

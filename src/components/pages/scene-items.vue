@@ -5,7 +5,7 @@
             <button @click="showChildrenItemList()" class="btn-dark" style="float:right;">ADD SCENE ITEM</button>
             <div class="heading">ITEMS</div>
             <div class="es-row">
-                <div class="es-col " v-bind:key="scene_item.id" v-for="scene_item in GET_SCENE_ITEMS_BY_SCENE(scene.uuid)">
+                <div class="es-col " v-bind:key="scene_item.id" v-for="scene_item in $store.getters.getSceneItems(scene.uuid)">
                     <div class="es-card">
                         <div class="es-card-content">
                             <p class="title">{{ scene_item.item.itemname || 'Untitled' }}</p>
@@ -15,7 +15,7 @@
                         <div class="es-card-footer">
                             <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-details-' + scene_item.item.uuid, tabComponent: 'item-details',  tabData: {  book_id: scene.book_id, item: scene_item.item }, tabTitle: scene_item.item.itemname})"><i class="lar la-eye"></i> VIEW</button>
                             <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + scene_item.item.uuid, tabComponent: 'item-form',  tabData: { book_id: scene.book_id, item: scene_item.item }, tabTitle: scene_item.item.itemname, newTab: true})"><i class="las la-pencil-alt"></i> EDIT</button>
-                            <button class="btn-delete" @click="DELETE_FROM_LIST('scene-items', scene_item)"><i class="las la-trash-alt"></i> DELETE</button>
+                            <button class="btn-delete" @click="deleteSceneItem(scene_item)"><i class="las la-trash-alt"></i> DELETE</button>
                         </div>
                     </div>
                 </div>
@@ -59,7 +59,7 @@ export default {
   methods: {
     isIncluded: function (item) {
       var scope = this
-      var scenes = scope.GET_SCENE_ITEMS_BY_SCENE(scope.scene.uuid)
+      var scenes = scope.$store.getters.getSceneItems(scope.scene.uuid)
       for (let i = 0; i < scenes.length; i++) {
         let scene = scenes[i]
         if (scene.item.uuid === item.uuid) {
@@ -88,9 +88,39 @@ export default {
         .post('http://localhost:3000/scene-items', sceneItem)
         .then(response => {
           if (response.data) {
-            scope.ADD_TO_LIST('scene-items', response.data)
+            scope.$store.dispatch('addSceneItemToList', response.data)
           }
         })
+    },
+    deleteSceneItem: function (item) {
+      var scope = this
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/scene-items/' + item.uuid)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Scene Character successfuly deleted',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.$store.dispatch('removeSceneItemFromList', item)
+                })
+              }
+            })
+        }
+      })
     }
   },
   beforeUpdate () {
@@ -99,7 +129,6 @@ export default {
   mounted () {
     var scope = this
     scope.scene = scope.properties.scene
-    scope.LOAD_LIST('items', { uuid: scope.scene.book_id })
     setTimeout(function () {
       scope.page.is_ready = true
     }, 500)

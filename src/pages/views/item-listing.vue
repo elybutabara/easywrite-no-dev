@@ -15,7 +15,7 @@
 
         <div class="es-page-content">
             <div class="es-row">
-                <div class="es-col fadeIn animated" v-for="item in GET_ITEMS_BY_BOOK(bookUUID)" v-bind:key="item.id">
+                <div class="es-col fadeIn animated" v-for="item in items" v-bind:key="item.id">
                     <div class="es-card">
                         <div class="es-card-content">
                             <p class="title">{{ item.itemname || 'Untitled' }}</p>
@@ -25,7 +25,7 @@
                         <div class="es-card-footer">
                             <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-details-' + item.uuid, tabComponent: 'item-details', tabData: { book_id: properties.uuid, item: item }, tabTitle: item.itemname})"><i class="lar la-eye"></i> VIEW</button>
                             <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + item.uuid, tabComponent: 'item-form', tabData: { book_id: properties.uuid, item: item }, tabTitle: 'Edit - ' + item.itemname, newTab: true})"><i class="las la-pencil-alt"></i> EDIT</button>
-                            <button class="btn-delete" @click="DELETE_FROM_LIST('items', item)"><i class="las la-trash-alt"></i> DELETE</button>
+                            <button class="btn-delete" @click="deleteItem(item)"><i class="las la-trash-alt"></i> DELETE</button>
                         </div>
                     </div>
                 </div>
@@ -44,20 +44,13 @@ export default {
       bookUUID: ''
     }
   },
+  computed: {
+    items: function () {
+      return this.$store.getters.getItemsByBook(this.bookUUID)
+    }
+  },
   methods: {
-    createItem () {
-      var scope = this
-      scope.$parent.changeComponent('item-form', scope.properties)
-    },
-    editItem: function (item) {
-      var scope = this
-      scope.$parent.changeComponent('item-form', { item: item })
-    },
-    viewItem: function (item) {
-      var scope = this
-      scope.$parent.changeComponent('item-details', { item: item })
-    },
-    deleteItem: function (locationId) {
+    deleteItem: function (item) {
       var scope = this
       window.swal.fire({
         title: 'Are you sure?',
@@ -70,7 +63,7 @@ export default {
       }).then((result) => {
         if (result.value) {
           scope.axios
-            .delete('http://localhost:3000/items/' + locationId)
+            .delete('http://localhost:3000/items/' + item.uuid)
             .then(response => {
               if (response.data) {
                 window.swal.fire({
@@ -80,7 +73,7 @@ export default {
                   showConfirmButton: false,
                   timer: 1500
                 }).then(() => {
-                  scope.GET_ITEMS_BY_BOOK(scope.bookUUID)
+                  scope.$store.dispatch('removeItemFromList', item)
                 })
               }
             })

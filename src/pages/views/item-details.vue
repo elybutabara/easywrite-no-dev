@@ -11,7 +11,7 @@
         </div>
         <div class="es-panel-footer">
             <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + properties.item.uuid, tabComponent: 'item-form', tabData: { book_id: properties.uuid, item: properties.item }, tabTitle: 'Edit - ' + properties.item.itemname, newTab: true})">EDIT</div>
-            <div class="cta" @click="DELETE_FROM_LIST('items', properties.item)">DELETE</div>
+            <div class="cta" @click="deleteItem(properties.item)">DELETE</div>
         </div>
     </div>
 </div>
@@ -23,7 +23,43 @@ export default {
   props: ['properties'],
   data: function () {
     return {
+      page: {
+        is_ready: false
+      },
       item: []
+    }
+  },
+  methods: {
+    deleteItem: function (item) {
+      var scope = this
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/items/' + item.uuid)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Item successfuly deleted',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.$store.dispatch('removeItemFromList', item)
+                  scope.CHANGE_COMPONENT({tabKey: 'item-listing-' + item.book_id, tabComponent: 'item-listing', tabData: { uuid: item.book_id }, tabTitle: 'Item List', tabIndex: scope.$store.getters.getActiveTab})
+                })
+              }
+            })
+        }
+      })
     }
   },
   beforeMount () {

@@ -4,120 +4,19 @@ import axios from 'axios'
 export default {
   strict: true,
   state: {
-    books: [],
-    chapters: {},
-    items: {},
-    characters: {},
-    locations: {},
-    scenes: {},
-    chapter_versions: { rows: [] },
-    scene_versions: { rows: [] },
-    scene_locations: { rows: [] },
-    scene_items: { rows: [] },
-    scene_characters: { rows: [] }
+    // books: [],
+    // items: {},
+    // characters: {},
+    // locations: {},
+    // scenes: {},
+    // scene_versions: { rows: [] },
+    // scene_locations: { rows: [] },
+    // scene_items: { rows: [] },
+    // scene_characters: { rows: [] }
   },
   getters: {
     getBooks: state => {
       return state.books
-    },
-    getChaptersByBook: state => (bookUUID) => {
-      if (state.chapters.hasOwnProperty(bookUUID)) {
-        return state.chapters[bookUUID].rows
-      }
-      return []
-    },
-    getItemsByBook: state => (bookUUID) => {
-      if (state.items.hasOwnProperty(bookUUID)) {
-        return state.items[bookUUID].rows
-      }
-      return []
-    },
-    getLocationsByBook: state => (bookUUID) => {
-      if (state.locations.hasOwnProperty(bookUUID)) {
-        return state.locations[bookUUID].rows
-      }
-      return []
-    },
-    getCharactersByBook: state => (bookUUID) => {
-      if (state.characters.hasOwnProperty(bookUUID)) {
-        return state.characters[bookUUID].rows
-      }
-      return []
-    },
-    getScenesByBook: state => (bookUUID) => {
-      if (state.scenes.hasOwnProperty(bookUUID)) {
-        return state.scenes[bookUUID].rows
-      }
-      return []
-    },
-    getScenesByChapter: state => (chapterUUID) => {
-      if (state.scenes.hasOwnProperty(chapterUUID)) {
-        return state.scenes[chapterUUID].rows
-      }
-      return []
-    },
-    getChapterVersions: state => (chapterUUID) => {
-      if (state.chapter_versions.hasOwnProperty(chapterUUID)) {
-        return state.chapter_versions[chapterUUID].rows
-      }
-      return []
-    },
-    getChapterContent: state => (chapterUUID) => {
-      if (state.chapter_versions[chapterUUID] !== 'undefined' && state.chapter_versions[chapterUUID].rows.length > 0) {
-        var index = state.chapter_versions[chapterUUID].rows.length - 1
-        return state.chapter_versions[chapterUUID].rows[index].content
-      } else {
-        return ''
-      }
-    },
-    getChapterVersionContent: state => (chapterVersionUUID) => {
-      if (state.chapter_versions[chapterVersionUUID] !== 'undefined' && state.chapter_versions[chapterVersionUUID].rows.length > 0) {
-        var index = state.chapter_versions[chapterVersionUUID].rows.length - 1
-        return state.chapter_versions[chapterVersionUUID].rows[index].content
-      } else {
-        return ''
-      }
-    },
-    findChapterVersion: state => (chapterVersionUUID) => {
-      if (state.chapter_versions[chapterVersionUUID] !== 'undefined' && state.chapter_versions[chapterVersionUUID].rows.length > 0) {
-        var index = state.chapter_versions[chapterVersionUUID].rows.length - 1
-        return state.chapter_versions[chapterVersionUUID].rows[index]
-      } else {
-        return null
-      }
-    },
-    getSceneLocations: state => (sceneUUID) => {
-      if (state.scene_locations.hasOwnProperty(sceneUUID)) {
-        return state.scene_locations[sceneUUID].rows
-      }
-      return []
-    },
-    getSceneItems: state => (sceneUUID) => {
-      if (state.scene_items.hasOwnProperty(sceneUUID)) {
-        return state.scene_items[sceneUUID].rows
-      }
-      return []
-    },
-    getSceneCharacters: state => (sceneUUID) => {
-      if (state.scene_characters.hasOwnProperty(sceneUUID)) {
-        return state.scene_characters[sceneUUID].rows
-      }
-      return []
-    },
-    getSceneVersions: state => (sceneUUID) => {
-      console.log('LOADING SCENE VERSION FROM VUEX ' + sceneUUID)
-      if (state.scene_versions.hasOwnProperty(sceneUUID)) {
-        return state.scene_versions[sceneUUID].rows
-      }
-      return []
-    },
-    getSceneContent: state => (sceneUUID) => {
-      if (state.scene_versions[sceneUUID] !== 'undefined' && state.scene_versions[sceneUUID].rows.length > 0) {
-        var index = state.scene_versions[sceneUUID].rows.length - 1
-        return state.scene_versions[sceneUUID].rows[index].content
-      } else {
-        return ''
-      }
     }
   },
   mutations: {
@@ -476,28 +375,16 @@ export default {
         }
       }
     },
-    sortChapters (state, payload) {
-      axios
-        .post('http://localhost:3000/chapters/sort', payload.data)
-        .then(response => {
-          console.log('chapters sorted!')
-        })
-      state.chapters[payload.bookUUID].rows = payload.data
-    },
-    sortScenes (state, payload) {
-      axios
-        .post('http://localhost:3000/scenes/sort', payload.data)
-        .then(response => {
-          console.log('scenes sorted!')
-        })
-      state.scenes[payload.PARENT].rows = payload.data
-    },
     mutateBook (state, payload) {
       var userID = payload
       axios
         .get('http://localhost:3000/users/' + userID + '/books')
         .then(response => {
           state.books = response.data
+          state.books.forEach(function (book) {
+            book.is_open = false
+            book.folders = ['chapters', 'items', 'characters', 'locations', 'scenes']
+          })
         })
     },
     mutateChapter (state, payload) {

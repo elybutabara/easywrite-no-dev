@@ -5,7 +5,7 @@ export default {
     tabs: {
       active_index: 0,
       items: [
-        { key: 'dashboard', title: 'Dashboard', component: 'dashboard', data: { autosync: true }, refresh: false }
+        { key: 'dashboard', title: 'Dashboard', component: 'dashboard', data: { autosync: false }, refresh: false }
       ]
     }
   },
@@ -18,6 +18,9 @@ export default {
     },
     getActiveTab: state => {
       return state.tabs.active_index
+    },
+    getActiveTabKey: state => {
+      return state.tabs.active_index
     }
   },
   mutations: {
@@ -26,10 +29,12 @@ export default {
         var item = state.tabs.items[i]
         if (item.key === payload.key) {
           state.tabs.active_index = i
+          state.tabs.active_key = payload.key
           break
         } else if (i === (state.tabs.items.length - 1) && item.key !== payload.key) {
           state.tabs.items.push(payload)
           state.tabs.active_index = (state.tabs.items.length - 1)
+          state.tabs.active_key = payload.key
           break
         }
       }
@@ -59,6 +64,14 @@ export default {
         }
       }
     },
+    changeTabTitle (state, payload) {
+      for (let i = 0; i < state.tabs.items.length; i++) {
+        var item = state.tabs.items[i]
+        if (item.key === payload.key) {
+          state.tabs.items[i].title = payload.title
+        }
+      }
+    },
     removeTab (state, payload) {
       let next = 0
 
@@ -78,6 +91,9 @@ export default {
   actions: {
     changeTabContent ({ commit, state }, payload) {
       commit('changeTabContent', payload)
+    },
+    changeTabTitle ({ commit, state }, payload) {
+      commit('changeTabTitle', payload)
     },
     newTab ({ commit, state }, payload) {
       commit('newTab', payload)

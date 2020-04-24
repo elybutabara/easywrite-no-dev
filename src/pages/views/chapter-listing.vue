@@ -13,27 +13,27 @@
     </div>
 
     <div class="es-page-content">
-            <draggable v-model="chapters" draggable=".es-col" class="es-row">
-            <div class="es-col fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
-                <div class="es-card">
-                    <div class="es-card-content">
-                        <div class="es-card-actions">
-                            <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'chapter-form-' + chapter.uuid, tabComponent: 'chapter-form',  tabData: { book_id: properties.uuid, chapter: chapter }, tabTitle: 'Edit - ' + chapter.title, newTab: true })"><i class="las la-pencil-alt"></i></button>
-                            <button class="btn-circle" @click="DELETE_FROM_LIST('chapters', chapter)"><i class="las la-trash-alt"></i></button>
-                            <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + chapter.uuid, tabComponent: 'chapter-details',  tabData: { book_id: properties.uuid, chapter: chapter }, tabTitle: 'View - ' + chapter.title})"><i class="lar la-eye"></i></button>
-                        </div>
-                        <p class="title">{{ displayTitle(chapter.title) }}</p>
-                        <i class="description ellipsis-2">{{ chapter.short_description || 'No Short Description...'  }}</i>
+        <draggable v-model="chapters" draggable=".es-col" class="es-row">
+        <div class="es-col fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
+            <div class="es-card">
+                <div class="es-card-content">
+                    <div class="es-card-actions">
+                        <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'chapter-form-' + chapter.uuid, tabComponent: 'chapter-form',  tabData: { book_id: properties.uuid, chapter: chapter }, tabTitle: 'Edit - ' + chapter.title, newTab: true })"><i class="las la-pencil-alt"></i></button>
+                        <button class="btn-circle" @click="deleteChapter(chapter)"><i class="las la-trash-alt"></i></button>
+                        <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + chapter.uuid, tabComponent: 'chapter-details',  tabData: { book_id: properties.uuid, chapter: chapter }, tabTitle: 'View - ' + chapter.title})"><i class="lar la-eye"></i></button>
                     </div>
-                    <div class="es-card-footer">
-                        <small>Scenes: {{ GET_SCENES_BY_CHAPTER(chapter.uuid).length }}</small>
-                        &nbsp; &bull; &nbsp;
-                        <small>Versions: {{ chapter.chapter_version.length }}</small>
-                        <small style="float:right;">Word Count: {{ WORD_COUNT(chapter.chapter_version[0].content) }}</small>
-                    </div>
+                    <p class="title">{{ displayTitle(chapter.title) }}</p>
+                    <i class="description ellipsis-2">{{ chapter.short_description || 'No Short Description...'  }}</i>
+                </div>
+                <div class="es-card-footer">
+                    <small>Scenes: {{ $store.getters.getScenesByChapter(chapter.uuid).length }}</small>
+                    &nbsp; &bull; &nbsp;
+                    <small>Versions: {{ $store.getters.getChapterVersions(chapter.uuid).length }}</small>
+                    <small style="float:right;">Word Count: {{ WORD_COUNT($store.getters.getChapterContent(chapter.uuid)) }}</small>
                 </div>
             </div>
-            </draggable>
+        </div>
+        </draggable>
     </div>
 </div>
 
@@ -56,7 +56,7 @@ export default {
     chapters: {
       get () {
         let scope = this
-        let chapters = scope.GET_CHAPTERS_BY_BOOK(scope.bookUUID)
+        let chapters = scope.$store.getters.getChaptersByBook(scope.bookUUID)
         return chapters
       },
       set (value) {
@@ -74,6 +74,36 @@ export default {
       } else {
         return title.slice(0, 39)
       }
+    },
+    deleteChapter: function (chapter) {
+      var scope = this
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/chapters/' + chapter.uuid)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Chapter successfuly deleted',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.$store.dispatch('removeChapterFromList', chapter)
+                })
+              }
+            })
+        }
+      })
     }
   },
   mounted () {

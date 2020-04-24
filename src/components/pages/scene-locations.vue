@@ -5,7 +5,7 @@
             <button @click="showChildrenItemList()" class="btn-dark" style="float:right;">ADD SCENE LOCATIONS</button>
             <div class="heading">LOCATIONS</div>
             <div class="es-row">
-                <div class="es-col " v-bind:key="scene_location.id" v-for="scene_location in GET_SCENE_LOCATIONS_BY_SCENE(scene.uuid)">
+                <div class="es-col " v-bind:key="scene_location.id" v-for="scene_location in $store.getters.getSceneLocations(scene.uuid)">
                     <div class="es-card">
                         <div class="es-card-content">
                             <p class="title">{{ scene_location.location.location || 'Untitled' }}</p>
@@ -15,7 +15,7 @@
                         <div class="es-card-footer">
                             <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-details-' + scene_location.location.uuid, tabComponent: 'location-details',  tabData: { book_id: scene.book_id, location: scene_location.location }, tabTitle: scene_location.location.location})"><i class="lar la-eye"></i> VIEW</button>
                             <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + scene_location.location.uuid, tabComponent: 'location-form',  tabData: { book_id: properties.uuid, location: scene_location.location }, tabTitle: 'Edit - ' + scene_location.location.location, newTab: true})"><i class="las la-pencil-alt"></i> EDIT</button>
-                            <button class="btn-delete"  @click="DELETE_FROM_LIST('scene-locations', scene_location)"><i class="las la-trash-alt"></i> DELETE</button>
+                            <button class="btn-delete"  @click="deleteSceneLocation(scene_location)"><i class="las la-trash-alt"></i> DELETE</button>
                         </div>
                     </div>
                 </div>
@@ -59,7 +59,7 @@ export default {
   methods: {
     isIncluded: function (location) {
       var scope = this
-      var scenes = scope.GET_SCENE_LOCATIONS_BY_SCENE(scope.scene.uuid)
+      var scenes = scope.$store.getters.getSceneLocations(scope.scene.uuid)
       for (let i = 0; i < scenes.length; i++) {
         let scene = scenes[i]
         if (scene.location.uuid === location.uuid) {
@@ -88,9 +88,39 @@ export default {
         .post('http://localhost:3000/scene-locations', sceneLocation)
         .then(response => {
           if (response.data) {
-            scope.ADD_TO_LIST('scene-locations', response.data)
+            scope.$store.dispatch('addSceneLocationToList', response.data)
           }
         })
+    },
+    deleteSceneLocation: function (location) {
+      var scope = this
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/scene-locations/' + location.uuid)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Scene Location successfuly deleted',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.$store.dispatch('removeSceneLocationFromList', location)
+                })
+              }
+            })
+        }
+      })
     }
   },
   beforeUpdate () {
@@ -99,7 +129,7 @@ export default {
   mounted () {
     var scope = this
     scope.scene = scope.properties.scene
-    scope.LOAD_LIST('locations', { uuid: scope.scene.book_id })
+    scope.$store.dispatch('loadLocationsByScene', scope.scene)
     setTimeout(function () {
       scope.page.is_ready = true
     }, 500)

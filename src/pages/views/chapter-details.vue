@@ -11,7 +11,7 @@
             <div class="actions">
                 <button class="es-button-white" @click="newVersion()">SAVE AS NEW VERSION</button>
                 <button class="es-button-white" @click="CHANGE_COMPONENT({ tabKey: 'chapter-form-' + properties.chapter.uuid, tabComponent: 'chapter-form',  tabData: { book_id: properties.chapter.book_id, chapter:  properties.chapter }, tabTitle: 'Edit - ' +  properties.chapter.title, newTab: true })">EDIT</button>
-                <button class="es-button-white" @click="DELETE_FROM_LIST('chapters',  properties.chapter)">DELETE</button>
+                <button class="es-button-white" @click="deleteChapter(properties.chapter)">DELETE</button>
             </div>
         </div>
     </div>
@@ -83,6 +83,37 @@ export default {
     changeTab: function (active) {
       var scope = this
       scope.tab.active = active
+    },
+    deleteChapter: function (chapter) {
+      var scope = this
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/chapters/' + chapter.uuid)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Chapter successfuly deleted',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.$store.dispatch('removeChapterFromList', chapter)
+                  scope.CHANGE_COMPONENT({tabKey: 'chapter-listing-' + chapter.book_id, tabComponent: 'chapter-listing', tabData: { uuid: chapter.book_id }, tabTitle: 'Chapter List', tabIndex: scope.$store.getters.getActiveTab})
+                })
+              }
+            })
+        }
+      })
     }
   },
   beforeUpdate () {
@@ -91,9 +122,14 @@ export default {
   mounted () {
     var scope = this
     scope.page.data = scope.properties
-    scope.LOAD_LIST('chapter-versions', scope.page.data.chapter)
     scope.page.title = scope.properties.chapter.title
-    scope.page.is_ready = true
+
+    scope.$store.dispatch('loadScenesByChapter', scope.properties.chapter.uuid)
+    scope.$store.dispatch('loadVersionsByChapter', scope.properties.chapter.uuid)
+
+    setTimeout(function () {
+      scope.page.is_ready = true
+    }, 300)
   }
 }
 </script>

@@ -17,7 +17,7 @@ export default {
     },
     CHANGE_COMPONENT: function (data) {
       var scope = this
-      let isNewTab = data.newTab
+      let isNewTab = (data.newTab) ? data.newTab : false
       let tabIndex = (data.tabIndex === null || data.tabIndex === undefined) ? 0 : data.tabIndex
       let settings = { key: data.tabKey, component: data.tabComponent, data: data.tabData, title: data.tabTitle, index: tabIndex }
 
@@ -27,6 +27,29 @@ export default {
       } else {
         // scope.$store.dispatch('changeTabContent', { key: key, title: tabTitle, component: tabComponent, data: tabData, index: tabIndex })
         scope.$store.dispatch('changeTabContent', settings)
+      }
+    },
+    TOGGLE_BOOK: function (data, model) {
+      var scope = this
+      scope.$store.dispatch('toggleBook', { model: model, data: data })
+
+      if (model === 'book') {
+        scope.CHANGE_COMPONENT({tabKey: 'book-details-' + data.uuid, tabComponent: 'book-details', tabData: data, tabTitle: data.title})
+      } else if (model === 'chapters') {
+        scope.$store.dispatch('loadChaptersByBook', data.uuid)
+        scope.CHANGE_COMPONENT({tabKey: 'chapter-listing-' + data.uuid, tabComponent: 'chapter-listing', tabData: data, tabTitle: 'Chapters - ' + data.title})
+      } else if (model === 'items') {
+        scope.$store.dispatch('loadItemsByBook', data.uuid)
+        scope.CHANGE_COMPONENT({tabKey: 'item-listing-' + data.uuid, tabComponent: 'item-listing', tabData: data, tabTitle: 'Items - ' + data.title})
+      } else if (model === 'characters') {
+        scope.$store.dispatch('loadCharactersByBook', data.uuid)
+        scope.CHANGE_COMPONENT({tabKey: 'character-listing-' + data.uuid, tabComponent: 'character-listing', tabData: data, tabTitle: 'Character - ' + data.title})
+      } else if (model === 'locations') {
+        scope.$store.dispatch('loadLocationsByBook', data.uuid)
+        scope.CHANGE_COMPONENT({tabKey: 'location-listing-' + data.uuid, tabComponent: 'location-listing', tabData: data, tabTitle: 'Location - ' + data.title})
+      } else if (model === 'scenes') {
+        scope.$store.dispatch('loadScenesByBook', data.uuid)
+        scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + data.uuid, tabComponent: 'scene-listing', tabData: data, tabTitle: 'Scenes - ' + data.title})
       }
     },
     TOGGLE_TREE: function (model, index, isOpen, data) {

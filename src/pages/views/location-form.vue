@@ -174,12 +174,14 @@ export default {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
-                scope.ADD_TO_LIST('locations', response.data)
+                scope.$store.dispatch('updateLocationList', response.data)
+                scope.CHANGE_COMPONENT({tabKey: 'location-form-' + response.data.uuid, tabComponent: 'location-form', tabData: { book_id: response.data.book_id, location: response.data }, tabTitle: 'Edit  - ' + response.data.location, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
-                scope.UPDATE_FROM_LIST('locations', response.data)
+                scope.$store.dispatch('updateLocationList', response.data)
+                scope.$store.dispatch('changeTabTitle', { key: 'location-form-' + response.data.uuid, title: 'Edit - ' + response.data.location })
               }
             })
           }

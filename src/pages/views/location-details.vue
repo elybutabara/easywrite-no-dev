@@ -11,8 +11,8 @@
             <i class="description" v-else>No Description</i>
         </div>
         <div class="es-panel-footer">
-            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + properties.location.uuid, tabComponent: 'location-form', tabData: { book_id: properties.uuid, location: properties.location }, tabTitle: 'Edit - ' + properties.location.location, newTab: true})">EDIT</div>
-            <div class="cta" @click="DELETE_FROM_LIST('locations', properties.location)">DELETE</div>
+            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + properties.location.uuid, tabComponent: 'location-form', tabData: { book_id: properties.uuid, location: properties.location }, tabTitle: 'Edit - ' + properties.location.location})">EDIT</div>
+            <div class="cta" @click="deleteLocation(properties.location)">DELETE</div>
         </div>
     </div>
 
@@ -28,13 +28,46 @@ export default {
       location: []
     }
   },
+  methods: {
+    deleteLocation: function (location) {
+      var scope = this
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/locations/' + location.uuid)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Location successfuly deleted',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.$store.dispatch('removeLocationFromList', location)
+                  scope.CHANGE_COMPONENT({tabKey: 'location-listing-' + location.book_id, tabComponent: 'location-listing', tabData: { uuid: location.book_id }, tabTitle: 'Character List', tabIndex: scope.$store.getters.getActiveTab})
+                })
+              }
+            })
+        }
+      })
+    }
+  },
   beforeMount () {
     var scope = this
     scope.$set(scope, 'location', scope.properties.location)
   },
   mounted () {
-    // var scope = this
-    // console.log(scope.location)
+    var scope = this
+    scope.$set(scope, 'location', scope.properties.location)
   }
 }
 </script>
