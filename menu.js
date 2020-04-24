@@ -51,7 +51,7 @@ const mainMenuTemplate = [
         checked: false,
         click() {
           mainWindow.webContents.send('REFRESH_MENU', ControlState(2))
-          mainWindow.webContents.send('TRANSLATE','fi')
+          mainWindow.webContents.send('TRANSLATE','fi')  
           mainWindow.webContents.send('SET_TRANSLATION_DOM','fi')
         }
       },
