@@ -6,12 +6,12 @@ const { Menu } = require('electron');
 let tray = null
 // Create menu templete
 const mainMenuTemplate = [
-  {
-    label:'File',
-    submenu:[
-      { label: "Exit", role: 'close'},
-    ]
-  },
+  // {
+  //   label:'File',
+  //   submenu:[
+  //     { label: "Exit", role: 'close'},
+  //   ]
+  // },
   {
     label:'Translations',
     submenu:[
