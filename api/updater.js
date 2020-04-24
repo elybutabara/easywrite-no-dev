@@ -21,7 +21,7 @@ exports.check = () => {
 
   process.env.GH_TOKEN = 'dfd1c61fcb090ecba24909875e177c5326ad449d'
 
-  autoUpdater.checkForUpdates().then(() => {}).catch((err) => {log.error(err)})
+  autoUpdater.checkForUpdates().then(() => {})
 }
 
 exports.processUpdate = (window) => {
@@ -50,7 +50,7 @@ exports.processUpdate = (window) => {
     if(isNetworkError(err)){
       window.webContents.send('AUTO_UPDATE:error',{error:err.message})
     }else{
-      // log.error(err)
+      log.error(err)
     }
   })
 
@@ -58,14 +58,11 @@ exports.processUpdate = (window) => {
     // check available update
     version = data.version
     ipcMain.on('AUTO_UPDATE:checkUpdateAvailable', (event) => {
-      // console.log('checkUpdateAvailable-downloaded_version:' + downloaded_version)
-      // console.log('checkUpdateAvailable-version:' + version)
       if(downloaded_version != version){
         event.reply('AUTO_UPDATE:updateAvailable',{version: data.version})
       }
     })
-    // console.log('checkUpdateAvailable-downloaded_version:' + downloaded_version)
-    // console.log('checkUpdateAvailable-version:' + version)
+
     if(downloaded_version != version) {
       window.webContents.send('AUTO_UPDATE:updateAvailable', {version: data.version})
     }
@@ -81,10 +78,7 @@ exports.processUpdate = (window) => {
     //TODO remove darwin if certificate is good to go
     if(!in_progress) {
       if (process.platform === 'darwin') return false // TODO : remove this if DEVELOPERS CERTIFICATE IS GOOD TO GO
-      autoUpdater.checkForUpdates().then((data) => {
-        // console.log('checking for update')
-        // log.info(data)
-      })
+      autoUpdater.checkForUpdates().then(() => {})
     }
   }, 1 * 60 * 1000)
 
