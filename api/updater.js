@@ -28,6 +28,8 @@ exports.processUpdate = (window) => {
   let version
   let in_progress = false
   let downloaded_version
+  //TODO remove darwin if certificate is okay
+  if (process.platform === 'darwin') return false
   autoUpdater.on('update-downloaded', function (data) {
     in_progress = false
     downloaded_version = data.version
