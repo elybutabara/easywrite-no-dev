@@ -1,46 +1,45 @@
 <template>
   <div>
     <div v-if="page.is_ready" class="page-scene-details">
-      <div class="es-page-head">
+    <div class="es-page-head">
         <div class="inner">
-          <div class="details">
-            <div>
-              <h4><strong>{{ properties.scene.title }}</strong></h4>
+            <div class="details">
+                <div>
+                    <h4><strong>{{ properties.scene.title }}</strong></h4>
+                </div>
             </div>
-          </div>
-          <div class="actions">
-            <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
-            <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.scene.uuid, tabComponent: 'scene-form', tabData: { book_id: properties.scene.book_id, scene: properties.scene }, tabTitle: 'Edit - ' +  properties.scene.title, newTab: true})">{{$t('EDIT').toUpperCase()}}</button>
-            <button class="es-button-white" @click="DELETE_FROM_LIST('scenes',  properties.scene)">{{$t('DELETE').toUpperCase()}}</button>
-          </div>
+            <div class="actions">
+                <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.scene.uuid, tabComponent: 'scene-form', tabData: { book_id: properties.scene.book_id, scene: properties.scene }, tabTitle: 'Edit - ' +  properties.scene.title, newTab: true})">{{$t('EDIT').toUpperCase()}}</button>
+                <button class="es-button-white" @click="deleteScene(properties.scene)">{{$t('DELETE').toUpperCase()}}</button>
+            </div>
         </div>
-      </div>
-      <div class="es-scene-details-tab">
+    </div>
+    <div class="es-scene-details-tab">
         <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-scene-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
         <div v-bind:class="{ 'active' : tab.active == 'locations' }" @click="changeTab('locations')" class="es-scene-details-tab-item">{{$tc('LOCATION', 2).toUpperCase()}}</div>
         <div v-bind:class="{ 'active' : tab.active == 'items' }" @click="changeTab('items')" class="es-scene-details-tab-item">{{$tc('ITEM', 2).toUpperCase()}}</div>
         <div v-bind:class="{ 'active' : tab.active == 'characters' }" @click="changeTab('characters')" class="es-scene-details-tab-item">{{$tc('CHARACTER', 2).toUpperCase()}}</div>
         <div v-bind:class="{ 'active' : tab.active == 'versions' }" @click="changeTab('versions')" class="es-scene-details-tab-item">{{$tc('VERSION', 2).toUpperCase()}}</div>
         <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-scene-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
-      </div>
-      <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">
+    </div>
+    <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">
         <div v-html="getSceneContent" class="description" ></div>
-      </div>
-      <div v-if="tab.active === 'locations'"  class="es-scene-details-tab-content no-padding">
+    </div>
+    <div v-if="tab.active === 'locations'"  class="es-scene-details-tab-content no-padding">
         <scene-locations :properties="{ scene: page.data.scene }"></scene-locations>
-      </div>
-      <div v-if="tab.active === 'items'"  class="es-scene-details-tab-content no-padding">
+    </div>
+    <div v-if="tab.active === 'items'"  class="es-scene-details-tab-content no-padding">
         <scene-items :properties="{ scene: page.data.scene }"></scene-items>
-      </div>
-      <div v-if="tab.active === 'characters'"  class="es-scene-details-tab-content no-padding">
+    </div>
+    <div v-if="tab.active === 'characters'"  class="es-scene-details-tab-content no-padding">
         <scene-characters :properties="{ scene: page.data.scene }"></scene-characters>
-      </div>
-      <div v-if="tab.active === 'versions'"  class="es-scene-details-tab-content">
+    </div>
+    <div v-if="tab.active === 'versions'"  class="es-scene-details-tab-content">
         <scene-versions :properties="{ scene: page.data.scene }"></scene-versions>
-      </div>
-      <div v-if="tab.active === 'compare-versions'"  class="es-scene-details-tab-content">
+    </div>
+    <div v-if="tab.active === 'compare-versions'"  class="es-scene-details-tab-content">
         <scene-compare-versions :properties="{ scene: page.data.scene }"></scene-compare-versions>
-      </div>
     </div>
     <b-overlay :show="busy" no-wrap fixed @shown="$refs.dialog.focus()" @hidden="$refs.button.focus()">
       <template v-slot:overlay>
@@ -79,6 +78,7 @@
         </div>
       </template>
     </b-overlay>
+    </div>
   </div>
 </template>
 
@@ -159,7 +159,9 @@ export default {
           if (response.data) {
             // TODO: Insert vuex code that will refresh the chapter version
             scope.tab.active = 'content'
-            scope.LOAD_LIST('scene-versions', scope.page.data.scene)
+            console.log('RELOAD SCENE VERSIONS')
+            console.log(response.data)
+            scope.$store.dispatch('loadVersionsByScene', { uuid: response.data.book_scene_id })
             this.busy = false
             window.swal.fire({
               position: 'center',
@@ -176,13 +178,52 @@ export default {
     initializeData: function () {
       var scope = this
       scope.page.data = scope.properties
-      scope.LOAD_LIST('scene-versions', scope.page.data.scene)
-      scope.LOAD_LIST('scene-locations', scope.page.data.scene)
-      scope.LOAD_LIST('scene-items', scope.page.data.scene)
-      scope.LOAD_LIST('scene-characters', scope.page.data.scene)
+
+      // load book
+      scope.$store.dispatch('loadCharactersByBook', scope.page.data.scene.book_id)
+      scope.$store.dispatch('loadItemsByBook', scope.page.data.scene.book_id)
+      scope.$store.dispatch('loadLocationsByBook', scope.page.data.scene.book_id)
+
+      // load scene children
+      scope.$store.dispatch('loadCharactersByScene', scope.page.data.scene)
+      scope.$store.dispatch('loadItemsByScene', scope.page.data.scene)
+      scope.$store.dispatch('loadLocationsByScene', scope.page.data.scene)
+      scope.$store.dispatch('loadVersionsByScene', scope.page.data.scene)
+
       setTimeout(function () {
         scope.page.is_ready = true
       }, 500)
+    },
+    deleteScene: function (scene) {
+      var scope = this
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/scenes/' + scene.uuid)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Scene successfuly deleted',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.$store.dispatch('removeSceneFromList', scene)
+                  scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + scene.book_id, tabComponent: 'scene-listing', tabData: { uuid: scene.book_id }, tabTitle: 'Scene List', tabIndex: scope.$store.getters.getActiveTab})
+                })
+              }
+            })
+        }
+      })
     }
   },
   mounted () {

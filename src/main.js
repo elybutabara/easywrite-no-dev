@@ -19,6 +19,12 @@ import tab from './stores/tab'
 import auth from './stores/auth'
 import listing from './stores/listing'
 import timer from './stores/timer'
+import chapter from './stores/chapter'
+import character from './stores/character'
+import item from './stores/item'
+import location from './stores/location'
+import scene from './stores/scene'
+import book from './stores/book'
 
 // import './assets/vendors/bootstrap/css/bootstrap.min.css'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -76,7 +82,7 @@ window.swal = require('sweetalert2')
 window.he = require('he')
 
 // window.API_URL = (process.env.NODE_ENV === 'production') ? 'https://api.pilotleser.no/dev' : 'https://api-pilot.orosage.com/dev'
-window.API_URL = (process.env.NODE_ENV === 'production') ? 'https://api.pilotleser.no/live' : 'https://api.pilotleser.no/live'
+window.API_URL = (process.env.NODE_ENV === 'production') ? 'https://api.pilotleser.no/live' : 'https://api.pilotleser.no/dev'
 
 // window.$.fn.select2.defaults.set('theme', 'bootstrap')
 
@@ -102,7 +108,13 @@ const store = new Vuex.Store({
     tab: tab,
     auth: auth,
     listing: listing,
-    timer: timer
+    timer: timer,
+    chapter: chapter,
+    character: character,
+    item: item,
+    location: location,
+    scene: scene,
+    book: book
   }
 })
 // Vue.component('editor', tinymce)

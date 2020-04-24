@@ -5,7 +5,7 @@
             <button @click="showChildrenItemList()" class="btn-dark" style="float:right;">{{$t('ADD_SCENE_CHARACTERS')}}</button>
             <div class="heading">{{$tc('CHARACTER', 2)}}</div>
             <div class="es-row">
-                <div class="es-col " v-for="scene_character in GET_SCENE_CHARACTERS_BY_SCENE(scene.uuid)" v-bind:key="scene_character.id">
+                <div class="es-col" v-for="scene_character in scene_characters" v-bind:key="scene_character.id">
                     <div class="es-card">
                         <div class="es-card-content">
                             <p class="title">{{ scene_character.character.fullname || 'Untitled' }}</p>
@@ -13,9 +13,10 @@
                             <i class="description" v-else>{{$t('NO_DESCRIPTION')}}</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-details-'+ scene_character.uuiid , tabComponent: 'character-details',  tabData: {  book_id: scene.book_id, character: scene_character.character }, tabTitle: scene_character.character.fullname})"><i class="lar la-eye"></i> {{$t('VIEW')}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-details-'+ scene_character.uuiid , tabComponent: 'character-details',  tabData: {  book_id: scene.book_id, character: scene_character.character }, tabTitle: scene_character.character.fullname})"><i class="lar la-eye"></i>  {{$t('VIEW')}}</button>
                             <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-form-' + scene_character.character.uuid, tabComponent: 'character-form',  tabData: { book_id: scene.book_id, character: scene_character.character }, tabTitle: 'Edit - ' + scene_character.character.fullname, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT')}}</button>
-                            <button class="btn-delete" @click="DELETE_FROM_LIST('scene-characters', scene_character)"><i class="las la-trash-alt"></i> {{$t('DELETE')}}</button>
+                            <button class="btn-delete" @click="deleteSceneCharacter(scene_character)"><i class="las la-trash-alt"></i> {{$t('DELETE')}}</button>
+
                         </div>
                     </div>
                 </div>
@@ -55,11 +56,15 @@ export default {
     TinyMCE
   },
   computed: {
+    scene_characters: function () {
+      var scope = this
+      return this.$store.getters.getSceneCharacters(scope.scene.uuid)
+    }
   },
   methods: {
     isIncluded: function (character) {
       var scope = this
-      var scenes = scope.GET_SCENE_CHARACTERS_BY_SCENE(scope.scene.uuid)
+      var scenes = scope.$store.getters.getSceneCharacters(scope.scene.uuid)
       for (let i = 0; i < scenes.length; i++) {
         let scene = scenes[i]
         if (scene.character.uuid === character.uuid) {
@@ -88,9 +93,39 @@ export default {
         .post('http://localhost:3000/scene-characters', sceneCharacter)
         .then(response => {
           if (response.data) {
-            scope.ADD_TO_LIST('scene-characters', response.data)
+            scope.$store.dispatch('addSceneCharacterToList', response.data)
           }
         })
+    },
+    deleteSceneCharacter: function (character) {
+      var scope = this
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/scene-characters/' + character.uuid)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Scene Character successfuly deleted',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.$store.dispatch('removeSceneCharacterFromList', character)
+                })
+              }
+            })
+        }
+      })
     }
   },
   beforeUpdate () {
@@ -99,7 +134,6 @@ export default {
   mounted () {
     var scope = this
     scope.scene = scope.properties.scene
-    scope.LOAD_LIST('characters', { uuid: scope.scene.book_id })
     setTimeout(function () {
       scope.page.is_ready = true
     }, 500)

@@ -1,5 +1,5 @@
 <template>
-<div class="page-chapter-form">
+<div v-if="page.is_ready" class="page-chapter-form">
     <div class="es-page-head">
         <div class="inner">
             <div class="details">
@@ -80,6 +80,10 @@ export default {
   props: ['properties'],
   data: function () {
     return {
+      page: {
+        is_ready: false,
+        title: ''
+      },
       data: {
         id: null,
         uuid: null,
@@ -144,14 +148,20 @@ export default {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
-                scope.ADD_TO_LIST('chapters', response.data)
+                scope.$store.dispatch('updateChapterList', response.data)
+                scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
+                // scope.$store.dispatch('updateChapterVersionList', scope.data.chapter_version)
                 scope.CHANGE_COMPONENT({tabKey: 'chapter-details-' + response.data.uuid, tabComponent: 'chapter-details', tabData: { book_id: response.data.book_id, chapter: response.data }, tabTitle: 'View - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
-                scope.UPDATE_FROM_LIST('chapters', response.data)
-                scope.CHANGE_COMPONENT({tabKey: 'chapter-details-' + response.data.uuid, tabComponent: 'chapter-details', tabData: { book_id: response.data.book_id, chapter: response.data }, tabTitle: 'View - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
+                scope.$store.dispatch('updateChapterList', response.data)
+                scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
+                // scope.$store.dispatch('updateChapterVersionList', scope.data.chapter_version)
+                // scope.CHANGE_COMPONENT({tabKey: 'chapter-details-' + response.data.uuid, tabComponent: 'chapter-details', tabData: { book_id: response.data.book_id, chapter: response.data }, tabTitle: 'View - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
+                scope.$store.dispatch('changeTabTitle', {key: 'chapter-form-' + response.data.uuid, title: 'Edit -' + response.data.title})
+                scope.$store.dispatch('changeTabTitle', {key: 'chapter-details-' + response.data.uuid, title: 'View -' + response.data.title})
               }
             })
           }
@@ -206,7 +216,7 @@ export default {
             scope.baseContentCount = scope.WORD_COUNT(scope.chapterVersionCont)
 
             // refresh vuex to update all related records
-            scope.LOAD_LIST('chapter-versions', chapter)
+            scope.$store.dispatch('loadVersionsByChapter', scope.page.data.chapter.uuid)
           }
         })
 
@@ -227,14 +237,30 @@ export default {
     if (scope.properties.chapter) {
       scope.$set(scope.data, 'id', scope.properties.chapter.id)
       scope.$set(scope.data, 'uuid', scope.properties.chapter.uuid)
+      scope.$store.dispatch('loadVersionsByChapter', scope.properties.chapter.uuid)
     }
   },
   mounted () {
     var scope = this
+    if (scope.data.uuid) {
+      setTimeout(function () {
+        let chapter = scope.$store.getters.findChapter(scope.properties.chapter)
+        let version = scope.$store.getters.findLatestChapterVersionByChapter(scope.properties.chapter)
+        // chapter
+        scope.data.title = chapter.title
+        scope.data.short_description = chapter.short_description
 
-    if (scope.data.id) {
-      scope.loadChapter()
+        // version
+        scope.data.chapter_version.id = version.id
+        scope.data.chapter_version.uuid = version.uuid
+        scope.data.chapter_version.content = version.content
+        scope.chapterVersionCont = version.content
+      }, 500)
     }
+
+    setTimeout(function () {
+      scope.page.is_ready = true
+    }, 550)
   }
 }
 </script>

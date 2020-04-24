@@ -11,7 +11,7 @@
           <div class="actions">
             <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
             <button class="es-button-white" @click="CHANGE_COMPONENT({ tabKey: 'chapter-form-' + properties.chapter.uuid, tabComponent: 'chapter-form',  tabData: { book_id: properties.chapter.book_id, chapter:  properties.chapter }, tabTitle: 'Edit - ' +  properties.chapter.title, newTab: true })">{{$t('EDIT').toUpperCase()}}</button>
-            <button class="es-button-white" @click="DELETE_FROM_LIST('chapters',  properties.chapter)">{{$t('DELETE').toUpperCase()}}</button>
+            <button class="es-button-white" @click="deleteChapter(properties.chapter)">{{$t('DELETE').toUpperCase()}}</button>
           </div>
         </div>
       </div>
@@ -153,7 +153,7 @@ export default {
           if (response.data) {
             // TODO: Insert vuex code that will refresh the chapter version
             scope.tab.active = 'content'
-            scope.LOAD_LIST('chapter-versions', scope.page.data.chapter)
+            scope.$store.dispatch('loadVersionsByChapter', scope.page.data.chapter.uuid)
             this.busy = false
             window.swal.fire({
               position: 'center',
@@ -166,6 +166,37 @@ export default {
             })
           }
         })
+    },
+    deleteChapter: function (chapter) {
+      var scope = this
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/chapters/' + chapter.uuid)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Chapter successfuly deleted',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.$store.dispatch('removeChapterFromList', chapter)
+                  scope.CHANGE_COMPONENT({tabKey: 'chapter-listing-' + chapter.book_id, tabComponent: 'chapter-listing', tabData: { uuid: chapter.book_id }, tabTitle: 'Chapter List', tabIndex: scope.$store.getters.getActiveTab})
+                })
+              }
+            })
+        }
+      })
     }
   },
   beforeUpdate () {
@@ -174,9 +205,14 @@ export default {
   mounted () {
     var scope = this
     scope.page.data = scope.properties
-    scope.LOAD_LIST('chapter-versions', scope.page.data.chapter)
     scope.page.title = scope.properties.chapter.title
-    scope.page.is_ready = true
+
+    scope.$store.dispatch('loadScenesByChapter', scope.properties.chapter.uuid)
+    scope.$store.dispatch('loadVersionsByChapter', scope.properties.chapter.uuid)
+
+    setTimeout(function () {
+      scope.page.is_ready = true
+    }, 300)
   }
 }
 </script>

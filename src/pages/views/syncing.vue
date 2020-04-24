@@ -152,7 +152,7 @@ export default {
         { title: 'Locations', api: 'book-locations', local: 'locations', downloaded: [], packed: [] },
         { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: [], packed: [] },
         { title: 'Chapters', api: 'book-chapters', local: 'chapters', downloaded: [], packed: [] },
-        { title: 'Chapter Version', api: 'book-chapter-versions', local: 'chapter-versions', downloaded: [], packed: [] },
+        { title: 'Chapter Versions', api: 'book-chapter-versions', local: 'chapter-versions', downloaded: [], packed: [] },
         { title: 'Characters', api: 'book-characters', local: 'characters', downloaded: [], packed: [] },
         { title: 'Relationships', api: 'book-relation-details', local: 'relation-details', downloaded: [], packed: [] },
         { title: 'Scenes', api: 'book-scenes', local: 'scenes', downloaded: [], packed: [] },
@@ -307,11 +307,15 @@ export default {
         })
     },
     timeConvertFromUTC: function (datetime) {
+      if (datetime === null || datetime === 'undefined') { return null }
+
       var stillUtc = moment.utc(datetime).toDate()
       var date = moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss')
       return date
     },
     timeConvertToUTC: function (datetime) {
+      if (datetime === null || datetime === 'undefined') { return null }
+
       return moment(datetime).utc().format('YYYY-MM-DD HH:mm:ss').toString()
     },
     startDownloadData: function () {
@@ -395,6 +399,7 @@ export default {
           // eslint-disable-next-line valid-typeof
           scope.saving.index++
           scope.saving.counter++
+          scope.updateListByModel(endpoint.title, data)
           // move to the next table/model
           if (scope.saving.index >= endpoint.downloaded.length) {
             scope.saving.pointer++
@@ -419,8 +424,8 @@ export default {
       var scope = this
       scope.stage = 'logs'
 
-      var userID = this.$store.getters.getUserID
-      scope.$store.dispatch('getBooksByAuthorID', userID)
+      // var userID = this.$store.getters.getUserID
+      // scope.$store.dispatch('getBooksByAuthorID', userID)
     },
     saveUserSyncedDate: function () {
       var scope = this
@@ -441,6 +446,26 @@ export default {
         .finally(function () {
           // always executed
         })
+    },
+    updateListByModel: function (model, data) {
+      var scope = this
+      if (model === 'Books') {
+        scope.$store.dispatch('updateBookList', data)
+      } else if (model === 'Chapters') {
+        scope.$store.dispatch('updateChapterList', data)
+      } else if (model === 'Chapter Versions') {
+        scope.$store.dispatch('updateChapterVersionList', data)
+      } else if (model === 'Characters') {
+        scope.$store.dispatch('updateCharacterList', data)
+      } else if (model === 'Items') {
+        scope.$store.dispatch('updateItemList', data)
+      } else if (model === 'Locations') {
+        scope.$store.dispatch('updateLocationList', data)
+      } else if (model === 'Scenes') {
+        scope.$store.dispatch('updateSceneList', data)
+      } else if (model === 'Scene Versions') {
+        scope.$store.dispatch('updateSceneVersionList', data)
+      }
     },
     backToIntro: function () {
       var scope = this
@@ -487,7 +512,7 @@ export default {
         { title: 'Locations', api: 'book-locations', local: 'locations', downloaded: [], packed: [] },
         { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: [], packed: [] },
         { title: 'Chapters', api: 'book-chapters', local: 'chapters', downloaded: [], packed: [] },
-        { title: 'Chapter Version', api: 'book-chapter-versions', local: 'chapter-versions', downloaded: [], packed: [] },
+        { title: 'Chapter Versions', api: 'book-chapter-versions', local: 'chapter-versions', downloaded: [], packed: [] },
         { title: 'Characters', api: 'book-characters', local: 'characters', downloaded: [], packed: [] },
         { title: 'Relationships', api: 'book-relation-details', local: 'relation-details', downloaded: [], packed: [] },
         { title: 'Scenes', api: 'book-scenes', local: 'scenes', downloaded: [], packed: [] },

@@ -67,8 +67,8 @@ export default {
                   showConfirmButton: false,
                   timer: 1500
                 }).then(() => {
-                  scope.$parent.$children[0].getBooks()
-                  scope.$parent.changeComponent('book-listing', response.data)
+                  scope.$store.dispatch('removeBookFromList', scope.properties)
+                  scope.CHANGE_COMPONENT({tabKey: 'dashboard', tabComponent: 'dashboard', tabData: null, tabTitle: 'Dashboard'})
                 })
               }
             })

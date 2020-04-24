@@ -15,7 +15,7 @@
 
        <div class="es-page-content">
             <div class="es-row">
-                <div class="es-col fadeIn animated" v-for="location in GET_LOCATIONS_BY_BOOK(bookUUID)" v-bind:key="location.id">
+                <div class="es-col fadeIn animated" v-for="location in locations" v-bind:key="location.id">
                     <div class="es-card">
                         <div class="es-card-content">
                             <p class="title">{{ location.location || 'Untitled' }}</p>
@@ -25,7 +25,7 @@
                         <div class="es-card-footer">
                             <button class="btn-"  @click="CHANGE_COMPONENT({tabKey: 'location-details-' + location.uuid, tabComponent: 'location-details', tabData: { book_id: properties.uuid, location: location }, tabTitle:  location.location, newTab})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
                             <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + location.uuid, tabComponent: 'location-form', tabData: { book_id: properties.uuid, location: location }, tabTitle: 'Edit - ' + location.location, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT').toUpperCase()}}</button>
-                            <button class="btn-delete"  @click="DELETE_FROM_LIST('locations', location)"><i class="las la-trash-alt"></i> {{$t('DELETE').toUpperCase()}}</button>
+                            <button class="btn-delete"  @click="deleteLocation(location)"><i class="las la-trash-alt"></i> {{$t('DELETE').toUpperCase()}}</button>
                         </div>
                     </div>
                 </div>
@@ -42,20 +42,16 @@ export default {
   props: ['properties'],
   data: function () {
     return {
-      locations: [],
       bookUUID: ''
     }
   },
+  computed: {
+    locations: function () {
+      return this.$store.getters.getLocationsByBook(this.bookUUID)
+    }
+  },
   methods: {
-    editLocation: function (location) {
-      var scope = this
-      scope.$parent.changeComponent('location-form', { location: location })
-    },
-    viewLocation: function (location) {
-      var scope = this
-      scope.$parent.changeComponent('location-details', { location: location })
-    },
-    deleteLocation: function (locationId) {
+    deleteLocation: function (location) {
       var scope = this
       window.swal.fire({
         title: 'Are you sure?',
@@ -68,39 +64,22 @@ export default {
       }).then((result) => {
         if (result.value) {
           scope.axios
-            .delete('http://localhost:3000/locations/' + locationId)
+            .delete('http://localhost:3000/locations/' + location.uuid)
             .then(response => {
               if (response.data) {
                 window.swal.fire({
                   position: 'center',
                   icon: 'success',
-                  title: 'Locations successfuly deleted',
+                  title: 'Location successfuly deleted',
                   showConfirmButton: false,
                   timer: 1500
                 }).then(() => {
-                  scope.getLocations(scope.properties.uuid)
-                  scope.$parent.changeComponent('location-listing', scope.properties)
+                  scope.$store.dispatch('removeLocationFromList', location)
                 })
               }
             })
         }
       })
-    },
-    toggleFilter: function () {
-      var scope = this
-      scope.filter.is_open = !scope.filter.is_open
-    },
-    filterResults: function () {
-      // var scope = this
-      // console.log(scope.filter.keyword)
-    },
-    getLocations: function (bookId) {
-      var scope = this
-      scope.axios
-        .get('http://localhost:3000/books/' + bookId + '/locations')
-        .then(response => {
-          scope.locations = response.data
-        })
     },
     createLocation () {
       var scope = this

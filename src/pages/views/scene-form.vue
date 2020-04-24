@@ -51,8 +51,8 @@
                 <div class="label" @click="toggleAccordion('content')">
                     {{$t('CONTENT').toUpperCase()}}
                     <div class="icon">
-                        <i v-if="accordion['scene-details'] === 'active'" class="fas fa-chevron-down"></i>
-                        <i v-if="accordion['scene-details'] !== 'active'" class="fas fa-chevron-right"></i>
+                        <i v-if="accordion['content'] === 'active'" class="fas fa-chevron-down"></i>
+                        <i v-if="accordion['content'] !== 'active'" class="fas fa-chevron-right"></i>
                     </div>
                 </div>
                 <div class="content ">
@@ -245,7 +245,7 @@ export default {
       selected_importance: null,
       selected_status: null,
       selected_weather_type: null,
-      selected_character_id_vp: null,
+      selected_character_id_vp: '-1',
       options_typeofscene: [
         {text: 'Action', value: 'Action'},
         {text: 'Reaction', value: 'Reaction'}
@@ -310,21 +310,21 @@ export default {
     setSelectedChild: function () {
       var scope = this
 
-      var items = scope.GET_SCENE_ITEMS_BY_SCENE(scope.properties.scene.uuid)
+      var items = scope.$store.getters.getSceneItems(scope.properties.scene.uuid)
       for (let i = 0; i < items.length; i++) {
         var item = items[i].item
         scope.selected_items.push(item.uuid)
       }
 
-      var locations = scope.GET_SCENE_LOCATIONS_BY_SCENE(scope.properties.scene.uuid)
+      var locations = scope.$store.getters.getSceneLocations(scope.properties.scene.uuid)
       for (let i = 0; i < locations.length; i++) {
-        var location = locations[i].location
+        let location = locations[i].location
         scope.selected_locations.push(location.uuid)
       }
 
-      var characters = scope.GET_SCENE_CHARACTERS_BY_SCENE(scope.properties.scene.uuid)
+      var characters = scope.$store.getters.getSceneCharacters(scope.properties.scene.uuid)
       for (let i = 0; i < characters.length; i++) {
-        var character = characters[i].character
+        let character = characters[i].character
         scope.selected_characters.push(character.uuid)
       }
     },
@@ -438,7 +438,8 @@ export default {
       scope.data.importance = scope.selected_importance.value
       scope.data.status = scope.selected_status.value
       scope.data.weather_type = scope.selected_weather_type.value
-      scope.data.character_id_vp = scope.selected_character_id_vp.value
+      // scope.data.character_id_vp = scope.selected_character_id_vp.value
+      // scope.data.character_id_vp = scope.selected_character_id_vp.value
 
       scope.axios
         .post('http://localhost:3000/scenes', scope.data)
@@ -457,17 +458,20 @@ export default {
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
                 scope.saveChild(response.data.uuid)
-                scope.ADD_TO_LIST('scenes', response.data)
+                scope.$store.dispatch('updateSceneList', response.data)
                 // refresh vuex to update all related records
-                scope.LOAD_LIST('scene-versions', scope.data)
+                scope.$store.dispatch('loadVersionsByScene', response.data)
+                scope.CHANGE_COMPONENT({tabKey: 'scene-details-' + response.data.uuid, tabComponent: 'scene-details', tabData: { book_id: response.data.book_id, scene: response.data }, tabTitle: 'View - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
                 scope.saveChild(response.data.uuid)
-                scope.UPDATE_FROM_LIST('scenes', response.data)
                 // refresh vuex to update all related records
-                scope.LOAD_LIST('scene-versions', scope.data)
+                scope.$store.dispatch('updateSceneList', response.data)
+                scope.$store.dispatch('loadVersionsByScene', response.data)
+                scope.$store.dispatch('changeTabTitle', {key: 'scene-form-' + response.data.uuid, title: 'Edit -' + response.data.title})
+                scope.$store.dispatch('changeTabTitle', {key: 'scene-details-' + response.data.uuid, title: 'Edit -' + response.data.title})
               }
             })
           }
@@ -475,7 +479,6 @@ export default {
     },
     loadChapter () {
       var scope = this
-
       var bookId = scope.data.book_id
       scope.axios
         .get('http://localhost:3000/books/' + bookId + '/chapters')
@@ -485,7 +488,6 @@ export default {
     },
     loadScene (sceneId) {
       var scope = this
-
       scope.axios
         .get('http://localhost:3000/scenes/' + sceneId)
         .then(response => {
@@ -497,7 +499,9 @@ export default {
             scope.tempSceneVersionContent = scope.data.scene_version.content
             scope.tempSceneNotes = scope.data.notes
             scope.tempViewpointDescription = scope.data.viewpoint_description
-
+            setTimeout(function () {
+              scope.selected_character_id_vp = scope.data.character_id_vp
+            }, 1000)
             scope.baseContentCount = scope.WORD_COUNT(scope.tempSceneVersionContent)
           }
         })
@@ -545,23 +549,30 @@ export default {
     if (scope.data.id !== null) {
       window.$('.page-scene-form .page-title h3').html('Update ' + scope.properties.scene.title)
       scope.loadScene(scope.data.uuid)
-      scope.LOAD_LIST('scene-locations', scope.properties.scene)
-      scope.LOAD_LIST('scene-items', scope.properties.scene)
-      scope.LOAD_LIST('scene-characters', scope.properties.scene)
+      // load book
+      scope.$store.dispatch('loadCharactersByBook', scope.properties.book_id)
+      scope.$store.dispatch('loadItemsByBook', scope.properties.book_id)
+      scope.$store.dispatch('loadLocationsByBook', scope.properties.book_id)
+
+      // load scene children
+      scope.$store.dispatch('loadCharactersByScene', scope.properties.scene)
+      scope.$store.dispatch('loadItemsByScene', scope.properties.scene)
+      scope.$store.dispatch('loadLocationsByScene', scope.properties.scene)
+      scope.$store.dispatch('loadVersionsByScene', scope.properties.scene)
 
       setTimeout(function () {
         scope.setSelectedChild()
       }, 500)
     }
 
-    scope.LOAD_LIST('locations', { uuid: scope.properties.book_id })
-    scope.LOAD_LIST('items', { uuid: scope.properties.book_id })
-    scope.LOAD_LIST('characters', { uuid: scope.properties.book_id })
-
     scope.loadChapter()
-
     setTimeout(function () {
       scope.page.is_ready = true
+      var bookCharacters = scope.$store.getters.getCharactersByBook(scope.properties.book_id)
+      for (let i = 0; i < bookCharacters.length; i++) {
+        let character = bookCharacters[i]
+        scope.options_character_id_vp.push({ text: character.fullname, value: character.uuid })
+      }
     }, 500)
   }
 }

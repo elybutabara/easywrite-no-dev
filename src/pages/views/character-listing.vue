@@ -15,7 +15,7 @@
 
        <div class="es-page-content">
             <div class="es-row">
-                <div class="es-col fadeIn animated" v-for="character in GET_CHARACTERS_BY_BOOK(bookUUID)" v-bind:key="character.id">
+                <div class="es-col fadeIn animated" v-for="character in characters" v-bind:key="character.id">
                     <div class="es-card">
                         <div class="es-card-content">
                             <p class="title">{{ character.fullname || 'Untitled' }}</p>
@@ -23,9 +23,9 @@
                             <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}...</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-details-' + character.uuid, tabComponent: 'character-details',  tabData: { book_id: properties.uuid, character: character }, tabTitle: character.fullname})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-form-' + character.uuid, tabComponent: 'character-form',  tabData: { book_id: properties.uuid, character: character }, tabTitle: 'Edit - ' + character.fullname, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT').toUpperCase()}}</button>
-                            <button class="btn-delete" @click="DELETE_FROM_LIST('characters', character)"><i class="las la-trash-alt"></i> {{$t('DELETE').toUpperCase()}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-details-' + character.uuid, tabComponent: 'character-details',  tabData: { book_id: properties.uuid, character: character }, tabTitle: character.fullname})"><i class="lar la-eye"></i> VIEW</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-form-' + character.uuid, tabComponent: 'character-form',  tabData: { book_id: properties.uuid, character: character }, tabTitle: 'Edit - ' + character.fullname, newTab: true})"><i class="las la-pencil-alt"></i> EDIT</button>
+                            <button class="btn-delete" @click="deleteCharacter(character)"><i class="las la-trash-alt"></i> DELETE</button>
                         </div>
                     </div>
                 </div>
@@ -42,26 +42,44 @@ export default {
   props: ['properties'],
   data: function () {
     return {
-      characters: [],
       bookUUID: ''
     }
   },
+  computed: {
+    characters: function () {
+      return this.$store.getters.getCharactersByBook(this.bookUUID)
+    }
+  },
   methods: {
-    toggleFilter: function () {
+    deleteCharacter: function (character) {
       var scope = this
-      scope.filter.is_open = !scope.filter.is_open
-    },
-    filterResults: function () {
-      var scope = this
-      console.log(scope.filter.keyword)
-    },
-    getCharacters: function (bookId) {
-      var scope = this
-      scope.axios
-        .get('http://localhost:3000/books/' + bookId + '/characters')
-        .then(response => {
-          scope.characters = response.data
-        })
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/characters/' + character.uuid)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Character successfuly deleted',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.$store.dispatch('removeCharacterFromList', character)
+                })
+              }
+            })
+        }
+      })
     }
   },
   mounted () {

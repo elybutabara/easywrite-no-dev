@@ -20,7 +20,7 @@
                         <div class="es-card-content">
                         <div class="es-card-actions">
                             <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + scene.uuid, tabComponent: 'scene-form',  tabData: { book_id: scene.book_id, scene: scene}, tabTitle: 'Edit ' + scene.title, newTab: true })"><i class="las la-pencil-alt"></i></button>
-                            <button class="btn-circle" @click="DELETE_FROM_LIST('scenes', scene)"><i class="las la-trash-alt"></i></button>
+                            <button class="btn-circle" @click="deleteScene(scene)"><i class="las la-trash-alt"></i></button>
                             <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + scene.uuid, tabComponent: 'scene-details',  tabData: { book_id: scene.book_id, scene: scene}, tabTitle: scene.title, newTab: true })"><i class="lar la-eye"></i></button>
                         </div>
                             <p class="title">{{ scene.title || 'Untitled' }}</p>
@@ -57,7 +57,7 @@ export default {
     scenes: {
       get () {
         let scope = this
-        let scenes = scope.GET_SCENES_BY_BOOK(scope.bookUUID)
+        let scenes = scope.$store.getters.getScenesByBook(scope.bookUUID)
         return scenes
       },
       set (value) {
@@ -67,21 +67,35 @@ export default {
     }
   },
   methods: {
-    toggleFilter: function () {
+    deleteScene: function (scene) {
       var scope = this
-      scope.filter.is_open = !scope.filter.is_open
-    },
-    filterResults: function () {
-      var scope = this
-      console.log(scope.filter.keyword)
-    },
-    getOtherScenes: function (bookId) {
-      var scope = this
-      scope.axios
-        .get('http://localhost:3000/books/' + bookId + '/scenes/other')
-        .then(response => {
-          scope.otherScenes = response.data
-        })
+      window.swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/scenes/' + scene.uuid)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Scene successfuly deleted',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.$store.dispatch('removeSceneFromList', scene)
+                })
+              }
+            })
+        }
+      })
     }
   },
   mounted () {

@@ -49,12 +49,12 @@ export default {
     scenes: {
       get () {
         let scope = this
-        let scenes = scope.GET_SCENES_BY_CHAPTER(scope.chapter.uuid)
+        let scenes = scope.$store.getters.getScenesByChapter(scope.chapter.uuid)
         return scenes
       },
       set (value) {
         let scope = this
-        this.$store.commit('sortScenes', { PARENT: scope.chapter.uuid, data: value })
+        this.$store.dispatch('sortScenes', { PARENT: scope.chapter.uuid, data: value })
       }
     }
   },

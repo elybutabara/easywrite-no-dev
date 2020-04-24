@@ -1,5 +1,5 @@
 <template>
-<div class="page-item-form">
+<div v-if="page.is_ready" class="page-item-form">
     <div class="es-page-head">
         <div class="inner">
             <div class="details">
@@ -79,6 +79,9 @@ export default {
   props: ['properties'],
   data: function () {
     return {
+      page: {
+        is_ready: false
+      },
       data: {
         id: null,
         uuid: null,
@@ -179,12 +182,14 @@ export default {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
-                scope.ADD_TO_LIST('items', response.data)
+                scope.$store.dispatch('updateItemList', response.data)
+                scope.CHANGE_COMPONENT({tabKey: 'item-form-' + response.data.uuid, tabComponent: 'item-form', tabData: { book_id: response.data.book_id, item: response.data }, tabTitle: 'Edit  - ' + response.data.itemname, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
-                scope.UPDATE_FROM_LIST('items', response.data)
+                scope.$store.dispatch('updateItemList', response.data)
+                scope.$store.dispatch('changeTabTitle', { key: 'item-form-' + response.data.uuid, title: 'Edit - ' + response.data.itemname })
               }
             })
           }
@@ -224,10 +229,29 @@ export default {
   },
   mounted () {
     var scope = this
+    if (scope.data.uuid) {
+      setTimeout(function () {
+        let item = scope.$store.getters.findItem(scope.properties.item)
+        scope.data.itemname = item.itemname
+        scope.data.AKA = item.AKA
+        scope.data.tags = item.tags
+        scope.data.description = item.description
 
-    if (scope.data.id) {
-      scope.loadItem()
+        if (item.pictures) {
+          scope.$set(scope.data, 'pictures', item.pictures)
+
+          const image = new Image()
+          image.src = item.picture_src
+          image.setAttribute('width', '100%')
+
+          window.$('.uploaded-file-preview').html(image)
+        }
+      }, 500)
     }
+
+    setTimeout(function () {
+      scope.page.is_ready = true
+    }, 550)
   }
 }
 </script>
