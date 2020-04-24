@@ -84,12 +84,15 @@ const mainMenuTemplate = [
 ];
 
 function ControlState(val) {
-  mainMenuTemplate[1].submenu.forEach(function (item, index) {
+  let menuCount = mainMenuTemplate.length - 1
+  if(process.env.NODE_ENV!=='production') menuCount -= 1
+
+  mainMenuTemplate[menuCount].submenu.forEach(function (item, index) {
     if (index===val) {
-      mainMenuTemplate[1].submenu[val].checked = true
+      mainMenuTemplate[menuCount].submenu[val].checked = true
     }
     else {
-      mainMenuTemplate[1].submenu[index].checked = false
+      mainMenuTemplate[menuCount].submenu[index].checked = false
     }
   })
 
