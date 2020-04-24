@@ -31,8 +31,20 @@
                 <div class="content ">
                     <b-row class="margin-bottom-1rem">
                         <b-col>
-                            <label>{{$t('TITLE')}}: </label>
-                            <b-form-input v-model="data.title" :placeholder="$t('TITLE')"></b-form-input>
+                          <label for="input-title">{{$t('TITLE')}}: </label>
+                          <b-form-input
+                            id="input-title"
+                            v-model="data.title"
+                            :state="feedback.title.state"
+                            aria-describedby="input-live-help input-live-feedback"
+                            :placeholder="$t('TITLE')"
+                            trim
+                          ></b-form-input>
+
+                          <!-- This will only be shown if the preceding input has an invalid state -->
+                          <b-form-invalid-feedback id="input-title-feedback">
+                            {{ feedback.title.message }}
+                          </b-form-invalid-feedback>
                         </b-col>
                         <b-col>
                             <label>{{$tc('CHAPTER',1)}}: </label>
@@ -41,8 +53,20 @@
                     </b-row>
                     <b-row class="margin-bottom-1rem">
                         <b-col>
-                            <label>{{$t('SHORT_DESCRIPTION')}}: </label>
-                            <b-form-input v-model="data.short_description" :placeholder="$t('SHORT_DESCRIPTION') "></b-form-input>
+                          <label for="input-short-description">{{$t('SHORT_DESCRIPTION')}}: </label>
+                          <b-form-input
+                            id="input-short-description"
+                            v-model="data.short_description"
+                            :state="feedback.short_description.state"
+                            aria-describedby="input-live-help input-live-feedback"
+                            :placeholder="$t('SHORT_DESCRIPTION')"
+                            trim
+                          ></b-form-input>
+
+                          <!-- This will only be shown if the preceding input has an invalid state -->
+                          <b-form-invalid-feedback id="input-short-description-feedback">
+                            {{ feedback.short_description.message }}
+                          </b-form-invalid-feedback>
                         </b-col>
                     </b-row>
                 </div>
@@ -292,6 +316,16 @@ export default {
         relation_id: '',
         is_for: 'scene',
         total_words: 0
+      },
+      feedback: {
+        title: {
+          state: null,
+          message: null
+        },
+        short_description: {
+          state: null,
+          message: null
+        }
       }
     }
   },
@@ -427,8 +461,19 @@ export default {
       var scope = this
       scope.tempViewpointDescription = value
     },
+    setAll (obj, val) {
+      Object.keys(obj).forEach(function (index) {
+        obj[index] = val
+      })
+    },
+    setFeedbackNull () {
+      var scope = this
+      scope.setAll(scope.feedback.title, null)
+      scope.setAll(scope.feedback.short_description, null)
+    },
     saveScene () {
       var scope = this
+      var hasError = false
 
       scope.data.scene_version.content = scope.tempSceneVersionContent
       scope.data.notes = scope.tempSceneNotes
@@ -439,6 +484,25 @@ export default {
       scope.data.status = scope.selected_status.value
       scope.data.weather_type = scope.selected_weather_type.value
       scope.data.character_id_vp = scope.selected_character_id_vp.value
+
+      // Clear all error in form
+      scope.setFeedbackNull()
+
+      if (!scope.data.title) {
+        scope.feedback.title.message = 'Title is required'
+        scope.feedback.title.state = false
+        hasError = true
+      }
+
+      if (scope.data.short_description.length > 30) {
+        scope.feedback.short_description.message = 'Max char 30'
+        scope.feedback.short_description.state = false
+        hasError = true
+      }
+
+      if (hasError) {
+        return false
+      }
 
       scope.axios
         .post('http://localhost:3000/scenes', scope.data)

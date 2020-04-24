@@ -34,8 +34,20 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>{{$t('ITEM_NAME')}}: </label>
-                                    <input v-model="data.itemname" type="text" class="form-control" :placeholder="$t('ITEM_NAME')">
+                                  <label for="input-itemname">{{$t('ITEM_NAME')}}: </label>
+                                  <b-form-input
+                                    id="input-itemname"
+                                    v-model="data.itemname"
+                                    :state="feedback.itemname.state"
+                                    aria-describedby="input-live-help input-live-feedback"
+                                    :placeholder="$t('ITEM_NAME')"
+                                    trim
+                                  ></b-form-input>
+
+                                  <!-- This will only be shown if the preceding input has an invalid state -->
+                                  <b-form-invalid-feedback id="input-itemname-feedback">
+                                    {{ feedback.itemname.message }}
+                                  </b-form-invalid-feedback>
                                 </div>
                             </div>
                         </div>
@@ -89,7 +101,13 @@ export default {
         description: ''
       },
       file: '',
-      tempDescription: ''
+      tempDescription: '',
+      feedback: {
+        itemname: {
+          state: null,
+          message: null
+        }
+      }
     }
   },
   components: {
@@ -161,9 +179,33 @@ export default {
         scope.saveItem()
       }
     },
+    setAll (obj, val) {
+      Object.keys(obj).forEach(function (index) {
+        obj[index] = val
+      })
+    },
+    setFeedbackNull () {
+      var scope = this
+      scope.setAll(scope.feedback.itemname, null)
+    },
     saveItem () {
       var scope = this
+      var hasError = false
       scope.data.description = scope.tempDescription
+
+      // Clear all error in form
+      scope.setFeedbackNull()
+
+      if (!scope.data.itemname) {
+        scope.feedback.itemname.message = 'Item Name is required'
+        scope.feedback.itemname.state = false
+        hasError = true
+      }
+
+      if (hasError) {
+        return false
+      }
+
       scope.axios
         .post('http://localhost:3000/items', scope.data)
         .then(response => {

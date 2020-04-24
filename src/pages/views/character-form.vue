@@ -34,13 +34,20 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>{{$t('FULLNAME')}}: </label>
-                                    <b-form-input id="input-live" v-model="data.fullname" :state="null" aria-describedby="input-live-help input-live-feedback" :placeholder="$t('FULLNAME')"></b-form-input>
+                                  <label for="input-fullname">{{$t('FULLNAME')}}: </label>
+                                  <b-form-input
+                                    id="input-fullname"
+                                    v-model="data.fullname"
+                                    :state="feedback.fullname.state"
+                                    aria-describedby="input-live-help input-live-feedback"
+                                    :placeholder="$t('FULLNAME')"
+                                    trim
+                                  ></b-form-input>
 
-                                    <!-- This will only be shown if the preceding input has an invalid state -->
-                                    <b-form-invalid-feedback id="input-live-feedback">
-                                        Full name is required
-                                    </b-form-invalid-feedback>
+                                  <!-- This will only be shown if the preceding input has an invalid state -->
+                                  <b-form-invalid-feedback id="input-itemname-feedback">
+                                    {{ feedback.fullname.message }}
+                                  </b-form-invalid-feedback>
                                 </div>
                             </div>
                             <div class="col-md-12">
@@ -121,7 +128,13 @@ export default {
       file: '',
       tempDescription: '',
       tempBio: '',
-      tempGoals: ''
+      tempGoals: '',
+      feedback: {
+        fullname: {
+          state: null,
+          message: null
+        }
+      }
     }
   },
   components: {
@@ -196,11 +209,35 @@ export default {
         scope.saveCharacter()
       }
     },
+    setAll (obj, val) {
+      Object.keys(obj).forEach(function (index) {
+        obj[index] = val
+      })
+    },
+    setFeedbackNull () {
+      var scope = this
+      scope.setAll(scope.feedback.fullname, null)
+    },
     saveCharacter () {
       var scope = this
+      var hasError = false
+
       scope.data.description = scope.tempDescription
       scope.data.bio = scope.tempBio
       scope.data.goals = scope.tempGoals
+
+      // Clear all error in form
+      scope.setFeedbackNull()
+
+      if (!scope.data.fullname) {
+        scope.feedback.fullname.message = 'Full Name is required'
+        scope.feedback.fullname.state = false
+        hasError = true
+      }
+
+      if (hasError) {
+        return false
+      }
 
       scope.axios
         .post('http://localhost:3000/characters', scope.data)

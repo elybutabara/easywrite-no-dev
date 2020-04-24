@@ -224,9 +224,7 @@ ul { margin-left:0px; list-style:none;  }
 
 .b-overlay .bg-light{ background-color: #324553!important; width: 100% }
 
-/*.container, .container-sm, .container-md, .container-lg, .container-xl {*/
-/*  max-width: 1200px;*/
-/*}*/
+.was-validated .form-control:invalid, .form-control.is-invalid { border-color: #dc3545!important;}
 
 @media screen and (max-width: 1300px) {
 	.es-content { padding-right:10px;  }

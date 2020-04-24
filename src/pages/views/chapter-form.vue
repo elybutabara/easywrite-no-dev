@@ -33,16 +33,40 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>{{$t('TITLE')}}: </label>
-                                    <input v-model="data.title" type="text" class="form-control" :placeholder = "$t('CHAPTER_TITLE')">
+                                  <label for="input-title">{{$t('TITLE')}}: </label>
+                                  <b-form-input
+                                    id="input-title"
+                                    v-model="data.title"
+                                    :state="feedback.title.state"
+                                    aria-describedby="input-live-help input-live-feedback"
+                                    :placeholder="$t('CHAPTER_TITLE')"
+                                    trim
+                                  ></b-form-input>
+
+                                  <!-- This will only be shown if the preceding input has an invalid state -->
+                                  <b-form-invalid-feedback id="input-title-feedback">
+                                    {{ feedback.title.message }}
+                                  </b-form-invalid-feedback>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>{{$t('SHORT_DESCRIPTION')}}: </label>
-                                    <input v-model.trim="data.short_description" type="text" class="form-control" :placeholder = "$t('SHORT_DESCRIPTION')">
+                                    <label for="input-short-description">{{$t('SHORT_DESCRIPTION')}}: </label>
+                                    <b-form-input
+                                      id="input-short-description"
+                                      v-model="data.short_description"
+                                      :state="feedback.short_description.state"
+                                      aria-describedby="input-live-help input-live-feedback"
+                                      :placeholder="$t('SHORT_DESCRIPTION')"
+                                      trim
+                                    ></b-form-input>
+
+                                    <!-- This will only be shown if the preceding input has an invalid state -->
+                                    <b-form-invalid-feedback id="input-short-description-feedback">
+                                      {{ feedback.short_description.message }}
+                                    </b-form-invalid-feedback>
                                 </div>
                             </div>
                         </div>
@@ -102,6 +126,16 @@ export default {
         relation_id: '',
         is_for: 'chapter',
         total_words: 0
+      },
+      feedback: {
+        title: {
+          state: null,
+          message: null
+        },
+        short_description: {
+          state: null,
+          message: null
+        }
       }
     }
   },
@@ -123,22 +157,37 @@ export default {
 
       scope.chapterVersionCont = value
     },
-    makeToast (variant = null, content) {
-      this.$bvToast.toast(content.message, {
-        title: content.title,
-        variant: variant,
-        solid: true
+    setAll (obj, val) {
+      Object.keys(obj).forEach(function (index) {
+        obj[index] = val
       })
+    },
+    setFeedbackNull () {
+      var scope = this
+      scope.setAll(scope.feedback.title, null)
+      scope.setAll(scope.feedback.short_description, null)
     },
     saveChapter () {
       var scope = this
+      var hasError = false
       scope.data.chapter_version.content = scope.chapterVersionCont
 
+      // Clear all error in form
+      scope.setFeedbackNull()
+
       if (!scope.data.title) {
-        scope.makeToast('danger', {
-          title: 'Error!',
-          message: 'Title is required'
-        })
+        scope.feedback.title.message = 'Title is required'
+        scope.feedback.title.state = false
+        hasError = true
+      }
+
+      if (scope.data.short_description.length > 30) {
+        scope.feedback.short_description.message = 'Max char 30'
+        scope.feedback.short_description.state = false
+        hasError = true
+      }
+
+      if (hasError) {
         return false
       }
 
