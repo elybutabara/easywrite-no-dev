@@ -13,18 +13,6 @@ const mainMenuTemplate = [
     ]
   },
   {
-    label: "Edit",
-    submenu: [
-      { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
-      { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
-      { type: "separator" },
-      { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
-      { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
-      { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
-      { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
-    ]
-  },
-  {
     label:'Translations',
     submenu:[
       {label: "English",
@@ -96,12 +84,15 @@ const mainMenuTemplate = [
 ];
 
 function ControlState(val) {
-  mainMenuTemplate[1].submenu.forEach(function (item, index) {
+  let menuCount = mainMenuTemplate.length - 1
+  if(process.env.NODE_ENV!=='production') menuCount -= 1
+
+  mainMenuTemplate[menuCount].submenu.forEach(function (item, index) {
     if (index===val) {
-      mainMenuTemplate[1].submenu[val].checked = true
+      mainMenuTemplate[menuCount].submenu[val].checked = true
     }
     else {
-      mainMenuTemplate[1].submenu[index].checked = false
+      mainMenuTemplate[menuCount].submenu[index].checked = false
     }
   })
 
@@ -111,6 +102,19 @@ function ControlState(val) {
 // If mac, add empty object on menu
 if(process.platform == "darwin") {
   mainMenuTemplate.unshift({label: ''});
+  const editMenu = {
+    label: "Edit",
+      submenu: [
+    { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+    { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+    { type: "separator" },
+    { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+    { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+    { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+    { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+  ]
+  }
+  mainMenuTemplate.splice(2,0,editMenu)
 }
 
 // Add DevTools if not in production
@@ -135,11 +139,7 @@ if(process.env.NODE_ENV!=='production') {
 // module.exports = (process.env.NODE_ENV == 'production') ? Menu.buildFromTemplate([]) : Menu.buildFromTemplate(mainMenuTemplate);
 exports.getMenu = function (window) {
   mainWindow = window
-  if(process.platform == "darwin"){
-    return Menu.buildFromTemplate(mainMenuTemplate)
-  }else{
-    return (process.env.NODE_ENV == 'production') ? Menu.buildFromTemplate([]) : Menu.buildFromTemplate(mainMenuTemplate)
-  }
+  return Menu.buildFromTemplate(mainMenuTemplate)
 }
 
 exports.setMenu = function (data) {
