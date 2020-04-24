@@ -76,7 +76,8 @@ exports.processUpdate = (window) => {
 
   // checking update every minute
   setInterval(function () {
-    if(!in_progress){
+    //TODO remove darwin if certificate is good to go
+    if(!in_progress && process.platform === 'darwin') {
       autoUpdater.checkForUpdates().then((data) => {
         // console.log('checking for update')
         // log.info(data)
