@@ -7,7 +7,7 @@
                 <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ properties.title }}</small>
             </div>
             <div class="actions">
-                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book_id: properties.uuid, chapter: null }, tabTitle: 'New Chapter', newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book_id: properties.uuid, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
             </div>
         </div>
     </div>
@@ -17,9 +17,9 @@
             <div class="es-card">
                 <div class="es-card-content">
                     <div class="es-card-actions">
-                        <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'chapter-form-' + chapter.uuid, tabComponent: 'chapter-form',  tabData: { book_id: properties.uuid, chapter: chapter }, tabTitle: 'Edit - ' + chapter.title, newTab: true })"><i class="las la-pencil-alt"></i></button>
+                        <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'chapter-form-' + chapter.uuid, tabComponent: 'chapter-form',  tabData: { book_id: properties.uuid, chapter: chapter }, tabTitle: $t('EDIT')+ ' - ' + chapter.title, newTab: true })"><i class="las la-pencil-alt"></i></button>
                         <button class="btn-circle" @click="deleteChapter(chapter)"><i class="las la-trash-alt"></i></button>
-                        <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + chapter.uuid, tabComponent: 'chapter-details',  tabData: { book_id: properties.uuid, chapter: chapter }, tabTitle: 'View - ' + chapter.title})"><i class="lar la-eye"></i></button>
+                        <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + chapter.uuid, tabComponent: 'chapter-details',  tabData: { book_id: properties.uuid, chapter: chapter }, tabTitle: $t('VIEW')+ ' - ' + chapter.title})"><i class="lar la-eye"></i></button>
                     </div>
                     <p class="title">{{ displayTitle(chapter.title) }}</p>
                     <i class="description ellipsis-2">{{ chapter.short_description || 'No Short Description...'  }}</i>
@@ -77,13 +77,14 @@ export default {
     deleteChapter: function (chapter) {
       var scope = this
       window.swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        title: this.$t('ARE_YOU_SURE'),
+        text: this.$t('YOU_WONT_BE_ABLE_TO_REVERT_THIS'),
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonText: this.$t('YES_DELETE_IT'),
+        cancelButtonText: this.$t('CANCEL')
       }).then((result) => {
         if (result.value) {
           scope.axios
@@ -93,7 +94,7 @@ export default {
                 window.swal.fire({
                   position: 'center',
                   icon: 'success',
-                  title: 'Chapter successfuly deleted',
+                  title: this.$t('RECORD_SUCCESSFULY_DELETED'),
                   showConfirmButton: false,
                   timer: 1500
                 }).then(() => {

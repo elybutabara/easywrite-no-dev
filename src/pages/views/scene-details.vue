@@ -10,7 +10,7 @@
             </div>
             <div class="actions">
                 <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
-                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.scene.uuid, tabComponent: 'scene-form', tabData: { book_id: properties.scene.book_id, scene: properties.scene }, tabTitle: 'Edit - ' +  properties.scene.title, newTab: true})">{{$t('EDIT').toUpperCase()}}</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.scene.uuid, tabComponent: 'scene-form', tabData: { book_id: properties.scene.book_id, scene: properties.scene }, tabTitle: $t('EDIT')+ ' - ' +  properties.scene.title, newTab: true})">{{$t('EDIT').toUpperCase()}}</button>
                 <button class="es-button-white" @click="deleteScene(properties.scene)">{{$t('DELETE').toUpperCase()}}</button>
             </div>
         </div>
@@ -166,7 +166,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: 'Scene version successfuly saved',
+              title: this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
@@ -197,13 +197,14 @@ export default {
     deleteScene: function (scene) {
       var scope = this
       window.swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        title: this.$t('ARE_YOU_SURE'),
+        text: this.$t('YOU_WONT_BE_ABLE_TO_REVERT_THIS'),
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonText: this.$t('YES_DELETE_IT'),
+        cancelButtonText: this.$t('CANCEL')
       }).then((result) => {
         if (result.value) {
           scope.axios
@@ -213,7 +214,7 @@ export default {
                 window.swal.fire({
                   position: 'center',
                   icon: 'success',
-                  title: 'Scene successfuly deleted',
+                  title: this.$t('RECORD_SUCCESSFULY_DELETED'),
                   showConfirmButton: false,
                   timer: 1500
                 }).then(() => {

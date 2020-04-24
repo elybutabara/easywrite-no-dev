@@ -8,7 +8,7 @@
                     <small>{{$t('BELOW_ARE_THE_LIST_OF_CHARACTERS_UNDER')}} {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form', tabData: { list_index: -1, book_id: properties.uuid, character: null }, tabTitle: 'New Character', newTab: true})">{{$t('NEW').toUpperCase()}} {{$tc('CHARACTER', 1).toUpperCase()}}</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form', tabData: { list_index: -1, book_id: properties.uuid, character: null }, tabTitle: $t('NEW') + ' ' + $tc('CHARACTER',1), newTab: true})">{{$t('NEW').toUpperCase()}} {{$tc('CHARACTER', 1).toUpperCase()}}</button>
                 </div>
             </div>
         </div>
@@ -23,8 +23,8 @@
                             <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}...</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-details-' + character.uuid, tabComponent: 'character-details',  tabData: { book_id: properties.uuid, character: character }, tabTitle: character.fullname})"><i class="lar la-eye"></i> VIEW</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-form-' + character.uuid, tabComponent: 'character-form',  tabData: { book_id: properties.uuid, character: character }, tabTitle: 'Edit - ' + character.fullname, newTab: true})"><i class="las la-pencil-alt"></i> EDIT</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-details-' + character.uuid, tabComponent: 'character-details',  tabData: { book_id: properties.uuid, character: character }, tabTitle: $t('VIEW')+ ' - ' + character.fullname})"><i class="lar la-eye"></i> VIEW</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-form-' + character.uuid, tabComponent: 'character-form',  tabData: { book_id: properties.uuid, character: character }, tabTitle: $t('EDIT')+ ' - ' + character.fullname, newTab: true})"><i class="las la-pencil-alt"></i> EDIT</button>
                             <button class="btn-delete" @click="deleteCharacter(character)"><i class="las la-trash-alt"></i> DELETE</button>
                         </div>
                     </div>
@@ -54,13 +54,14 @@ export default {
     deleteCharacter: function (character) {
       var scope = this
       window.swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        title: this.$t('ARE_YOU_SURE'),
+        text: this.$t('YOU_WONT_BE_ABLE_TO_REVERT_THIS'),
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonText: this.$t('YES_DELETE_IT'),
+        cancelButtonText: this.$t('CANCEL')
       }).then((result) => {
         if (result.value) {
           scope.axios
@@ -70,7 +71,7 @@ export default {
                 window.swal.fire({
                   position: 'center',
                   icon: 'success',
-                  title: 'Character successfuly deleted',
+                  title: this.$t('RECORD_SUCCESSFULY_DELETED'),
                   showConfirmButton: false,
                   timer: 1500
                 }).then(() => {

@@ -55,7 +55,7 @@
             </div>
         </div>
         <div class="es-panel-footer">
-            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form',  tabData: { book_id: properties.uuid, character: properties.character }, tabTitle: 'Edit - ' + properties.character.fullname })">{{$t('EDIT').toUpperCase()}}</div>
+            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form',  tabData: { book_id: properties.uuid, character: properties.character }, tabTitle: $t('EDIT')+ ' - ' + properties.character.fullname })">{{$t('EDIT').toUpperCase()}}</div>
             <div class="cta" @click="deleteCharacter(properties.character)">{{$t('DELETE').toUpperCase()}}</div>
         </div>
     </div>
@@ -145,7 +145,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: 'Relation successfuly added',
+              title: this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
@@ -157,13 +157,14 @@ export default {
     deleteRelationDetail (item, index) {
       var scope = this
       window.swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        title: this.$t('ARE_YOU_SURE'),
+        text: this.$t('YOU_WONT_BE_ABLE_TO_REVERT_THIS'),
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonText: this.$t('YES_DELETE_IT'),
+        cancelButtonText: this.$t('CANCEL')
       }).then((result) => {
         if (result.value) {
           scope.axios
@@ -173,7 +174,7 @@ export default {
                 window.swal.fire({
                   position: 'center',
                   icon: 'success',
-                  title: 'Relation successfuly deleted',
+                  title: this.$t('RECORD_SUCCESSFULY_DELETED'),
                   showConfirmButton: false,
                   timer: 1500
                 }).then(() => {

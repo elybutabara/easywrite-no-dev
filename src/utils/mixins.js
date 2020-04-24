@@ -37,19 +37,19 @@ export default {
         scope.CHANGE_COMPONENT({tabKey: 'book-details-' + data.uuid, tabComponent: 'book-details', tabData: data, tabTitle: data.title})
       } else if (model === 'chapters') {
         scope.$store.dispatch('loadChaptersByBook', data.uuid)
-        scope.CHANGE_COMPONENT({tabKey: 'chapter-listing-' + data.uuid, tabComponent: 'chapter-listing', tabData: data, tabTitle: 'Chapters - ' + data.title})
+        scope.CHANGE_COMPONENT({tabKey: 'chapter-listing-' + data.uuid, tabComponent: 'chapter-listing', tabData: data, tabTitle: this.$tc('CHAPTER', 2) + ' - ' + data.title})
       } else if (model === 'items') {
         scope.$store.dispatch('loadItemsByBook', data.uuid)
-        scope.CHANGE_COMPONENT({tabKey: 'item-listing-' + data.uuid, tabComponent: 'item-listing', tabData: data, tabTitle: 'Items - ' + data.title})
+        scope.CHANGE_COMPONENT({tabKey: 'item-listing-' + data.uuid, tabComponent: 'item-listing', tabData: data, tabTitle: this.$tc('ITEM', 2) + ' - ' + data.title})
       } else if (model === 'characters') {
         scope.$store.dispatch('loadCharactersByBook', data.uuid)
-        scope.CHANGE_COMPONENT({tabKey: 'character-listing-' + data.uuid, tabComponent: 'character-listing', tabData: data, tabTitle: 'Character - ' + data.title})
+        scope.CHANGE_COMPONENT({tabKey: 'character-listing-' + data.uuid, tabComponent: 'character-listing', tabData: data, tabTitle: this.$tc('LOCATION', 2) + ' - ' + data.title})
       } else if (model === 'locations') {
         scope.$store.dispatch('loadLocationsByBook', data.uuid)
-        scope.CHANGE_COMPONENT({tabKey: 'location-listing-' + data.uuid, tabComponent: 'location-listing', tabData: data, tabTitle: 'Location - ' + data.title})
+        scope.CHANGE_COMPONENT({tabKey: 'location-listing-' + data.uuid, tabComponent: 'location-listing', tabData: data, tabTitle: this.$tc('CHARACTER', 2) + ' - ' + data.title})
       } else if (model === 'scenes') {
         scope.$store.dispatch('loadScenesByBook', data.uuid)
-        scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + data.uuid, tabComponent: 'scene-listing', tabData: data, tabTitle: 'Scenes - ' + data.title})
+        scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + data.uuid, tabComponent: 'scene-listing', tabData: data, tabTitle: this.$tc('OTHER_SCENES', 2) + ' - ' + data.title})
       }
     },
     TOGGLE_TREE: function (model, index, isOpen, data) {

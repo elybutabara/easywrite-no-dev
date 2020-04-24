@@ -8,7 +8,7 @@
                     <small>{{$t('BELOW_ARE_THE_LIST_OF_CHAPTERS_UNDER')}} {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.uuid, tabComponent: 'scene-form', tabData: { book_id: properties.uuid , uuid: properties.uuid }, tabTitle: 'New Scenes', newTab: true})">{{$t('NEW').toUpperCase()}} {{$tc('SCENE', 1).toUpperCase()}}</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.uuid, tabComponent: 'scene-form', tabData: { book_id: properties.uuid , uuid: properties.uuid }, tabTitle: $t('NEW') + ' ' + $tc('SCENE',1), newTab: true})">{{$t('NEW').toUpperCase()}} {{$tc('SCENE', 1).toUpperCase()}}</button>
                 </div>
             </div>
         </div>
@@ -19,9 +19,9 @@
                     <div class="es-card">
                         <div class="es-card-content">
                         <div class="es-card-actions">
-                            <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + scene.uuid, tabComponent: 'scene-form',  tabData: { book_id: scene.book_id, scene: scene}, tabTitle: 'Edit ' + scene.title, newTab: true })"><i class="las la-pencil-alt"></i></button>
+                            <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + scene.uuid, tabComponent: 'scene-form',  tabData: { book_id: scene.book_id, scene: scene}, tabTitle: $t('EDIT')+ ' - ' + scene.title, newTab: true })"><i class="las la-pencil-alt"></i></button>
                             <button class="btn-circle" @click="deleteScene(scene)"><i class="las la-trash-alt"></i></button>
-                            <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + scene.uuid, tabComponent: 'scene-details',  tabData: { book_id: scene.book_id, scene: scene}, tabTitle: scene.title, newTab: true })"><i class="lar la-eye"></i></button>
+                            <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + scene.uuid, tabComponent: 'scene-details',  tabData: { book_id: scene.book_id, scene: scene}, tabTitle: $t('VIEW')+ ' - ' + scene.title, newTab: true })"><i class="lar la-eye"></i></button>
                         </div>
                             <p class="title">{{ scene.title || 'Untitled' }}</p>
                             <i class="description ellipsis-2">{{ scene.short_description || $t('NO_SHORT_DESCRIPTION') + '...'  }}</i>
@@ -70,13 +70,14 @@ export default {
     deleteScene: function (scene) {
       var scope = this
       window.swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        title: this.$t('ARE_YOU_SURE'),
+        text: this.$t('YOU_WONT_BE_ABLE_TO_REVERT_THIS'),
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonText: this.$t('YES_DELETE_IT'),
+        cancelButtonText: this.$t('CANCEL')
       }).then((result) => {
         if (result.value) {
           scope.axios
@@ -86,7 +87,7 @@ export default {
                 window.swal.fire({
                   position: 'center',
                   icon: 'success',
-                  title: 'Scene successfuly deleted',
+                  title: this.$t('RECORD_SUCCESSFULY_DELETED'),
                   showConfirmButton: false,
                   timer: 1500
                 }).then(() => {

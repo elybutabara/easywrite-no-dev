@@ -8,7 +8,7 @@
                     <small>{{$t('BELOW_ARE_THE_LIST_OF_ITEMS_UNDER')}} {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'item-form', tabComponent: 'item-form', tabData: { list_index: -1, book_id: properties.uuid, item: null }, tabTitle: 'New Item', newTab: true })">{{$t('NEW').toUpperCase()}} {{$tc('ITEM', 1).toUpperCase()}}</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'item-form', tabComponent: 'item-form', tabData: { list_index: -1, book_id: properties.uuid, item: null }, tabTitle: $t('NEW') + ' ' + $tc('ITEM',1), newTab: true })">{{$t('NEW').toUpperCase()}} {{$tc('ITEM', 1).toUpperCase()}}</button>
                 </div>
             </div>
         </div>
@@ -23,8 +23,8 @@
                             <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}...</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-details-' + item.uuid, tabComponent: 'item-details', tabData: { book_id: properties.uuid, item: item }, tabTitle: item.itemname})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + item.uuid, tabComponent: 'item-form', tabData: { book_id: properties.uuid, item: item }, tabTitle: 'Edit - ' + item.itemname, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT').toUpperCase()}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-details-' + item.uuid, tabComponent: 'item-details', tabData: { book_id: properties.uuid, item: item }, tabTitle: $t('VIEW')+ ' - ' + item.itemname})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + item.uuid, tabComponent: 'item-form', tabData: { book_id: properties.uuid, item: item }, tabTitle: $t('EDIT')+ ' - ' + item.itemname, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT').toUpperCase()}}</button>
                             <button class="btn-delete" @click="deleteItem(item)"><i class="las la-trash-alt"></i> {{$t('DELETE').toUpperCase()}}</button>
                         </div>
                     </div>
@@ -53,13 +53,14 @@ export default {
     deleteItem: function (item) {
       var scope = this
       window.swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        title: this.$t('ARE_YOU_SURE'),
+        text: this.$t('YOU_WONT_BE_ABLE_TO_REVERT_THIS'),
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonText: this.$t('YES_DELETE_IT'),
+        cancelButtonText: this.$t('CANCEL')
       }).then((result) => {
         if (result.value) {
           scope.axios
@@ -69,7 +70,7 @@ export default {
                 window.swal.fire({
                   position: 'center',
                   icon: 'success',
-                  title: 'Item successfuly deleted',
+                  title: this.$t('RECORD_SUCCESSFULY_DELETED'),
                   showConfirmButton: false,
                   timer: 1500
                 }).then(() => {

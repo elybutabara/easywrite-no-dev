@@ -138,7 +138,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: 'Chapter successfuly saved',
+              title: this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
