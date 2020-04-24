@@ -13,18 +13,6 @@ const mainMenuTemplate = [
     ]
   },
   {
-    label: "Edit",
-    submenu: [
-      { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
-      { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
-      { type: "separator" },
-      { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
-      { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
-      { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
-      { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
-    ]
-  },
-  {
     label:'Translations',
     submenu:[
       {label: "English",
@@ -111,6 +99,19 @@ function ControlState(val) {
 // If mac, add empty object on menu
 if(process.platform == "darwin") {
   mainMenuTemplate.unshift({label: ''});
+  const editMenu = {
+    label: "Edit",
+      submenu: [
+    { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+    { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+    { type: "separator" },
+    { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+    { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+    { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+    { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+  ]
+  }
+  mainMenuTemplate.splice(2,0,editMenu)
 }
 
 // Add DevTools if not in production
