@@ -586,6 +586,9 @@ export default {
         scope.data.status = scene.status
         scope.data.weather_type = scene.weather_type
         scope.data.character_id_vp = scene.character_id_vp
+        scope.data.character_id_vp = scene.character_id_vp
+        scope.data.date_starts = scene.date_starts
+        scope.data.date_ends = scene.date_ends
 
         // chapters
         scope.chapters = chapters
