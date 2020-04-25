@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 export default {
   strict: true, // make sure everything us mutated, no direct editing of state
   name: 'auth',
@@ -5,6 +7,12 @@ export default {
     user: {
       data: [],
       author: []
+    },
+    author_personal_progress: {
+      today: 0,
+      monthly: 0,
+      yearly: 0,
+      all_time: 0
     },
     isAuthenticated: false
   },
@@ -26,6 +34,9 @@ export default {
     },
     getUserSyncedDate: state => {
       return state.user.data.synced_at
+    },
+    getAuthorPersonaProgress: state => (progress) => {
+      return state.author_personal_progress[progress]
     }
   },
   mutations: {
@@ -36,6 +47,19 @@ export default {
     },
     updateSyncedAt (state, payload) {
       state.user.data.synced_at = payload.syncedAt
+    },
+    loadAuthorPersonalProgress (state, payload) {
+      axios
+        .get('http://localhost:3000/authors/' + payload.authorId + '/personal-progress')
+        .then(response => {
+          console.log('Author personal progress loaded!')
+          state.author_personal_progress = response.data
+        })
+    }
+  },
+  actions: {
+    loadAuthorPersonalProgress ({ commit, state }, payload) {
+      commit('loadAuthorPersonalProgress', payload)
     }
   }
 }

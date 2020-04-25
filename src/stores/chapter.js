@@ -5,7 +5,8 @@ export default {
   strict: true,
   state: {
     chapters: {},
-    chapter_versions: { rows: [] }
+    chapter_versions: { rows: [] },
+    chapter_author_personal_progress: {}
   },
   getters: {
     isChapterFolderOpen: state => (bookUUID) => {
@@ -49,6 +50,14 @@ export default {
       if (state.chapter_versions[chapterUUID] !== 'undefined' && state.chapter_versions[chapterUUID].rows.length > 0) {
         var index = state.chapter_versions[chapterUUID].rows.length - 1
         return state.chapter_versions[chapterUUID].rows[index]
+      }
+      return null
+    },
+    getTodayAuthorPersonalProgressForChapter: state => (payload) => {
+      let chapterUUID = payload.uuid
+
+      if (state.chapter_author_personal_progress[chapterUUID] !== 'undefined') {
+        return state.chapter_author_personal_progress[chapterUUID]
       }
       return null
     },
@@ -96,6 +105,16 @@ export default {
         .get('http://localhost:3000/chapters/' + chapterID + '/versions')
         .then(response => {
           state.chapter_versions[chapterID] = { rows: response.data }
+        })
+    },
+    loadTodayAuthorPersonalProgressForChapter (state, payload) {
+      let chapterID = payload.chapter_id
+      let authorID = payload.author_id
+      Vue.set(state.chapter_author_personal_progress, chapterID, {})
+      axios
+        .get('http://localhost:3000/authors/' + authorID + '/chapter/' + chapterID + '/personal-progress/today')
+        .then(response => {
+          state.chapter_author_personal_progress[chapterID] = response.data
         })
     },
     addChapterToList (state, payload) {
@@ -188,6 +207,9 @@ export default {
     },
     loadVersionsByChapter ({ commit, state }, payload) {
       commit('loadVersionsByChapter', payload)
+    },
+    loadTodayAuthorPersonalProgressForChapter ({ commit, state, rootGetters }, payload) {
+      commit('loadTodayAuthorPersonalProgressForChapter', { chapter_id: payload, author_id: rootGetters.getAuthorID })
     },
     addChapterToList ({ commit, state }, payload) {
       commit('addChapterToList', payload)

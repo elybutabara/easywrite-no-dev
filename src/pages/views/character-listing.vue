@@ -19,7 +19,7 @@
                     <div class="es-card">
                         <div class="es-card-content">
                             <p class="title">{{ character.fullname || 'Untitled' }}</p>
-                            <i class="description" v-if="character.description !== '' && character.description !== null" v-html="character.description"></i>
+                            <i class="description ellipsis-2" v-if="character.description !== '' && character.description !== null" v-html="character.description"></i>
                             <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}...</i>
                         </div>
                         <div class="es-card-footer">

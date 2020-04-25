@@ -48,7 +48,7 @@
                         </b-col>
                         <b-col>
                             <label>{{$tc('CHAPTER',1)}}: </label>
-                            <multiselect v-model="selected_chapter" :options="chapters" :placeholder="$t('SELECT') + ' ' + $tc('CHAPTER',1)" label="title" track-by="uuid" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+                            <multiselect v-model="selected_chapter" :options="options_chapters" :placeholder="$t('SELECT') + ' ' + $tc('CHAPTER',1)" label="title" track-by="uuid" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
                         </b-col>
                     </b-row>
                     <b-row class="margin-bottom-1rem">
@@ -262,14 +262,15 @@ export default {
         character_id_vp: '',
         viewpoint_description: ''
       },
-      // List of characters
-      chapters: [],
+      // Selected nultiselect
       selected_chapter: null,
       selected_typeofscene: null,
       selected_importance: null,
       selected_status: null,
       selected_weather_type: null,
-      selected_character_id_vp: '-1',
+      selected_character_id_vp: {text: 'Author', value: '-1'},
+      // Options for multiselect
+      options_chapters: [],
       options_typeofscene: [
         {text: 'Action', value: 'Action'},
         {text: 'Reaction', value: 'Reaction'}
@@ -294,6 +295,11 @@ export default {
       options_character_id_vp: [
         {text: 'Author', value: '-1'}
       ],
+      // List of selected characters/items/locations
+      selected_items: [],
+      selected_characters: [],
+      selected_locations: [],
+      // Temp container of content
       tempSceneVersionContent: '',
       tempSceneNotes: '',
       tempViewpointDescription: '',
@@ -307,16 +313,16 @@ export default {
         'locations': 'inactive',
         'items': 'inactive'
       },
-      selected_items: [],
-      selected_characters: [],
-      selected_locations: [],
+      // Base content count is use to determine initial total number of words in content
       baseContentCount: '',
+      // Author progress is use for saving author personal progress
       authorProgress: {
         author_id: '',
         relation_id: '',
         is_for: 'scene',
         total_words: 0
       },
+      // Feedback are for storing error message
       feedback: {
         title: {
           state: null,
@@ -399,52 +405,6 @@ export default {
         scope.selected_locations.push(data.uuid)
       }
     },
-    saveChild: function (bookSceneID) {
-      var scope = this
-      scope.axios
-        .post('http://localhost:3000/scene-items/batch', { book_scene_id: bookSceneID, rows: scope.selected_items })
-        .then(response => {
-          console.log('scene items added')
-        })
-
-      scope.axios
-        .post('http://localhost:3000/scene-locations/batch', { book_scene_id: bookSceneID, rows: scope.selected_locations })
-        .then(response => {
-          console.log('scene locations added')
-        })
-
-      scope.axios
-        .post('http://localhost:3000/scene-characters/batch', { book_scene_id: bookSceneID, rows: scope.selected_characters })
-        .then(response => {
-          console.log('scene characters added')
-        })
-
-      if (scope.authorProgress.uuid) {
-        scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.WORD_COUNT(scope.tempSceneVersionContent) - scope.baseContentCount)
-      } else {
-        scope.authorProgress.author_id = scope.$store.getters.getAuthorID
-        scope.authorProgress.relation_id = bookSceneID
-        scope.authorProgress.total_words = scope.WORD_COUNT(scope.tempSceneVersionContent) - scope.baseContentCount
-      }
-
-      scope.axios
-        .post('http://localhost:3000/author-personal-progress', scope.authorProgress)
-        .then(response => {
-          scope.authorProgress = response
-          scope.$store.dispatch('loadAuthorPersonalProgress', { authorId: this.$store.getters.getAuthorID })
-        })
-
-      let sceneHistory = {
-        scene_id: bookSceneID,
-        content: scope.data.scene_version.content
-      }
-
-      scope.axios
-        .post('http://localhost:3000/book-scene-history', sceneHistory)
-        .then(response => {
-          console.log('Scene history saved!')
-        })
-    },
     // Required for geting value from TinyMCE content
     setContent (value) {
       var scope = this
@@ -471,9 +431,32 @@ export default {
       scope.setAll(scope.feedback.title, null)
       scope.setAll(scope.feedback.short_description, null)
     },
+    validate () {
+      var scope = this
+      var isValid = true
+
+      scope.setFeedbackNull()
+
+      // Check if title is empty and return error
+      if (!scope.data.title) {
+        // TODO: John need to translate this string
+        scope.feedback.title.message = 'Title is required'
+        scope.feedback.title.state = false
+        isValid = false
+      }
+
+      // Check if short_description length and if its > 30 return error
+      if (scope.data.short_description && scope.data.short_description.length > 30) {
+        // TODO: John need to translate this string
+        scope.feedback.short_description.message = 'Max char 30'
+        scope.feedback.short_description.state = false
+        isValid = false
+      }
+
+      return isValid
+    },
     saveScene () {
       var scope = this
-      var hasError = false
 
       scope.data.scene_version.content = scope.tempSceneVersionContent
       scope.data.notes = scope.tempSceneNotes
@@ -483,25 +466,9 @@ export default {
       scope.data.importance = scope.selected_importance.value
       scope.data.status = scope.selected_status.value
       scope.data.weather_type = scope.selected_weather_type.value
-      // scope.data.character_id_vp = scope.selected_character_id_vp.value
-      // scope.data.character_id_vp = scope.selected_character_id_vp.value
+      scope.data.character_id_vp = scope.selected_character_id_vp.value
 
-      // Clear all error in form
-      scope.setFeedbackNull()
-
-      if (!scope.data.title) {
-        scope.feedback.title.message = 'Title is required'
-        scope.feedback.title.state = false
-        hasError = true
-      }
-
-      if (scope.data.short_description.length > 30) {
-        scope.feedback.short_description.message = 'Max char 30'
-        scope.feedback.short_description.state = false
-        hasError = true
-      }
-
-      if (hasError) {
+      if (!scope.validate()) {
         return false
       }
 
@@ -509,6 +476,8 @@ export default {
         .post('http://localhost:3000/scenes', scope.data)
         .then(response => {
           if (response.data) {
+            scope.saveRelatedTables(response.data.uuid)
+
             window.swal.fire({
               position: 'center',
               icon: 'success',
@@ -518,79 +487,149 @@ export default {
             }).then(() => {
               // scope.$parent.changeComponent('scene-details', { scene: response.data })
               if (scope.data.uuid === null) {
-                scope.$set(scope.data, 'id', response.data.id)
-                scope.$set(scope.data, 'uuid', response.data.uuid)
-                scope.$set(scope.data, 'updated_at', response.data.updated_at)
-                scope.saveChild(response.data.uuid)
                 scope.$store.dispatch('updateSceneList', response.data)
                 // refresh vuex to update all related records
                 scope.$store.dispatch('loadVersionsByScene', response.data)
                 scope.CHANGE_COMPONENT({tabKey: 'scene-details-' + response.data.uuid, tabComponent: 'scene-details', tabData: { book_id: response.data.book_id, scene: response.data }, tabTitle: 'View - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
               } else {
-                scope.$set(scope.data, 'id', response.data.id)
-                scope.$set(scope.data, 'uuid', response.data.uuid)
-                scope.$set(scope.data, 'updated_at', response.data.updated_at)
-                scope.saveChild(response.data.uuid)
                 // refresh vuex to update all related records
                 scope.$store.dispatch('updateSceneList', response.data)
                 scope.$store.dispatch('loadVersionsByScene', response.data)
                 scope.$store.dispatch('changeTabTitle', {key: 'scene-form-' + response.data.uuid, title: 'Edit -' + response.data.title})
                 scope.$store.dispatch('changeTabTitle', {key: 'scene-details-' + response.data.uuid, title: 'Edit -' + response.data.title})
               }
+
+              scope.loadScene(response.data)
             })
           }
         })
     },
-    loadChapter () {
+    saveRelatedTables: function (sceneId) {
       var scope = this
-      var bookId = scope.data.book_id
+
+      scope.saveSceneItems(sceneId)
+      scope.saveSceneLocations(sceneId)
+      scope.saveSceneCharacters(sceneId)
+      scope.saveAuthorPersonalProgress(sceneId)
+      scope.saveSceneHistory(sceneId)
+    },
+    saveSceneItems (sceneId) {
+      var scope = this
       scope.axios
-        .get('http://localhost:3000/books/' + bookId + '/chapters')
+        .post('http://localhost:3000/scene-items/batch', { book_scene_id: sceneId, rows: scope.selected_items })
         .then(response => {
-          scope.chapters = response.data
+          console.log('scene items added')
         })
     },
-    loadScene (sceneId) {
+    saveSceneLocations (sceneId) {
       var scope = this
       scope.axios
-        .get('http://localhost:3000/scenes/' + sceneId)
+        .post('http://localhost:3000/scene-locations/batch', { book_scene_id: sceneId, rows: scope.selected_locations })
         .then(response => {
-          let scene = response.data
-          scope.data = scene
-          if (scene.scene_version[scene.scene_version.length - 1]) {
-            scope.data.scene_version = scene.scene_version[scene.scene_version.length - 1]
-
-            scope.tempSceneVersionContent = scope.data.scene_version.content
-            scope.tempSceneNotes = scope.data.notes
-            scope.tempViewpointDescription = scope.data.viewpoint_description
-            setTimeout(function () {
-              scope.selected_character_id_vp = scope.data.character_id_vp
-            }, 1000)
-            scope.baseContentCount = scope.WORD_COUNT(scope.tempSceneVersionContent)
-          }
-        })
-
-      scope.axios
-        .get('http://localhost:3000/authors/' + scope.$store.getters.getAuthorID + '/scene/' + sceneId + '/personal-progress/today')
-        .then(response => {
-          if (response.data) {
-            scope.authorProgress = response.data
-          }
+          console.log('scene locations added')
         })
     },
-    loadSceneChapter (chapterId) {
+    saveSceneCharacters (sceneId) {
       var scope = this
+      scope.axios
+        .post('http://localhost:3000/scene-characters/batch', { book_scene_id: sceneId, rows: scope.selected_characters })
+        .then(response => {
+          console.log('scene characters added')
+        })
+    },
+    saveAuthorPersonalProgress (sceneId) {
+      var scope = this
+      if (scope.authorProgress.uuid) {
+        scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.WORD_COUNT(scope.tempSceneVersionContent) - scope.baseContentCount)
+      } else {
+        scope.authorProgress.author_id = scope.$store.getters.getAuthorID
+        scope.authorProgress.relation_id = sceneId
+        scope.authorProgress.total_words = scope.WORD_COUNT(scope.tempSceneVersionContent) - scope.baseContentCount
+      }
 
       scope.axios
-        .get('http://localhost:3000/chapters/' + chapterId)
+        .post('http://localhost:3000/author-personal-progress', scope.authorProgress)
         .then(response => {
-          let chapter = response.data
-          scope.selected_chapter = chapter
+          scope.authorProgress = response.data
+          scope.$store.dispatch('loadAuthorPersonalProgress', { authorId: this.$store.getters.getAuthorID })
         })
+    },
+    saveSceneHistory (sceneId) {
+      var scope = this
+      let sceneHistory = {
+        scene_id: sceneId,
+        content: scope.data.scene_version.content
+      }
+
+      scope.axios
+        .post('http://localhost:3000/book-scene-history', sceneHistory)
+        .then(response => {
+          console.log('Scene history saved!')
+        })
+    },
+    loadScene (sceneProp) {
+      var scope = this
+
+      setTimeout(function () {
+        let scene = scope.$store.getters.findScene(sceneProp)
+        let chapters = scope.$store.getters.getChaptersByBook(scope.properties.scene.book_id)
+        let chapter = scope.$store.getters.findChapter({ book_id: scope.properties.scene.book_id, uuid: scope.properties.scene.chapter_id })
+        // let characters = scope.$store.getters.getCharactersByBook(scope.properties.scene.book_id)
+        let version = scope.$store.getters.findLatestSceneVersionByScene(sceneProp)
+        let progress = scope.$store.getters.getTodayAuthorPersonalProgressForScene(sceneProp)
+
+        // scene
+        scope.data.title = scene.title
+        scope.data.short_description = scene.short_description
+        scope.data.typeofscene = scene.typeofscene
+        scope.data.importance = scene.importance
+        scope.data.status = scene.status
+        scope.data.weather_type = scene.weather_type
+        scope.data.character_id_vp = scene.character_id_vp
+
+        // chapters
+        scope.chapters = chapters
+
+        // characters
+        // for (let i = 0; i < characters.length; i++) {
+        //   let character = characters[i]
+        //   scope.options_character_id_vp.push({ text: character.fullname, value: character.uuid })
+        //
+        //   if (scope.data.character_id_vp === character.uuid) {
+        //     scope.selected_character_id_vp = { text: character.fullname, value: character.uuid }
+        //   }
+        // }
+
+        console.log(scope.options_character_id_vp)
+        console.log(scope.selected_character_id_vp)
+
+        // chapter
+        scope.selected_chapter = chapter
+
+        // version
+        scope.data.scene_version.id = version.id
+        scope.data.scene_version.uuid = version.uuid
+        scope.data.scene_version.content = version.content
+
+        scope.tempSceneVersionContent = version.content
+        scope.tempSceneNotes = scene.notes
+        scope.tempViewpointDescription = scene.viewpoint_description
+
+        // set selected item/character/location
+        scope.setSelectedChild()
+
+        scope.baseContentCount = scope.WORD_COUNT(scope.tempSceneVersionContent)
+
+        // progress
+        if (progress) {
+          scope.authorProgress = progress
+        }
+      }, 500)
     }
   },
   beforeMount () {
     var scope = this
+
     if (scope.properties.scene) {
       scope.$set(scope.data, 'id', scope.properties.scene.id)
       scope.$set(scope.data, 'uuid', scope.properties.scene.uuid)
@@ -598,7 +637,6 @@ export default {
 
       if (scope.properties.scene.chapter_id) {
         scope.$set(scope.data, 'chapter_id', scope.properties.scene.chapter_id)
-        scope.loadSceneChapter(scope.data.chapter_id)
       }
     } else if (scope.properties.chapter) {
       scope.$set(scope.data, 'book_id', scope.properties.chapter.book_id)
@@ -610,33 +648,42 @@ export default {
   },
   mounted () {
     var scope = this
-    if (scope.data.id !== null) {
+
+    // load book
+    scope.$store.dispatch('loadChaptersByBook', scope.properties.book_id)
+    scope.$store.dispatch('loadCharactersByBook', scope.properties.book_id)
+    scope.$store.dispatch('loadItemsByBook', scope.properties.book_id)
+    scope.$store.dispatch('loadLocationsByBook', scope.properties.book_id)
+
+    if (scope.data.uuid) {
       window.$('.page-scene-form .page-title h3').html('Update ' + scope.properties.scene.title)
-      scope.loadScene(scope.data.uuid)
-      // load book
-      scope.$store.dispatch('loadCharactersByBook', scope.properties.book_id)
-      scope.$store.dispatch('loadItemsByBook', scope.properties.book_id)
-      scope.$store.dispatch('loadLocationsByBook', scope.properties.book_id)
 
       // load scene children
       scope.$store.dispatch('loadCharactersByScene', scope.properties.scene)
       scope.$store.dispatch('loadItemsByScene', scope.properties.scene)
       scope.$store.dispatch('loadLocationsByScene', scope.properties.scene)
       scope.$store.dispatch('loadVersionsByScene', scope.properties.scene)
+      scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', scope.properties.scene.uuid)
 
+      scope.loadScene(scope.properties.scene)
+    } else {
       setTimeout(function () {
-        scope.setSelectedChild()
+        scope.chapters = scope.$store.getters.getChaptersByBook(scope.properties.book_id)
+
+        // var bookCharacters = scope.$store.getters.getCharactersByBook(scope.properties.book_id)
+        // for (let i = 0; i < bookCharacters.length; i++) {
+        //   let character = bookCharacters[i]
+        //   scope.options_character_id_vp.push({ text: character.fullname, value: character.uuid })
+        //
+        //   if (scope.selected_character_id_vp.value === character.uuid) {
+        //     scope.selected_character_id_vp = { text: character.fullname, value: character.uuid }
+        //   }
+        // }
       }, 500)
     }
 
-    scope.loadChapter()
     setTimeout(function () {
       scope.page.is_ready = true
-      var bookCharacters = scope.$store.getters.getCharactersByBook(scope.properties.book_id)
-      for (let i = 0; i < bookCharacters.length; i++) {
-        let character = bookCharacters[i]
-        scope.options_character_id_vp.push({ text: character.fullname, value: character.uuid })
-      }
     }, 500)
   }
 }

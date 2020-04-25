@@ -119,18 +119,21 @@ export default {
           content: ''
         }
       },
-      chapterVersionCont: '',
-      baseContentCount: '',
+      tempChapterVersionCont: '',
       accordion: {
         'chapter-details': 'active',
         'content': 'inactive'
       },
+      // Base content count is use to determine initial total number of words in content
+      baseContentCount: '',
+      // Author progress is use for saving author personal progress
       authorProgress: {
         author_id: '',
         relation_id: '',
         is_for: 'chapter',
         total_words: 0
       },
+      // Feedback are for storing error message
       feedback: {
         title: {
           state: null,
@@ -159,39 +162,50 @@ export default {
     setContent (value) {
       var scope = this
 
-      scope.chapterVersionCont = value
+      scope.tempChapterVersionCont = value
     },
+    // Set all child object/array of an object to same value like null/empty string
     setAll (obj, val) {
       Object.keys(obj).forEach(function (index) {
         obj[index] = val
       })
     },
+    // Clear all error message and state to null
     setFeedbackNull () {
       var scope = this
       scope.setAll(scope.feedback.title, null)
       scope.setAll(scope.feedback.short_description, null)
     },
-    saveChapter () {
+    validate () {
       var scope = this
-      var hasError = false
-      scope.data.chapter_version.content = scope.chapterVersionCont
+      var isValid = true
 
-      // Clear all error in form
       scope.setFeedbackNull()
 
+      // Check if title is empty and return error
       if (!scope.data.title) {
+        // TODO: John need to translate this string
         scope.feedback.title.message = 'Title is required'
         scope.feedback.title.state = false
-        hasError = true
+        isValid = false
       }
 
-      if (scope.data.short_description.length > 30) {
+      // Check if short_description length and if its > 30 return error
+      if (scope.data.short_description && scope.data.short_description.length > 30) {
+        // TODO: John need to translate this string
         scope.feedback.short_description.message = 'Max char 30'
         scope.feedback.short_description.state = false
-        hasError = true
+        isValid = false
       }
 
-      if (hasError) {
+      return isValid
+    },
+    saveChapter () {
+      var scope = this
+      scope.data.chapter_version.content = scope.tempChapterVersionCont
+
+      // If upon validation it return error do not save character and display errors
+      if (!scope.validate()) {
         return false
       }
 
@@ -199,6 +213,8 @@ export default {
         .post('http://localhost:3000/chapters', scope.data)
         .then(response => {
           if (response.data) {
+            scope.saveRelatedTables(response.data.uuid)
+
             window.swal.fire({
               position: 'center',
               icon: 'success',
@@ -206,29 +222,58 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              scope.saveAuthorPersonalProgress(response.data.uuid)
-              scope.saveChapterHistory(response.data.uuid)
               if (scope.data.uuid === null) {
-                scope.$set(scope.data, 'id', response.data.id)
-                scope.$set(scope.data, 'uuid', response.data.uuid)
-                scope.$set(scope.data, 'updated_at', response.data.updated_at)
                 scope.$store.dispatch('updateChapterList', response.data)
                 scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
                 // scope.$store.dispatch('updateChapterVersionList', scope.data.chapter_version)
-                scope.CHANGE_COMPONENT({tabKey: 'chapter-details-' + response.data.uuid, tabComponent: 'chapter-details', tabData: { book_id: response.data.book_id, chapter: response.data }, tabTitle: 'View - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
+                scope.CHANGE_COMPONENT({
+                  tabKey: 'chapter-details-' + response.data.uuid,
+                  tabComponent: 'chapter-details',
+                  tabData: {book_id: response.data.book_id, chapter: response.data},
+                  tabTitle: 'View - ' + response.data.title,
+                  tabIndex: scope.$store.getters.getActiveTab
+                })
               } else {
-                scope.$set(scope.data, 'id', response.data.id)
-                scope.$set(scope.data, 'uuid', response.data.uuid)
-                scope.$set(scope.data, 'updated_at', response.data.updated_at)
                 scope.$store.dispatch('updateChapterList', response.data)
                 scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
                 // scope.$store.dispatch('updateChapterVersionList', scope.data.chapter_version)
                 // scope.CHANGE_COMPONENT({tabKey: 'chapter-details-' + response.data.uuid, tabComponent: 'chapter-details', tabData: { book_id: response.data.book_id, chapter: response.data }, tabTitle: 'View - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
-                scope.$store.dispatch('changeTabTitle', {key: 'chapter-form-' + response.data.uuid, title: 'Edit -' + response.data.title})
-                scope.$store.dispatch('changeTabTitle', {key: 'chapter-details-' + response.data.uuid, title: 'View -' + response.data.title})
+                scope.$store.dispatch('changeTabTitle', {
+                  key: 'chapter-form-' + response.data.uuid,
+                  title: 'Edit -' + response.data.title
+                })
+                scope.$store.dispatch('changeTabTitle', {
+                  key: 'chapter-details-' + response.data.uuid,
+                  title: 'View -' + response.data.title
+                })
               }
+
+              scope.loadChapter(response.data)
             })
           }
+        })
+    },
+    saveRelatedTables (chapterId) {
+      let scope = this
+
+      scope.saveAuthorPersonalProgress(chapterId)
+      scope.saveChapterHistory(chapterId)
+    },
+    saveAuthorPersonalProgress (relationId) {
+      let scope = this
+
+      if (scope.authorProgress.uuid) {
+        scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.WORD_COUNT(scope.tempChapterVersionCont) - scope.baseContentCount)
+      } else {
+        scope.authorProgress.author_id = scope.$store.getters.getAuthorID
+        scope.authorProgress.relation_id = relationId
+        scope.authorProgress.total_words = scope.WORD_COUNT(scope.tempChapterVersionCont) - scope.baseContentCount
+      }
+
+      scope.axios
+        .post('http://localhost:3000/author-personal-progress', scope.authorProgress)
+        .then(response => {
+          scope.$store.dispatch('loadAuthorPersonalProgress', {authorId: response.data.author_id})
         })
     },
     saveChapterHistory (chapterId) {
@@ -245,53 +290,31 @@ export default {
           console.log('Chapter history saved!')
         })
     },
-    saveAuthorPersonalProgress (relationId) {
-      let scope = this
-
-      if (scope.authorProgress.uuid) {
-        scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.WORD_COUNT(scope.chapterVersionCont) - scope.baseContentCount)
-      } else {
-        scope.authorProgress.author_id = scope.$store.getters.getAuthorID
-        scope.authorProgress.relation_id = relationId
-        scope.authorProgress.total_words = scope.WORD_COUNT(scope.chapterVersionCont) - scope.baseContentCount
-      }
-
-      scope.axios
-        .post('http://localhost:3000/author-personal-progress', scope.authorProgress)
-        .then(response => {
-          scope.authorProgress = response
-          scope.$store.dispatch('loadAuthorPersonalProgress', { authorId: this.$store.getters.getAuthorID })
-        })
-    },
-    loadChapter () {
+    loadChapter (chapterProp) {
       var scope = this
-      scope.axios
-        .get('http://localhost:3000/chapters/' + scope.data.uuid)
-        .then(response => {
-          let chapter = response.data
-          scope.data.title = chapter.title
-          scope.data.short_description = chapter.short_description
-          if (chapter.chapter_version[chapter.chapter_version.length - 1]) {
-            scope.data.chapter_version.id = chapter.chapter_version[chapter.chapter_version.length - 1].id
-            scope.data.chapter_version.uuid = chapter.chapter_version[chapter.chapter_version.length - 1].uuid
-            scope.data.chapter_version.content = chapter.chapter_version[chapter.chapter_version.length - 1].content
-            scope.chapterVersionCont = scope.data.chapter_version.content
 
-            scope.baseContentCount = scope.WORD_COUNT(scope.chapterVersionCont)
+      setTimeout(function () {
+        let chapter = scope.$store.getters.findChapter(chapterProp)
+        let version = scope.$store.getters.findLatestChapterVersionByChapter(chapterProp)
+        let progress = scope.$store.getters.getTodayAuthorPersonalProgressForChapter(chapterProp)
 
-            // refresh vuex to update all related records
-            scope.$store.dispatch('loadVersionsByChapter', scope.page.data.chapter.uuid)
-          }
-        })
+        // chapter
+        scope.data.title = chapter.title
+        scope.data.short_description = chapter.short_description
 
-      scope.axios
-        .get('http://localhost:3000/authors/' + scope.$store.getters.getAuthorID + '/chapter/' + scope.data.uuid + '/personal-progress/today')
-        .then(response => {
-          if (response.data) {
-            console.log(response.data)
-            scope.authorProgress = response.data
-          }
-        })
+        // version
+        scope.data.chapter_version.id = version.id
+        scope.data.chapter_version.uuid = version.uuid
+        scope.data.chapter_version.content = version.content
+        scope.tempChapterVersionCont = version.content
+
+        scope.baseContentCount = scope.WORD_COUNT(scope.tempChapterVersionCont)
+
+        // progress
+        if (progress) {
+          scope.authorProgress = progress
+        }
+      }, 500)
     }
   },
   beforeMount () {
@@ -302,24 +325,13 @@ export default {
       scope.$set(scope.data, 'id', scope.properties.chapter.id)
       scope.$set(scope.data, 'uuid', scope.properties.chapter.uuid)
       scope.$store.dispatch('loadVersionsByChapter', scope.properties.chapter.uuid)
+      scope.$store.dispatch('loadTodayAuthorPersonalProgressForChapter', scope.properties.chapter.uuid)
     }
   },
   mounted () {
     var scope = this
     if (scope.data.uuid) {
-      setTimeout(function () {
-        let chapter = scope.$store.getters.findChapter(scope.properties.chapter)
-        let version = scope.$store.getters.findLatestChapterVersionByChapter(scope.properties.chapter)
-        // chapter
-        scope.data.title = chapter.title
-        scope.data.short_description = chapter.short_description
-
-        // version
-        scope.data.chapter_version.id = version.id
-        scope.data.chapter_version.uuid = version.uuid
-        scope.data.chapter_version.content = version.content
-        scope.chapterVersionCont = version.content
-      }, 500)
+      scope.loadChapter(scope.properties.chapter)
     }
 
     setTimeout(function () {
