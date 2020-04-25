@@ -17,7 +17,7 @@ exports.check = () => {
   }
 
   //   if(process.env.NODE_ENV !== 'production') return false
-  if (process.platform === 'darwin') return false // TODO : remove this if DEVELOPERS CERTIFICATE IS GOOD TO GO
+  if (process.platform === 'darwin' || process.env.NODE_ENV != 'production') return false // TODO : remove this if DEVELOPERS CERTIFICATE IS GOOD TO GO
 
   process.env.GH_TOKEN = 'dfd1c61fcb090ecba24909875e177c5326ad449d'
 
@@ -79,7 +79,7 @@ exports.processUpdate = (window) => {
   setInterval(function () {
     //TODO remove darwin if certificate is good to go
     if(!in_progress) {
-      if (process.platform === 'darwin') return false // TODO : remove this if DEVELOPERS CERTIFICATE IS GOOD TO GO
+      if (process.platform === 'darwin'|| process.env.NODE_ENV != 'production') return false // TODO : remove this if DEVELOPERS CERTIFICATE IS GOOD TO GO
       autoUpdater.checkForUpdates().then(() => {})
     }
   }, 1 * 60 * 1000)
