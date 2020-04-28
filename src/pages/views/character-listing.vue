@@ -9,6 +9,7 @@
                 </div>
                 <div class="actions">
                     <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form', tabData: { list_index: -1, book_id: properties.uuid, character: null }, tabTitle: $t('NEW') + ' ' + $tc('CHARACTER',1), newTab: true})">{{$t('NEW').toUpperCase()}} {{$tc('CHARACTER', 1).toUpperCase()}}</button>
+                    <button class="es-button-white" @click="exportCharacter()">{{$tc('EXPORT', 1).toUpperCase()}} {{$tc('CHARACTERS', 1).toUpperCase()}} {{$tc('LIST', 1).toUpperCase()}}</button>
                 </div>
             </div>
         </div>
@@ -37,6 +38,7 @@
 </template>
 
 <script>
+const {ipcRenderer} = window.require('electron')
 export default {
   name: 'character-listing',
   props: ['properties'],
@@ -81,6 +83,10 @@ export default {
             })
         }
       })
+    },
+    exportCharacter: function () {
+      const scope = this
+      ipcRenderer.send('EXPORT:show-characters', {bookUUID: scope.bookUUID, title: scope.properties.title})
     }
   },
   mounted () {

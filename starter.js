@@ -25,7 +25,7 @@ if(process.platform == "darwin"){
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow, loginWindow
+let mainWindow, loginWindow, exportWindow
 
 function createWindow () {
   // Create the browser window.
@@ -267,3 +267,63 @@ ipcMain.on('install-update', function (e, cat) {
   const {autoUpdater} = require('electron-updater')
   autoUpdater.quitAndInstall()
 })
+
+ipcMain.on('EXPORT:show-characters', function (event, data) {
+  createExportWindow({exportBy:'characters',data:data})
+})
+
+ipcMain.on('EXPORT:pdf', function (data) {
+  const fs = require('fs')
+  const electron = require('electron')
+  exportWindow.webContents.printToPDF({pageSize : 'A4'}, (success, errorType) => {
+    log.error(errorType)
+  }).then(function (data) {
+    const pdfPath = path.resolve(resourcePath,'reports/print.pdf')
+    fs.writeFile(pdfPath, data, function (error) {
+      if (error) {
+        log.error(error)
+      }
+      electron.shell.openExternal('file://' + pdfPath)
+      exportWindow.close()
+    })
+  }).catch(function (err) {
+
+  })
+})
+
+function createExportWindow(data) {
+  exportWindow = new BrowserWindow({
+    title: app.name+' v'+app.getVersion(),
+    icon: path.resolve('src/assets/img/easywrite-new.ico'),
+    webPreferences: {
+      webSecurity: false,
+      nodeIntegration: true,
+      preload: path.join(__dirname, 'preload.js'),
+      plugins: true
+    },
+    protocol: 'file:',
+    slashes: true,
+    movable: true,
+    show:false,
+    parent:mainWindow,
+  })
+  exportWindow.setSize(1280, 920);
+  exportWindow.center();
+
+  if (process.env.NODE_ENV == 'development') {
+    exportWindow.webContents.openDevTools()
+    let url = 'http://localhost:8080/'
+    exportWindow.loadURL(url + 'dev/' + '/#/'+ data.exportBy)
+  } else {
+    exportWindow.loadFile(`${__dirname}/dist/index.html`)
+  }
+
+  exportWindow.on('ready-to-show', function () {
+    exportWindow.show()
+    exportWindow.webContents.send('EXPORT:list-character',data.data)
+  })
+
+  exportWindow.on('closed', function () {
+    exportWindow = null
+  })
+}
