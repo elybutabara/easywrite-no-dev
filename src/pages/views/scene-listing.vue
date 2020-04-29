@@ -4,8 +4,8 @@
         <div class="es-page-head">
             <div class="inner">
                 <div class="details">
-                    <h4>{{$tc('SCENE',2)}}</h4>
-                    <small>{{$t('BELOW_ARE_THE_LIST_OF_CHAPTERS_UNDER')}} {{ properties.title }}</small>
+                    <h4>{{$t('OTHER_SCENES')}}</h4>
+                    <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ properties.title }}</small>
                 </div>
                 <div class="actions">
                     <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.uuid, tabComponent: 'scene-form', tabData: { book_id: properties.uuid , uuid: properties.uuid }, tabTitle: $t('NEW') + ' ' + $tc('SCENE',1), newTab: true})">{{$t('NEW').toUpperCase()}} {{$tc('SCENE', 1).toUpperCase()}}</button>

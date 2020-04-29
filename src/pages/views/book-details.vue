@@ -8,7 +8,7 @@
             </div>
             <div class="actions">
                 <button class="es-button-white" style="display:none;" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: 'Edit - ' + properties.title, newTab: true})">STORY BOARD</button>
-                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: 'Edit - ' + properties.title, newTab: true})">{{ $t('EDIT') }}</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: $t('EDIT') + ' - ' + properties.title, newTab: true})">{{ $t('EDIT') }}</button>
                 <button class="es-button-red" @click="deleteBook()">{{ $t('DELETE') }}</button>
             </div>
         </div>

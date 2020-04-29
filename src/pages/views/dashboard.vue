@@ -4,7 +4,7 @@
    <div class="es-page-head">
         <div class="inner">
             <div class="details">
-                <h4>{{$t('WELCOME')}} NAGBUTANG DIRI {{ getAuthorName }}!</h4>
+                <h4>{{$t('WELCOME')}}{{ getAuthorName }}!</h4>
                 <!-- <small>Last Login: January 01, 2020</small> -->
             </div>
             <div class="actions">

@@ -12,7 +12,7 @@ export default {
     },
 
     pmdTimer: {
-      pmd_min: 25,
+      pmd_min: 1,
       pmd_sec: 0,
       pmd_selected: '25'
     },

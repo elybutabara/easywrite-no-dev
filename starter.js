@@ -4,6 +4,9 @@ const path = require('path')
 const fs = require('fs')
 const log = require('electron-log')
 const appUpdate = require('./api/updater')
+const reportsChapterDetails = require('./reports/report_chapter_details')
+const { dialog } = require('electron')
+const officegen = require('officegen')
 
 if(fs.existsSync(path.join(process.resourcesPath || '','prod.env'))){
   process.env.NODE_ENV = 'production'
@@ -90,6 +93,18 @@ function createWindow () {
 ipcMain.on('SET_DEFAULT_LANG', function (e, cat) {
   menu.setMenu(cat)
 })
+
+ipcMain.on('show-saveas-dialog-chapter-details', function (e, cat) {
+    dialog.showSaveDialog(mainWindow, {
+    properties: ['openFile', 'openDirectory']
+  }).then(result => {
+    reportsChapterDetails.getContent(result.filePath , cat)
+    //event.reply('chapter-details-reply', 'cat')
+  }).catch(err => {
+
+  })
+})
+
 
 /*
 function createLoginWindow () {

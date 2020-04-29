@@ -233,7 +233,7 @@ export default {
       scope.setFeedbackNull()
 
       if (!scope.data.fullname) {
-        scope.feedback.fullname.message = 'Full Name is required'
+        scope.feedback.fullname.message = this.$tc('FULLNAME', 1) + ' ' + this.$t('IS_REQUIRED')
         scope.feedback.fullname.state = false
         hasError = true
       }
@@ -250,7 +250,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$t('SUCCESSFULY_SAVED'),
+              title: this.$tc('CHARACTER', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
@@ -259,13 +259,13 @@ export default {
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
                 scope.$store.dispatch('updateCharacterList', response.data)
-                scope.CHANGE_COMPONENT({tabKey: 'character-form-' + response.data.uuid, tabComponent: 'character-form', tabData: { book_id: response.data.book_id, character: response.data }, tabTitle: 'Edit  - ' + response.data.fullname, tabIndex: scope.$store.getters.getActiveTab})
+                scope.CHANGE_COMPONENT({tabKey: 'character-form-' + response.data.uuid, tabComponent: 'character-form', tabData: { book_id: response.data.book_id, character: response.data }, tabTitle: this.$t('EDIT') + ' - ' + response.data.fullname, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
                 scope.$store.dispatch('updateCharacterList', response.data)
-                scope.$store.dispatch('changeTabTitle', { key: 'character-form-' + response.data.uuid, title: 'Edit - ' + response.data.fullname })
+                scope.$store.dispatch('changeTabTitle', { key: 'character-form-' + response.data.uuid, title: this.$t('EDIT') + ' - ' + response.data.fullname })
               }
             })
           }

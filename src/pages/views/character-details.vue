@@ -55,7 +55,7 @@
             </div>
         </div>
         <div class="es-panel-footer">
-            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form',  tabData: { book_id: properties.uuid, character: properties.character }, tabTitle: $t('EDIT')+ ' - ' + properties.character.fullname })">{{$t('EDIT').toUpperCase()}}</div>
+            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form',  tabData: { book_id: properties.uuid, character: properties.character }, tabTitle: $t('EDIT')+ ' - ' + properties.character.fullname, newTab: true })">{{$t('EDIT').toUpperCase()}}</div>
             <div class="cta" @click="deleteCharacter(properties.character)">{{$t('DELETE').toUpperCase()}}</div>
         </div>
     </div>
@@ -64,12 +64,12 @@
         <div class="es-dialog-content">
             <div style="margin-bottom:15px;">
                 <label class="typo__label">{{$tc('RELATION', 1)}}: </label>
-                <multiselect v-model="selected_relation" :options="relations" :placeholder="$t('SELECT') + ' '+ $tc('RELATION',1)" label="relation" track-by="relation" :taggable="true" @tag="addRelation" tag-placeholder="Press enter to add as new relation" deselectLabel="Press enter to deselect"></multiselect>
+                <multiselect v-model="selected_relation" :options="relations" :placeholder="$t('SELECT') + ' '+ $tc('RELATION',1)" label="relation" track-by="relation" :taggable="true" @tag="addRelation" tag-placeholder="Press enter to add as new relation" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectedLabel="$t('SELECTED')"></multiselect>
             </div>
 
             <div style="margin-bottom:15px;">
                 <label class="typo__label">{{$tc('CHARACTER', 1)}}: </label>
-                <multiselect v-model="selected_character" :options="characters" :placeholder="$t('SELECT') + ' '+ $tc('CHARACTER',1)" label="fullname" track-by="fullname" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')" ></multiselect>
+                <multiselect v-model="selected_character" :options="characters" :placeholder="$t('SELECT') + ' '+ $tc('CHARACTER',1)" label="fullname" track-by="fullname" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')" :selectedLabel="$t('SELECTED')"></multiselect>
             </div>
 
              <div style="text-align:right;">
@@ -145,7 +145,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$t('SUCCESSFULY_SAVED'),
+              title: this.$tc('RELATION', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
@@ -201,7 +201,7 @@ export default {
         return window.swal.fire({
           position: 'center',
           icon: 'error',
-          title: 'Relation already exist!',
+          title: this.$tc('RELATION', 1) + ' ' + this.$t('ALREADY_EXIST'),
           showConfirmButton: false,
           timer: 1500
         })
@@ -258,7 +258,7 @@ export default {
                   timer: 1500
                 }).then(() => {
                   scope.$store.dispatch('removeCharacterFromList', character)
-                  scope.CHANGE_COMPONENT({tabKey: 'character-listing-' + character.book_id, tabComponent: 'character-listing', tabData: { uuid: character.book_id }, tabTitle: 'Character List', tabIndex: scope.$store.getters.getActiveTab})
+                  scope.CHANGE_COMPONENT({tabKey: 'character-listing-' + character.book_id, tabComponent: 'character-listing', tabData: { uuid: character.book_id }, tabTitle: this.$tc('CHARACTER', 2) + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
                 })
               }
             })

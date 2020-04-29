@@ -57,7 +57,7 @@
               <b-card header="Save as new Version" class="text-center">
                 <b-row style="margin-bottom: 1rem;" class="text-left">
                   <b-col>
-                    <label>Description: </label>
+                    <label>{{$t('DESCRIPTION')}}: </label>
                     <tiny-editor :initValue="scene_version.change_description"
                                  v-on:getEditorContent="setDescription"
                                  class="form-control"
@@ -67,8 +67,8 @@
                 <b-row>
                   <b-col>
                     <div class="text-right">
-                      <b-button variant="outline-dark" class="mr-2" @click="busy = !busy">Cancel</b-button>
-                      <b-button variant="dark" @click="saveNewVersion">Save</b-button>
+                      <b-button variant="outline-dark" class="mr-2" @click="busy = !busy">{{$t('CANCEL')}}</b-button>
+                      <b-button variant="dark" @click="saveNewVersion">{{$t('Save')}}</b-button>
                     </div>
                   </b-col>
                 </b-row>
@@ -166,7 +166,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$t('SUCCESSFULY_SAVED'),
+              title: this.$tc('SCENE', 1) + ' ' + this.$tc('VERSION', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
@@ -219,7 +219,7 @@ export default {
                   timer: 1500
                 }).then(() => {
                   scope.$store.dispatch('removeSceneFromList', scene)
-                  scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + scene.book_id, tabComponent: 'scene-listing', tabData: { uuid: scene.book_id }, tabTitle: 'Scene List', tabIndex: scope.$store.getters.getActiveTab})
+                  scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + scene.book_id, tabComponent: 'scene-listing', tabData: { uuid: scene.book_id }, tabTitle: this.$tc('SCENE', 2) + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
                 })
               }
             })

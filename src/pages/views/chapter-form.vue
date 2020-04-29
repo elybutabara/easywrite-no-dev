@@ -180,13 +180,13 @@ export default {
       scope.setFeedbackNull()
 
       if (!scope.data.title) {
-        scope.feedback.title.message = 'Title is required'
+        scope.feedback.title.message = this.$t('TITLE') + ' ' + this.$t('IS_REQUIRED')
         scope.feedback.title.state = false
         hasError = true
       }
 
       if (scope.data.short_description.length > 30) {
-        scope.feedback.short_description.message = 'Max char 30'
+        scope.feedback.short_description.message = this.$t('MAX_CHARACTERS_IS_30')
         scope.feedback.short_description.state = false
         hasError = true
       }
@@ -202,7 +202,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$t('SUCCESSFULY_SAVED'),
+              title: this.$tc('CHAPTER', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
@@ -215,7 +215,7 @@ export default {
                 scope.$store.dispatch('updateChapterList', response.data)
                 scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
                 // scope.$store.dispatch('updateChapterVersionList', scope.data.chapter_version)
-                scope.CHANGE_COMPONENT({tabKey: 'chapter-details-' + response.data.uuid, tabComponent: 'chapter-details', tabData: { book_id: response.data.book_id, chapter: response.data }, tabTitle: 'View - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
+                scope.CHANGE_COMPONENT({tabKey: 'chapter-details-' + response.data.uuid, tabComponent: 'chapter-details', tabData: { book_id: response.data.book_id, chapter: response.data }, tabTitle: this.$t('VIEW') + ' - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
@@ -224,8 +224,8 @@ export default {
                 scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
                 // scope.$store.dispatch('updateChapterVersionList', scope.data.chapter_version)
                 // scope.CHANGE_COMPONENT({tabKey: 'chapter-details-' + response.data.uuid, tabComponent: 'chapter-details', tabData: { book_id: response.data.book_id, chapter: response.data }, tabTitle: 'View - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
-                scope.$store.dispatch('changeTabTitle', {key: 'chapter-form-' + response.data.uuid, title: 'Edit -' + response.data.title})
-                scope.$store.dispatch('changeTabTitle', {key: 'chapter-details-' + response.data.uuid, title: 'View -' + response.data.title})
+                scope.$store.dispatch('changeTabTitle', {key: 'chapter-form-' + response.data.uuid, title: this.$t('EDIT') + ' - ' + response.data.title})
+                scope.$store.dispatch('changeTabTitle', {key: 'chapter-details-' + response.data.uuid, title: this.$t('VIEW') + ' - ' + response.data.title})
               }
             })
           }

@@ -200,7 +200,7 @@ export default {
       scope.setFeedbackNull()
 
       if (!scope.data.itemname) {
-        scope.feedback.itemname.message = 'Item Name is required'
+        scope.feedback.itemname.message = this.$t('ITEM_NAME') + ' ' + this.$t('IS_REQUIRED')
         scope.feedback.itemname.state = false
         hasError = true
       }
@@ -216,7 +216,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$t('SUCCESSFULY_SAVED'),
+              title: this.$tc('ITEM', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
@@ -225,13 +225,13 @@ export default {
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
                 scope.$store.dispatch('updateItemList', response.data)
-                scope.CHANGE_COMPONENT({tabKey: 'item-form-' + response.data.uuid, tabComponent: 'item-form', tabData: { book_id: response.data.book_id, item: response.data }, tabTitle: 'Edit  - ' + response.data.itemname, tabIndex: scope.$store.getters.getActiveTab})
+                scope.CHANGE_COMPONENT({tabKey: 'item-form-' + response.data.uuid, tabComponent: 'item-form', tabData: { book_id: response.data.book_id, item: response.data }, tabTitle: this.$t('EDIT') + ' - ' + response.data.itemname, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
                 scope.$store.dispatch('updateItemList', response.data)
-                scope.$store.dispatch('changeTabTitle', { key: 'item-form-' + response.data.uuid, title: 'Edit - ' + response.data.itemname })
+                scope.$store.dispatch('changeTabTitle', { key: 'item-form-' + response.data.uuid, title: this.$t('EDIT') + ' - ' + response.data.itemname })
               }
             })
           }

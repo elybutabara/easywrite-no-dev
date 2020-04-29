@@ -190,12 +190,12 @@ export default {
     checkConnection: function () {
       var scope = this
       scope.stage = 'connecting'
-      scope.progress_message = 'Establishing Connection...'
+      scope.progress_message = this.$t('ESTABLISHING_CONNECTION') + '...'
 
       scope.axios.get(window.API_URL + '/user/connect')
         .then(function (response) {
         // handle success
-          scope.progress_message = 'Connected!'
+          scope.progress_message = this.$t('CONNECTED') + '!'
           setTimeout(function () {
             scope.getSyncableData()
           }, 1000)
@@ -215,7 +215,7 @@ export default {
       scope.packing.error = false
       // get the current pointed endpoint
       let endpoint = scope.endpoints[scope.packing.pointer]
-      scope.progress_message = 'Packing ' + endpoint.title + '...'
+      scope.progress_message = this.$t('PACKING') + endpoint.title + '...'
 
       scope.axios.get('http://localhost:3000/' + endpoint.local + '/syncable',
         {
@@ -238,7 +238,7 @@ export default {
           // handle error
           console.log(error)
           scope.packing.error = true
-          scope.progress_message = 'Packing Failed, Reconnecting...'
+          scope.progress_message = this.$t('PACKING') + ' ' + this.$t('FAILED') + ', ' + this.$t('RECONNECTING') + '...'
           setTimeout(function () {
             scope.getSyncableData()
           }, 5000)
@@ -266,8 +266,8 @@ export default {
         return
       }
 
-      scope.progress_message = 'Uploading ' + endpoint.title + ' Data...'
-      scope.progress_message = 'Uploading ' + endpoint.title + ' Data (' + scope.upload.index + ' of ' + (endpoint.packed.length + 1) + ')...'
+      scope.progress_message = this.$t('UPLOADING') + ' ' + endpoint.title + this.$t('DATA') + '...'
+      scope.progress_message = this.$t('UPLOADING') + ' ' + endpoint.title + this.$t('DATA') + '(' + scope.upload.index + ' ' + this.$t('OF') + ' ' + (endpoint.packed.length + 1) + ')...'
       var data = endpoint.packed[scope.upload.index]
 
       data.created_at = scope.timeConvertToUTC(data.created_at)
@@ -297,7 +297,7 @@ export default {
           // handle error
           console.log(error)
           scope.upload.error = true
-          scope.progress_message = 'Upload Failed, Reconnecting...'
+          scope.progress_message = this.$t('UPLOAD') + ' ' + this.$t('FAILED') + ', ' + this.$t('RECONNECTING') + '...'
           setTimeout(function () {
             scope.startUploadData()
           }, 5000)
@@ -330,7 +330,7 @@ export default {
 
       // get the current pointed endpoint
       let endpoint = scope.endpoints[scope.download.pointer]
-      scope.progress_message = 'Downloading ' + endpoint.title + '...'
+      scope.progress_message = this.$t('DOWNLOADING') + ' ' + endpoint.title + '...'
 
       var lastSyncedDate = scope.timeConvertToUTC(this.$store.getters.getUserSyncedDate)
       scope.axios.get(window.API_URL + '/' + endpoint.api,
@@ -355,7 +355,7 @@ export default {
           // handle error
           console.log(error)
           scope.download.error = true
-          scope.progress_message = 'Download Failed, Reconnecting...'
+          scope.progress_message = this.$t('DOWNLOAD') + ' ' + this.$t('FAILED') + ', ' + this.$t('RECONNECTING') + '...'
           setTimeout(function () {
             scope.startDownloadData()
           }, 5000)
@@ -377,8 +377,8 @@ export default {
       }
 
       var endpoint = scope.endpoints[scope.saving.pointer]
-      scope.progress_message = 'Saving ' + endpoint.title + ' Data...'
-      scope.progress_message = 'Saving ' + endpoint.title + ' Data (' + scope.saving.index + ' of ' + (endpoint.downloaded.length + 1) + ')...'
+      scope.progress_message = this.$t('SAVING') + ' ' + endpoint.title + this.$t('DATA') + '...'
+      scope.progress_message = this.$t('SAVING') + ' ' + endpoint.title + this.$t('DATA') + '(' + scope.saving.index + ' ' + this.$t('OF') + ' ' + (endpoint.downloaded.length + 1) + ')...'
 
       // skip attempt upload on empty data
       if (endpoint.downloaded.length < 1) {
@@ -411,7 +411,7 @@ export default {
           // handle error
           console.log(error)
           scope.saving.error = true
-          scope.progress_message = 'Download Failed, Reconnecting...'
+          scope.progress_message = this.$t('DOWNLOAD') + ' ' + this.$t('FAILED') + ', ' + this.$t('RECONNECTING') + '...'
           setTimeout(function () {
             scope.saveDownloadedData()
           }, 5000)
