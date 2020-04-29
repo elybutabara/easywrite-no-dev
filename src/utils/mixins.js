@@ -105,6 +105,9 @@ export default {
     GET_SCENES_BY_CHAPTER: function (uuid = '') {
       return this.$store.getters.getScenesByChapter(uuid)
     },
+    GET_SCENE_HISTORY: function (uuid = '') {
+      return this.$store.getters.getSceneHistory(uuid)
+    },
     GET_CHAPTER_VERSIONS_BY_CHAPTER: function (uuid = '') {
       return this.$store.getters.getChapterVersions(uuid)
     },

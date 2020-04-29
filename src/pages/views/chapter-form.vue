@@ -3,7 +3,7 @@
   <div class="es-page-head">
     <div class="inner">
       <div class="details">
-        <div  v-if="data.id != null">
+        <div v-if="data.id != null">
           <h4>{{$t('EDIT')}}: <strong>{{ data.title }}</strong></h4>
           <small>{{$t('DATE_MODIFIED')}}: {{ data.updated_at }}</small>
         </div>
@@ -80,7 +80,7 @@
           <div class="content ">
             <div class="row">
               <div class="col-md-12">
-                <div class="text-right">
+                <div v-if="chapter_history.length" class="text-right">
                   <button class="es-button-white margin-bottom-1rem" @click="show_history = !show_history">Show History</button>
                 </div>
                 <div class="form-group">
@@ -92,7 +92,7 @@
                     <strong>{{$t('DOUBLE_CLICK')}}</strong> to view History
                   </div>
                   <div class="chapter-history-list" >
-                    <div v-bind:key="history.uuid" v-for="history in GET_CHAPTER_HISTORY(data.uuid)">
+                    <div v-bind:key="history.uuid" v-for="history in chapter_history">
                       <div class="history-item" @dblclick="viewHistory(history)">
                         <div class="text-right view-all"><em><span>{{ history.created_at }}</span></em></div>
                         <div class="ellipsis-2">{{ history.content }}</div>
@@ -188,6 +188,7 @@ export default {
           message: null
         }
       },
+      chapter_history: {},
       show_history: false,
       view_history: false,
       historyContent: ''
@@ -299,6 +300,7 @@ export default {
               if (scope.data.uuid === null) {
                 scope.$store.dispatch('updateChapterList', response.data)
                 scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
+                scope.$store.dispatch('loadChapterHistory', response.data.uuid)
                 // scope.$store.dispatch('updateChapterVersionList', scope.data.chapter_version)
                 scope.CHANGE_COMPONENT({
                   tabKey: 'chapter-details-' + response.data.uuid,
@@ -310,6 +312,7 @@ export default {
               } else {
                 scope.$store.dispatch('updateChapterList', response.data)
                 scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
+                scope.$store.dispatch('loadChapterHistory', response.data.uuid)
                 // scope.$store.dispatch('updateChapterVersionList', scope.data.chapter_version)
                 // scope.CHANGE_COMPONENT({tabKey: 'chapter-details-' + response.data.uuid, tabComponent: 'chapter-details', tabData: { book_id: response.data.book_id, chapter: response.data }, tabTitle: 'View - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
                 scope.$store.dispatch('changeTabTitle', {
@@ -388,6 +391,9 @@ export default {
         if (progress) {
           scope.authorProgress = progress
         }
+
+        // chapter history
+        scope.chapter_history = scope.GET_CHAPTER_HISTORY(chapter.uuid)
       }, 500)
     }
   },

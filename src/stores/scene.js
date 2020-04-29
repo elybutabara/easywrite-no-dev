@@ -9,7 +9,8 @@ export default {
     scene_items: {},
     scene_locations: {},
     scene_versions: {},
-    scene_author_personal_progress: {}
+    scene_author_personal_progress: {},
+    scene_history: {}
   },
   getters: {
     getScenesByBook: state => (bookUUID) => {
@@ -39,6 +40,12 @@ export default {
     getSceneCharacters: state => (sceneUUID) => {
       if (state.scene_characters.hasOwnProperty(sceneUUID)) {
         return state.scene_characters[sceneUUID].rows
+      }
+      return []
+    },
+    getSceneHistory: state => (sceneUUID) => {
+      if (state.scene_history.hasOwnProperty(sceneUUID)) {
+        return state.scene_history[sceneUUID].rows
       }
       return []
     },
@@ -130,6 +137,15 @@ export default {
         .get('http://localhost:3000/scenes/' + sceneID + '/locations')
         .then(response => {
           state.scene_locations[sceneID] = { rows: response.data }
+        })
+    },
+    loadSceneHistory (state, payload) {
+      let sceneID = payload
+      Vue.set(state.scene_history, sceneID, { rows: [] })
+      axios
+        .get('http://localhost:3000/scenes/' + sceneID + '/history')
+        .then(response => {
+          state.scene_history[sceneID] = { rows: response.data }
         })
     },
     loadVersionsByScene (state, payload) {
@@ -302,6 +318,9 @@ export default {
     },
     loadLocationsByScene ({ commit, state }, payload) {
       commit('loadLocationsByScene', payload)
+    },
+    loadSceneHistory ({ commit, state }, payload) {
+      commit('loadSceneHistory', payload)
     },
     loadVersionsByScene ({ commit, state }, payload) {
       commit('loadVersionsByScene', payload)
