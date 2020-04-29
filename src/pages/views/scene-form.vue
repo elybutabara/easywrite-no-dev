@@ -588,7 +588,7 @@ export default {
                 // refresh vuex to update all related records
                 scope.$store.dispatch('loadVersionsByScene', response.data)
                 scope.$store.dispatch('loadSceneHistory', response.data.uuid)
-                scope.CHANGE_COMPONENT({tabKey: 'scene-details-' + response.data.uuid, tabComponent: 'scene-details', tabData: { book_id: response.data.book_id, scene: response.data }, tabTitle: scope.$t('VIEW') + ' - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
+                scope.CHANGE_COMPONENT({tabKey: 'scene-details-' + response.data.uuid, tabComponent: 'scene-details', tabData: { book: scope.book, scene: response.data }, tabTitle: scope.$t('VIEW') + ' - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 // refresh vuex to update all related records
                 scope.$store.dispatch('updateSceneList', response.data)
@@ -671,9 +671,9 @@ export default {
 
       setTimeout(function () {
         let scene = scope.$store.getters.findScene(sceneProp)
-        let chapters = scope.$store.getters.getChaptersByBook(scope.properties.scene.book_id)
-        let chapter = scope.$store.getters.findChapter({ book_id: scope.properties.scene.book_id, uuid: scope.properties.scene.chapter_id })
-        // let characters = scope.$store.getters.getCharactersByBook(scope.properties.scene.book_id)
+        let chapters = scope.$store.getters.getChaptersByBook(sceneProp.book_id)
+        let chapter = scope.$store.getters.findChapter({ book_id: sceneProp.book_id, uuid: sceneProp.chapter_id })
+        let characters = scope.$store.getters.getCharactersByBook(scope.properties.scene.book_id)
         let version = scope.$store.getters.findLatestSceneVersionByScene(sceneProp)
         let progress = scope.$store.getters.getTodayAuthorPersonalProgressForScene(sceneProp)
 
@@ -690,20 +690,17 @@ export default {
         scope.data.date_ends = scene.date_ends
 
         // chapters
-        scope.chapters = chapters
+        scope.options_chapters = chapters
 
         // characters
-        // for (let i = 0; i < characters.length; i++) {
-        //   let character = characters[i]
-        //   scope.options_character_id_vp.push({ text: character.fullname, value: character.uuid })
-        //
-        //   if (scope.data.character_id_vp === character.uuid) {
-        //     scope.selected_character_id_vp = { text: character.fullname, value: character.uuid }
-        //   }
-        // }
+        for (let i = 0; i < characters.length; i++) {
+          let character = characters[i]
+          scope.options_character_id_vp.push({ text: character.fullname, value: character.uuid })
 
-        console.log(scope.options_character_id_vp)
-        console.log(scope.selected_character_id_vp)
+          if (scope.data.character_id_vp === character.uuid) {
+            scope.selected_character_id_vp = { text: character.fullname, value: character.uuid }
+          }
+        }
 
         // chapter
         scope.selected_chapter = chapter
@@ -772,22 +769,22 @@ export default {
       scope.$store.dispatch('loadSceneHistory', scope.properties.scene.uuid)
 
       scope.loadScene(scope.properties.scene)
-    }
+    } else {
+      setTimeout(function () {
+        scope.chapters = scope.$store.getters.getChaptersByBook(scope.properties.book.uuid)
 
-    setTimeout(function () {
-      scope.chapters = scope.$store.getters.getChaptersByBook(scope.properties.book.uuid)
+        var bookCharacters = scope.$store.getters.getCharactersByBook(scope.properties.book.uuid)
+        console.log(bookCharacters)
+        for (let i = 0; i < bookCharacters.length; i++) {
+          let character = bookCharacters[i]
+          scope.options_character_id_vp.push({ text: character.fullname, value: character.uuid })
 
-      var bookCharacters = scope.$store.getters.getCharactersByBook(scope.properties.book.uuid)
-      console.log(bookCharacters)
-      for (let i = 0; i < bookCharacters.length; i++) {
-        let character = bookCharacters[i]
-        scope.options_character_id_vp.push({ text: character.fullname, value: character.uuid })
-
-        if (scope.properties.scene !== null && scope.properties.scene.character_id_vp === character.uuid) {
-          scope.selected_character_id_vp = { text: character.fullname, value: character.uuid }
+          if (scope.properties.scene !== null && scope.properties.scene.character_id_vp === character.uuid) {
+            scope.selected_character_id_vp = { text: character.fullname, value: character.uuid }
+          }
         }
-      }
-    }, 500)
+      }, 500)
+    }
 
     setTimeout(function () {
       scope.page.is_ready = true

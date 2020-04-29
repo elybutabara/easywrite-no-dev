@@ -1,5 +1,5 @@
 <template>
-<div class="left-side-bar">
+<div class="left-side-bar no-select">
         <div class="header">
             <img src="@/assets/img/es-logo-white.png">
         </div>

@@ -256,6 +256,7 @@ export default {
     // Required for geting value from TinyMCE content
     setContent (value) {
       var scope = this
+      scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
 
       scope.tempChapterVersionCont = value
     },
