@@ -87,6 +87,9 @@ export default {
     GET_CHAPTERS_BY_BOOK: function (uuid = '') {
       return this.$store.getters.getChaptersByBook(uuid)
     },
+    GET_CHAPTER_HISTORY: function (uuid = '') {
+      return this.$store.getters.getChapterHistory(uuid)
+    },
     GET_ITEMS_BY_BOOK: function (uuid = '') {
       return this.$store.getters.getItemsByBook(uuid)
     },

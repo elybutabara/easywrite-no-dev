@@ -37,7 +37,7 @@ const upload = multer({
     destination: (req, file, callback) => {
       let imgOf = req.params.imgOf
       // eslint-disable-next-line camelcase
-      let img_path = path.resolve(resourcePath,'resources', 'images', imgOf)
+      let img_path = path.resolve(resourcePath, 'resources', 'images', imgOf)
       fs.mkdirsSync(img_path)
       callback(null, img_path)
     },
@@ -103,13 +103,13 @@ express.post(
     }
   }
 )
-express.portNumber = 3000;
-function listen(port) {
-  express.portNumber = port;
+express.portNumber = 3000
+function listen (port) {
+  express.portNumber = port
   express.listen(port, () => {
-    console.log("server is running on port :" + express.portNumber);
+    console.log('server is running on port :' + express.portNumber)
   }).on('error', function (err) {
-    if(err.errno === 'EADDRINUSE') {
+    if (err.errno === 'EADDRINUSE') {
       log.warn(`----- Port ${port} is busy, trying with port ${port + 1} -----`)
       app.exit(0)
       // listen(port + 1)
@@ -117,7 +117,7 @@ function listen(port) {
       log.error(`Error running in port: ${port}`)
       log.error(err)
     }
-  });
+  })
 }
 
-listen(express.portNumber);
+listen(express.portNumber)

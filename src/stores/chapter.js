@@ -6,6 +6,7 @@ export default {
   state: {
     chapters: {},
     chapter_versions: { rows: [] },
+    chapter_history: { rows: [] },
     chapter_author_personal_progress: {}
   },
   getters: {
@@ -19,6 +20,12 @@ export default {
     getChaptersByBook: state => (bookUUID) => {
       if (state.chapters.hasOwnProperty(bookUUID)) {
         return state.chapters[bookUUID].rows
+      }
+      return []
+    },
+    getChapterHistory: state => (chapterUUID) => {
+      if (state.chapter_history.hasOwnProperty(chapterUUID)) {
+        return state.chapter_history[chapterUUID].rows
       }
       return []
     },
@@ -96,6 +103,15 @@ export default {
           for (let i = 0; i < state.chapters[bookID].rows.length; i++) {
             Vue.set(state.chapters[bookID].rows[i], 'is_open', false)
           }
+        })
+    },
+    loadChapterHistory (state, payload) {
+      let chapterID = payload
+      Vue.set(state.chapter_history, chapterID, { rows: [] })
+      axios
+        .get('http://localhost:3000/chapters/' + chapterID + '/history')
+        .then(response => {
+          state.chapter_history[chapterID] = { rows: response.data }
         })
     },
     loadVersionsByChapter (state, payload) {
@@ -204,6 +220,9 @@ export default {
     },
     loadChaptersByBook ({ commit, state }, payload) {
       commit('loadChaptersByBook', payload)
+    },
+    loadChapterHistory ({ commit, state }, payload) {
+      commit('loadChapterHistory', payload)
     },
     loadVersionsByChapter ({ commit, state }, payload) {
       commit('loadVersionsByChapter', payload)
