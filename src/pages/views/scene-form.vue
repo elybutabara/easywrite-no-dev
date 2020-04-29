@@ -48,7 +48,7 @@
                         </b-col>
                         <b-col>
                             <label>{{$tc('CHAPTER',1)}}: </label>
-                            <multiselect v-model="selected_chapter" :options="options_chapters" :placeholder="$t('SELECT') + ' ' + $tc('CHAPTER',1)" label="title" track-by="uuid" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+                            <multiselect v-model="selected_chapter" :options="options_chapters" :placeholder="$t('SELECT') + ' ' + $tc('CHAPTER',1)" label="title" track-by="uuid" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')" :selectedLabel="$t('SELECTED')"></multiselect>
                         </b-col>
                     </b-row>
                     <b-row class="margin-bottom-1rem">
@@ -102,11 +102,11 @@
                     <b-row class="margin-bottom-1rem">
                     <b-col>
                         <label>{{$t('TYPE_OF_SCENE')}}: </label>
-                        <multiselect v-model="selected_typeofscene" :options="options_typeofscene" placeholder="Select Type of Scene" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+                        <multiselect v-model="selected_typeofscene" :options="options_typeofscene" placeholder="Select Type of Scene" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')" :selectedLabel="$t('SELECTED')"></multiselect>
                     </b-col>
                     <b-col>
                         <label>{{$t('IMPORTANCE')}}: </label>
-                        <multiselect v-model="selected_importance" :options="options_importance" placeholder="Select Importance" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+                        <multiselect v-model="selected_importance" :options="options_importance" placeholder="Select Importance" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')" :selectedLabel="$t('SELECTED')"></multiselect>
                     </b-col>
                     </b-row>
                     <b-row class="margin-bottom-1rem">
@@ -116,7 +116,7 @@
                     </b-col>
                     <b-col>
                         <label>{{$t('STATUS')}}: </label>
-                        <multiselect v-model="selected_status" :options="options_status" placeholder="Select Status" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+                        <multiselect v-model="selected_status" :options="options_status" placeholder="Select Status" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')" :selectedLabel="$t('SELECTED')"></multiselect>
                     </b-col>
                     </b-row>
                 </div>
@@ -148,7 +148,7 @@
                     <b-row class="margin-bottom-1rem">
                     <b-col cols="6">
                         <label>{{$t('TYPE')}}: </label>
-                        <multiselect v-model="selected_weather_type" :options="options_weather_type" placeholder="Select Status" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+                        <multiselect v-model="selected_weather_type" :options="options_weather_type" placeholder="Select Status" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')" :selectedLabel="$t('SELECTED')"></multiselect>
                     </b-col>
                     </b-row>
                     <b-row class="margin-bottom-1rem">
@@ -164,7 +164,7 @@
                     <b-row class="margin-bottom-1rem">
                     <b-col cols="6">
                         <label>{{$t('POINT_OF_VIEW')}}: </label>
-                        <multiselect v-model="selected_character_id_vp" :options="options_character_id_vp" :placeholder="$t('SELECT') + ' ' +$t('POINT_OF_VIEW')" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true"></multiselect>
+                        <multiselect v-model="selected_character_id_vp" :options="options_character_id_vp" :placeholder="$t('SELECT') + ' ' +$t('POINT_OF_VIEW')" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
                     </b-col>
                     </b-row>
                     <b-row class="margin-bottom-1rem">
@@ -439,16 +439,13 @@ export default {
 
       // Check if title is empty and return error
       if (!scope.data.title) {
-        // TODO: John need to translate this string
-        scope.feedback.title.message = 'Title is required'
+        scope.feedback.title.message = this.$t('TITLE') + ' ' + this.$t('IS_REQUIRED')
         scope.feedback.title.state = false
         isValid = false
       }
 
-      // Check if short_description length and if its > 30 return error
       if (scope.data.short_description && scope.data.short_description.length > 30) {
-        // TODO: John need to translate this string
-        scope.feedback.short_description.message = 'Max char 30'
+        scope.feedback.short_description.message = this.$t('MAX_CHARACTERS_IS_30')
         scope.feedback.short_description.state = false
         isValid = false
       }
@@ -481,7 +478,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$t('SUCCESSFULY_SAVED'),
+              title: this.$tc('SCENE', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
@@ -490,13 +487,13 @@ export default {
                 scope.$store.dispatch('updateSceneList', response.data)
                 // refresh vuex to update all related records
                 scope.$store.dispatch('loadVersionsByScene', response.data)
-                scope.CHANGE_COMPONENT({tabKey: 'scene-details-' + response.data.uuid, tabComponent: 'scene-details', tabData: { book_id: response.data.book_id, scene: response.data }, tabTitle: 'View - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
+                scope.CHANGE_COMPONENT({tabKey: 'scene-details-' + response.data.uuid, tabComponent: 'scene-details', tabData: { book_id: response.data.book_id, scene: response.data }, tabTitle: this.$t('VIEW') + ' - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 // refresh vuex to update all related records
                 scope.$store.dispatch('updateSceneList', response.data)
                 scope.$store.dispatch('loadVersionsByScene', response.data)
-                scope.$store.dispatch('changeTabTitle', {key: 'scene-form-' + response.data.uuid, title: 'Edit -' + response.data.title})
-                scope.$store.dispatch('changeTabTitle', {key: 'scene-details-' + response.data.uuid, title: 'Edit -' + response.data.title})
+                scope.$store.dispatch('changeTabTitle', {key: 'scene-form-' + response.data.uuid, title: this.$t('EDIT') + ' - ' + response.data.title})
+                scope.$store.dispatch('changeTabTitle', {key: 'scene-details-' + response.data.uuid, title: this.$t('VIEW') + ' - ' + response.data.title})
               }
 
               scope.loadScene(response.data)

@@ -4,6 +4,8 @@ const path = require('path')
 const fs = require('fs')
 const log = require('electron-log')
 const appUpdate = require('./api/updater')
+const reportContent = require('./reports/report_content')
+const { dialog } = require('electron')
 
 if(fs.existsSync(path.join(process.resourcesPath || '','prod.env'))){
   process.env.NODE_ENV = 'production'
@@ -12,6 +14,7 @@ if(fs.existsSync(path.join(process.resourcesPath || '','prod.env'))){
   process.env.NODE_ENV = 'development'
   global.resourcePath = path.resolve('./resources')
 }
+
 checkFreshInstallation()
 const route = require('./api/server')
 const listener = require('./api/listener.js')
@@ -43,7 +46,7 @@ function createWindow () {
 
   // mainWindow.webContents.openDevTools()
   if (process.env.NODE_ENV == 'development') {
-    mainWindow.webContents.openDevTools()
+   //  mainWindow.webContents.openDevTools()
     let url = 'http://localhost:8080/'
     // and load the index.html of the app.
     // mainWindow.loadFile(url + 'dev/')
@@ -90,6 +93,24 @@ function createWindow () {
 ipcMain.on('SET_DEFAULT_LANG', function (e, cat) {
   menu.setMenu(cat)
 })
+
+ipcMain.on('show-save-as-dialog-content', function (e, cat) {
+    dialog.showSaveDialog(mainWindow, {
+    defaultPath: cat.defaultfilename,
+    properties: ['openFile', 'openDirectory','showOverwriteConfirmation'],
+    filters: [
+      { name: 'Doc Files', extensions: ['docx'] }
+    ]
+  }).then(result => {
+    if(result.canceled === false){
+      reportContent.getContent(result.filePath , cat.content)
+      mainWindow.webContents.send('success-exporting', result.filePath)
+    }
+  }).catch(err => {
+
+  })
+})
+
 
 /*
 function createLoginWindow () {

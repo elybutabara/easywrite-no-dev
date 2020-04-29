@@ -22,6 +22,7 @@
         <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-chapter-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
       </div>
       <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
+        <div class="export-content"><button class="es-button-white" @click="exportContent()">Export Content</button></div>
         <div v-html="getChapterContent" class="description" ></div>
       </div>
       <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
@@ -50,7 +51,7 @@
               <b-card header="Save as new Version" class="text-center">
                 <b-row style="margin-bottom: 1rem;" class="text-left">
                   <b-col>
-                    <label>Description: </label>
+                    <label>{{$t('DESCRIPTION')}}: </label>
                     <tiny-editor :initValue="chapter_version.change_description"
                                  v-on:getEditorContent="setDescription"
                                  class="form-control"
@@ -60,7 +61,7 @@
                 <b-row>
                   <b-col>
                     <div class="text-right">
-                      <b-button variant="outline-dark" class="mr-2" @click="busy = !busy">Cancel</b-button><b-button variant="dark" @click="saveNewVersion">Save</b-button>
+                      <b-button variant="outline-dark" class="mr-2" @click="busy = !busy">{{$t('CANCEL')}}</b-button><b-button variant="dark" @click="saveNewVersion">{{$t('Save')}}</b-button>
                     </div>
                   </b-col>
                 </b-row>
@@ -79,6 +80,8 @@ import ChapterScenes from '@/components/pages/chapter-scenes'
 import ChapterVersions from '@/components/pages/chapter-versions'
 import ChapterCompareVersions from '@/components/pages/chapter-compare-versions'
 import moment from 'moment'
+
+const {ipcRenderer} = window.require('electron')
 
 export default {
   name: 'chapter-details',
@@ -158,7 +161,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$tc('CHAPTER', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
+              title: this.$tc('CHAPTER', 1) + ' ' + this.$tc('VERSION', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
@@ -192,12 +195,16 @@ export default {
                   timer: 1500
                 }).then(() => {
                   scope.$store.dispatch('removeChapterFromList', chapter)
-                  scope.CHANGE_COMPONENT({tabKey: 'chapter-listing-' + chapter.book_id, tabComponent: 'chapter-listing', tabData: { uuid: chapter.book_id }, tabTitle: 'Chapter List', tabIndex: scope.$store.getters.getActiveTab})
+                  scope.CHANGE_COMPONENT({tabKey: 'chapter-listing-' + chapter.book_id, tabComponent: 'chapter-listing', tabData: { uuid: chapter.book_id }, tabTitle: this.$tc('CHAPTER', 2) + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
                 })
               }
             })
         }
       })
+    },
+    exportContent: function () {
+      var scope = this
+      ipcRenderer.send('show-save-as-dialog-content', {content: scope.getChapterContent, defaultfilename: scope.page.title + ' - ' + this.$t('CONTENT')})
     }
   },
   beforeUpdate () {
@@ -216,10 +223,11 @@ export default {
     }, 300)
   }
 }
+
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+    .export-content{ text-align: right; margin-bottom: 20px;}
     .btn-edit { float:right; background:#fff; border:1px solid #506d84; }
     /*.chapter-scenes-list .item { font-family: 'Crimson Roman Bold'; border:1px solid #354350; border-top:none; padding:0px 20px; height:35px; line-height:35px}*/
     /*.chapter-scenes-list .item:first-child { border-top:1px solid #354350;  }*/

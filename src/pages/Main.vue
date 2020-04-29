@@ -146,6 +146,7 @@ export default {
       return this.$store.getters.getTabs
     }
   },
+
   mounted () {
     var scope = this
     var userUUID = this.$store.getters.getUserID
@@ -160,6 +161,14 @@ export default {
 
 ipcRenderer.on('SET_TRANSLATION_DOM', function (event, data) {
   localStorage.setItem('translation', data)
+})
+
+ipcRenderer.on('success-exporting', function (event, data) {
+  window.swal.fire({
+    icon: 'success',
+    title: 'Successfuly Exported To',
+    text: data
+  })
 })
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->

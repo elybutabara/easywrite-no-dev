@@ -184,16 +184,13 @@ export default {
 
       // Check if title is empty and return error
       if (!scope.data.title) {
-        // TODO: John need to translate this string
-        scope.feedback.title.message = 'Title is required'
+        scope.feedback.title.message = this.$t('TITLE') + ' ' + this.$t('IS_REQUIRED')
         scope.feedback.title.state = false
         isValid = false
       }
 
-      // Check if short_description length and if its > 30 return error
       if (scope.data.short_description && scope.data.short_description.length > 30) {
-        // TODO: John need to translate this string
-        scope.feedback.short_description.message = 'Max char 30'
+        scope.feedback.short_description.message = this.$t('MAX_CHARACTERS_IS_30')
         scope.feedback.short_description.state = false
         isValid = false
       }
@@ -218,7 +215,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$t('SUCCESSFULY_SAVED'),
+              title: this.$tc('CHAPTER', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
@@ -230,7 +227,7 @@ export default {
                   tabKey: 'chapter-details-' + response.data.uuid,
                   tabComponent: 'chapter-details',
                   tabData: {book_id: response.data.book_id, chapter: response.data},
-                  tabTitle: 'View - ' + response.data.title,
+                  tabTitle: this.$t('VIEW') + ' - ' + response.data.title,
                   tabIndex: scope.$store.getters.getActiveTab
                 })
               } else {
@@ -240,11 +237,11 @@ export default {
                 // scope.CHANGE_COMPONENT({tabKey: 'chapter-details-' + response.data.uuid, tabComponent: 'chapter-details', tabData: { book_id: response.data.book_id, chapter: response.data }, tabTitle: 'View - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
                 scope.$store.dispatch('changeTabTitle', {
                   key: 'chapter-form-' + response.data.uuid,
-                  title: 'Edit -' + response.data.title
+                  title: this.$t('EDIT') + ' - ' + response.data.title
                 })
                 scope.$store.dispatch('changeTabTitle', {
                   key: 'chapter-details-' + response.data.uuid,
-                  title: 'View -' + response.data.title
+                  title: this.$t('VIEW') + ' - ' + response.data.title
                 })
               }
 

@@ -193,7 +193,7 @@ export default {
       scope.setFeedbackNull()
 
       if (!scope.data.location) {
-        scope.feedback.location.message = 'Location is required'
+        scope.feedback.location.message = this.$tc('LOCATION', 1) + ' ' + this.$t('IS_REQUIRED')
         scope.feedback.location.state = false
         hasError = true
       }
@@ -209,7 +209,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$t('SUCCESSFULY_SAVED'),
+              title: this.$tc('LOCATION', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
@@ -218,13 +218,13 @@ export default {
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
                 scope.$store.dispatch('updateLocationList', response.data)
-                scope.CHANGE_COMPONENT({tabKey: 'location-form-' + response.data.uuid, tabComponent: 'location-form', tabData: { book_id: response.data.book_id, location: response.data }, tabTitle: 'Edit  - ' + response.data.location, tabIndex: scope.$store.getters.getActiveTab})
+                scope.CHANGE_COMPONENT({tabKey: 'location-form-' + response.data.uuid, tabComponent: 'location-form', tabData: { book_id: response.data.book_id, location: response.data }, tabTitle: this.$t('EDIT') + ' - ' + response.data.location, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
                 scope.$store.dispatch('updateLocationList', response.data)
-                scope.$store.dispatch('changeTabTitle', { key: 'location-form-' + response.data.uuid, title: 'Edit - ' + response.data.location })
+                scope.$store.dispatch('changeTabTitle', { key: 'location-form-' + response.data.uuid, title: this.$t('EDIT') + ' - ' + response.data.location })
               }
             })
           }

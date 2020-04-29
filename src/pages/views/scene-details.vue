@@ -24,6 +24,7 @@
         <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-scene-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
     </div>
     <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">
+        <div class="export-content"><button class="es-button-white" @click="exportContent()">Export Content</button></div>
         <div v-html="getSceneContent" class="description" ></div>
     </div>
     <div v-if="tab.active === 'locations'"  class="es-scene-details-tab-content no-padding">
@@ -57,7 +58,7 @@
               <b-card header="Save as new Version" class="text-center">
                 <b-row style="margin-bottom: 1rem;" class="text-left">
                   <b-col>
-                    <label>Description: </label>
+                    <label>{{$t('DESCRIPTION')}}: </label>
                     <tiny-editor :initValue="scene_version.change_description"
                                  v-on:getEditorContent="setDescription"
                                  class="form-control"
@@ -67,8 +68,8 @@
                 <b-row>
                   <b-col>
                     <div class="text-right">
-                      <b-button variant="outline-dark" class="mr-2" @click="busy = !busy">Cancel</b-button>
-                      <b-button variant="dark" @click="saveNewVersion">Save</b-button>
+                      <b-button variant="outline-dark" class="mr-2" @click="busy = !busy">{{$t('CANCEL')}}</b-button>
+                      <b-button variant="dark" @click="saveNewVersion">{{$t('Save')}}</b-button>
                     </div>
                   </b-col>
                 </b-row>
@@ -89,6 +90,8 @@ import SceneItems from '@/components/pages/scene-items'
 import SceneCharacters from '@/components/pages/scene-characters'
 import SceneVersions from '@/components/pages/scene-versions'
 import SceneCompareVersions from '@/components/pages/scene-compare-versions'
+
+const {ipcRenderer} = window.require('electron')
 
 export default {
   name: 'scene-details',
@@ -166,7 +169,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$t('SUCCESSFULY_SAVED'),
+              title: this.$tc('SCENE', 1) + ' ' + this.$tc('VERSION', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
@@ -219,12 +222,16 @@ export default {
                   timer: 1500
                 }).then(() => {
                   scope.$store.dispatch('removeSceneFromList', scene)
-                  scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + scene.book_id, tabComponent: 'scene-listing', tabData: { uuid: scene.book_id }, tabTitle: 'Scene List', tabIndex: scope.$store.getters.getActiveTab})
+                  scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + scene.book_id, tabComponent: 'scene-listing', tabData: { uuid: scene.book_id }, tabTitle: this.$tc('SCENE', 2) + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
                 })
               }
             })
         }
       })
+    },
+    exportContent: function () {
+      var scope = this
+      ipcRenderer.send('show-save-as-dialog-content', {content: scope.getSceneContent, defaultfilename: scope.properties.scene.title + ' - ' + this.$t('CONTENT')})
     }
   },
   mounted () {
@@ -235,6 +242,7 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    .export-content{ text-align: right; margin-bottom: 20px;}
     .es-scene-details-tab { display:flex; border-bottom:1px solid #ccc; padding:0px 30px; height:70px; background:#fff; }
     .es-scene-details-tab .es-scene-details-tab-item { height:30px; line-height:30px; margin-top:40px; margin-right:25px; cursor:pointer; position:relative; }
     .es-scene-details-tab .es-scene-details-tab-item:after { content:''; position:absolute; bottom:0px; left:0px; height:3px;  width:100%; background:transparent;}

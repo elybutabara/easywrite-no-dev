@@ -9,7 +9,7 @@
             <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}</i>
         </div>
         <div class="es-panel-footer">
-            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + properties.item.uuid, tabComponent: 'item-form', tabData: { book_id: properties.uuid, item: properties.item }, tabTitle: 'Edit - ' + properties.item.itemname, newTab: true})">{{$t('EDIT').toUpperCase()}}</div>
+            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + properties.item.uuid, tabComponent: 'item-form', tabData: { book_id: properties.uuid, item: properties.item }, tabTitle: $t('EDIT')+ ' - ' + properties.item.itemname, newTab: true})">{{$t('EDIT').toUpperCase()}}</div>
             <div class="cta" @click="deleteItem(properties.item)">{{$t('DELETE').toUpperCase()}}</div>
         </div>
     </div>
@@ -54,7 +54,7 @@ export default {
                   timer: 1500
                 }).then(() => {
                   scope.$store.dispatch('removeItemFromList', item)
-                  scope.CHANGE_COMPONENT({tabKey: 'item-listing-' + item.book_id, tabComponent: 'item-listing', tabData: { uuid: item.book_id }, tabTitle: 'Item List', tabIndex: scope.$store.getters.getActiveTab})
+                  scope.CHANGE_COMPONENT({tabKey: 'item-listing-' + item.book_id, tabComponent: 'item-listing', tabData: { uuid: item.book_id }, tabTitle: this.$tc('ITEM', 2) + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
                 })
               }
             })

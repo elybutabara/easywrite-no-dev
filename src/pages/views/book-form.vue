@@ -32,7 +32,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label>{{$t('GENRE')}}: </label>
-                            <multiselect v-model="genre_collection" @select="selectGenre" @remove="removeGenre" :multiple="true" :taggable="true" label="name" track-by="uuid" :options="genres" :placeholder = "$t('SELECT_OPTION')"></multiselect>
+                            <multiselect v-model="genre_collection" @select="selectGenre" @remove="removeGenre" :multiple="true" :taggable="true" label="name" track-by="uuid" :options="genres" :placeholder = "$t('SELECT_OPTION')" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')" :selectedLabel="$t('SELECTED')"></multiselect>
                         </div>
                     </div>
                 </div>
@@ -121,7 +121,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$t('SUCCESSFULY_SAVED'),
+              title: this.$tc('BOOK', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
