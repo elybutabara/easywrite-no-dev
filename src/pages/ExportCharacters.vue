@@ -12,7 +12,7 @@
     </div>
   </div>
   <div>
-    <div class="rows-print-as-pages">
+    <div v-if="characters != null" class="rows-print-as-pages">
       <div v-bind:key="character.id" v-for="character in characters">
         <div class="es-panel">
           <div class="row">
@@ -89,7 +89,7 @@
 const electron = window.require('electron')
 const {ipcRenderer} = electron
 export default {
-  name: 'character-export',
+  name: 'ExportCharacters',
   props: ['properties'],
   data: function () {
     return {
@@ -114,7 +114,9 @@ export default {
   },
   mounted () {
     const scope = this
+    console.log('mount')
     ipcRenderer.on('EXPORT:list-character', function (event, data) {
+      console.log(data)
       scope.bookUUID = data.bookUUID
       scope.bookTitle = data.title
       scope.$store.dispatch('loadCharactersByBook', data.bookUUID)

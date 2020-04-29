@@ -5,7 +5,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import App from './App'
-// import Auth from './pages/Auth'
+import ExportCharacters from './pages/ExportCharacters'
 import router from './router'
 import mixins from './utils/mixins'
 import cookie from './utils/cookie'
@@ -137,16 +137,17 @@ new Vue({
 * Vues below here is for MPA
 * declare here the vues , put the html ins "src/html"
 * */
-// if (process.env.NODE_ENV === 'production') {
-//   // eslint-disable-next-line no-new
-//   new Vue({
-//     el: '#auth',
-//     router,
-//     store,
-//     components: { Auth },
-//     template: '<Auth/>'
-//   })
-// }
+if (process.env.NODE_ENV === 'production') {
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: '#export-characters',
+    store,
+    router,
+    i18n,
+    components: { ExportCharacters },
+    template: '<ExportCharacters/>'
+  })
+}
 
 const electron = window.require('electron')
 const { ipcRenderer } = electron

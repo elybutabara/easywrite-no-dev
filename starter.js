@@ -76,8 +76,8 @@ function createWindow () {
   // resize after authentication
   ipcMain.on('RESIZE_MAIN_WINDOW', function (e, cat) {
     Menu.setApplicationMenu(menu.getMenu(mainWindow))
-    mainWindow.setSize(1280, 920);
-    mainWindow.center();
+    mainWindow.setSize(1280, 920)
+    mainWindow.center()
   })
   appUpdate.processUpdate(mainWindow)
 
@@ -180,15 +180,15 @@ function checkFreshInstallation () {
             // log.info('exist delte')
             // log.info(path)
             fs.readdirSync(path).forEach(function(file,index){
-              let curPath = path + "/" + file;
+              let curPath = path + "/" + file
               if(fs.lstatSync(curPath).isDirectory()) { // recurse
                 // log.info('rescures')
-                deleteRecursive(curPath);
+                deleteRecursive(curPath)
               } else { // delete file
-                fs.unlinkSync(curPath);
+                fs.unlinkSync(curPath)
               }
-            });
-            fs.rmdirSync(path);
+            })
+            fs.rmdirSync(path)
           }
         }
         deleteRecursive(path.resolve(app.getPath('userData'), 'demo'))
@@ -270,6 +270,10 @@ ipcMain.on('install-update', function (e, cat) {
 
 ipcMain.on('EXPORT:show-characters', function (event, data) {
   createExportWindow({exportBy:'characters',data:data})
+  exportWindow.on('ready-to-show', function () {
+    exportWindow.show()
+    exportWindow.webContents.send('EXPORT:list-character',data)
+  })
 })
 
 ipcMain.on('EXPORT:pdf', function (data) {
@@ -307,21 +311,17 @@ function createExportWindow(data) {
     show:false,
     parent:mainWindow,
   })
-  exportWindow.setSize(1280, 920);
-  exportWindow.center();
+  exportWindow.setSize(1280, 920)
+  exportWindow.center()
+  exportWindow.setMenu(null)
 
+  exportWindow.webContents.openDevTools()
   if (process.env.NODE_ENV == 'development') {
-    exportWindow.webContents.openDevTools()
     let url = 'http://localhost:8080/'
-    exportWindow.loadURL(url + 'dev/' + '/#/'+ data.exportBy)
+    exportWindow.loadURL(url + 'dev/' + '/#/character')
   } else {
-    exportWindow.loadFile(`${__dirname}/dist/index.html`)
+    exportWindow.loadFile(`${__dirname}/dist/export.html`)
   }
-
-  exportWindow.on('ready-to-show', function () {
-    exportWindow.show()
-    exportWindow.webContents.send('EXPORT:list-character',data.data)
-  })
 
   exportWindow.on('closed', function () {
     exportWindow = null
