@@ -24,6 +24,7 @@
         <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-scene-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
     </div>
     <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">
+        <div class="export-content"><button class="es-button-white" @click="exportContent()">Export Content</button></div>
         <div v-html="getSceneContent" class="description" ></div>
     </div>
     <div v-if="tab.active === 'locations'"  class="es-scene-details-tab-content no-padding">
@@ -89,6 +90,8 @@ import SceneItems from '@/components/pages/scene-items'
 import SceneCharacters from '@/components/pages/scene-characters'
 import SceneVersions from '@/components/pages/scene-versions'
 import SceneCompareVersions from '@/components/pages/scene-compare-versions'
+
+const {ipcRenderer} = window.require('electron')
 
 export default {
   name: 'scene-details',
@@ -225,6 +228,10 @@ export default {
             })
         }
       })
+    },
+    exportContent: function () {
+      var scope = this
+      ipcRenderer.send('show-save-as-dialog-content', {content: scope.getSceneContent, defaultfilename: scope.properties.scene.title + ' - ' + this.$t('CONTENT')})
     }
   },
   mounted () {
@@ -235,6 +242,7 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    .export-content{ text-align: right; margin-bottom: 20px;}
     .es-scene-details-tab { display:flex; border-bottom:1px solid #ccc; padding:0px 30px; height:70px; background:#fff; }
     .es-scene-details-tab .es-scene-details-tab-item { height:30px; line-height:30px; margin-top:40px; margin-right:25px; cursor:pointer; position:relative; }
     .es-scene-details-tab .es-scene-details-tab-item:after { content:''; position:absolute; bottom:0px; left:0px; height:3px;  width:100%; background:transparent;}

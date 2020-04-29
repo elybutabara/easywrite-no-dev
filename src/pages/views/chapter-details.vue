@@ -22,7 +22,7 @@
         <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-chapter-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
       </div>
       <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
-        <div class="export-content"><button @click="exportContent()">Export Content</button></div>
+        <div class="export-content"><button class="es-button-white" @click="exportContent()">Export Content</button></div>
         <div v-html="getChapterContent" class="description" ></div>
       </div>
       <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
@@ -81,10 +81,7 @@ import ChapterVersions from '@/components/pages/chapter-versions'
 import ChapterCompareVersions from '@/components/pages/chapter-compare-versions'
 import moment from 'moment'
 
-import { WidthType, BorderStyle, Document, Paragraph, Packer, TextRun } from 'docx'
-import { saveAs } from 'file-saver'
 const {ipcRenderer} = window.require('electron')
-// const fs = require('fs')
 
 export default {
   name: 'chapter-details',
@@ -112,14 +109,7 @@ export default {
     TinyMCE,
     ChapterScenes,
     ChapterVersions,
-    ChapterCompareVersions,
-    Document,
-    Paragraph,
-    Packer,
-    TextRun,
-    saveAs,
-    BorderStyle,
-    WidthType
+    ChapterCompareVersions
   },
   computed: {
     getChapterContent: function () {
@@ -213,7 +203,8 @@ export default {
       })
     },
     exportContent: function () {
-      ipcRenderer.send('show-saveas-dialog-chapter-details', 'Mytest')
+      var scope = this
+      ipcRenderer.send('show-save-as-dialog-content', {content: scope.getChapterContent, defaultfilename: scope.page.title + ' - ' + this.$t('CONTENT')})
     }
   },
   beforeUpdate () {
@@ -236,6 +227,7 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    .export-content{ text-align: right; margin-bottom: 20px;}
     .btn-edit { float:right; background:#fff; border:1px solid #506d84; }
     /*.chapter-scenes-list .item { font-family: 'Crimson Roman Bold'; border:1px solid #354350; border-top:none; padding:0px 20px; height:35px; line-height:35px}*/
     /*.chapter-scenes-list .item:first-child { border-top:1px solid #354350;  }*/
