@@ -110,6 +110,9 @@ export default {
     GET_CHAPTERS_BY_BOOK: function (uuid = '') {
       return this.$store.getters.getChaptersByBook(uuid)
     },
+    GET_CHAPTER_HISTORY: function (uuid = '') {
+      return this.$store.getters.getChapterHistory(uuid)
+    },
     GET_ITEMS_BY_BOOK: function (uuid = '') {
       return this.$store.getters.getItemsByBook(uuid)
     },
@@ -124,6 +127,9 @@ export default {
     },
     GET_SCENES_BY_CHAPTER: function (uuid = '') {
       return this.$store.getters.getScenesByChapter(uuid)
+    },
+    GET_SCENE_HISTORY: function (uuid = '') {
+      return this.$store.getters.getSceneHistory(uuid)
     },
     GET_CHAPTER_VERSIONS_BY_CHAPTER: function (uuid = '') {
       return this.$store.getters.getChapterVersions(uuid)

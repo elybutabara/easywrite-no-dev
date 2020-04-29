@@ -6,7 +6,7 @@ const router = express.Router()
 
 // const diffMatchPatch = require('diff-match-patch')
 
-const { ChapterController, SceneController, ChapterVersionController } = require(path.join(__dirname, '..', 'controllers'))
+const { ChapterController, SceneController, ChapterVersionController, BookChapterHistoryController } = require(path.join(__dirname, '..', 'controllers'))
 
 router.get('/:chapterId/scenes', async function (req, res) {
   const scenes = await SceneController.getAllSceneByChapterId(req.params.chapterId)
@@ -32,6 +32,14 @@ router.get('/:chapterId/versions', async function (req, res) {
   res
     .status(200)
     .json(chapterVersions)
+})
+
+router.get('/:chapterId/history', async function (req, res) {
+  const chapterHistory = await BookChapterHistoryController.getAllChapterHistoryByChapterId(req.params.chapterId)
+
+  res
+    .status(200)
+    .json(chapterHistory)
 })
 
 router.post('/', async function (req, res) {

@@ -13,7 +13,7 @@
             </div>
             <div class="es-tab-nav">
                 <div class="es-tab-nav-item"  v-bind:class="{ 'active': index == tabs.active_index, 'modified': tab.modified }" v-for="(tab,index) in tabs.items" v-bind:key="index">
-                    <span @click="CHANGE_TAB(index)" class="es-tab-title"><i v-if="tab.modified" class="icon las la-save"></i> {{ $t(tab.title) || 'Untitled' }}</span>
+                    <span @click="CHANGE_TAB(index)" class="es-tab-title">{{ $t(tab.title) || 'Untitled' }}</span>
                     <span @click="REMOVE_TAB(index)" class="es-tab-closer" v-if="index != 0"><i class="fas fa-times"></i></span>
                 </div>
             </div>
