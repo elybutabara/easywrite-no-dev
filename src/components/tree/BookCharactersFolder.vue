@@ -9,7 +9,7 @@
         </div>
         <ul class="level-3">
             <li v-bind:key="character.id" v-for="character in characters">
-                <div @click="CHANGE_COMPONENT({tabKey: 'character-details-' + character.uuid, tabComponent: 'character-details',  tabData:  {  book_id: book.uuid, character: character }, tabTitle: character.fullname})" class="label"><span><img  src="@/assets/img/icons/character.svg"> {{ character.fullname || 'Unamed' }}</span></div>
+                <div @click="CHANGE_COMPONENT({tabKey: 'character-details-' + character.uuid, tabComponent: 'character-details',  tabData:  {  book: book, character: character }, tabTitle: character.fullname})" class="label"><span><img  src="@/assets/img/icons/character.svg"> {{ character.fullname || 'Unamed' }}</span></div>
             </li>
         </ul>
     </li>

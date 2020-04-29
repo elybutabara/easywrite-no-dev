@@ -7,7 +7,7 @@
                 <small>{{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
             </div>
             <div class="actions">
-                <button class="es-button-white" style="display:none;" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: 'Edit - ' + properties.title, newTab: true})">STORY BOARD</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'storyboard-' + page.data.uuid, tabComponent: 'storyboard',  tabData: page.data, tabTitle: 'Story Board - ' + properties.title, newTab: true})">{{ $tc('STORYBOARD', 2) }}</button>
                 <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: 'Edit - ' + properties.title, newTab: true})">{{ $t('EDIT') }}</button>
                 <button class="es-button-red" @click="deleteBook()">{{ $t('DELETE') }}</button>
             </div>

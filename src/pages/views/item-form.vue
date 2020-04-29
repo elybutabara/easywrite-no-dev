@@ -17,7 +17,16 @@
             </div>
         </div>
     </div>
-
+    <div class="es-page-breadcrumbs">
+       <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+       /
+       <button @click="CHANGE_COMPONENT({tabKey: 'item-listing-' + book.uuid, tabComponent: 'item-listing', tabData: book, tabTitle: $tc('ITEM', 2) + ' - ' + book.title})">{{ $tc('ITEM', 2) }}</button>
+       /
+        <button class="current">
+            <span v-if="item !== null">{{ item.itemname }}</span>
+            <span v-else>New Item</span>
+        </button>
+    </div>
     <div class="es-page-content">
         <div class="container">
             <div class="es-panel">
@@ -115,6 +124,14 @@ export default {
   },
   components: {
     TinyMCE
+  },
+  computed: {
+    book: function () {
+      return this.properties.book
+    },
+    item: function () {
+      return this.properties.item
+    }
   },
   methods: {
     // Required for geting value from TinyMCE content
@@ -262,7 +279,7 @@ export default {
   },
   beforeMount () {
     var scope = this
-    scope.data.book_id = scope.properties.book_id
+    scope.data.book_id = scope.properties.book.uuid
 
     if (scope.properties.item) {
       scope.$set(scope.data, 'id', scope.properties.item.id)

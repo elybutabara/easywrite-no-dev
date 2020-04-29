@@ -8,12 +8,18 @@
                     <small>{{$t('BELOW_ARE_THE_LIST_OF_LOCATIONS_UNDER')}} {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'location-form', tabComponent: 'location-form', tabData: { list_index: -1, book_id: properties.uuid, location: null }, tabTitle: $t('NEW') + ' ' + $tc('LOCATION',1), newTab: true})">{{$t('NEW').toUpperCase()}} {{$tc('LOCATION', 1).toUpperCase()}}</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'location-form', tabComponent: 'location-form', tabData: { list_index: -1, book: book, location: null }, tabTitle: $t('NEW') + ' ' + $tc('LOCATION',1), newTab: true})">{{$t('NEW').toUpperCase()}} {{$tc('LOCATION', 1).toUpperCase()}}</button>
                 </div>
             </div>
         </div>
 
-       <div class="es-page-content">
+        <div class="es-page-breadcrumbs">
+           <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+           /
+           <button class="current">{{ $tc('LOCATION', 2) }}</button>
+        </div>
+
+        <div class="es-page-content">
             <div class="es-row">
                 <div class="es-col fadeIn animated" v-for="location in locations" v-bind:key="location.id">
                     <div class="es-card">
@@ -23,8 +29,8 @@
                             <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}...</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-"  @click="CHANGE_COMPONENT({tabKey: 'location-details-' + location.uuid, tabComponent: 'location-details', tabData: { book_id: properties.uuid, location: location }, tabTitle:  $t('VIEW')+ ' - ' + location.location, newTab})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + location.uuid, tabComponent: 'location-form', tabData: { book_id: properties.uuid, location: location }, tabTitle: $t('EDIT')+ ' - ' + location.location, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT').toUpperCase()}}</button>
+                            <button class="btn-"  @click="CHANGE_COMPONENT({tabKey: 'location-details-' + location.uuid, tabComponent: 'location-details', tabData: { book: book, location: location }, tabTitle:  $t('VIEW')+ ' - ' + location.location, newTab})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + location.uuid, tabComponent: 'location-form', tabData: { book: book, location: location }, tabTitle: $t('EDIT')+ ' - ' + location.location, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT').toUpperCase()}}</button>
                             <button class="btn-delete"  @click="deleteLocation(location)"><i class="las la-trash-alt"></i> {{$t('DELETE').toUpperCase()}}</button>
                         </div>
                     </div>
@@ -46,6 +52,9 @@ export default {
     }
   },
   computed: {
+    book: function () {
+      return this.properties
+    },
     locations: function () {
       return this.$store.getters.getLocationsByBook(this.bookUUID)
     }

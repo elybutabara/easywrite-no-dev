@@ -17,6 +17,19 @@
             </div>
         </div>
     </div>
+
+    <div class="es-page-breadcrumbs">
+        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+        /
+        <button @click="CHANGE_COMPONENT({tabKey: 'scene-listing-' + book.uuid, tabComponent: 'scene-listing', tabData: book, tabTitle: $tc('SCENE', 2) + ' - ' + book.title})">{{ $tc('SCENE', 2) }}</button>
+        /
+        <button class="current">
+            <span v-if="scene !== null">{{ scene.title || 'Untitled' }}</span>
+            <span v-else>New Scene</span>
+        </button>
+    </div>
+
+
     <div class="es-page-content">
         <div class="container">
         <div class="es-accordion">
@@ -188,7 +201,7 @@
                 </div>
                 <div class="content ">
                     <p><strong>{{$t('CLICK')}}</strong> {{$tc('ITEM', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}</p>
-                    <div @click="toggleChild('items',item)" v-bind:class="{'selected' : selected_items.includes(item.uuid) }" class="es-toggle-select" v-bind:key="item.id" v-for="item in GET_ITEMS_BY_BOOK(properties.book_id)">
+                    <div @click="toggleChild('items',item)" v-bind:class="{'selected' : selected_items.includes(item.uuid) }" class="es-toggle-select" v-bind:key="item.id" v-for="item in items">
                         <i v-if="selected_items.includes(item.uuid)" class="fas fa-check"></i> &nbsp;{{ item.itemname }}
                     </div>
                 </div>
@@ -203,7 +216,7 @@
                 </div>
                 <div class="content ">
                     <p><strong>{{$t('CLICK')}}</strong> {{$tc('CHARACTER', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}</p>
-                    <div @click="toggleChild('characters',character)" v-bind:class="{'selected' : selected_characters.includes(character.uuid) }" class="es-toggle-select" v-bind:key="character.id" v-for="character in GET_CHARACTERS_BY_BOOK(properties.book_id)">
+                    <div @click="toggleChild('characters',character)" v-bind:class="{'selected' : selected_characters.includes(character.uuid) }" class="es-toggle-select" v-bind:key="character.id" v-for="character in characters">
                         <i v-if="selected_characters.includes(character.uuid)" class="fas fa-check"></i> &nbsp;{{ character.fullname }}
                     </div>
                 </div>
@@ -218,7 +231,7 @@
                 </div>
                 <div class="content ">
                     <p><strong>{{$t('CLICK')}}</strong> {{$tc('LOCATION', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}</p>
-                    <div @click="toggleChild('locations',location)" v-bind:class="{'selected' : selected_locations.includes(location.uuid) }" class="es-toggle-select" v-bind:key="location.id" v-for="location in GET_LOCATIONS_BY_BOOK(properties.book_id)">
+                    <div @click="toggleChild('locations',location)" v-bind:class="{'selected' : selected_locations.includes(location.uuid) }" class="es-toggle-select" v-bind:key="location.id" v-for="location in locations">
                         <i v-if="selected_locations.includes(location.uuid)" class="fas fa-check"></i> &nbsp;{{ location.location }}
                     </div>
                 </div>
@@ -331,6 +344,26 @@ export default {
   },
   components: {
     TinyMCE
+  },
+  computed: {
+    book: function () {
+      return this.properties.book
+    },
+    scene: function () {
+      return this.properties.scene
+    },
+    chapter: function () {
+      return this.properties.chapter
+    },
+    items: function () {
+      return this.$store.getters.getItemsByBook(this.properties.book.uuid)
+    },
+    locations: function () {
+      return this.$store.getters.getLocationsByBook(this.properties.book.uuid)
+    },
+    characters: function () {
+      return this.$store.getters.getCharactersByBook(this.properties.book.uuid)
+    }
   },
   methods: {
     toggleAccordion: function (key) {
@@ -495,7 +528,7 @@ export default {
         hasError = true
       }
 
-      if (scope.data.short_description.length > 30) {
+      if (scope.data.short_description !== null && scope.data.short_description.length > 30) {
         scope.feedback.short_description.message = 'Max char 30'
         scope.feedback.short_description.state = false
         hasError = true
@@ -605,7 +638,7 @@ export default {
       scope.$set(scope.data, 'chapter_id', scope.properties.chapter.uuid)
       scope.selected_chapter = scope.properties.chapter
     } else {
-      scope.$set(scope.data, 'book_id', scope.properties.uuid)
+      scope.$set(scope.data, 'book_id', scope.properties.book.uuid)
     }
   },
   mounted () {
@@ -614,9 +647,9 @@ export default {
       window.$('.page-scene-form .page-title h3').html('Update ' + scope.properties.scene.title)
       scope.loadScene(scope.data.uuid)
       // load book
-      scope.$store.dispatch('loadCharactersByBook', scope.properties.book_id)
-      scope.$store.dispatch('loadItemsByBook', scope.properties.book_id)
-      scope.$store.dispatch('loadLocationsByBook', scope.properties.book_id)
+      scope.$store.dispatch('loadCharactersByBook', scope.properties.book.uuid)
+      scope.$store.dispatch('loadItemsByBook', scope.properties.book.uuid)
+      scope.$store.dispatch('loadLocationsByBook', scope.properties.book.uuid)
 
       // load scene children
       scope.$store.dispatch('loadCharactersByScene', scope.properties.scene)

@@ -13,7 +13,7 @@
             </div>
             <div class="es-tab-nav">
                 <div class="es-tab-nav-item"  v-bind:class="{ 'active': index == tabs.active_index }" v-for="(tab,index) in tabs.items" v-bind:key="index">
-                    <span @click="CHANGE_TAB(index)" class="es-tab-title">{{ $t(tab.title) || 'Untitled' }}</span>
+                    <span @click="CHANGE_TAB(index)" class="es-tab-title"><i v-if="tab.modified" class="icon las la-save"></i> {{ $t(tab.title) || 'Untitled' }}</span>
                     <span @click="REMOVE_TAB(index)" class="es-tab-closer" v-if="index != 0"><i class="fas fa-times"></i></span>
                 </div>
             </div>
@@ -40,6 +40,7 @@
                 <chapter-form :key="tab.key" v-if="tab.component == 'chapter-form'" :properties="tab.data"></chapter-form>
                 <scene-form :key="tab.key" v-if="tab.component == 'scene-form'" :properties="tab.data"></scene-form>
 
+                <storyboard :key="tab.key" v-if="tab.component == 'storyboard'" :properties="tab.data"></storyboard>
                 <syncing :key="tab.key" v-if="tab.component == 'syncing'" :properties="tab.data"></syncing>
             </div>
         </div>
@@ -52,6 +53,7 @@ import MainSideNavigation from '@/components/MainSideNavigation'
 import Syncer from '@/components/Syncer'
 
 import Syncing from '@/pages/views/syncing'
+import StoryBoard from '@/pages/views/storyboard'
 import Dashboard from '@/pages/views/dashboard'
 import ChapterListing from '@/pages/views/chapter-listing'
 import SceneListing from '@/pages/views/scene-listing'
@@ -100,6 +102,7 @@ export default {
     'main-side-navigation': MainSideNavigation,
     'syncer': Syncer,
     'syncing': Syncing,
+    'storyboard': StoryBoard,
     'dashboard': Dashboard,
     'chapter-listing': ChapterListing,
     'scene-listing': SceneListing,
