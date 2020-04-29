@@ -5,7 +5,7 @@ export default {
     tabs: {
       active_index: 0,
       items: [
-        { key: 'dashboard', title: 'DASHBOARD', component: 'dashboard', data: { autosync: false }, refresh: false }
+        { key: 'dashboard', title: 'DASHBOARD', component: 'dashboard', data: { autosync: false }, refresh: false, modified: false }
       ]
     }
   },
@@ -21,6 +21,9 @@ export default {
     },
     getActiveTabKey: state => {
       return state.tabs.active_index
+    },
+    tabIsModified: state => (index) => {
+      return state.tabs.items[index].modified
     }
   },
   mutations: {
@@ -86,6 +89,14 @@ export default {
         state.tabs.items.splice(payload, 1)
         state.tabs.active_index = next
       }
+    },
+    markTabAsModified (state, payload) {
+      // payload = tab index only
+      state.tabs.items[payload].modified = true
+    },
+    unmarkTabAsModified (state, payload) {
+      // payload = tab index only
+      state.tabs.items[payload].modified = false
     }
   },
   actions: {
@@ -103,6 +114,12 @@ export default {
     },
     removeTab ({ commit, state }, payload) {
       commit('removeTab', payload)
+    },
+    markTabAsModified ({ commit, state }, payload) {
+      commit('markTabAsModified', payload)
+    },
+    unmarkTabAsModified ({ commit, state }, payload) {
+      commit('unmarkTabAsModified', payload)
     }
   }
 }

@@ -1,5 +1,12 @@
 <template>
-<div class="page-item-details">
+<div v-if="page.is_ready" class="page-item-details">
+    <div class="es-page-breadcrumbs">
+       <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+       /
+       <button @click="CHANGE_COMPONENT({tabKey: 'item-listing-' + book.uuid, tabComponent: 'item-listing', tabData: book, tabTitle: $tc('ITEM', 2) + ' - ' + book.title})">{{ $tc('ITEM', 2) }}</button>
+       /
+       <button class="current">{{ item.itemname }}</button>
+    </div>
     <div class="es-panel">
         <div class="es-panel-content">
             <div class="image-container"><img :src="properties.item.picture_src" /></div>
@@ -24,8 +31,15 @@ export default {
     return {
       page: {
         is_ready: false
-      },
-      item: []
+      }
+    }
+  },
+  computed: {
+    book: function () {
+      return this.properties.book
+    },
+    item: function () {
+      return this.properties.item
     }
   },
   methods: {
@@ -63,11 +77,13 @@ export default {
     }
   },
   beforeMount () {
-    var scope = this
-    scope.$set(scope, 'item', scope.properties.item)
+    // var scope = this
   },
   mounted () {
-    // var scope = this
+    var scope = this
+    setTimeout(function () {
+      scope.page.is_ready = true
+    }, 100)
   }
 }
 </script>

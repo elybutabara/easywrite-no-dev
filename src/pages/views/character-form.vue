@@ -18,6 +18,17 @@
         </div>
     </div>
 
+    <div class="es-page-breadcrumbs">
+        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+        /
+        <button @click="CHANGE_COMPONENT({tabKey: 'character-listing-' + book.uuid, tabComponent: 'character-listing', tabData: book, tabTitle: $tc('CHARACTER', 2) + ' - ' + book.title})">{{ $tc('CHARACTER', 2) }}</button>
+        /
+        <button class="current">
+            <span v-if="character !== null">{{ character.fullname }}</span>
+            <span v-else>New Character</span>
+        </button>
+    </div>
+
     <div class="es-page-content">
         <div class="container">
             <div class="es-panel">
@@ -108,8 +119,6 @@ import TinyMCE from '../../components/TinyMCE'
 export default {
   name: 'chapter-form',
   props: ['properties'],
-  computed: {
-  },
   data: function () {
     return {
       page: {
@@ -142,6 +151,14 @@ export default {
   },
   components: {
     TinyMCE
+  },
+  computed: {
+    book: function () {
+      return this.properties.book
+    },
+    character: function () {
+      return this.properties.character
+    }
   },
   methods: {
     // Required for geting value from TinyMCE content
@@ -274,7 +291,7 @@ export default {
   },
   beforeMount () {
     var scope = this
-    scope.data.book_id = scope.properties.book_id
+    scope.data.book_id = scope.properties.book.uuid
 
     if (scope.properties.character) {
       scope.$set(scope.data, 'id', scope.properties.character.id)

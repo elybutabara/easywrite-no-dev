@@ -1,6 +1,14 @@
 <template>
 <div class="page-character-details">
-
+    <div class="es-page-breadcrumbs">
+        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+        /
+        <button @click="CHANGE_COMPONENT({tabKey: 'character-listing-' + book.uuid, tabComponent: 'character-listing', tabData: book, tabTitle: $tc('CHARACTER', 2) + ' - ' + book.title})">{{ $tc('CHARACTER', 2) }}</button>
+        /
+        <button class="current">
+            <span>{{ character.fullname }}</span>
+        </button>
+    </div>
     <div class="es-panel">
         <div class="es-panel-content">
             <div class="image-container"><img :src="properties.character.picture_src" /></div>
@@ -90,8 +98,6 @@ export default {
   props: ['properties'],
   data: function () {
     return {
-      // Current character record
-      character: this.properties.character,
       // List of characters
       characters: [],
       relation_detail: [],
@@ -120,6 +126,14 @@ export default {
   },
   components: {
     Multiselect
+  },
+  computed: {
+    book: function () {
+      return this.properties.book
+    },
+    character: function () {
+      return this.properties.character
+    }
   },
   methods: {
     changeTab (tab) {

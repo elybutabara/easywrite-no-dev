@@ -8,9 +8,15 @@
                     <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.uuid, tabComponent: 'scene-form', tabData: { book_id: properties.uuid , uuid: properties.uuid }, tabTitle: $t('NEW') + ' ' + $tc('SCENE',1), newTab: true})">{{$t('NEW').toUpperCase()}} {{$tc('SCENE', 1).toUpperCase()}}</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.uuid, tabComponent: 'scene-form', tabData: { book: book, scene: null }, tabTitle: $t('NEW') + ' ' + $tc('SCENE',1), newTab: true})">{{$t('NEW').toUpperCase()}} {{$tc('SCENE', 1).toUpperCase()}}</button>
                 </div>
             </div>
+        </div>
+
+        <div class="es-page-breadcrumbs">
+           <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+           /
+           <button class="current">{{ $tc('OTHER_SCENES', 2) }}</button>
         </div>
 
         <div class="es-page-content">
@@ -19,9 +25,9 @@
                     <div class="es-card">
                         <div class="es-card-content">
                         <div class="es-card-actions">
-                            <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + scene.uuid, tabComponent: 'scene-form',  tabData: { book_id: scene.book_id, scene: scene}, tabTitle: $t('EDIT')+ ' - ' + scene.title, newTab: true })"><i class="las la-pencil-alt"></i></button>
+                            <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + scene.uuid, tabComponent: 'scene-form',  tabData: { book: book, scene: scene, chapter: null}, tabTitle: $t('EDIT')+ ' - ' + scene.title, newTab: true })"><i class="las la-pencil-alt"></i></button>
                             <button class="btn-circle" @click="deleteScene(scene)"><i class="las la-trash-alt"></i></button>
-                            <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + scene.uuid, tabComponent: 'scene-details',  tabData: { book_id: scene.book_id, scene: scene}, tabTitle: $t('VIEW')+ ' - ' + scene.title, newTab: true })"><i class="lar la-eye"></i></button>
+                            <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + scene.uuid, tabComponent: 'scene-details',  tabData: { book: book, scene: scene, chapter: null}, tabTitle: $t('VIEW')+ ' - ' + scene.title })"><i class="lar la-eye"></i></button>
                         </div>
                             <p class="title">{{ scene.title || 'Untitled' }}</p>
                             <i class="description ellipsis-2">{{ scene.short_description || $t('NO_SHORT_DESCRIPTION') + '...'  }}</i>
@@ -54,6 +60,9 @@ export default {
     draggable
   },
   computed: {
+    book: function () {
+      return this.properties
+    },
     scenes: {
       get () {
         let scope = this

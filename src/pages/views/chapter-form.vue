@@ -3,7 +3,7 @@
     <div class="es-page-head">
         <div class="inner">
             <div class="details">
-                <div  v-if="data.id != null">
+                <div v-if="data.id != null">
                     <h4>{{$t('EDIT')}}: <strong>{{ data.title }}</strong></h4>
                     <small>{{$t('DATE_MODIFIED')}}: {{ data.updated_at }}</small>
                 </div>
@@ -17,8 +17,17 @@
             </div>
         </div>
     </div>
-
-  <div class="es-page-content">
+    <div class="es-page-breadcrumbs">
+    <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+    /
+    <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $tc('CHAPTER', 2) + ' - ' + book.title})">{{ $tc('CHAPTER', 2) }}</button>
+    /
+    <button class="current">
+        <span v-if="chapter !== null">{{ chapter.title }}</span>
+        <span v-else>New Chapter</span>
+    </button>
+    </div>
+    <div class="es-page-content">
         <div class="container">
             <div class="es-accordion">
                 <div class="item" v-bind:class="{'active': accordion['chapter-details'] === 'active'}">
@@ -40,6 +49,7 @@
                                     :state="feedback.title.state"
                                     aria-describedby="input-live-help input-live-feedback"
                                     :placeholder="$t('CHAPTER_TITLE')"
+                                    @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
                                     trim
                                   ></b-form-input>
 
@@ -60,6 +70,7 @@
                                       :state="feedback.short_description.state"
                                       aria-describedby="input-live-help input-live-feedback"
                                       :placeholder="$t('SHORT_DESCRIPTION')"
+                                      @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
                                       trim
                                     ></b-form-input>
 
@@ -84,7 +95,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <tiny-editor :initValue="data.chapter_version.content" v-on:getEditorContent="setContent" class="form-control" />
+                                    <tiny-editor :initValue="data.chapter_version.content" v-on:getEditorContent="setContent" class="form-control"/>
                                 </div>
                             </div>
                         </div>
@@ -100,7 +111,7 @@
 import TinyMCE from '../../components/TinyMCE'
 
 export default {
-  name: 'book-form',
+  name: 'chapter-form',
   props: ['properties'],
   data: function () {
     return {
@@ -148,6 +159,14 @@ export default {
   },
   components: {
     TinyMCE
+  },
+  computed: {
+    book: function () {
+      return this.properties.book
+    },
+    chapter: function () {
+      return this.properties.chapter
+    }
   },
   methods: {
     toggleAccordion: function (key) {
@@ -219,6 +238,7 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
+              scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
               if (scope.data.uuid === null) {
                 scope.$store.dispatch('updateChapterList', response.data)
                 scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
@@ -316,7 +336,7 @@ export default {
   },
   beforeMount () {
     var scope = this
-    scope.data.book_id = scope.properties.book_id
+    scope.data.book_id = scope.properties.book.uuid
 
     if (scope.properties.chapter) {
       scope.$set(scope.data, 'id', scope.properties.chapter.id)

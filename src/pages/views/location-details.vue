@@ -1,6 +1,14 @@
 <template>
 <div class="page-location-details">
-
+    <div class="es-page-breadcrumbs">
+        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+        /
+        <button @click="CHANGE_COMPONENT({tabKey: 'location-listing-' + book.uuid, tabComponent: 'location-listing', tabData: book, tabTitle: $tc('LOCATION', 2) + ' - ' + book.title})">{{ $tc('LOCATION', 2) }}</button>
+        /
+        <button class="current">
+            <span>{{ location.location }}</span>
+        </button>
+    </div>
     <div class="es-panel">
         <div class="es-panel-content">
             <div class="image-container"><img :src="properties.location.picture_src" /></div>
@@ -24,7 +32,14 @@ export default {
   props: ['properties'],
   data: function () {
     return {
-      location: []
+    }
+  },
+  computed: {
+    book: function () {
+      return this.properties.book
+    },
+    location: function () {
+      return this.properties.location
     }
   },
   methods: {

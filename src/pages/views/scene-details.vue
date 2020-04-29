@@ -10,11 +10,33 @@
             </div>
             <div class="actions">
                 <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
-                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.scene.uuid, tabComponent: 'scene-form', tabData: { book_id: properties.scene.book_id, scene: properties.scene }, tabTitle: $t('EDIT')+ ' - ' +  properties.scene.title, newTab: true})">{{$t('EDIT').toUpperCase()}}</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.scene.uuid, tabComponent: 'scene-form', tabData: { book: book, scene: properties.scene, chapter: chapter }, tabTitle: $t('EDIT')+ ' - ' +  properties.scene.title, newTab: true})">{{$t('EDIT').toUpperCase()}}</button>
                 <button class="es-button-white" @click="deleteScene(properties.scene)">{{$t('DELETE').toUpperCase()}}</button>
             </div>
         </div>
     </div>
+
+    <div v-if="chapter !== null" class="es-page-breadcrumbs">
+        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+        /
+        <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $tc('CHAPTER', 2) + ' - ' + book.title})">{{ $tc('CHAPTER', 2) }}</button>
+        /
+        <button @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + book.uuid, tabComponent: 'chapter-details', tabData: { book: book, chapter: chapter }, tabTitle: 'VIEW - ' + chapter.title})">{{ chapter.title || 'Untitled' }}</button>
+        /
+        <button class="current">
+            <span>{{ scene.title || 'Untitled' }}</span>
+        </button>
+    </div>
+    <div v-else class="es-page-breadcrumbs">
+        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+        /
+        <button @click="CHANGE_COMPONENT({tabKey: 'scene-listing-' + book.uuid, tabComponent: 'scene-listing', tabData: book, tabTitle: $tc('OTHER_SCENES', 2) + ' - ' + book.title})">{{ $tc('OTHER_SCENES', 2) }}</button>
+        /
+        <button class="current">
+            <span>{{ scene.title || 'Untitled' }}</span>
+        </button>
+    </div>
+
     <div class="es-scene-details-tab">
         <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-scene-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
         <div v-bind:class="{ 'active' : tab.active == 'locations' }" @click="changeTab('locations')" class="es-scene-details-tab-item">{{$tc('LOCATION', 2).toUpperCase()}}</div>
@@ -96,13 +118,6 @@ const {ipcRenderer} = window.require('electron')
 export default {
   name: 'scene-details',
   props: ['properties'],
-  computed: {
-    getSceneContent: function () {
-      var scope = this
-      var sceneID = scope.page.data.scene.uuid
-      return this.$store.getters.getSceneContent(sceneID)
-    }
-  },
   data: function () {
     return {
       scene_version: {
@@ -129,6 +144,22 @@ export default {
     SceneCharacters,
     SceneVersions,
     SceneCompareVersions
+  },
+  computed: {
+    book: function () {
+      return this.properties.book
+    },
+    scene: function () {
+      return this.properties.scene
+    },
+    chapter: function () {
+      return this.properties.chapter
+    },
+    getSceneContent: function () {
+      var scope = this
+      var sceneID = scope.page.data.scene.uuid
+      return this.$store.getters.getSceneContent(sceneID)
+    }
   },
   methods: {
     setDescription (value) {

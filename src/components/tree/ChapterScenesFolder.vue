@@ -1,7 +1,7 @@
 <template>
     <draggable v-if="component.is_ready" tag="ul" v-model="scenes" draggable=".handle" class="level-4">
         <li v-bind:key="scene.id" v-for="scene in scenes" class="handle">
-            <div @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + scene.uuid, tabComponent: 'scene-details',  tabData: { book_id: chapter.vook_id, scene: scene}, tabTitle: scene.title})" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title || 'Untitled' }}</span></div>
+            <div @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + scene.uuid, tabComponent: 'scene-details',  tabData: { book: book, scene: scene, chapter: chapter}, tabTitle: scene.title})" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title || 'Untitled' }}</span></div>
         </li>
     </draggable>
 </template>
@@ -24,6 +24,12 @@ export default {
     draggable
   },
   computed: {
+    book: function () {
+      return this.properties.book
+    },
+    chapter: function () {
+      return this.properties.chapter
+    },
     scenes: {
       get () {
         let scenes = this.$store.getters.getScenesByChapter(this.chapter.uuid)
@@ -42,7 +48,7 @@ export default {
   },
   mounted () {
     var scope = this
-    scope.chapter = scope.properties
+    console.log(scope.properties)
     scope.component.is_ready = true
   }
 }

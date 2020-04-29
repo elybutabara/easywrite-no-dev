@@ -19,7 +19,7 @@ export default {
       var scope = this
       let isNewTab = (data.newTab) ? data.newTab : false
       let tabIndex = (data.tabIndex === null || data.tabIndex === undefined) ? 0 : data.tabIndex
-      let settings = { key: data.tabKey, component: data.tabComponent, data: data.tabData, title: data.tabTitle, index: tabIndex }
+      let settings = { key: data.tabKey, component: data.tabComponent, data: data.tabData, title: data.tabTitle, index: tabIndex, modified: false }
 
       if (isNewTab) {
         // scope.$store.dispatch('newTab', { key: key, title: tabTitle, component: tabComponent, data: tabData })
@@ -79,7 +79,30 @@ export default {
     },
     REMOVE_TAB: function (index) {
       var scope = this
-      scope.$store.dispatch('removeTab', index)
+      if (!scope.$store.getters.tabIsModified(index)) {
+        scope.$store.dispatch('removeTab', index)
+        return
+      }
+      window.swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Would you like to close this tab without saving your changes?',
+        showConfirmButton: true,
+        showCancelButton: true
+      }).then((result) => {
+        if (result.value) {
+          scope.$store.dispatch('removeTab', index)
+        }
+      })
+    },
+    MARK_TAB_AS_MODIFIED: function (index) {
+      var scope = this
+      console.log('INDEX: ' + index + ' IS MODIFIED ')
+      scope.$store.dispatch('markTabAsModified', index)
+    },
+    UNMARK_TAB_AS_MODIFIED: function (index) {
+      var scope = this
+      scope.$store.dispatch('unmarkTabAsModified', index)
     },
     GET_BOOKS_BY_AUTHOR: function (uuid = '') {
       return this.$store.getters.getBooks

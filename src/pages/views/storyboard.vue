@@ -14,29 +14,15 @@
     <div class="es-page-breadcrumbs">
        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
        /
-       <button class="current">{{ $tc('CHAPTER', 2) }}</button>
+       <button class="current">{{ $tc('STORYBOARD', 2) }}</button>
     </div>
     <div class="es-page-content">
-        <draggable v-model="chapters" draggable=".es-col" class="es-row">
-        <div class="es-col fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
-            <div class="es-card">
-                <div class="es-card-content">
-                    <div class="es-card-actions">
-                        <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'chapter-form-' + chapter.uuid, tabComponent: 'chapter-form',  tabData: { book: book, chapter: chapter }, tabTitle: $t('EDIT')+ ' - ' + chapter.title, newTab: true })"><i class="las la-pencil-alt"></i></button>
-                        <button class="btn-circle" @click="deleteChapter(chapter)"><i class="las la-trash-alt"></i></button>
-                        <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + chapter.uuid, tabComponent: 'chapter-details',  tabData: { book: book, chapter: chapter }, tabTitle: $t('VIEW')+ ' - ' + chapter.title})"><i class="lar la-eye"></i></button>
-                    </div>
-                    <p class="title">{{ displayTitle(chapter.title) }}</p>
-                    <i class="description ellipsis-2">{{ chapter.short_description || $t('NO_SHORT_DESCRIPTION') + '...' }}</i>
-                </div>
-                <div class="es-card-footer">
-                    <small>{{$tc('SCENE', 2)}}: {{ $store.getters.getScenesByChapter(chapter.uuid).length }}</small>
-                    &nbsp; &bull; &nbsp;
-                    <small>{{$tc('VERSION', 2)}}: {{ $store.getters.getChapterVersions(chapter.uuid).length }}</small>
-                    <small style="float:right;">{{$t('WORD_COUNT')}}: {{ WORD_COUNT($store.getters.getChapterContent(chapter.uuid)) }}</small>
-                </div>
-            </div>
-        </div>
+        <draggable :list="list1" group="people" draggable=".handle" @change="log(1)">
+            <div style="background:red; margin:10px;" :key="item.id" v-for="item in list1" class="handle">{{ item.name }}</div>
+        </draggable>
+
+        <draggable :list="list2" group="people" draggable=".handle" @change="log(2)">
+            <div style="background:blue; margin:10px;" :key="item.id" v-for="item in list2" class="handle">{{ item.name }}</div>
         </draggable>
     </div>
 </div>
@@ -46,7 +32,7 @@
 <script>
 import draggable from 'vuedraggable'
 export default {
-  name: 'chapter-listing',
+  name: 'storyboard',
   props: ['properties'],
   components: {
     draggable
@@ -56,7 +42,19 @@ export default {
       page: {
         is_ready: false
       },
-      bookUUID: ''
+      bookUUID: '',
+      list1: [
+        { id: 1, name: 'item 1a' },
+        { id: 2, name: 'item 1b' },
+        { id: 3, name: 'item 1c' },
+        { id: 4, name: 'item 1d' }
+      ],
+      list2: [
+        { id: 5, name: 'item 1aa' },
+        { id: 6, name: 'item 1bb' },
+        { id: 7, name: 'item 1cc' },
+        { id: 8, name: 'item 1dd' }
+      ]
     }
   },
   computed: {

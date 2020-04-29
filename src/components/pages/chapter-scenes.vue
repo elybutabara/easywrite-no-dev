@@ -1,7 +1,7 @@
 <template>
     <div v-if="page.is_ready" class="page-chapter-scenes ">
         <div style="padding:0px 10px; text-align:right; margin-bottom:20px;">
-            <button @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + chapter.uuid, tabComponent: 'scene-form',  tabData: { book_id: chapter.book_id, chapter: chapter }, tabTitle: 'New Scene', newTab: true})" class="btn-new-scene">
+            <button @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + chapter.uuid, tabComponent: 'scene-form',  tabData: { book: book, chapter: chapter, scene: null }, tabTitle: 'New Scene', newTab: true})" class="btn-new-scene">
                 <i class="las la-plus"></i> {{$t('ADD_NEW_SCENE').toUpperCase()}}
             </button>
         </div>
@@ -10,9 +10,9 @@
                 <div class="es-card">
                     <div class="es-card-content">
                       <div class="es-card-actions">
-                        <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + scene.uuid, tabComponent: 'scene-form',  tabData: { book_id: scene.book_id, scene: scene}, tabTitle: 'Edit ' + scene.title, newTab: true })"><i class="las la-pencil-alt"></i></button>
+                        <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + scene.uuid, tabComponent: 'scene-form',  tabData: { book: book, scene: scene, chapter: chapter}, tabTitle: 'Edit ' + scene.title, newTab: true })"><i class="las la-pencil-alt"></i></button>
                         <button class="btn-circle" @click="deleteScene(scene)"><i class="las la-trash-alt"></i></button>
-                        <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + scene.uuid, tabComponent: 'scene-details',  tabData: { book_id: scene.book_id, scene: scene}, tabTitle: scene.title, newTab: true })"><i class="lar la-eye"></i></button>
+                        <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + scene.uuid, tabComponent: 'scene-details',  tabData: { book: book, scene: scene, chapter: chapter}, tabTitle: scene.title, newTab: true })"><i class="lar la-eye"></i></button>
                       </div>
                         <p class="title">{{ scene.title || 'Untitled' }}</p>
                         <i class="description ellipsis-2">{{ scene.short_description || $t('NO_SHORT_DESCRIPTION') + '...'  }}</i>
@@ -38,14 +38,19 @@ export default {
         title: '',
         is_ready: false,
         data: null
-      },
-      chapter: null
+      }
     }
   },
   components: {
     draggable
   },
   computed: {
+    book: function () {
+      return this.properties.book
+    },
+    chapter: function () {
+      return this.properties.chapter
+    },
     scenes: {
       get () {
         let scope = this
@@ -95,7 +100,6 @@ export default {
   },
   mounted () {
     var scope = this
-    scope.chapter = scope.properties.chapter
     scope.scenes = scope.$store.dispatch('loadScenesByChapter', scope.chapter.uuid)
     setTimeout(function () {
       scope.page.is_ready = true

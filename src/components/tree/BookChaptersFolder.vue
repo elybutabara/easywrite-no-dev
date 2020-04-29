@@ -10,7 +10,7 @@
         <draggable tag="ul"  v-model="chapters" draggable=".handle" class="level-3">
             <li v-bind:class="{ 'open' : $store.getters.isBookChaptersFolderOpen(book) }" v-bind:key="chapter.id" v-for="chapter in chapters" class="handle">
                 <div @click="toggleChapter(chapter)" class="label"><span><img  src="@/assets/img/icons/chapter.svg"> {{ chapter.title }}</span></div>
-                <chapter-scenes-folder v-if="chapter.is_open" :key="'tree-chapter-scenes-' + chapter.uuid" :properties="chapter"></chapter-scenes-folder>
+                <chapter-scenes-folder v-if="chapter.is_open" :key="'tree-chapter-scenes-' + chapter.uuid" :properties="{book: book, chapter: chapter}"></chapter-scenes-folder>
             </li>
         </draggable>
     </li>
@@ -47,6 +47,9 @@ export default {
         let scope = this
         this.$store.commit('sortChapters', { bookUUID: scope.book.uuid, data: value })
       }
+    },
+    book: function () {
+      return this.properties
     }
   },
   methods: {
@@ -56,7 +59,7 @@ export default {
       let config = {
         tabKey: 'chapter-details-' + chapter.uuid,
         tabComponent: 'chapter-details',
-        tabData: { book_id: chapter.book_id, chapter: chapter },
+        tabData: { book: scope.book, chapter: chapter },
         tabTitle: chapter.title
       }
 
@@ -69,7 +72,6 @@ export default {
   },
   mounted () {
     var scope = this
-    scope.book = scope.properties
     scope.component.is_ready = true
   }
 }

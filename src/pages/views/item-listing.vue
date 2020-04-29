@@ -8,11 +8,15 @@
                     <small>{{$t('BELOW_ARE_THE_LIST_OF_ITEMS_UNDER')}} {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'item-form', tabComponent: 'item-form', tabData: { list_index: -1, book_id: properties.uuid, item: null }, tabTitle: $t('NEW') + ' ' + $tc('ITEM',1), newTab: true })">{{$t('NEW').toUpperCase()}} {{$tc('ITEM', 1).toUpperCase()}}</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'item-form', tabComponent: 'item-form', tabData: { list_index: -1, book: book, item: null }, tabTitle: $t('NEW') + ' ' + $tc('ITEM',1), newTab: true })">{{$t('NEW').toUpperCase()}} {{$tc('ITEM', 1).toUpperCase()}}</button>
                 </div>
             </div>
         </div>
-
+        <div class="es-page-breadcrumbs">
+            <button button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+            /
+            <button class="current" @click="CHANGE_COMPONENT({tabKey: 'item-listing-' + book.uuid, tabComponent: 'item-listing', tabData: book, tabTitle: $tc('ITEM', 2) + ' - ' + book.title})">{{ $tc('ITEM', 2) }}</button>
+        </div>
         <div class="es-page-content">
             <div class="es-row">
                 <div class="es-col fadeIn animated" v-for="item in items" v-bind:key="item.id">
@@ -23,8 +27,8 @@
                             <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}...</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-details-' + item.uuid, tabComponent: 'item-details', tabData: { book_id: properties.uuid, item: item }, tabTitle: $t('VIEW')+ ' - ' + item.itemname})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + item.uuid, tabComponent: 'item-form', tabData: { book_id: properties.uuid, item: item }, tabTitle: $t('EDIT')+ ' - ' + item.itemname, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT').toUpperCase()}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-details-' + item.uuid, tabComponent: 'item-details', tabData: { book: book, item: item }, tabTitle: $t('VIEW')+ ' - ' + item.itemname})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + item.uuid, tabComponent: 'item-form', tabData: { book: book, item: item }, tabTitle: $t('EDIT')+ ' - ' + item.itemname, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT').toUpperCase()}}</button>
                             <button class="btn-delete" @click="deleteItem(item)"><i class="las la-trash-alt"></i> {{$t('DELETE').toUpperCase()}}</button>
                         </div>
                     </div>
@@ -45,6 +49,9 @@ export default {
     }
   },
   computed: {
+    book: function () {
+      return this.properties
+    },
     items: function () {
       return this.$store.getters.getItemsByBook(this.bookUUID)
     }

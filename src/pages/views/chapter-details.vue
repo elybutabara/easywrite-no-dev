@@ -5,15 +5,22 @@
         <div class="inner">
           <div class="details">
             <div>
-              <h4><strong>{{ page.title }}</strong></h4>
+              <h4><strong>{{ chapter.title }}</strong></h4>
             </div>
           </div>
           <div class="actions">
             <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
-            <button class="es-button-white" @click="CHANGE_COMPONENT({ tabKey: 'chapter-form-' + properties.chapter.uuid, tabComponent: 'chapter-form',  tabData: { book_id: properties.chapter.book_id, chapter:  properties.chapter }, tabTitle: $t('EDIT')+ ' - ' +  properties.chapter.title, newTab: true })">{{$t('EDIT').toUpperCase()}}</button>
-            <button class="es-button-white" @click="deleteChapter(properties.chapter)">{{$t('DELETE').toUpperCase()}}</button>
+            <button class="es-button-white" @click="CHANGE_COMPONENT({ tabKey: 'chapter-form-' + chapter.uuid, tabComponent: 'chapter-form',  tabData: { book: book, chapter:  chapter }, tabTitle: $t('EDIT')+ ' - ' +  chapter.title, newTab: true })">{{$t('EDIT').toUpperCase()}}</button>
+            <button class="es-button-white" @click="deleteChapter(chapter)">{{$t('DELETE').toUpperCase()}}</button>
           </div>
         </div>
+      </div>
+      <div class="es-page-breadcrumbs">
+       <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+       /
+       <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $tc('CHAPTER', 2) + ' - ' + book.title})">{{ $tc('CHAPTER', 2) }}</button>
+       /
+       <button class="current">{{ chapter.title }}</button>
       </div>
       <div class="es-chapter-details-tab">
         <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-chapter-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
@@ -26,13 +33,13 @@
         <div v-html="getChapterContent" class="description" ></div>
       </div>
       <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
-        <chapter-scenes :properties="{ chapter: page.data.chapter }"></chapter-scenes>
+        <chapter-scenes :properties="{ book: book, chapter: chapter }"></chapter-scenes>
       </div>
       <div v-if="tab.active === 'versions'"  class="es-chapter-details-tab-content">
-        <chapter-versions :properties="{ chapter: page.data.chapter }"></chapter-versions>
+        <chapter-versions :properties="{ chapter: chapter }"></chapter-versions>
       </div>
       <div v-if="tab.active === 'compare-versions'"  class="es-chapter-details-tab-content">
-        <chapter-compare-versions :properties="{ chapter: page.data.chapter }"></chapter-compare-versions>
+        <chapter-compare-versions :properties="{ chapter: chapter }"></chapter-compare-versions>
       </div>
     </div>
     <b-overlay :show="busy" no-wrap fixed @shown="$refs.dialog.focus()" @hidden="$refs.button.focus()">
@@ -116,6 +123,12 @@ export default {
       var scope = this
       var chapterID = scope.page.data.chapter.uuid
       return this.$store.getters.getChapterContent(chapterID)
+    },
+    book: function () {
+      return this.properties.book
+    },
+    chapter: function () {
+      return this.properties.chapter
     },
     test: function () {
       var stillUtc = moment.utc('2020-04-09 13:51:40').toDate()
@@ -214,7 +227,8 @@ export default {
     var scope = this
     scope.page.data = scope.properties
     scope.page.title = scope.properties.chapter.title
-
+    console.log('PROPERTIES')
+    console.log(scope.properties)
     scope.$store.dispatch('loadScenesByChapter', scope.properties.chapter.uuid)
     scope.$store.dispatch('loadVersionsByChapter', scope.properties.chapter.uuid)
 
