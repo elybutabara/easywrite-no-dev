@@ -34,19 +34,19 @@
                         <div style=" background:#fff; padding:10px 20px; border: 1px solid #e0e5ee; border-radius: 3px;">
                             <p class="ellipsis-2" style="font-weight:600;">{{ displayTitle(scene.title) }}</p>
                             <div style="margin-bottom:5px;">
-                                <p style="margin:0px;"><i class="las la-info-circle"></i> Short Description</p>
+                                <p style="margin:0px;"><i class="las la-info-circle"></i>{{$t('SHORT_DESCRIPTION')}}</p>
                                 <span style="color:#5c7c95; padding-left:20px;">{{ scene.short_description || 'No short description' }}</span>
                             </div>
                             <div style="margin-bottom:5px;">
-                                <p style="margin:0px;"><i class="las la-clock"></i> Date Start</p>
+                                <p style="margin:0px;"><i class="las la-clock"></i> {{$t('DATE_START')}}</p>
                                 <span style="color:#5c7c95; padding-left:20px;">{{ scene.date_starts || 'No short description' }}</span>
                             </div>
                             <div style="margin-bottom:5px;">
-                                <p style="margin:0px;"><i class="las la-clock"></i> Date End</p>
+                                <p style="margin:0px;"><i class="las la-clock"></i> {{$t('DATE_END')}}</p>
                                 <span style="color:#5c7c95; padding-left:20px;">{{ scene.date_ends || 'No short description' }}</span>
                             </div>
                             <div style="margin-bottom:5px;">
-                                <p style="margin:0px;"><i class="las la-cloud-sun"></i> Weather</p>
+                                <p style="margin:0px;"><i class="las la-cloud-sun"></i> {{$t('WEATHER')}}</p>
                                 <span style="color:#5c7c95; padding-left:20px;">{{ scene.weather_type || 'No short description' }}</span>
                             </div>
                         </div>
@@ -58,9 +58,9 @@
             <div style="padding:5px 10px; display:flex;" >
                 <div style="padding:5px 10px; background:transparent; width:25%;">
                     <div style="background:#fff; padding:10px 10px; border: 1px solid #e0e5ee; border-radius: 3px;">
-                        <p class="ellipsis-2" style="font-weight:600;">Other Scenes</p>
+                        <p class="ellipsis-2" style="font-weight:600;">{{$t('OTHER_SCENES')}}</p>
                         <i class="ellipsis-3">
-                            A list of scenes that does not belong to any chapters
+                            {{$t('A_LIST_OF_SCENES_THAT_DOES_NOT_BELONG_TO_ANY_CHAPTERS')}}
                         </i>
                         <br/>
                     </div>
@@ -70,19 +70,19 @@
                         <div style=" background:#fff; padding:10px 20px; border: 1px solid #e0e5ee; border-radius: 3px;">
                             <p class="ellipsis-2" style="font-weight:600;">{{ displayTitle(scene.title) }}</p>
                             <div style="margin-bottom:5px;">
-                                <p style="margin:0px;"><i class="las la-info-circle"></i> Short Description</p>
+                                <p style="margin:0px;"><i class="las la-info-circle"></i> {{$t('SHORT_DESCRIPTION')}}</p>
                                 <span style="color:#5c7c95; padding-left:20px;">{{ scene.short_description || 'No short description' }}</span>
                             </div>
                             <div style="margin-bottom:5px;">
-                                <p style="margin:0px;"><i class="las la-clock"></i> Date Start</p>
+                                <p style="margin:0px;"><i class="las la-clock"></i> {{$t('DATE_START')}}</p>
                                 <span style="color:#5c7c95; padding-left:20px;">{{ scene.date_starts || 'No short description' }}</span>
                             </div>
                             <div style="margin-bottom:5px;">
-                                <p style="margin:0px;"><i class="las la-clock"></i> Date End</p>
+                                <p style="margin:0px;"><i class="las la-clock"></i> {{$t('DATE_END')}}</p>
                                 <span style="color:#5c7c95; padding-left:20px;">{{ scene.date_ends || 'No short description' }}</span>
                             </div>
                             <div style="margin-bottom:5px;">
-                                <p style="margin:0px;"><i class="las la-cloud-sun"></i> Weather</p>
+                                <p style="margin:0px;"><i class="las la-cloud-sun"></i> {{$t('WEATHER')}}</p>
                                 <span style="color:#5c7c95; padding-left:20px;">{{ scene.weather_type || 'No short description' }}</span>
                             </div>
                         </div>
@@ -93,7 +93,7 @@
     </div>
     <div v-else style="position:absolute; top:0px; left:0px; background:#fff; width:100%; height:100%; text-align:center; padding-top:calc(50vh - 200px);">
         <img style="width:100px;" class="loader" src="@/assets/img/loader-cog.svg">
-        <p style="margin-top:10px;">Loading Story Board, please wait...</p>
+        <p style="margin-top:10px;">{{$t('LOADING_STORY_BOARD_PLEASE_WAIT')}}</p>
     </div>
 </div>
 
