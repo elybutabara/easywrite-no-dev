@@ -29,7 +29,7 @@
         <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-chapter-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
       </div>
       <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
-        <div class="export-content"><button class="es-button-white" @click="exportContent()">Export Content</button></div>
+        <div class="export-content"><button class="es-button-white" @click="exportContent()">{{$t('EXPORT')}} {{$t('CONTENT')}}</button></div>
         <div v-html="getChapterContent" class="description" ></div>
       </div>
       <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
@@ -55,7 +55,7 @@
         >
           <b-container class="bv-example-row">
             <b-card-group deck>
-              <b-card header="Save as new Version" class="text-center">
+              <b-card :header="$t('SAVE_AS_NEW_VERSION')" class="text-center">
                 <b-row style="margin-bottom: 1rem;" class="text-left">
                   <b-col>
                     <label>{{$t('DESCRIPTION')}}: </label>
@@ -68,7 +68,7 @@
                 <b-row>
                   <b-col>
                     <div class="text-right">
-                      <b-button variant="outline-dark" class="mr-2" @click="busy = !busy">{{$t('CANCEL')}}</b-button><b-button variant="dark" @click="saveNewVersion">{{$t('Save')}}</b-button>
+                      <b-button variant="outline-dark" class="mr-2" @click="busy = !busy">{{$t('CANCEL')}}</b-button><b-button variant="dark" @click="saveNewVersion">{{$t('SAVE')}}</b-button>
                     </div>
                   </b-col>
                 </b-row>
