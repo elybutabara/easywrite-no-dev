@@ -82,6 +82,9 @@ export default {
       console.log(this.list2)
     },
     displayTitle: function (title) {
+      if (title === null) {
+        return 'Untitled'
+      }
       if (title.length > 70) {
         return title.slice(0, 70) + '...'
       } else if (title.length < 1) {
