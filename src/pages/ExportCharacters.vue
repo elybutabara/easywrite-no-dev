@@ -107,7 +107,7 @@ export default {
     exportCharacter: function () {
       const scope = this
       window.$('#printCharacterButton').hide()
-      ipcRenderer.send('EXPORT:pdf',{pdfName:scope.bookTitle + ' - '+ this.$tc('CHARACTER',2)})
+      ipcRenderer.send('EXPORT:pdf', {pdfName: scope.bookTitle + ' - ' + this.$tc('CHARACTER', 2)})
     }
   },
   beforeMount () {

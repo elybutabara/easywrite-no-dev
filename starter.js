@@ -5,7 +5,6 @@ const fs = require('fs')
 const log = require('electron-log')
 const appUpdate = require('./api/updater')
 const reportContent = require('./reports/report_content')
-const { dialog } = require('electron')
 
 if(fs.existsSync(path.join(process.resourcesPath || '','prod.env'))){
   process.env.NODE_ENV = 'production'
@@ -351,8 +350,8 @@ function createExportWindow(data) {
   exportWindow.center()
   exportWindow.setMenu(null)
 
-  exportWindow.webContents.openDevTools()
   if (process.env.NODE_ENV == 'development') {
+    exportWindow.webContents.openDevTools()
     let url = 'http://localhost:8080/'
     exportWindow.loadURL(url + 'dev/' + '/#/characters')
   } else {
