@@ -1,5 +1,5 @@
 <template>
-<div class="container">
+<div v-if="page.is_ready" class="container">
   <div class="es-page-head">
     <div class="inner">
       <div class="details">
@@ -78,6 +78,10 @@
               <div v-html="character.goals" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';"></div>
             </div>
           </div>
+          <div class="row" v-bind:key="relation.id" v-for="relation in character.relations">
+            <span >{{relation.character_relations}}</span>
+          </div>
+          <b-table striped hover :items="character.relations" :fields="characterRelationsFields"></b-table>
         </div>
       </div>
     </div>
@@ -93,37 +97,65 @@ export default {
   props: ['properties'],
   data: function () {
     return {
+      characters: [],
+      characterRelations: [],
+      characterRelationsFields: ['relation', 'fullname', 'shortname', 'nickname'],
       bookUUID: null,
-      bookTitle: null
+      bookTitle: null,
+      page: {
+        is_ready: false
+      }
     }
   },
-  computed: {
-    characters: function () {
-      const scope = this
-      return this.$store.getters.getCharactersByBook(scope.bookUUID)
-    }
-  },
+  computed: {},
   methods: {
     exportCharacter: function () {
       const scope = this
       window.$('#printCharacterButton').hide()
       ipcRenderer.send('EXPORT:pdf', {pdfName: scope.bookTitle + ' - ' + this.$tc('CHARACTER', 2)})
+    },
+    setCharacters: function () {
+      const scope = this
+      let characters = scope.$store.getters.getCharactersByBook(scope.bookUUID)
+      characters.forEach(function (character, index) {
+        scope.$store.dispatch('loadRelationsByCharacter', character.uuid)
+        setTimeout(function () {
+          let characterRelation
+          let relation = []
+          characterRelation = scope.$store.getters.getRelationsByCharacter(character.uuid)
+          characterRelation.forEach(function (rel) {
+            //relation fullname shortname nickname
+            relation.push({
+              relation: rel.relation.relation,
+              fullname: rel.character_relation.fullname,
+              shortname: rel.character_relation.shortname,
+              nickname: rel.character_relation.nickname
+            })
+          })
+          character.relations = relation
+          scope.characters.push(character)
+        }, 550)
+      })
     }
   },
-  beforeMount () {
-
-  },
+  beforeMount () {},
   mounted () {
     const scope = this
     ipcRenderer.on('EXPORT:list-character', function (event, data) {
       scope.bookUUID = data.bookUUID
       scope.bookTitle = data.title
-      scope.$store.dispatch('loadCharactersByBook', data.bookUUID)
+      scope.$store.dispatch('loadCharactersByBook', scope.bookUUID)
     })
 
     ipcRenderer.on('EXPORT:show-button', function (event, data) {
       window.$('#printCharacterButton').show()
     })
+
+    setTimeout(function () {
+      scope.setCharacters()
+
+      scope.page.is_ready = true
+    }, 550)
   }
 }
 </script>
