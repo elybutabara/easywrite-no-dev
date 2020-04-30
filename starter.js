@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, Menu, ipcMain , systemPreferences} = require('electron')
+const { app, BrowserWindow, Menu, ipcMain , systemPreferences, dialog} = require('electron')
 const path = require('path')
 const fs = require('fs')
 const log = require('electron-log')
@@ -276,22 +276,37 @@ ipcMain.on('EXPORT:show-characters', function (event, data) {
   })
 })
 
-ipcMain.on('EXPORT:pdf', function (data) {
-  const fs = require('fs')
-  const electron = require('electron')
-  exportWindow.webContents.printToPDF({pageSize : 'A4'}, (success, errorType) => {
-    log.error(errorType)
-  }).then(function (data) {
-    const pdfPath = path.resolve(resourcePath,'reports/print.pdf')
-    fs.writeFile(pdfPath, data, function (error) {
-      if (error) {
-        log.error(error)
-      }
-      electron.shell.openExternal('file://' + pdfPath)
-      exportWindow.close()
-    })
-  }).catch(function (err) {
-
+ipcMain.on('EXPORT:pdf', function (event, args) {
+  dialog.showSaveDialog(mainWindow, {
+    defaultPath: args.pdfName,
+    properties: ['openFile', 'openDirectory','showOverwriteConfirmation'],
+    filters: [
+      { name: 'PDF Files', extensions: ['pdf'] }
+    ]
+  }).then(result => {
+    if(result.canceled){
+      exportWindow.webContents.send('EXPORT:show-button')
+    }else{
+      const fs = require('fs')
+      const electron = require('electron')
+      exportWindow.webContents.printToPDF({}, (success, errorType) => {
+        log.error(errorType)
+      }).then(function (data) {
+        const pdfPath = path.resolve(result.filePath)
+        fs.writeFile(pdfPath, data, function (error) {
+          if (error) {
+            log.error(error)
+          }
+          electron.shell.openExternal('file://' + pdfPath)
+          exportWindow.webContents.send('success-exporting',pdfPath)
+          exportWindow.webContents.send('EXPORT:show-button')
+        })
+      }).catch(function (err) {
+        log.error(err)
+      })
+    }
+  }).catch(err => {
+    log.error(err)
   })
 })
 
@@ -318,7 +333,7 @@ function createExportWindow(data) {
   exportWindow.webContents.openDevTools()
   if (process.env.NODE_ENV == 'development') {
     let url = 'http://localhost:8080/'
-    exportWindow.loadURL(url + 'dev/' + '/#/character')
+    exportWindow.loadURL(url + 'dev/' + '/#/characters')
   } else {
     exportWindow.loadFile(`${__dirname}/dist/export.html`)
   }

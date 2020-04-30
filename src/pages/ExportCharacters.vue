@@ -105,8 +105,9 @@ export default {
   },
   methods: {
     exportCharacter: function () {
+      const scope = this
       window.$('#printCharacterButton').hide()
-      ipcRenderer.send('EXPORT:pdf')
+      ipcRenderer.send('EXPORT:pdf',{pdfName:scope.bookTitle + ' - '+ this.$tc('CHARACTER',2)})
     }
   },
   beforeMount () {
@@ -114,12 +115,14 @@ export default {
   },
   mounted () {
     const scope = this
-    console.log('mount')
     ipcRenderer.on('EXPORT:list-character', function (event, data) {
-      console.log(data)
       scope.bookUUID = data.bookUUID
       scope.bookTitle = data.title
       scope.$store.dispatch('loadCharactersByBook', data.bookUUID)
+    })
+
+    ipcRenderer.on('EXPORT:show-button', function (event, data) {
+      window.$('#printCharacterButton').show()
     })
   }
 }
