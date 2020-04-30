@@ -228,6 +228,15 @@ ul { margin-left:0px; list-style:none;  }
   text-overflow: ellipsis;
 }
 
+.ellipsis-3 {
+    word-wrap: break-word;
+    display: -webkit-box!important;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
 .b-overlay .position-absolute {
   width: 75%;
 }
