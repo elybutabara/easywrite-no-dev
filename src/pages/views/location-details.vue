@@ -1,5 +1,5 @@
 <template>
-<div class="page-location-details">
+<div class="page-location-details" v-if="page.is_ready">
     <div class="es-page-breadcrumbs">
         <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
         /
@@ -18,7 +18,7 @@
             <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}</i>
         </div>
         <div class="es-panel-footer">
-            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + properties.location.uuid, tabComponent: 'location-form', tabData: { book_id: properties.uuid, location: properties.location }, tabTitle: $t('EDIT')+ ' - ' + properties.location.location, newTab: true})">{{$t('EDIT').toUpperCase()}}</div>
+            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + properties.location.uuid, tabComponent: 'location-form', tabData: { book: book, location: location }, tabTitle: $t('EDIT')+ ' - ' + properties.location.location, newTab: true})">{{$t('EDIT').toUpperCase()}}</div>
             <div class="cta" @click="deleteLocation(properties.location)">{{$t('DELETE').toUpperCase()}}</div>
         </div>
     </div>
@@ -32,6 +32,9 @@ export default {
   props: ['properties'],
   data: function () {
     return {
+      page: {
+        is_ready: false
+      }
     }
   },
   computed: {
@@ -77,12 +80,12 @@ export default {
     }
   },
   beforeMount () {
-    var scope = this
-    scope.$set(scope, 'location', scope.properties.location)
   },
   mounted () {
     var scope = this
-    scope.$set(scope, 'location', scope.properties.location)
+    setTimeout(function () {
+      scope.page.is_ready = true
+    }, 100)
   }
 }
 </script>

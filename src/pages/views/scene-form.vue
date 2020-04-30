@@ -83,7 +83,7 @@
             <b-row class="margin-bottom-1rem">
               <b-col>
                 <div v-if="scene_history.length" class="text-right">
-                  <button class="es-button-white margin-bottom-1rem" @click="show_history = !show_history">Show History</button>
+                  <button class="es-button-white margin-bottom-1rem" @click="show_history = !show_history">{{$t('SHOW_HISTORY')}}</button>
                 </div>
                 <div class="form-group">
                   <tiny-editor :initValue="data.scene_version.content"
@@ -94,7 +94,7 @@
                 <div v-if="show_history" class="scene-history-items slideInRight animated">
                   <div class="note">
                     <i @click="show_history = !show_history" class="btn-close fas fa-times"></i>
-                    <strong>{{$t('DOUBLE_CLICK')}}</strong> to view History
+                    <strong>{{$t('DOUBLE_CLICK')}}</strong> {{$t('TO_VIEW_HISTORY')}}
                   </div>
                   <div class="scene-history-list" >
                     <div v-bind:key="history.uuid" v-for="history in scene_history">
@@ -266,8 +266,8 @@
                 <div v-html="historyContent" class="history-content" ></div>
               </div>
               <div class="text-right">
-                <button class="es-button-white" @click="useHistoryCont()">Apply to content</button>
-                <button class="es-button-white" @click="view_history = !view_history">Close</button>
+                <button class="es-button-white" @click="useHistoryCont()">{{$t('APPLY_TO_CONTENT')}}</button>
+                <button class="es-button-white" @click="view_history = !view_history">{{$t('CLOSE')}}</button>
               </div>
             </b-card>
           </b-card-group>
@@ -431,12 +431,12 @@ export default {
 
       window.swal.fire({
         title: this.$t('ARE_YOU_SURE'),
-        text: 'Your current content will be overwritten',
+        text: this.$t('YOUR_CURRENT_CONTENT_WILL_BE_OVERWRITTERN'),
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Apply',
+        confirmButtonText: this.$t('APPLY'),
         cancelButtonText: this.$t('CANCEL')
       }).then((result) => {
         if (result.value) {

@@ -16,7 +16,7 @@
             <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}</i>
         </div>
         <div class="es-panel-footer">
-            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + properties.item.uuid, tabComponent: 'item-form', tabData: { book_id: properties.uuid, item: properties.item }, tabTitle: $t('EDIT')+ ' - ' + properties.item.itemname, newTab: true})">{{$t('EDIT').toUpperCase()}}</div>
+            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + properties.item.uuid, tabComponent: 'item-form', tabData: { book: book, item: properties.item }, tabTitle: $t('EDIT')+ ' - ' + properties.item.itemname, newTab: true})">{{$t('EDIT').toUpperCase()}}</div>
             <div class="cta" @click="deleteItem(properties.item)">{{$t('DELETE').toUpperCase()}}</div>
         </div>
     </div>
