@@ -67,12 +67,24 @@
                 </div>
                 <draggable :list="$store.getters.getScenesByBook(bookUUID)" group="scenes" @change="sortScene(null)" draggable=".handle-scenes"  style="padding:0px 5px; background:transparent; width:75%; display:flex; flex-wrap: wrap;">
                     <div style="z-index:9000; width:calc(33.33% - 10px);  margin:5px; margin-bottom:10px;" class="handle-scenes" :key="scene.id" v-for="scene in $store.getters.getScenesByBook(bookUUID)">
-                        <div style="background:#fff; padding:10px 20px; border: 1px solid #e0e5ee; border-radius: 3px;">
+                        <div style=" background:#fff; padding:10px 20px; border: 1px solid #e0e5ee; border-radius: 3px;">
                             <p class="ellipsis-2" style="font-weight:600;">{{ displayTitle(scene.title) }}</p>
-                            <div>AAA</div>
-                            <div>AAA</div>
-                            <div>AAA</div>
-                            <div>AAA</div>
+                            <div style="margin-bottom:5px;">
+                                <p style="margin:0px;"><i class="las la-info-circle"></i> Short Description</p>
+                                <span style="color:#5c7c95; padding-left:20px;">{{ scene.short_description || 'No short description' }}</span>
+                            </div>
+                            <div style="margin-bottom:5px;">
+                                <p style="margin:0px;"><i class="las la-clock"></i> Date Start</p>
+                                <span style="color:#5c7c95; padding-left:20px;">{{ scene.date_starts || 'No short description' }}</span>
+                            </div>
+                            <div style="margin-bottom:5px;">
+                                <p style="margin:0px;"><i class="las la-clock"></i> Date End</p>
+                                <span style="color:#5c7c95; padding-left:20px;">{{ scene.date_ends || 'No short description' }}</span>
+                            </div>
+                            <div style="margin-bottom:5px;">
+                                <p style="margin:0px;"><i class="las la-cloud-sun"></i> Weather</p>
+                                <span style="color:#5c7c95; padding-left:20px;">{{ scene.weather_type || 'No short description' }}</span>
+                            </div>
                         </div>
                     </div>
                 </draggable>
