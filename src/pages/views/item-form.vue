@@ -35,7 +35,8 @@
                         <div class="form-group">
                             <input v-on:change="displayImage" ref="fileInput" type="file" class="single-picture-file" name="single-picture-file" accept=".png, .jpg, .jpeg">
                             <div @click="$refs.fileInput.click()" class="uploaded-file-preview">
-                                <div class="default-preview"><i class="fa fa-image"></i></div>
+                              <div v-if="data.picture_src"><img :src="data.picture_src"></div>
+                              <div v-else class="default-preview"><i class="fa fa-image"></i></div>
                             </div>
                         </div>
                     </div>
@@ -50,6 +51,7 @@
                                     :state="feedback.itemname.state"
                                     aria-describedby="input-live-help input-live-feedback"
                                     :placeholder="$t('ITEM_NAME')"
+                                    @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
                                     trim
                                   ></b-form-input>
 
@@ -64,7 +66,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>{{$t('AKA')}}: </label>
-                                    <input v-model.trim="data.AKA" type="text" class="form-control" :placeholder="$t('AKA')">
+                                    <input @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)" v-model.trim="data.AKA" type="text" class="form-control" :placeholder="$t('AKA')">
                                 </div>
                             </div>
                         </div>
@@ -72,7 +74,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>{{$t('TAGS')}}: </label>
-                                    <input v-model="data.tags" type="text" class="form-control" :placeholder="$t('TAGS')">
+                                    <input @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)" v-model="data.tags" type="text" class="form-control" :placeholder="$t('TAGS')">
                                 </div>
                             </div>
                         </div>
@@ -137,10 +139,12 @@ export default {
     // Required for geting value from TinyMCE content
     setDescription (value) {
       var scope = this
+      scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       scope.tempDescription = value
     },
     displayImage: function () {
       var scope = this
+      scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
 
       let reader = new FileReader()
 
@@ -237,6 +241,7 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
+              scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
               if (scope.data.uuid === null) {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
@@ -250,47 +255,16 @@ export default {
                 scope.$store.dispatch('updateItemList', response.data)
                 scope.$store.dispatch('changeTabTitle', { key: 'item-form-' + response.data.uuid, title: this.$t('EDIT') + ' - ' + response.data.itemname })
               }
+
+              scope.loadItem(response.data)
             })
           }
         })
     },
-    loadItem () {
+    loadItem (itemProp) {
       var scope = this
-      scope.axios
-        .get('http://localhost:3000/items/' + scope.data.uuid)
-        .then(response => {
-          let item = response.data
-          scope.data.itemname = item.itemname
-          scope.data.AKA = item.AKA
-          scope.data.tags = item.tags
-          scope.data.description = item.description
-
-          if (item.pictures) {
-            scope.$set(scope.data, 'pictures', item.pictures)
-
-            const image = new Image()
-            image.src = item.picture_src
-            image.setAttribute('width', '100%')
-
-            window.$('.uploaded-file-preview').html(image)
-          }
-        })
-    }
-  },
-  beforeMount () {
-    var scope = this
-    scope.data.book_id = scope.properties.book.uuid
-
-    if (scope.properties.item) {
-      scope.$set(scope.data, 'id', scope.properties.item.id)
-      scope.$set(scope.data, 'uuid', scope.properties.item.uuid)
-    }
-  },
-  mounted () {
-    var scope = this
-    if (scope.data.uuid) {
       setTimeout(function () {
-        let item = scope.$store.getters.findItem(scope.properties.item)
+        let item = scope.$store.getters.findItem(itemProp)
         scope.data.itemname = item.itemname
         scope.data.AKA = item.AKA
         scope.data.tags = item.tags
@@ -306,6 +280,21 @@ export default {
           window.$('.uploaded-file-preview').html(image)
         }
       }, 500)
+    }
+  },
+  beforeMount () {
+    var scope = this
+    scope.data.book_id = scope.properties.book.uuid
+
+    if (scope.properties.item) {
+      scope.$set(scope.data, 'id', scope.properties.item.id)
+      scope.$set(scope.data, 'uuid', scope.properties.item.uuid)
+    }
+  },
+  mounted () {
+    var scope = this
+    if (scope.data.uuid) {
+      scope.loadItem(scope.data)
     }
 
     setTimeout(function () {
