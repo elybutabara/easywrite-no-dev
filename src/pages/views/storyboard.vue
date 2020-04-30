@@ -1,29 +1,87 @@
 <template>
-<div v-if="page.is_ready" class="page-chapter-listing">
-    <div class="es-page-head">
-        <div class="inner">
-            <div class="details">
-                <h4>{{ book.title }}</h4>
-                <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ book.title }}</small>
+<div class="page-storyboard" style="position:relative; width:100%; height:calc(100vh - 77px);">
+    <div v-if="page.is_ready">
+        <div class="es-page-head">
+            <div class="inner">
+                <div class="details">
+                    <h4>{{ book.title }}</h4>
+                    <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ book.title }}</small>
+                </div>
+                <div class="actions">
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
+                </div>
             </div>
-            <div class="actions">
-                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
+        </div>
+        <div class="es-page-breadcrumbs">
+        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+        /
+        <button class="current">{{ $tc('STORYBOARD', 2) }}</button>
+        </div>
+        <div class="es-page-content">
+            <draggable v-model="chapters" group="chapters" draggable=".handle-chapters">
+            <div style="padding:5px 10px; display:flex; min-height:200px;"  v-for="chapter in chapters" v-bind:key="chapter.id" group="chapters" class="handle-chapters">
+                <div style="padding:5px 10px; background:transparent; width:25%;">
+                    <div style="background:#fff; padding:10px 10px; border: 1px solid #e0e5ee; border-radius: 3px;">
+                        <p class="ellipsis-2" style="font-weight:600;">{{ displayTitle(chapter.title) }}</p>
+                        <i class="ellipsis-3">
+                            {{ chapter.short_description || $t('NO_SHORT_DESCRIPTION') + '...' }}
+                        </i>
+                        <br/>
+                    </div>
+                </div>
+                <draggable :list="$store.getters.getScenesByChapter(chapter.uuid)" group="scenes" @change="sortScene(chapter.uuid)" :empty-insert-threshold="100" draggable=".handle-scenes"  style="padding:0px 5px;  background:transparent; width:75%; display:flex; flex-wrap: wrap;">
+                    <div style="z-index:9000; width:calc(33.33% - 10px);  margin:5px; margin-bottom:10px;" class="handle-scenes" :key="scene.id" v-for="scene in $store.getters.getScenesByChapter(chapter.uuid)">
+                        <div style=" background:#fff; padding:10px 20px; border: 1px solid #e0e5ee; border-radius: 3px;">
+                            <p class="ellipsis-2" style="font-weight:600;">{{ displayTitle(scene.title) }}</p>
+                            <div style="margin-bottom:5px;">
+                                <p style="margin:0px;"><i class="las la-info-circle"></i> Short Description</p>
+                                <span style="color:#5c7c95; padding-left:20px;">{{ scene.short_description || 'No short description' }}</span>
+                            </div>
+                            <div style="margin-bottom:5px;">
+                                <p style="margin:0px;"><i class="las la-clock"></i> Date Start</p>
+                                <span style="color:#5c7c95; padding-left:20px;">{{ scene.date_starts || 'No short description' }}</span>
+                            </div>
+                            <div style="margin-bottom:5px;">
+                                <p style="margin:0px;"><i class="las la-clock"></i> Date End</p>
+                                <span style="color:#5c7c95; padding-left:20px;">{{ scene.date_ends || 'No short description' }}</span>
+                            </div>
+                            <div style="margin-bottom:5px;">
+                                <p style="margin:0px;"><i class="las la-cloud-sun"></i> Weather</p>
+                                <span style="color:#5c7c95; padding-left:20px;">{{ scene.weather_type || 'No short description' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </draggable>
+            </div>
+            </draggable>
+            <!-- OTHER SCENES --->
+            <div style="padding:5px 10px; display:flex;" >
+                <div style="padding:5px 10px; background:transparent; width:25%;">
+                    <div style="background:#fff; padding:10px 10px; border: 1px solid #e0e5ee; border-radius: 3px;">
+                        <p class="ellipsis-2" style="font-weight:600;">Other Scenes</p>
+                        <i class="ellipsis-3">
+                            A list of scenes that does not belong to any chapters
+                        </i>
+                        <br/>
+                    </div>
+                </div>
+                <draggable :list="$store.getters.getScenesByBook(bookUUID)" group="scenes" @change="sortScene(null)" draggable=".handle-scenes"  style="padding:0px 5px; background:transparent; width:75%; display:flex; flex-wrap: wrap;">
+                    <div style="z-index:9000; width:calc(33.33% - 10px);  margin:5px; margin-bottom:10px;" class="handle-scenes" :key="scene.id" v-for="scene in $store.getters.getScenesByBook(bookUUID)">
+                        <div style="background:#fff; padding:10px 20px; border: 1px solid #e0e5ee; border-radius: 3px;">
+                            <p class="ellipsis-2" style="font-weight:600;">{{ displayTitle(scene.title) }}</p>
+                            <div>AAA</div>
+                            <div>AAA</div>
+                            <div>AAA</div>
+                            <div>AAA</div>
+                        </div>
+                    </div>
+                </draggable>
             </div>
         </div>
     </div>
-    <div class="es-page-breadcrumbs">
-       <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-       /
-       <button class="current">{{ $tc('STORYBOARD', 2) }}</button>
-    </div>
-    <div class="es-page-content">
-        <draggable :list="list1" group="people" draggable=".handle" @change="log(1)">
-            <div style="background:red; margin:10px;" :key="item.id" v-for="item in list1" class="handle">{{ item.name }}</div>
-        </draggable>
-
-        <draggable :list="list2" group="people" draggable=".handle" @change="log(2)">
-            <div style="background:blue; margin:10px;" :key="item.id" v-for="item in list2" class="handle">{{ item.name }}</div>
-        </draggable>
+    <div v-else style="position:absolute; top:0px; left:0px; background:#fff; width:100%; height:100%; text-align:center; padding-top:calc(50vh - 200px);">
+        <img style="width:100px;" class="loader" src="@/assets/img/loader-cog.svg">
+        <p style="margin-top:10px;">Loading Story Board, please wait...</p>
     </div>
 </div>
 
@@ -43,18 +101,7 @@ export default {
         is_ready: false
       },
       bookUUID: '',
-      list1: [
-        { id: 1, name: 'item 1a' },
-        { id: 2, name: 'item 1b' },
-        { id: 3, name: 'item 1c' },
-        { id: 4, name: 'item 1d' }
-      ],
-      list2: [
-        { id: 5, name: 'item 1aa' },
-        { id: 6, name: 'item 1bb' },
-        { id: 7, name: 'item 1cc' },
-        { id: 8, name: 'item 1dd' }
-      ]
+      scenes: []
     }
   },
   computed: {
@@ -74,10 +121,16 @@ export default {
     }
   },
   methods: {
-    log: function (chapterUUID) {
-      console.log(chapterUUID)
-      console.log(this.list1)
-      console.log(this.list2)
+    sortScene: function (chapterUUID) {
+      var scope = this
+      var scenes = (chapterUUID !== null) ? this.$store.getters.getScenesByChapter(chapterUUID) : this.$store.getters.getScenesByBook(scope.bookUUID)
+      for (let i = 0; i < scenes.length; i++) {
+        scenes[i].chapter_id = chapterUUID
+        if (i === (scenes.length - 1)) {
+          var parent = (chapterUUID !== null) ? chapterUUID : scope.bookUUID
+          this.$store.commit('sortScenes', { PARENT: parent, data: scenes })
+        }
+      }
     },
     displayTitle: function (title) {
       if (title.length > 70) {
@@ -118,20 +171,36 @@ export default {
             })
         }
       })
+    },
+    loadScenes: function () {
+      var scope = this
+      let chapters = scope.$store.getters.getChaptersByBook(scope.bookUUID)
+      for (let i = 0; i < chapters.length; i++) {
+        let chapter = chapters[i]
+        scope.$store.dispatch('loadScenesByChapter', chapter.uuid)
+        if (i === (chapters.length - 1)) {
+          setTimeout(function () {
+            scope.page.is_ready = true
+          }, 500)
+        }
+      }
     }
   },
   mounted () {
     var scope = this
     scope.bookUUID = scope.properties.uuid
-
+    scope.$store.dispatch('loadChaptersByBook', scope.bookUUID)
+    scope.$store.dispatch('loadScenesByBook', scope.bookUUID)
     setTimeout(function () {
-      scope.page.is_ready = true
-    }, 100)
+      scope.loadScenes()
+    }, 1500)
   }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.page-storyboard { position:relative; }
+
 .es-card { color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
 .es-card .es-card-content { position:relative; padding:20px; min-height:150px; }
 .es-card .es-card-content .title { font-size:18px; font-weight:900; margin:0px; padding-right:110px; }

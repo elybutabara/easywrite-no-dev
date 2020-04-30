@@ -22,7 +22,7 @@ class SceneController {
       var row = data[i]
       // eslint-disable-next-line no-unused-vars
       var item = await Scene.query()
-        .patch({ order: count })
+        .patch({ chapter_id: row.chapter_id, order: count })
         .where('uuid', '=', row.uuid)
 
       count++
