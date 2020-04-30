@@ -52,6 +52,7 @@
                                     :state="feedback.fullname.state"
                                     aria-describedby="input-live-help input-live-feedback"
                                     :placeholder="$t('FULLNAME')"
+                                    @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
                                     trim
                                   ></b-form-input>
 
@@ -64,13 +65,13 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>{{$t('SHORTNAME')}}: </label>
-                                    <input v-model="data.shortname" type="text" class="form-control" :placeholder="$t('SHORTNAME')">
+                                    <input @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)" v-model="data.shortname" type="text" class="form-control" :placeholder="$t('SHORTNAME')">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>{{$t('NICKNAME')}}: </label>
-                                    <input v-model.trim="data.nickname" type="text" class="form-control" :placeholder="$t('NICKNAME')">
+                                    <input @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)" v-model.trim="data.nickname" type="text" class="form-control" :placeholder="$t('NICKNAME')">
                                 </div>
                             </div>
                         </div>
@@ -80,7 +81,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>{{$t('OCCUPATION')}}: </label>
-                            <input v-model="data.occupation" type="text" class="form-control" :placeholder="$t('OCCUPATION')">
+                            <input @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)" v-model="data.occupation" type="text" class="form-control" :placeholder="$t('OCCUPATION')">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -176,6 +177,7 @@ export default {
     },
     displayImage: function () {
       var scope = this
+      scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
 
       let reader = new FileReader()
 
