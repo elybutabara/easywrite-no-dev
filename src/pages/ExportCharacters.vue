@@ -124,7 +124,7 @@ export default {
           let relation = []
           characterRelation = scope.$store.getters.getRelationsByCharacter(character.uuid)
           characterRelation.forEach(function (rel) {
-            //relation fullname shortname nickname
+            // relation fullname shortname nickname
             relation.push({
               relation: rel.relation.relation,
               fullname: rel.character_relation.fullname,
