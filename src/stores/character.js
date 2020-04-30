@@ -4,12 +4,19 @@ import axios from 'axios'
 export default {
   strict: true,
   state: {
-    characters: {}
+    characters: {},
+    character_relations: {}
   },
   getters: {
     getCharactersByBook: state => (bookUUID) => {
       if (state.characters.hasOwnProperty(bookUUID)) {
         return state.characters[bookUUID].rows
+      }
+      return []
+    },
+    getRelationsByCharacter: state => (characterUUID) => {
+      if (state.character_relations.hasOwnProperty(characterUUID)) {
+        return state.character_relations[characterUUID].rows
       }
       return []
     },
@@ -27,6 +34,15 @@ export default {
     }
   },
   mutations: {
+    loadRelationsByCharacter (state, payload) {
+      let characterUUID = payload
+      Vue.set(state.character_relations, characterUUID, { rows: [] })
+      axios
+        .get('http://localhost:3000/characters/' + characterUUID + '/relations')
+        .then(response => {
+          state.character_relations[characterUUID] = {rows: response.data}
+        })
+    },
     loadCharactersByBook (state, payload) {
       let bookID = payload
       Vue.set(state.characters, bookID, { rows: [] })
@@ -86,6 +102,9 @@ export default {
   actions: {
     loadCharactersByBook ({ commit, state }, payload) {
       commit('loadCharactersByBook', payload)
+    },
+    loadRelationsByCharacter ({ commit, state }, payload) {
+      commit('loadRelationsByCharacter', payload)
     },
     addCharacterToList ({ commit, state }, payload) {
       commit('addCharacterToList', payload)
