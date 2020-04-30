@@ -1,6 +1,11 @@
 export default {
   // English
   en: {
+    LOADING_STORY_BOARD_PLEASE_WAIT: 'Loading Story Board, please wait...',
+    A_LIST_OF_SCENES_THAT_DOES_NOT_BELONG_TO_ANY_CHAPTERS: 'A list of scenes that does not belong to any chapters',
+    WEATHER: 'Weather',
+    DATE_END: 'Date End',
+    DATE_START: 'Date Start',
     ABOUT: 'About',
     ADD_IT_INTO_SCENE: 'to add it into to the scene',
     ADD_NEW_SCENE: 'Add New Scene',
@@ -597,6 +602,11 @@ export default {
   },
   // Norwegian
   nb: {
+    LOADING_STORY_BOARD_PLEASE_WAIT: 'Laster Storyboard. Vennligst vent ...',
+    A_LIST_OF_SCENES_THAT_DOES_NOT_BELONG_TO_ANY_CHAPTERS: 'En oversikt over scener som ikke tilhører et spesielt kapittel',
+    WEATHER: 'Vær',
+    DATE_END: 'Dato Slutt',
+    DATE_START: 'Dato Start',
     ABOUT: 'Om',
     ADD_IT_INTO_SCENE: 'for å legge den inn i scenen',
     ADD_NEW_SCENE: 'Legg Til Ny Scene',
