@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Main from '@/pages/Main'
 import Auth from '@/pages/Auth'
-
+import ExportCharacters from '@/pages/ExportCharacters'
 import StoreAuth from '@/stores/auth'
 
 Vue.use(Router)
@@ -38,6 +38,13 @@ export default new Router({
       name: 'Auth',
       beforeEnter: checkAuth,
       component: Auth,
+      meta: { protected: false }
+    },
+    {
+      path: '/characters',
+      name: 'ExportCharacters',
+      beforeEnter: checkAuth,
+      component: ExportCharacters,
       meta: { protected: false }
     }
   ]

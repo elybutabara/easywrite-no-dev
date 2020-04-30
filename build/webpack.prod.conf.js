@@ -78,6 +78,20 @@ const webpackConfig = merge(baseWebpackConfig, {
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
       chunksSortMode: 'dependency'
     }),
+    new HtmlWebpackPlugin({
+      filename:  path.resolve(__dirname, '../dist/export.html'),
+      template:  path.resolve(__dirname, '../src/html/export.html'),
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+        // more options:
+        // https://github.com/kangax/html-minifier#options-quick-reference
+      },
+      // necessary to consistently work with multiple chunks via CommonsChunkPlugin
+      chunksSortMode: 'dependency'
+    }),
     // TODO :make a loop for base on files inside /html folder
     new HtmlWebpackPlugin({
       filename:  path.resolve(__dirname, '../dist/auth.html'),

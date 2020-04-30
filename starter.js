@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, Menu, ipcMain , systemPreferences} = require('electron')
+const { app, BrowserWindow, Menu, ipcMain , systemPreferences, dialog} = require('electron')
 const path = require('path')
 const fs = require('fs')
 const log = require('electron-log')
@@ -28,7 +28,7 @@ if(process.platform == "darwin"){
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow, loginWindow
+let mainWindow, loginWindow, exportWindow
 
 function createWindow () {
   // Create the browser window.
@@ -79,8 +79,8 @@ function createWindow () {
   // resize after authentication
   ipcMain.on('RESIZE_MAIN_WINDOW', function (e, cat) {
     Menu.setApplicationMenu(menu.getMenu(mainWindow))
-    mainWindow.setSize(1280, 920);
-    mainWindow.center();
+    mainWindow.setSize(1280, 920)
+    mainWindow.center()
   })
   appUpdate.processUpdate(mainWindow)
 
@@ -201,15 +201,15 @@ function checkFreshInstallation () {
             // log.info('exist delte')
             // log.info(path)
             fs.readdirSync(path).forEach(function(file,index){
-              let curPath = path + "/" + file;
+              let curPath = path + "/" + file
               if(fs.lstatSync(curPath).isDirectory()) { // recurse
                 // log.info('rescures')
-                deleteRecursive(curPath);
+                deleteRecursive(curPath)
               } else { // delete file
-                fs.unlinkSync(curPath);
+                fs.unlinkSync(curPath)
               }
-            });
-            fs.rmdirSync(path);
+            })
+            fs.rmdirSync(path)
           }
         }
         deleteRecursive(path.resolve(app.getPath('userData'), 'demo'))
@@ -288,3 +288,78 @@ ipcMain.on('install-update', function (e, cat) {
   const {autoUpdater} = require('electron-updater')
   autoUpdater.quitAndInstall()
 })
+
+ipcMain.on('EXPORT:show-characters', function (event, data) {
+  createExportWindow({exportBy:'characters',data:data})
+  exportWindow.on('ready-to-show', function () {
+    exportWindow.show()
+    exportWindow.webContents.send('EXPORT:list-character',data)
+  })
+})
+
+ipcMain.on('EXPORT:pdf', function (event, args) {
+  dialog.showSaveDialog(mainWindow, {
+    defaultPath: args.pdfName,
+    properties: ['openFile', 'openDirectory','showOverwriteConfirmation'],
+    filters: [
+      { name: 'PDF Files', extensions: ['pdf'] }
+    ]
+  }).then(result => {
+    if(result.canceled){
+      exportWindow.webContents.send('EXPORT:show-button')
+    }else{
+      const fs = require('fs')
+      const electron = require('electron')
+      exportWindow.webContents.printToPDF({}, (success, errorType) => {
+        log.error(errorType)
+      }).then(function (data) {
+        const pdfPath = path.resolve(result.filePath)
+        fs.writeFile(pdfPath, data, function (error) {
+          if (error) {
+            log.error(error)
+          }
+          electron.shell.openExternal('file://' + pdfPath)
+          exportWindow.webContents.send('success-exporting',pdfPath)
+          exportWindow.webContents.send('EXPORT:show-button')
+        })
+      }).catch(function (err) {
+        log.error(err)
+      })
+    }
+  }).catch(err => {
+    log.error(err)
+  })
+})
+
+function createExportWindow(data) {
+  exportWindow = new BrowserWindow({
+    title: app.name+' v'+app.getVersion(),
+    icon: path.resolve('src/assets/img/easywrite-new.ico'),
+    webPreferences: {
+      webSecurity: false,
+      nodeIntegration: true,
+      preload: path.join(__dirname, 'preload.js'),
+      plugins: true
+    },
+    protocol: 'file:',
+    slashes: true,
+    movable: true,
+    show:false,
+    parent:mainWindow,
+  })
+  exportWindow.setSize(1280, 920)
+  exportWindow.center()
+  exportWindow.setMenu(null)
+
+  exportWindow.webContents.openDevTools()
+  if (process.env.NODE_ENV == 'development') {
+    let url = 'http://localhost:8080/'
+    exportWindow.loadURL(url + 'dev/' + '/#/characters')
+  } else {
+    exportWindow.loadFile(`${__dirname}/dist/export.html`)
+  }
+
+  exportWindow.on('closed', function () {
+    exportWindow = null
+  })
+}
