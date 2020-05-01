@@ -88,7 +88,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="birthdate-datepicker">{{$t('BIRTHDATE')}}: </label>
-                            <b-form-datepicker id="birthdate-datepicker" :placeholder="$t('NO')+' '+ $t('SELECTED') + ' ' + $t('DATE')" v-model="data.birthdate" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"></b-form-datepicker>
+                            <b-form-datepicker @context="onBirthdateContext" id="birthdate-datepicker" :placeholder="$t('NO')+' '+ $t('SELECTED') + ' ' + $t('DATE')" v-model="data.birthdate" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"></b-form-datepicker>
                         </div>
                     </div>
                 </div>
@@ -144,6 +144,7 @@ export default {
       tempDescription: '',
       tempBio: '',
       tempGoals: '',
+      tempBirthdate: '',
       feedback: {
         fullname: {
           state: null,
@@ -168,14 +169,27 @@ export default {
     setDescription (value) {
       var scope = this
       scope.tempDescription = value
+
+      scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
     },
     setBio (value) {
       var scope = this
       scope.tempBio = value
+
+      scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
     },
     setGoals (value) {
       var scope = this
       scope.tempGoals = value
+
+      scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+    },
+    onBirthdateContext: function (ctx) {
+      var scope = this
+      if (scope.tempBirthdate !== ctx.selectedYMD) {
+        scope.tempBirthdate = ctx.selectedYMD
+        scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+      }
     },
     displayImage: function () {
       var scope = this
@@ -275,6 +289,7 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
+              scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
               if (scope.data.uuid === null) {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
@@ -288,9 +303,35 @@ export default {
                 scope.$store.dispatch('updateCharacterList', response.data)
                 scope.$store.dispatch('changeTabTitle', { key: 'character-form-' + response.data.uuid, title: this.$t('EDIT') + ' - ' + response.data.fullname })
               }
+
+              scope.loadCharacter(response.data)
             })
           }
         })
+    },
+    loadCharacter (characterProp) {
+      var scope = this
+      setTimeout(function () {
+        let character = scope.$store.getters.findCharacter(characterProp.character)
+        scope.data.shortname = character.shortname
+        scope.data.fullname = character.fullname
+        scope.data.nickname = character.nickname
+        scope.data.occupation = character.occupation
+        scope.data.description = character.description
+        scope.data.bio = character.bio
+        scope.data.goals = character.goals
+        scope.data.birthdate = character.birthdate
+        scope.tempBirthdate = character.birthdate
+
+        scope.tempDescription = character.description
+        scope.tempBio = character.bio
+        scope.tempGoals = character.goals
+
+        if (character.picture) {
+          scope.$set(scope.data, 'picture', character.picture)
+          scope.picture_src = character.picture_src
+        }
+      }, 500)
     }
   },
   beforeMount () {
@@ -305,25 +346,7 @@ export default {
   mounted () {
     var scope = this
     if (scope.data.uuid) {
-      setTimeout(function () {
-        let character = scope.$store.getters.findCharacter(scope.properties.character)
-        scope.data.shortname = character.shortname
-        scope.data.fullname = character.fullname
-        scope.data.nickname = character.nickname
-        scope.data.occupation = character.occupation
-        scope.data.description = character.description
-        scope.data.bio = character.bio
-        scope.data.goals = character.goals
-        scope.data.birthdate = character.birthdate
-
-        scope.tempDescription = character.description
-        scope.tempBio = character.bio
-        scope.tempGoals = character.goals
-        if (character.picture) {
-          scope.$set(scope.data, 'picture', character.picture)
-          scope.picture_src = character.picture_src
-        }
-      }, 500)
+      scope.loadCharacter(scope.properties)
     }
 
     setTimeout(function () {

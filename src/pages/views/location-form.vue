@@ -37,7 +37,8 @@
                         <div class="form-group">
                             <input v-on:change="displayImage" ref="fileInput" type="file" class="single-picture-file" name="single-picture-file" accept=".png, .jpg, .jpeg">
                             <div @click="$refs.fileInput.click()" class="uploaded-file-preview">
-                                <div class="default-preview"><i class="fa fa-image"></i></div>
+                              <div v-if="data.picture_src"><img :src="data.picture_src"></div>
+                              <div v-else class="default-preview"><i class="fa fa-image"></i></div>
                             </div>
                         </div>
                     </div>
@@ -52,6 +53,7 @@
                                     :state="feedback.location.state"
                                     aria-describedby="input-live-help input-live-feedback"
                                     :placeholder="$tc('LOCATION', 1)"
+                                    @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
                                     trim
                                   ></b-form-input>
 
@@ -66,7 +68,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>{{$t('AKA')}}: </label>
-                                    <input v-model.trim="data.AKA" type="text" class="form-control" :placeholder="$t('AKA')">
+                                    <input @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)" v-model.trim="data.AKA" type="text" class="form-control" :placeholder="$t('AKA')">
                                 </div>
                             </div>
                         </div>
@@ -74,7 +76,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>{{$t('TAGS')}}: </label>
-                                    <input v-model="data.tags" type="text" class="form-control" :placeholder="$t('TAGS')">
+                                    <input @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)" v-model="data.tags" type="text" class="form-control" :placeholder="$t('TAGS')">
                                 </div>
                             </div>
                         </div>
@@ -111,6 +113,7 @@ export default {
         tags: '',
         description: ''
       },
+      picture_src: '',
       file: '',
       tempDescription: '',
       feedback: {
@@ -136,12 +139,12 @@ export default {
     // Required for geting value from TinyMCE content
     setDescription (value) {
       var scope = this
-
+      scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       scope.tempDescription = value
     },
     displayImage: function () {
       var scope = this
-
+      scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       let reader = new FileReader()
 
       scope.file = this.$refs.fileInput.files[0]
@@ -226,6 +229,7 @@ export default {
         .post('http://localhost:3000/locations', scope.data)
         .then(response => {
           if (response.data) {
+            console.log(response.data)
             window.swal.fire({
               position: 'center',
               icon: 'success',
@@ -233,12 +237,13 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
+              scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
               if (scope.data.uuid === null) {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
                 scope.$store.dispatch('updateLocationList', response.data)
-                scope.CHANGE_COMPONENT({tabKey: 'location-form-' + response.data.uuid, tabComponent: 'location-form', tabData: { book_id: response.data.book_id, location: response.data }, tabTitle: this.$t('EDIT') + ' - ' + response.data.location, tabIndex: scope.$store.getters.getActiveTab})
+                scope.CHANGE_COMPONENT({tabKey: 'location-form-' + response.data.uuid, tabComponent: 'location-form', tabData: { book: scope.book, location: response.data }, tabTitle: this.$t('EDIT') + ' - ' + response.data.location, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
@@ -246,31 +251,23 @@ export default {
                 scope.$store.dispatch('updateLocationList', response.data)
                 scope.$store.dispatch('changeTabTitle', { key: 'location-form-' + response.data.uuid, title: this.$t('EDIT') + ' - ' + response.data.location })
               }
+
+              scope.loadLocation(response.data)
             })
           }
         })
     },
-    loadLocation () {
+    loadLocation (locationProp) {
       var scope = this
-      scope.axios
-        .get('http://localhost:3000/locations/' + scope.data.uuid)
-        .then(response => {
-          let location = response.data
-          scope.data.location = location.location
-          scope.data.AKA = location.AKA
-          scope.data.tags = location.tags
-          scope.data.description = location.description
-
-          if (location.pictures) {
-            scope.$set(scope.data, 'pictures', location.pictures)
-
-            const image = new Image()
-            image.src = location.picture_src
-            image.setAttribute('width', '100%')
-
-            window.$('.uploaded-file-preview').html(image)
-          }
-        })
+      setTimeout(function () {
+        let location = scope.$store.getters.findLocation(locationProp)
+        scope.data.location = location.location
+        scope.data.AKA = location.AKA
+        scope.data.tags = location.tags
+        scope.data.description = location.description
+        scope.data.pictures = location.pictures
+        scope.picture_src = location.picture_src
+      }, 500)
     }
   },
   beforeMount () {
@@ -285,9 +282,9 @@ export default {
   mounted () {
     var scope = this
 
-    if (scope.data.id) {
+    if (scope.data.uuid) {
       window.$('.page-location-form .page-title h3').html('Update ' + scope.properties.location.location)
-      scope.loadLocation()
+      scope.loadLocation(scope.data)
     }
   }
 }
