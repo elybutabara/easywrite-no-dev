@@ -19,8 +19,8 @@
             <div class="col-md-6">
               <div class="form-group">
                 <div class="uploaded-file-preview">
-                  <div v-if="character.picture == false" class="default-preview"><i class="fa fa-image"></i></div>
-                  <div v-if="character.picture != false"><img :src="character.picture_src"></div>
+                  <div v-if="character.picture == null" class="default-preview"><i class="fa fa-image"></i></div>
+                  <div v-else><img :src="character.picture_src"></div>
                 </div>
               </div>
             </div>
