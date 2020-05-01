@@ -106,7 +106,11 @@
                   <div class="chapter-history-list" >
                     <div v-bind:key="history.uuid" v-for="history in chapter_history">
                       <div class="history-item" @dblclick="viewHistory(history)">
-                        <div class="text-right view-all"><em><span>{{ history.created_at }}</span></em></div>
+                        <div class="view-all">
+                          <span class="float-left">{{$t('WORD_COUNT')}}: {{ WORD_COUNT(history.content) }}</span>
+                          <em class="float-right"><span>{{ history.created_at }}</span></em>
+                        </div>
+                        <div class="clearfix"></div>
                         <div v-html="history.content" class="ellipsis-2"></div>
                       </div>
                     </div>
@@ -461,7 +465,7 @@ export default {
     .es-button-white { font-size:12px; color:#324553; padding:3px 15px; background:#fff; border:1px solid #506d84; border-radius:3px; }
 
     .chapter-history-items .note { position:relative; background:#fff; padding:10px; padding-right:15px; border-bottom:1px solid #e0e5ee; font-style:italic; }
-    .chapter-history-items .note .btn-close { cursor: pointer; }
+    .chapter-history-items .note .btn-close { position: absolute; cursor: pointer; top: 13px; right: 15px; }
 
     .chapter-history-items { position: absolute; top: 0px; right: 0px; width: 280px; height: calc(100% - 1rem); background: #f5f8fa; border: 1px solid #e0e5ee; z-index: 10; }
     .chapter-history-items .chapter-history-list {overflow-y: auto; height: calc(100% - 43px); }
