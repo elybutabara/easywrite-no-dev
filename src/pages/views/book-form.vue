@@ -24,7 +24,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label>{{$t('TITLE')}}: </label>
-                            <input v-model="data.title" type="text" class="form-control" :placeholder= "$t('TITLE')">
+                            <input @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)" v-model="data.title" type="text" class="form-control" :placeholder= "$t('TITLE')">
                         </div>
                     </div>
                 </div>
@@ -80,16 +80,19 @@ export default {
     // Required for geting value from TinyMCE content
     setAboutValue (value) {
       var scope = this
+      scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       scope.tempAbout = value
     },
     removeGenre ({uuid}) {
       var scope = this
+      scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       if (scope.data.book_genre_collection.find(x => (x.genre_id === uuid && x.deleted_at === undefined)) !== undefined) {
         scope.data.book_genre_collection.find(x => x.genre_id === uuid).deleted_at = window.moment().format('YYYY-MM-DD hh:mm:ss').toString()
       }
     },
     selectGenre ({uuid}) {
       var scope = this
+      scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       if (scope.data.book_genre_collection.find(x => (x.genre_id === uuid && x.deleted_at !== undefined)) !== undefined) {
         delete scope.data.book_genre_collection.find(x => x.genre_id === uuid).deleted_at
       }

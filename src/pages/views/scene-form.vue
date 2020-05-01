@@ -38,6 +38,7 @@
                   :state="feedback.title.state"
                   aria-describedby="input-live-help input-live-feedback"
                   :placeholder="$t('TITLE')"
+                  @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
                   trim
                 ></b-form-input>
 
@@ -48,7 +49,7 @@
               </b-col>
               <b-col>
                 <label>{{$tc('CHAPTER',1)}}: </label>
-                <multiselect v-model="selected_chapter" :options="options_chapters" :placeholder="$t('SELECT') + ' ' + $tc('CHAPTER',1)" label="title" track-by="uuid" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+                <multiselect v-model="selected_chapter" :options="options_chapters"  @select="selectMultiselect" :placeholder="$t('SELECT') + ' ' + $tc('CHAPTER',1)" label="title" track-by="uuid" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
               </b-col>
             </b-row>
             <b-row class="margin-bottom-1rem">
@@ -60,6 +61,7 @@
                   :state="feedback.short_description.state"
                   aria-describedby="input-live-help input-live-feedback"
                   :placeholder="$t('SHORT_DESCRIPTION')"
+                  @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
                   trim
                 ></b-form-input>
 
@@ -100,7 +102,7 @@
                     <div v-bind:key="history.uuid" v-for="history in scene_history">
                       <div class="history-item" @dblclick="viewHistory(history)">
                         <div class="text-right view-all"><em><span>{{ history.created_at }}</span></em></div>
-                        <div class="ellipsis-2">{{ history.content }}</div>
+                        <div v-html="history.content" class="ellipsis-2"></div>
                       </div>
                     </div>
                   </div>
@@ -121,11 +123,11 @@
             <b-row class="margin-bottom-1rem">
               <b-col>
                 <label>{{$t('TYPE_OF_SCENE')}}: </label>
-                <multiselect v-model="selected_typeofscene" :options="options_typeofscene" placeholder="Select Type of Scene" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+                <multiselect v-model="selected_typeofscene" :options="options_typeofscene" @select="selectMultiselect" placeholder="Select Type of Scene" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
               </b-col>
               <b-col>
                 <label>{{$t('IMPORTANCE')}}: </label>
-                <multiselect v-model="selected_importance" :options="options_importance" placeholder="Select Importance" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+                <multiselect v-model="selected_importance" :options="options_importance" @select="selectMultiselect" placeholder="Select Importance" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
               </b-col>
             </b-row>
             <b-row class="margin-bottom-1rem">
@@ -135,7 +137,7 @@
               </b-col>
               <b-col>
                 <label>{{$t('STATUS')}}: </label>
-                <multiselect v-model="selected_status" :options="options_status" placeholder="Select Status" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+                <multiselect v-model="selected_status" :options="options_status" @select="selectMultiselect" placeholder="Select Status" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
               </b-col>
             </b-row>
           </div>
@@ -167,23 +169,23 @@
             <b-row class="margin-bottom-1rem">
               <b-col cols="6">
                 <label>{{$t('TYPE')}}: </label>
-                <multiselect v-model="selected_weather_type" :options="options_weather_type" placeholder="Select Status" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+                <multiselect v-model="selected_weather_type" :options="options_weather_type" @select="selectMultiselect" placeholder="Select Status" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
               </b-col>
             </b-row>
             <b-row class="margin-bottom-1rem">
               <b-col>
                 <label>{{$t('SCENE_STARTS')}}: </label>
-                <b-form-datepicker id="date_starts-datepicker" v-model="data.date_starts" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }" :placeholder="$t('SELECT') + ' ' +$t('SCENE_STARTS')"></b-form-datepicker>
+                <b-form-datepicker id="date_starts-datepicker" @context="onSceneStartContext" v-model="data.date_starts" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }" :placeholder="$t('SELECT') + ' ' +$t('SCENE_STARTS')"></b-form-datepicker>
               </b-col>
               <b-col>
                 <label>{{$t('SCENE_ENDS')}}: </label>
-                <b-form-datepicker id="date_ends-datepicker" v-model="data.date_ends" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }" :placeholder="$t('SELECT') + ' ' +$t('SCENE_ENDS')"></b-form-datepicker>
+                <b-form-datepicker id="date_ends-datepicker" @context="onSceneEndContext" v-model="data.date_ends" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }" :placeholder="$t('SELECT') + ' ' +$t('SCENE_ENDS')"></b-form-datepicker>
               </b-col>
             </b-row>
             <b-row class="margin-bottom-1rem">
               <b-col cols="6">
                 <label>{{$t('POINT_OF_VIEW')}}: </label>
-                <multiselect v-model="selected_character_id_vp" :options="options_character_id_vp" :placeholder="$t('SELECT') + ' ' +$t('POINT_OF_VIEW')" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true"></multiselect>
+                <multiselect v-model="selected_character_id_vp" :options="options_character_id_vp" @select="selectMultiselect" :placeholder="$t('SELECT') + ' ' +$t('POINT_OF_VIEW')" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true"></multiselect>
               </b-col>
             </b-row>
             <b-row class="margin-bottom-1rem">
@@ -207,7 +209,7 @@
           </div>
           <div class="content ">
             <p><strong>{{$t('CLICK')}}</strong> {{$tc('ITEM', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}</p>
-              <div @click="toggleChild('items',item)" v-bind:class="{'selected' : selected_items.includes(item.uuid) }" class="es-toggle-select" v-bind:key="item.id" v-for="item in GET_ITEMS_BY_BOOK(properties.book_id)">
+              <div @click="toggleChild('items',item)" v-bind:class="{'selected' : selected_items.includes(item.uuid) }" class="es-toggle-select" v-bind:key="item.id" v-for="item in GET_ITEMS_BY_BOOK(book.uuid)">
                 <i v-if="selected_items.includes(item.uuid)" class="fas fa-check"></i> &nbsp;{{ item.itemname }}
               </div>
             </div>
@@ -222,7 +224,7 @@
             </div>
             <div class="content ">
               <p><strong>{{$t('CLICK')}}</strong> {{$tc('CHARACTER', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}</p>
-              <div @click="toggleChild('characters',character)" v-bind:class="{'selected' : selected_characters.includes(character.uuid) }" class="es-toggle-select" v-bind:key="character.id" v-for="character in GET_CHARACTERS_BY_BOOK(properties.book_id)">
+              <div @click="toggleChild('characters',character)" v-bind:class="{'selected' : selected_characters.includes(character.uuid) }" class="es-toggle-select" v-bind:key="character.id" v-for="character in GET_CHARACTERS_BY_BOOK(book.uuid)">
                 <i v-if="selected_characters.includes(character.uuid)" class="fas fa-check"></i> &nbsp;{{ character.fullname }}
               </div>
             </div>
@@ -237,7 +239,7 @@
             </div>
             <div class="content ">
               <p><strong>{{$t('CLICK')}}</strong> {{$tc('LOCATION', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}</p>
-              <div @click="toggleChild('locations',location)" v-bind:class="{'selected' : selected_locations.includes(location.uuid) }" class="es-toggle-select" v-bind:key="location.id" v-for="location in GET_LOCATIONS_BY_BOOK(properties.book_id)">
+              <div @click="toggleChild('locations',location)" v-bind:class="{'selected' : selected_locations.includes(location.uuid) }" class="es-toggle-select" v-bind:key="location.id" v-for="location in GET_LOCATIONS_BY_BOOK(book.uuid)">
                 <i v-if="selected_locations.includes(location.uuid)" class="fas fa-check"></i> &nbsp;{{ location.location }}
               </div>
             </div>
@@ -352,6 +354,8 @@ export default {
       tempSceneVersionContent: '',
       tempSceneNotes: '',
       tempViewpointDescription: '',
+      tempSceneStart: '',
+      tempSceneEnd: '',
       accordion: {
         'scene-details': 'active',
         'content': 'inactive',
@@ -426,6 +430,47 @@ export default {
 
       scope.historyContent = history.content
     },
+    selectMultiselect () {
+      var scope = this
+
+      if ((scope.data.chapter_id && scope.selected_chapter) && scope.selected_chapter.uuid !== scope.data.chapter_id) {
+        scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+      }
+
+      if ((scope.data.typeofscene && scope.selected_typeofscene) && scope.data.typeofscene !== scope.selected_typeofscene.value) {
+        scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+      }
+
+      if ((scope.data.importance && scope.selected_importance) && scope.data.importance !== scope.selected_importance.value) {
+        scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+      }
+
+      if ((scope.data.status && scope.selected_status) && scope.data.status !== scope.selected_status.value) {
+        scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+      }
+
+      if ((scope.data.weather_type && scope.selected_weather_type) && scope.data.weather_type !== scope.selected_weather_type.value) {
+        scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+      }
+
+      if ((scope.data.character_id_vp && scope.selected_character_id_vp) && scope.data.character_id_vp !== scope.selected_character_id_vp.value) {
+        scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+      }
+    },
+    onSceneStartContext: function (ctx) {
+      var scope = this
+      if (scope.tempSceneStart !== ctx.selectedYMD) {
+        scope.tempSceneStart = ctx.selectedYMD
+        scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+      }
+    },
+    onSceneEndContext: function (ctx) {
+      var scope = this
+      if (scope.tempSceneEnd !== ctx.selectedYMD) {
+        scope.tempSceneEnd = ctx.selectedYMD
+        scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+      }
+    },
     useHistoryCont () {
       var scope = this
 
@@ -440,6 +485,7 @@ export default {
         cancelButtonText: this.$t('CANCEL')
       }).then((result) => {
         if (result.value) {
+          scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
           scope.view_history = false
           scope.show_history = false
           scope.data.scene_version.content = scope.historyContent
@@ -470,6 +516,7 @@ export default {
     },
     toggleChild: function (model, data) {
       var scope = this
+      scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       if (model === 'items' && scope.selected_items.includes(data.uuid)) {
         for (let i = 0; i < scope.selected_items.length; i++) {
           if (scope.selected_items[i] === data.uuid) {
@@ -508,17 +555,21 @@ export default {
     // Required for geting value from TinyMCE content
     setContent (value) {
       var scope = this
+      scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
 
       // scope.data.scene_version.content = value
       scope.tempSceneVersionContent = value
     },
     setNotes (value) {
       var scope = this
+      scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
 
       scope.tempSceneNotes = value
     },
     setViewpointDescription (value) {
       var scope = this
+      scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+
       scope.tempViewpointDescription = value
     },
     setAll (obj, val) {
@@ -582,13 +633,14 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
+              scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
               // scope.$parent.changeComponent('scene-details', { scene: response.data })
               if (scope.data.uuid === null) {
                 scope.$store.dispatch('updateSceneList', response.data)
                 // refresh vuex to update all related records
                 scope.$store.dispatch('loadVersionsByScene', response.data)
                 scope.$store.dispatch('loadSceneHistory', response.data.uuid)
-                scope.CHANGE_COMPONENT({tabKey: 'scene-details-' + response.data.uuid, tabComponent: 'scene-details', tabData: { book: scope.book, scene: response.data }, tabTitle: scope.$t('VIEW') + ' - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
+                scope.CHANGE_COMPONENT({tabKey: 'scene-form-' + response.data.uuid, tabComponent: 'scene-form', tabData: { book: scope.book, scene: response.data }, tabTitle: scope.$t('EDIT') + ' - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 // refresh vuex to update all related records
                 scope.$store.dispatch('updateSceneList', response.data)
@@ -689,6 +741,9 @@ export default {
         scope.data.date_starts = scene.date_starts
         scope.data.date_ends = scene.date_ends
 
+        scope.tempSceneStart = scene.date_starts
+        scope.tempSceneEnd = scene.date_ends
+
         // chapters
         scope.options_chapters = chapters
 
@@ -771,7 +826,7 @@ export default {
       scope.loadScene(scope.properties.scene)
     } else {
       setTimeout(function () {
-        scope.chapters = scope.$store.getters.getChaptersByBook(scope.properties.book.uuid)
+        scope.options_chapters = scope.$store.getters.getChaptersByBook(scope.properties.book.uuid)
 
         var bookCharacters = scope.$store.getters.getCharactersByBook(scope.properties.book.uuid)
         console.log(bookCharacters)

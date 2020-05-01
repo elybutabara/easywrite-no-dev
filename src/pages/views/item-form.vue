@@ -35,7 +35,7 @@
                         <div class="form-group">
                             <input v-on:change="displayImage" ref="fileInput" type="file" class="single-picture-file" name="single-picture-file" accept=".png, .jpg, .jpeg">
                             <div @click="$refs.fileInput.click()" class="uploaded-file-preview">
-                              <div v-if="data.picture_src"><img :src="data.picture_src"></div>
+                              <div v-if="picture_src"><img :src="picture_src"></div>
                               <div v-else class="default-preview"><i class="fa fa-image"></i></div>
                             </div>
                         </div>
@@ -114,6 +114,7 @@ export default {
         tags: '',
         description: ''
       },
+      picture_src: '',
       file: '',
       tempDescription: '',
       feedback: {
@@ -269,16 +270,8 @@ export default {
         scope.data.AKA = item.AKA
         scope.data.tags = item.tags
         scope.data.description = item.description
-
-        if (item.pictures) {
-          scope.$set(scope.data, 'pictures', item.pictures)
-
-          const image = new Image()
-          image.src = item.picture_src
-          image.setAttribute('width', '100%')
-
-          window.$('.uploaded-file-preview').html(image)
-        }
+        scope.data.pictures = item.pictures
+        scope.picture_src = item.picture_src
       }, 500)
     }
   },

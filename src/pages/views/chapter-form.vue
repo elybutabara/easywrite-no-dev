@@ -107,7 +107,7 @@
                     <div v-bind:key="history.uuid" v-for="history in chapter_history">
                       <div class="history-item" @dblclick="viewHistory(history)">
                         <div class="text-right view-all"><em><span>{{ history.created_at }}</span></em></div>
-                        <div class="ellipsis-2">{{ history.content }}</div>
+                        <div v-html="history.content" class="ellipsis-2"></div>
                       </div>
                     </div>
                   </div>
@@ -246,6 +246,7 @@ export default {
         cancelButtonText: this.$t('CANCEL')
       }).then((result) => {
         if (result.value) {
+          scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
           scope.view_history = false
           scope.show_history = false
           scope.data.chapter_version.content = scope.historyContent

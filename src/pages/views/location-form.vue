@@ -113,6 +113,7 @@ export default {
         tags: '',
         description: ''
       },
+      picture_src: '',
       file: '',
       tempDescription: '',
       feedback: {
@@ -264,16 +265,8 @@ export default {
         scope.data.AKA = location.AKA
         scope.data.tags = location.tags
         scope.data.description = location.description
-
-        if (location.pictures) {
-          scope.$set(scope.data, 'pictures', location.pictures)
-
-          const image = new Image()
-          image.src = location.picture_src
-          image.setAttribute('width', '100%')
-
-          window.$('.uploaded-file-preview').html(image)
-        }
+        scope.data.pictures = location.pictures
+        scope.picture_src = location.picture_src
       }, 500)
     }
   },
