@@ -37,7 +37,7 @@
                         <div class="form-group">
                             <input v-on:change="displayImage" ref="fileInput" type="file" class="single-picture-file" name="single-picture-file" accept=".png, .jpg, .jpeg">
                             <div @click="$refs.fileInput.click()" class="uploaded-file-preview">
-                              <div v-if="data.picture_src"><img :src="data.picture_src"></div>
+                              <div v-if="picture_src"><img :src="picture_src"></div>
                               <div v-else class="default-preview"><i class="fa fa-image"></i></div>
                             </div>
                         </div>
