@@ -8,9 +8,9 @@
                 <div class="es-col " v-bind:key="scene_location.id" v-for="scene_location in $store.getters.getSceneLocations(scene.uuid)">
                     <div class="es-card">
                         <div class="es-card-content">
-                            <p class="title">{{ scene_location.location.location || 'Untitled' }}</p>
-                            <i class="description" v-if="scene_location.location.description !== '' && scene_location.location.description !== null" v-html="scene_location.location.description"></i>
-                            <i class="description" v-else>{{$t('NO_DESCRIPTION')}}</i>
+                            <p class="title ellipsis-2">{{ scene_location.location.location || 'Untitled' }}</p>
+                            <i class="description ellipsis-2" v-if="scene_location.location.description !== '' && scene_location.location.description !== null" v-html="scene_location.location.description"></i>
+                            <i class="description ellipsis-2" v-else>{{$t('NO_DESCRIPTION')}}</i>
                         </div>
                         <div class="es-card-footer">
                             <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-details-' + scene_location.location.uuid, tabComponent: 'location-details',  tabData: { book: book, location: scene_location.location }, tabTitle: scene_location.location.location})"><i class="lar la-eye"></i> {{$t('VIEW')}}</button>

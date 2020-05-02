@@ -8,7 +8,7 @@
             </span>
         </div>
         <ul class="level-3">
-            <li v-bind:key="location.id" v-for="location in locations">
+            <li v-bind:key="location.id" v-for="location in locations" class="ellipsis-2">
                 <div @click="CHANGE_COMPONENT({tabKey: 'location-details-' + location.uuid, tabComponent: 'location-details',  tabData: { book: book, location: location }, tabTitle: location.location})" class="label"><span><img  src="@/assets/img/icons/location.svg"> {{ location.location || 'Untitled' }}</span></div>
             </li>
         </ul>

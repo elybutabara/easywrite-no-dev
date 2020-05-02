@@ -768,7 +768,9 @@ export default {
         scope.selected_weather_type = {text: scene.weather_type, value: scene.weather_type}
 
         // chapter
-        scope.selected_chapter = chapter
+        if (chapter) {
+          scope.selected_chapter = chapter
+        }
 
         // version
         scope.data.scene_version.id = version.id
