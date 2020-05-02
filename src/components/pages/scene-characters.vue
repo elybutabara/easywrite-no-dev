@@ -13,10 +13,9 @@
                             <i class="description" v-else>{{$t('NO_DESCRIPTION')}}</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-details-'+ scene_character.uuiid , tabComponent: 'character-details',  tabData: {  book_id: scene.book_id, character: scene_character.character }, tabTitle: scene_character.character.fullname})"><i class="lar la-eye"></i>  {{$t('VIEW')}}</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-form-' + scene_character.character.uuid, tabComponent: 'character-form',  tabData: { book_id: scene.book_id, character: scene_character.character }, tabTitle: 'Edit - ' + scene_character.character.fullname, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT')}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-details-'+ scene_character.uuiid , tabComponent: 'character-details',  tabData: {  book: book, character: scene_character.character }, tabTitle: scene_character.character.fullname})"><i class="lar la-eye"></i>  {{$t('VIEW')}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-form-' + scene_character.character.uuid, tabComponent: 'character-form',  tabData: { book: book, character: scene_character.character }, tabTitle: 'Edit - ' + scene_character.character.fullname, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT')}}</button>
                             <button class="btn-delete" @click="deleteSceneCharacter(scene_character)"><i class="las la-trash-alt"></i> {{$t('DELETE')}}</button>
-
                         </div>
                     </div>
                 </div>
@@ -56,6 +55,9 @@ export default {
     TinyMCE
   },
   computed: {
+    book: function () {
+      return this.properties.book
+    },
     scene_characters: function () {
       var scope = this
       return this.$store.getters.getSceneCharacters(scope.scene.uuid)

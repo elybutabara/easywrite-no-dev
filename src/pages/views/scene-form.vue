@@ -49,7 +49,7 @@
               </b-col>
               <b-col>
                 <label>{{$tc('CHAPTER',1)}}: </label>
-                <multiselect v-model="selected_chapter" :options="options_chapters"  @select="selectMultiselect" :placeholder="$t('SELECT') + ' ' + $tc('CHAPTER',1)" label="title" track-by="uuid" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+                <multiselect class="custom-multiselect" :preselectFirst="true" :allow-empty="false" v-model="selected_chapter" :options="options_chapters"  @select="selectMultiselect" :placeholder="$t('SELECT') + ' ' + $tc('CHAPTER',1)" label="title" track-by="uuid" :deselectLabel="$t('SELECTED')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
               </b-col>
             </b-row>
             <b-row class="margin-bottom-1rem">
@@ -127,11 +127,11 @@
             <b-row class="margin-bottom-1rem">
               <b-col>
                 <label>{{$t('TYPE_OF_SCENE')}}: </label>
-                <multiselect v-model="selected_typeofscene" :options="options_typeofscene" @select="selectMultiselect" placeholder="Select Type of Scene" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+                <multiselect class="custom-multiselect" :preselectFirst="true" :allow-empty="false" v-model="selected_typeofscene" :options="options_typeofscene" @select="selectMultiselect" :placeholder="$t('SELECT_TYPE_OF_SCENE')" label="text" track-by="value" :deselectLabel="$t('SELECTED')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
               </b-col>
               <b-col>
                 <label>{{$t('IMPORTANCE')}}: </label>
-                <multiselect v-model="selected_importance" :options="options_importance" @select="selectMultiselect" placeholder="Select Importance" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+                <multiselect class="custom-multiselect" :preselectFirst="true" :allow-empty="false" v-model="selected_importance" :options="options_importance" @select="selectMultiselect" placeholder="Select Importance" label="text" track-by="value" :deselectLabel="$t('SELECTED')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
               </b-col>
             </b-row>
             <b-row class="margin-bottom-1rem">
@@ -141,7 +141,7 @@
               </b-col>
               <b-col>
                 <label>{{$t('STATUS')}}: </label>
-                <multiselect v-model="selected_status" :options="options_status" @select="selectMultiselect" placeholder="Select Status" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+                <multiselect class="custom-multiselect" :preselectFirst="true" :allow-empty="false"  v-model="selected_status" :options="options_status" @select="selectMultiselect" placeholder="Select Status" label="text" track-by="value" :deselectLabel="$t('SELECTED')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
               </b-col>
             </b-row>
           </div>
@@ -173,7 +173,7 @@
             <b-row class="margin-bottom-1rem">
               <b-col cols="6">
                 <label>{{$t('TYPE')}}: </label>
-                <multiselect v-model="selected_weather_type" :options="options_weather_type" @select="selectMultiselect" placeholder="Select Status" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+                <multiselect class="custom-multiselect" :preselectFirst="true" :allow-empty="false"  v-model="selected_weather_type" :options="options_weather_type" @select="selectMultiselect" placeholder="Select Status" label="text" track-by="value" :deselectLabel="$t('SELECTED')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
               </b-col>
             </b-row>
             <b-row class="margin-bottom-1rem">
@@ -189,7 +189,7 @@
             <b-row class="margin-bottom-1rem">
               <b-col cols="6">
                 <label>{{$t('POINT_OF_VIEW')}}: </label>
-                <multiselect v-model="selected_character_id_vp" :options="options_character_id_vp" @select="selectMultiselect" :placeholder="$t('SELECT') + ' ' +$t('POINT_OF_VIEW')" label="text" track-by="value" :preselectFirst="true" :allowEmpty="false" :hide-selected="true"></multiselect>
+                <multiselect class="custom-multiselect" :preselectFirst="true" :allow-empty="false"   v-model="selected_character_id_vp" :options="options_character_id_vp" @select="selectMultiselect" :placeholder="$t('SELECT') + ' ' +$t('POINT_OF_VIEW')" label="text" track-by="value" :deselectLabel="$t('SELECTED')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
               </b-col>
             </b-row>
             <b-row class="margin-bottom-1rem">
@@ -325,7 +325,7 @@ export default {
       selected_weather_type: null,
       selected_character_id_vp: {text: 'Author', value: '-1'},
       // Options for multiselect
-      options_chapters: [],
+      options_chapters: [{title: 'Other Scene', uuid: '-1'}],
       options_typeofscene: [
         {text: 'Action', value: 'Action'},
         {text: 'Reaction', value: 'Reaction'}
@@ -613,7 +613,7 @@ export default {
       scope.data.scene_version.content = scope.tempSceneVersionContent
       scope.data.notes = scope.tempSceneNotes
       scope.data.viewpoint_description = scope.tempViewpointDescription
-      scope.data.chapter_id = (scope.selected_chapter !== 'undefined' && scope.selected_chapter !== null) ? scope.selected_chapter.uuid : null
+      scope.data.chapter_id = (scope.selected_chapter !== 'undefined' && scope.selected_chapter !== null && scope.selected_chapter.uuid !== '-1') ? scope.selected_chapter.uuid : null
       scope.data.typeofscene = scope.selected_typeofscene.value
       scope.data.importance = scope.selected_importance.value
       scope.data.status = scope.selected_status.value
@@ -741,7 +741,6 @@ export default {
         scope.data.status = scene.status
         scope.data.weather_type = scene.weather_type
         scope.data.character_id_vp = scene.character_id_vp
-        scope.data.character_id_vp = scene.character_id_vp
         scope.data.date_starts = scene.date_starts
         scope.data.date_ends = scene.date_ends
 
@@ -749,7 +748,9 @@ export default {
         scope.tempSceneEnd = scene.date_ends
 
         // chapters
-        scope.options_chapters = chapters
+        chapters.forEach(function (row, index) {
+          scope.options_chapters.push(row)
+        })
 
         // characters
         for (let i = 0; i < characters.length; i++) {
@@ -760,6 +761,11 @@ export default {
             scope.selected_character_id_vp = { text: character.fullname, value: character.uuid }
           }
         }
+
+        scope.selected_typeofscene = {text: scene.typeofscene, value: scene.typeofscene}
+        scope.selected_importance = {text: scene.importance, value: scene.importance}
+        scope.selected_status = {text: scene.status, value: scene.status}
+        scope.selected_weather_type = {text: scene.weather_type, value: scene.weather_type}
 
         // chapter
         scope.selected_chapter = chapter
@@ -830,7 +836,11 @@ export default {
       scope.loadScene(scope.properties.scene)
     } else {
       setTimeout(function () {
-        scope.options_chapters = scope.$store.getters.getChaptersByBook(scope.properties.book.uuid)
+        let chapters = scope.$store.getters.getChaptersByBook(scope.properties.book.uuid)
+        chapters.forEach(function (row, index) {
+          scope.options_chapters.push(row)
+        })
+        // scope.options_chapters
 
         var bookCharacters = scope.$store.getters.getCharactersByBook(scope.properties.book.uuid)
         console.log(bookCharacters)

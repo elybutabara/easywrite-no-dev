@@ -13,8 +13,8 @@
                             <i class="description" v-else>{{$t('NO_DESCRIPTION')}}</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-details-' + scene_location.location.uuid, tabComponent: 'location-details',  tabData: { book_id: scene.book_id, location: scene_location.location }, tabTitle: scene_location.location.location})"><i class="lar la-eye"></i> {{$t('VIEW')}}</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + scene_location.location.uuid, tabComponent: 'location-form',  tabData: { book_id: properties.uuid, location: scene_location.location }, tabTitle: 'Edit - ' + scene_location.location.location, newTab: true})"><i class="las la-pencil-alt"></i>  {{$t('EDIT')}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-details-' + scene_location.location.uuid, tabComponent: 'location-details',  tabData: { book: book, location: scene_location.location }, tabTitle: scene_location.location.location})"><i class="lar la-eye"></i> {{$t('VIEW')}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + scene_location.location.uuid, tabComponent: 'location-form', tabData: { book: book, location: scene_location.location }, tabTitle: $t('EDIT')+ ' - ' + scene_location.location.location, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT').toUpperCase()}}</button>
                             <button class="btn-delete"  @click="deleteSceneLocation(scene_location)"><i class="las la-trash-alt"></i> {{$t('DELETE')}}</button>
                         </div>
                     </div>
@@ -55,6 +55,9 @@ export default {
     TinyMCE
   },
   computed: {
+    book: function () {
+      return this.properties.book
+    }
   },
   methods: {
     isIncluded: function (location) {

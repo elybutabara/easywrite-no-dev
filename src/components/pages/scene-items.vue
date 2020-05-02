@@ -13,8 +13,8 @@
                             <i class="description" v-else>{{$t('NO_DESCRIPTION')}}</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-details-' + scene_item.item.uuid, tabComponent: 'item-details',  tabData: {  book_id: scene.book_id, item: scene_item.item }, tabTitle: scene_item.item.itemname})"><i class="lar la-eye"></i> {{$t('VIEW')}}</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + scene_item.item.uuid, tabComponent: 'item-form',  tabData: { book_id: scene.book_id, item: scene_item.item }, tabTitle: scene_item.item.itemname, newTab: true})"><i class="las la-pencil-alt"></i>  {{$t('EDIT')}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-details-' + scene_item.item.uuid, tabComponent: 'item-details',  tabData: {  book: book, item: scene_item.item }, tabTitle: scene_item.item.itemname})"><i class="lar la-eye"></i> {{$t('VIEW')}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + scene_item.item.uuid, tabComponent: 'item-form',  tabData: { book: book, item: scene_item.item }, tabTitle: scene_item.item.itemname, newTab: true})"><i class="las la-pencil-alt"></i>  {{$t('EDIT')}}</button>
                             <button class="btn-delete" @click="deleteSceneItem(scene_item)"><i class="las la-trash-alt"></i> {{$t('DELETE')}}</button>
                         </div>
                     </div>
@@ -55,6 +55,9 @@ export default {
     TinyMCE
   },
   computed: {
+    book: function () {
+      return this.properties.book
+    }
   },
   methods: {
     isIncluded: function (item) {

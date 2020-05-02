@@ -259,3 +259,12 @@ ul { margin-left:0px; list-style:none;  }
     .es-row .es-col { width:33.33%; padding:10px; }
 }
 
+.custom-multiselect .multiselect__option--selected.multiselect__option--highlight {
+  background: #f3f3f3!important;
+  color: #35495e!important;
+}
+
+.custom-multiselect .multiselect__option--selected.multiselect__option--highlight:after {
+  background: #f3f3f3!important;
+  color: silver!important;
+}

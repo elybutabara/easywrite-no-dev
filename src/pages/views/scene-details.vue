@@ -50,13 +50,13 @@
         <div v-html="getSceneContent" class="description" ></div>
     </div>
     <div v-if="tab.active === 'locations'"  class="es-scene-details-tab-content no-padding">
-        <scene-locations :properties="{ scene: page.data.scene }"></scene-locations>
+        <scene-locations :properties="{ book: book, scene: page.data.scene }"></scene-locations>
     </div>
     <div v-if="tab.active === 'items'"  class="es-scene-details-tab-content no-padding">
-        <scene-items :properties="{ scene: page.data.scene }"></scene-items>
+        <scene-items :properties="{ book: book, scene: page.data.scene }"></scene-items>
     </div>
     <div v-if="tab.active === 'characters'"  class="es-scene-details-tab-content no-padding">
-        <scene-characters :properties="{ scene: page.data.scene }"></scene-characters>
+        <scene-characters :properties="{ book: book, scene: page.data.scene }"></scene-characters>
     </div>
     <div v-if="tab.active === 'versions'"  class="es-scene-details-tab-content">
         <scene-versions :properties="{ scene: page.data.scene }"></scene-versions>
