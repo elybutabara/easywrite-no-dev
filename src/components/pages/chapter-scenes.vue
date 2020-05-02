@@ -14,7 +14,7 @@
                         <button class="btn-circle" @click="deleteScene(scene)"><i class="las la-trash-alt"></i></button>
                         <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + scene.uuid, tabComponent: 'scene-details',  tabData: { book: book, scene: scene, chapter: chapter}, tabTitle: scene.title, newTab: true })"><i class="lar la-eye"></i></button>
                       </div>
-                        <p class="title">{{ scene.title || 'Untitled' }}</p>
+                        <p class="title ellipsis-2">{{ scene.title || 'Untitled' }}</p>
                         <i class="description ellipsis-2">{{ scene.short_description || $t('NO_SHORT_DESCRIPTION') + '...'  }}</i>
                     </div>
                     <div class="es-card-footer">

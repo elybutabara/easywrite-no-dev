@@ -26,7 +26,7 @@
                         <button class="btn-circle" @click="deleteChapter(chapter)"><i class="las la-trash-alt"></i></button>
                         <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + chapter.uuid, tabComponent: 'chapter-details',  tabData: { book: book, chapter: chapter }, tabTitle: $t('VIEW')+ ' - ' + chapter.title})"><i class="lar la-eye"></i></button>
                     </div>
-                    <p class="title">{{ displayTitle(chapter.title) }}</p>
+                    <p class="title ellipsis-2">{{ displayTitle(chapter.title) }}</p>
                     <i class="description ellipsis-2">{{ chapter.short_description || $t('NO_SHORT_DESCRIPTION') + '...' }}</i>
                 </div>
                 <div class="es-card-footer">

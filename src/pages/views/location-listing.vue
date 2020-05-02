@@ -24,8 +24,8 @@
                 <div class="es-col fadeIn animated" v-for="location in locations" v-bind:key="location.id">
                     <div class="es-card">
                         <div class="es-card-content">
-                            <p class="title">{{ location.location || 'Untitled' }}</p>
-                            <i class="description" v-if="location.description !== '' && location.description !== null" v-html="location.description"></i>
+                            <p class="title ellipsis-2">{{ location.location || 'Untitled' }}</p>
+                            <i class="description ellipsis-2" v-if="location.description !== '' && location.description !== null" v-html="location.description"></i>
                             <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}...</i>
                         </div>
                         <div class="es-card-footer">

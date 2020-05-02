@@ -25,7 +25,7 @@
                 <div class="es-col fadeIn animated" v-for="character in characters" v-bind:key="character.id">
                     <div class="es-card">
                         <div class="es-card-content">
-                            <p class="title">{{ character.fullname || 'Untitled' }}</p>
+                            <p class="title ellipsis-2">{{ character.fullname || 'Untitled' }}</p>
                             <i class="description ellipsis-2" v-if="character.description !== '' && character.description !== null" v-html="character.description"></i>
                             <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}...</i>
                         </div>
