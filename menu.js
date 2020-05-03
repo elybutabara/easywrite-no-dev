@@ -1,14 +1,39 @@
 'use strict'
 let mainWindow
 const { Menu } = require('electron');
+const path = require('path');
 
 // const {ipcRenderer} = window.require('electron')
 let tray = null
 // Create menu templete
 const mainMenuTemplate = [
   {
+    label:'Dashboard',
+    icon: path.resolve('src/assets/img/easywrite-new.ico'),
+    accelerator: "CmdOrCtrl+D",
+    click: function (menuItem, currentWindow) {
+      mainWindow.webContents.send('GO_TO_DASHBOARD')
+    }
+  },
+  {
     label:'File',
     submenu:[
+      { 
+        label: "New Book", 
+        accelerator: "CmdOrCtrl+B", 
+        click: function (menuItem, currentWindow) {
+          mainWindow.webContents.send('NEW_BOOK')
+        }
+      },
+      { type: "separator" },
+      { 
+        label: "Sync Data", 
+        accelerator: "CmdOrCtrl+Alt+S", 
+        click: function (menuItem, currentWindow) {
+          mainWindow.webContents.send('SYNC_DATA')
+        }
+      },
+      { type: "separator" },
       { label: "Exit", role: 'close'},
     ]
   },

@@ -159,6 +159,18 @@ export default {
     setTimeout(function () {
       scope.ready = true
     }, 1000)
+
+    ipcRenderer.on('GO_TO_DASHBOARD', function (event, data) {
+      scope.CHANGE_COMPONENT({tabKey: 'dashboard', tabComponent: 'dashboard', tabData: null, tabTitle: scope.$t('DASHBOARD')})
+    })
+
+    ipcRenderer.on('NEW_BOOK', function (event, data) {
+      scope.CHANGE_COMPONENT({tabKey: 'book-form', tabComponent: 'book-form', tabData: null, tabTitle: scope.$t('NEW_BOOK'), newTab: true})
+    })
+
+    ipcRenderer.on('SYNC_DATA', function (event, data) {
+      scope.CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing', tabData: null, tabTitle: scope.$t('SYNC_DATA'), newTab: true})
+    })
   }
 }
 
