@@ -1,18 +1,55 @@
 <template>
-<div v-if="page.is_ready == true && chapters" class="container">
+<div v-if="page.is_ready == true && chapters" class="es-page-content" style="height: auto">
   <div class="es-page-head">
     <div class="inner">
       <div class="details">
-        <h4>{{$tc('CHAPTER',2)}}</h4>
-        <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ bookTitle }}</small>
+        <h4>{{ $t('LIST') }} {{ $t('OF') }} {{$tc('SCENE',2)}}</h4>
+        <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ $tc('BOOK') }} : {{ bookTitle }}</small>
       </div>
       <div class="actions">
         <button id="printCharacterButton" class="es-button-white" @click="exportCharacter()">{{$t('EXPORT')}}</button>
       </div>
     </div>
   </div>
-  <div>
-      Content HERE
+  <div >
+    <div v-if="chapters" class="rows-print-as-pages">
+      <div v-bind:key="chapter.id" v-for="chapter in chapters">
+        <div v-bind:key="scene.id" v-for="scene in chapter.scene">
+          <div class="es-panel">
+            <div class="row">
+              <div class="col-md-12">
+                  <label class="text-capitalize">{{$tc('CHAPTER')}}: {{chapter.title}}</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <label class="text-capitalize">{{$tc('SCENE')}}: {{scene.title}}</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <label class="text-capitalize">{{$tc('TYPE_OF_SCENE')}}: {{scene.typeofscene}}</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <label class="text-capitalize">{{$tc('DATE_START')}}: {{scene.date_starts}}</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <label class="text-capitalize">{{$tc('DATE_END')}}: {{scene.date_ends}}</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <label class="text-capitalize">{{$tc('NOTES')}}: {{scene.notes}}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 </template>
@@ -21,7 +58,7 @@
 const electron = window.require('electron')
 const {ipcRenderer} = electron
 export default {
-  name: 'ExportChapters',
+  name: 'ExportScenes',
   props: ['properties'],
   data: function () {
     return {
@@ -49,8 +86,10 @@ export default {
         let chapter = chapters[index]
 
         scope.$store.dispatch('loadScenesByChapter', chapter.uuid)
-        chapter.scene = scope.$store.getters.getScenesByChapter(chapter.uuid)
-        scope.chapters.push(chapter)
+        setTimeout(function () {
+          chapter.scene = scope.$store.getters.getScenesByChapter(chapter.uuid)
+          scope.chapters.push(chapter)
+        }, 500)
 
         if (index === (chapters.length - 1)) {
           setTimeout(function () {

@@ -11,8 +11,8 @@ exports.initPdfWindow = (window) => {
 ipcMain.on('EXPORT_PDF_SHOW_CHARACTERS', function (event, data) {
   createExportWindow({exportBy:'export-characters',data:data})
   exportWindow.on('ready-to-show', function () {
-    exportWindow.show()
     exportWindow.webContents.send('EXPORT_PDF_LIST_CHARACTERS',data)
+    exportWindow.show()
   })
 })
 
@@ -82,8 +82,8 @@ function createExportWindow(data) {
   })
 }
 
-ipcMain.on('EXPORT_PDF_SHOW_CHAPTERS', function (event, data) {
-  createExportWindow({exportBy:'export-chapters',data:data})
+ipcMain.on('EXPORT_PDF_SHOW_SCENE', function (event, data) {
+  createExportWindow({exportBy:'export-scenes',data:data})
   exportWindow.on('ready-to-show', function () {
     exportWindow.show()
     exportWindow.webContents.send('EXPORT_PDF_LIST_CHAPTERS',data)

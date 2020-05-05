@@ -134,6 +134,7 @@ export default {
           })
           character.relations = relation
           scope.characters.push(character)
+          scope.page.is_ready = true
         }, 550)
       })
     }
@@ -148,7 +149,6 @@ export default {
 
       setTimeout(function () {
         scope.viewCharacters()
-        scope.page.is_ready = true
       }, 550)
     })
 

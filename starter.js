@@ -18,7 +18,7 @@ if(fs.existsSync(path.join(process.resourcesPath || '','prod.env'))){
 checkFreshInstallation()
 const route = require('./api/server')
 const listener = require('./api/listener.js')
-const menu = require('./menu');
+const menu = require('./menu')
 
 //disable unwanted Emoji and Dictation in Menu before calling app event
 if(process.platform == "darwin"){
@@ -82,7 +82,10 @@ function createWindow () {
     mainWindow.setSize(1280, 920)
     mainWindow.center()
   })
-  appUpdate.processUpdate(mainWindow)
+
+  if(process.env.NODE_ENV != 'development') {
+    appUpdate.processUpdate(mainWindow)
+  }
 
   ipcMain.on('REFRESH_MENUITEMS', function (e, cat) {
     Menu.setApplicationMenu(menu.getMenu(mainWindow))
@@ -160,7 +163,9 @@ function createLoginWindow () {
 app.on('ready', function appReady() {
   checkForVersionUpdates()
   createWindow()
-  appUpdate.check()
+  if(process.env.NODE_ENV != 'development'){
+    appUpdate.check()
+  }
 })
 
 // Quit when all windows are closed.

@@ -8,7 +8,7 @@
             </div>
             <div class="actions">
               <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
-              <button class="es-button-white" @click="exportChapters(book.uuid)">{{$tc('EXPORT', 1).toUpperCase()}} {{$tc('CHAPTER', 2).toUpperCase()}} {{$tc('LIST', 1).toUpperCase()}}</button>
+              <button class="es-button-white" @click="exportScenes(book.uuid)">{{$tc('EXPORT', 1).toUpperCase()}} {{$tc('SCENE', 2).toUpperCase()}} {{$tc('LIST', 1).toUpperCase()}}</button>
             </div>
         </div>
     </div>
@@ -126,9 +126,9 @@ export default {
         }
       })
     },
-    exportChapters: function () {
+    exportScenes: function () {
       const scope = this
-      ipcRenderer.send('EXPORT_PDF_SHOW_CHAPTERS', {bookUUID: scope.bookUUID, title: scope.properties.title})
+      ipcRenderer.send('EXPORT_PDF_SHOW_SCENE', {bookUUID: scope.bookUUID, title: scope.properties.title})
     }
   },
   mounted () {
