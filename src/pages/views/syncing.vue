@@ -159,7 +159,8 @@ export default {
         { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: [], packed: [] },
         { title: 'Scene Items', api: 'book-scene-items', local: 'scene-items', downloaded: [], packed: [] },
         { title: 'Scene Locations', api: 'book-scene-locations', local: 'scene-locations', downloaded: [], packed: [] },
-        { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: [], packed: [] }
+        { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: [], packed: [] },
+        { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
       ],
       bookUUID: ''
     }

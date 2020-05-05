@@ -3,7 +3,7 @@ const path = require('path')
 const moment = require('moment')
 
 // eslint-disable-next-line no-unused-vars
-const { AuthorPersonalProgress } = require(path.join(__dirname, '..', 'models'))
+const { AuthorPersonalProgress, User } = require(path.join(__dirname, '..', 'models'))
 
 class AuthorPersonalProgressController {
   static async getAuthorPersonalProgress (data) {
@@ -42,9 +42,44 @@ class AuthorPersonalProgressController {
   }
 
   static async save (data) {
+    if (data.updated_at !== 'undefined' && data.updated_at !== null) {
+      data.updated_at = moment().format('YYYY-MM-DD HH:mm:ss').toString()
+    }
+
     const saveAuthorPersonalProgress = await AuthorPersonalProgress.query().upsertGraph([data]).first()
 
     return saveAuthorPersonalProgress
+  }
+
+  static async getSyncable (userId) {
+    const user = await User.query()
+      .findById(userId)
+      .withGraphJoined('author', { maxBatchSize: 1 })
+
+    const rows = await AuthorPersonalProgress.query()
+      .where('author_id', user.author.uuid)
+      .where('updated_at', '>', user.synced_at)
+
+    console.log(user.synced_at)
+
+    return rows
+  }
+
+  static async sync (row) {
+    var data = await AuthorPersonalProgress.query()
+      .patch(row)
+      .where('uuid', '=', row.uuid)
+
+    if (!data || data === 0) {
+      data = await AuthorPersonalProgress.query().insert(row)
+
+      // update uuid to match web
+      data = await AuthorPersonalProgress.query()
+        .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
+        .where('uuid', '=', data.uuid)
+    }
+
+    return data
   }
 }
 

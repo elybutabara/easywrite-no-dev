@@ -644,6 +644,7 @@ export default {
                 // refresh vuex to update all related records
                 scope.$store.dispatch('loadVersionsByScene', response.data)
                 scope.$store.dispatch('loadSceneHistory', response.data.uuid)
+                scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', response.data.uuid)
                 scope.CHANGE_COMPONENT({tabKey: 'scene-form-' + response.data.uuid, tabComponent: 'scene-form', tabData: { book: scope.book, scene: response.data }, tabTitle: scope.$t('EDIT') + ' - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 // refresh vuex to update all related records
@@ -652,6 +653,7 @@ export default {
                 scope.$store.dispatch('changeTabTitle', {key: 'scene-form-' + response.data.uuid, title: scope.$t('EDIT') + ' - ' + response.data.title})
                 scope.$store.dispatch('changeTabTitle', {key: 'scene-details-' + response.data.uuid, title: scope.$t('VIEW') + ' - ' + response.data.title})
                 scope.$store.dispatch('loadSceneHistory', response.data.uuid)
+                scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', response.data.uuid)
               }
 
               scope.loadScene(response.data)

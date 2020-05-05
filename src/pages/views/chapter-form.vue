@@ -325,6 +325,7 @@ export default {
                 scope.$store.dispatch('updateChapterList', response.data)
                 scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
                 scope.$store.dispatch('loadChapterHistory', response.data.uuid)
+                scope.$store.dispatch('loadTodayAuthorPersonalProgressForChapter', response.data.uuid)
                 // scope.$store.dispatch('updateChapterVersionList', scope.data.chapter_version)
                 scope.CHANGE_COMPONENT({
                   tabKey: 'chapter-details-' + response.data.uuid,
@@ -337,6 +338,7 @@ export default {
                 scope.$store.dispatch('updateChapterList', response.data)
                 scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
                 scope.$store.dispatch('loadChapterHistory', response.data.uuid)
+                scope.$store.dispatch('loadTodayAuthorPersonalProgressForChapter', response.data.uuid)
                 // scope.$store.dispatch('updateChapterVersionList', scope.data.chapter_version)
                 // scope.CHANGE_COMPONENT({tabKey: 'chapter-details-' + response.data.uuid, tabComponent: 'chapter-details', tabData: { book_id: response.data.book_id, chapter: response.data }, tabTitle: 'View - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
                 scope.$store.dispatch('changeTabTitle', {
