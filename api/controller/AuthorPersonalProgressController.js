@@ -60,8 +60,6 @@ class AuthorPersonalProgressController {
       .where('author_id', user.author.uuid)
       .where('updated_at', '>', user.synced_at)
 
-    console.log(user.synced_at)
-
     return rows
   }
 

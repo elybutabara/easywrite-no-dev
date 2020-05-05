@@ -400,7 +400,10 @@ export default {
           // eslint-disable-next-line valid-typeof
           scope.saving.index++
           scope.saving.counter++
-          scope.updateListByModel(endpoint.title, data)
+
+          if (data.deleted_at === null) {
+            scope.updateListByModel(endpoint.title, data)
+          }
           // move to the next table/model
           if (scope.saving.index >= endpoint.downloaded.length) {
             scope.saving.pointer++

@@ -9,7 +9,6 @@ export default {
   getters: {
     getItemsByBook: state => (bookUUID) => {
       if (state.items.hasOwnProperty(bookUUID)) {
-        console.log(state.items[bookUUID].rows)
         return state.items[bookUUID].rows
       }
       return []
