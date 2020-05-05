@@ -24,7 +24,7 @@ let buildOptions = {
   },
   "extraResources": [
     {
-      "from": "./resources",
+      "from": "./resources/prod.env",
       "to": "./",
       "filter": [
         "**/*"
@@ -41,7 +41,8 @@ let buildOptions = {
     "!**static/*",
     "!**output/*",
     "!*.db",
-    "!**db/*"
+    "!**db/*",
+    "!**resources/*"
   ],
   "mac": {
     "category": "public.app-category.productivity",

@@ -5,6 +5,7 @@ const fs = require('fs')
 const log = require('electron-log')
 const appUpdate = require('./api/updater')
 const reportContent = require('./reports/report_content')
+const exportPdf = require('./api/export-pdf')
 
 if(fs.existsSync(path.join(process.resourcesPath || '','prod.env'))){
   process.env.NODE_ENV = 'production'
@@ -87,6 +88,7 @@ function createWindow () {
     Menu.setApplicationMenu(menu.getMenu(mainWindow))
   })
 
+  exportPdf.initPdfWindow(mainWindow)
 }
 
 ipcMain.on('SET_DEFAULT_LANG', function (e, cat) {
@@ -288,77 +290,3 @@ ipcMain.on('install-update', function (e, cat) {
   autoUpdater.quitAndInstall()
 })
 
-ipcMain.on('EXPORT:show-characters', function (event, data) {
-  createExportWindow({exportBy:'characters',data:data})
-  exportWindow.on('ready-to-show', function () {
-    exportWindow.show()
-    exportWindow.webContents.send('EXPORT:list-character',data)
-  })
-})
-
-ipcMain.on('EXPORT:pdf', function (event, args) {
-  dialog.showSaveDialog(mainWindow, {
-    defaultPath: args.pdfName,
-    properties: ['openFile', 'openDirectory','showOverwriteConfirmation'],
-    filters: [
-      { name: 'PDF Files', extensions: ['pdf'] }
-    ]
-  }).then(result => {
-    if(result.canceled){
-      exportWindow.webContents.send('EXPORT:show-button')
-    }else{
-      const fs = require('fs')
-      const electron = require('electron')
-      exportWindow.webContents.printToPDF({}, (success, errorType) => {
-        log.error(errorType)
-      }).then(function (data) {
-        const pdfPath = path.resolve(result.filePath)
-        fs.writeFile(pdfPath, data, function (error) {
-          if (error) {
-            log.error(error)
-          }
-          electron.shell.openExternal('file://' + pdfPath)
-          exportWindow.webContents.send('success-exporting',pdfPath)
-          exportWindow.webContents.send('EXPORT:show-button')
-        })
-      }).catch(function (err) {
-        log.error(err)
-      })
-    }
-  }).catch(err => {
-    log.error(err)
-  })
-})
-
-function createExportWindow(data) {
-  exportWindow = new BrowserWindow({
-    title: app.name+' v'+app.getVersion(),
-    icon: path.resolve('src/assets/img/easywrite-new.ico'),
-    webPreferences: {
-      webSecurity: false,
-      nodeIntegration: true,
-      preload: path.join(__dirname, 'preload.js'),
-      plugins: true
-    },
-    protocol: 'file:',
-    slashes: true,
-    movable: true,
-    show:false,
-    parent:mainWindow,
-  })
-  exportWindow.setSize(1280, 920)
-  exportWindow.center()
-  exportWindow.setMenu(null)
-
-  if (process.env.NODE_ENV == 'development') {
-    exportWindow.webContents.openDevTools()
-    let url = 'http://localhost:8080/'
-    exportWindow.loadURL(url + 'dev/' + '/#/characters')
-  } else {
-    exportWindow.loadFile(`${__dirname}/dist/export.html`)
-  }
-
-  exportWindow.on('closed', function () {
-    exportWindow = null
-  })
-}

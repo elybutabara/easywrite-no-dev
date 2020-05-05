@@ -7,7 +7,8 @@
                 <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ book.title }}</small>
             </div>
             <div class="actions">
-                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
+              <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
+              <button class="es-button-white" @click="exportChapters(book.uuid)">{{$tc('EXPORT', 1).toUpperCase()}} {{$tc('CHAPTER', 2).toUpperCase()}} {{$tc('LIST', 1).toUpperCase()}}</button>
             </div>
         </div>
     </div>
@@ -45,6 +46,7 @@
 
 <script>
 import draggable from 'vuedraggable'
+const {ipcRenderer} = window.require('electron')
 export default {
   name: 'chapter-listing',
   props: ['properties'],
@@ -123,6 +125,10 @@ export default {
             })
         }
       })
+    },
+    exportChapters: function () {
+      const scope = this
+      ipcRenderer.send('EXPORT_PDF_SHOW_CHAPTERS', {bookUUID: scope.bookUUID, title: scope.properties.title})
     }
   },
   mounted () {

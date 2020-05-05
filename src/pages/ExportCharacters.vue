@@ -1,5 +1,5 @@
 <template>
-<div v-if="page.is_ready" class="container">
+<div v-if="page.is_ready && characters" class="container">
   <div class="es-page-head">
     <div class="inner">
       <div class="details">
@@ -112,9 +112,9 @@ export default {
     exportCharacter: function () {
       const scope = this
       window.$('#printCharacterButton').hide()
-      ipcRenderer.send('EXPORT:pdf', {pdfName: scope.bookTitle + ' - ' + this.$tc('CHARACTER', 2)})
+      ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdfName: scope.bookTitle + ' - ' + this.$tc('CHARACTER', 2)})
     },
-    setCharacters: function () {
+    viewCharacters: function () {
       const scope = this
       let characters = scope.$store.getters.getCharactersByBook(scope.bookUUID)
       characters.forEach(function (character, index) {
@@ -141,21 +141,20 @@ export default {
   beforeMount () {},
   mounted () {
     const scope = this
-    ipcRenderer.on('EXPORT:list-character', function (event, data) {
+    ipcRenderer.on('EXPORT_PDF_LIST_CHARACTERS', function (event, data) {
       scope.bookUUID = data.bookUUID
       scope.bookTitle = data.title
       scope.$store.dispatch('loadCharactersByBook', scope.bookUUID)
+
+      setTimeout(function () {
+        scope.viewCharacters()
+        scope.page.is_ready = true
+      }, 550)
     })
 
-    ipcRenderer.on('EXPORT:show-button', function (event, data) {
+    ipcRenderer.on('EXPORT_PDF_SHOW_BUTTON', function (event, data) {
       window.$('#printCharacterButton').show()
     })
-
-    setTimeout(function () {
-      scope.setCharacters()
-
-      scope.page.is_ready = true
-    }, 550)
   }
 }
 </script>

@@ -1,0 +1,99 @@
+<template>
+<div v-if="page.is_ready == true && chapters" class="container">
+  <div class="es-page-head">
+    <div class="inner">
+      <div class="details">
+        <h4>{{$tc('CHAPTER',2)}}</h4>
+        <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ bookTitle }}</small>
+      </div>
+      <div class="actions">
+        <button id="printCharacterButton" class="es-button-white" @click="exportCharacter()">{{$t('EXPORT')}}</button>
+      </div>
+    </div>
+  </div>
+  <div>
+      Content HERE
+  </div>
+</div>
+</template>
+
+<script>
+const electron = window.require('electron')
+const {ipcRenderer} = electron
+export default {
+  name: 'ExportChapters',
+  props: ['properties'],
+  data: function () {
+    return {
+      chapters: [],
+      characterRelations: [],
+      characterRelationsFields: ['relation', 'fullname', 'shortname', 'nickname'],
+      bookUUID: null,
+      bookTitle: null,
+      page: {
+        is_ready: false
+      }
+    }
+  },
+  computed: {},
+  methods: {
+    exportCharacter: function () {
+      const scope = this
+      window.$('#printCharacterButton').hide()
+      ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdfName: scope.bookTitle + ' - ' + this.$tc('CHARACTER', 2)})
+    },
+    viewChapters: function () {
+      var scope = this
+      let chapters = scope.$store.getters.getChaptersByBook(scope.bookUUID)
+      chapters.forEach(function (item, index) {
+        let chapter = chapters[index]
+
+        scope.$store.dispatch('loadScenesByChapter', chapter.uuid)
+        chapter.scene = scope.$store.getters.getScenesByChapter(chapter.uuid)
+        scope.chapters.push(chapter)
+
+        if (index === (chapters.length - 1)) {
+          setTimeout(function () {
+            scope.page.is_ready = true
+          }, 500)
+        }
+      })
+    }
+  },
+  beforeMount () {},
+  mounted () {
+    const scope = this
+    ipcRenderer.on('EXPORT_PDF_LIST_CHAPTERS', function (event, data) {
+      scope.bookUUID = data.bookUUID
+      scope.bookTitle = data.title
+      scope.$store.dispatch('loadChaptersByBook', scope.bookUUID)
+
+      setTimeout(function () {
+        scope.viewChapters()
+      }, 500)
+    })
+
+    ipcRenderer.on('EXPORT_PDF_SHOW_BUTTON', function (event, data) {
+      window.$('#printCharacterButton').show()
+    })
+  }
+}
+</script>
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+  @media print {
+    .rows-print-as-pages .es-panel{
+      page-break-after: always;
+    }
+    /* . this style if you want the first row to be on the same page as whatever precedes it */
+    .rows-print-as-pages:last-child {
+      page-break-after: avoid;
+    }
+  }
+  .uploaded-file-preview { width:100%; cursor: pointer; }
+  .uploaded-file-preview img { width:100%; }
+  .uploaded-file-preview .default-preview { min-height: 180px; background-color: #293742; color: #fff; text-align: center; }
+  .uploaded-file-preview .default-preview i { font-size: 105px; line-height: 180px; opacity: 0.8; }
+
+  .rows-print-as-pages{margin-top: 10px}
+</style>
