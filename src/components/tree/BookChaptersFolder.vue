@@ -7,7 +7,7 @@
                 {{ $tc('CHAPTER', 2) }}
             </span>
         </div>
-        <draggable tag="ul"  v-model="chapters" draggable=".handle" class="level-3">
+        <draggable tag="ul" v-model="chapters" draggable=".handle" class="level-3">
             <li v-bind:class="{ 'open' : $store.getters.isBookChaptersFolderOpen(book) }" v-bind:key="chapter.id" v-for="chapter in chapters" class="handle ellipsis-2">
                 <div @click="toggleChapter(chapter)" class="label"><span><img  src="@/assets/img/icons/chapter.svg"> {{ chapter.title }}</span></div>
                 <chapter-scenes-folder v-if="chapter.is_open" :key="'tree-chapter-scenes-' + chapter.uuid" :properties="{book: book, chapter: chapter}"></chapter-scenes-folder>
@@ -45,7 +45,9 @@ export default {
       },
       set (value) {
         let scope = this
-        this.$store.commit('sortChapters', { bookUUID: scope.book.uuid, data: value })
+        if (value) {
+          this.$store.commit('sortChapters', {bookUUID: scope.book.uuid, data: value})
+        }
       }
     },
     book: function () {

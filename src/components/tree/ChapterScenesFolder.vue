@@ -36,7 +36,9 @@ export default {
         return scenes
       },
       set (value) {
-        this.$store.commit('sortScenes', { PARENT: this.chapter.uuid, data: value })
+        if (value) {
+          this.$store.commit('sortScenes', { PARENT: this.chapter.uuid, data: value })
+        }
       }
     }
   },
