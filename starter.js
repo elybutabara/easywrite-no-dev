@@ -381,9 +381,8 @@ function createExportWindow(data) {
 ipcMain.on('EXPORT-DOCX-SHOW-BOOK-WINDOW', function (event, Book) {
   createExportWindowBook()
   exportWindow.on('ready-to-show', function () {
-    exportWindow.show()
+    // exportWindow.show()
     exportWindow.webContents.send('EXPORT-DOCX-GET-BOOK',Book)
-    console.log(Book + '2')
   })
 })
 
@@ -439,10 +438,10 @@ ipcMain.on('EXPORT-WORD-BOOK', function (event, data) {
       var docx = HtmlDocx.asBlob(data);
       fs.writeFile(outputFile, docx, function(err) {
            if (err) {
-            exportWindow.webContents.send('error-exporting', result.filePath)
+            mainWindow.webContents.send('error-exporting', result.filePath)
            }
            else{
-            exportWindow.webContents.send('success-exporting', result.filePath)
+            mainWindow.webContents.send('success-exporting', result.filePath)
            }
 
       });

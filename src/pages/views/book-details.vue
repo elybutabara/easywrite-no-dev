@@ -80,7 +80,6 @@ export default {
     },
     exportBook: function () {
       const scope = this
-      console.log(scope.properties.title + '1')
       ipcRenderer.send('EXPORT-DOCX-SHOW-BOOK-WINDOW', scope.properties.title)
     }
   },

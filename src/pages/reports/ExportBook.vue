@@ -1,9 +1,6 @@
 <template>
 <div>
-    <div><p>{{ mydata }}</p></div>
-    <div class="actions">
-        <button id="printBookButton" class="es-button-white" @click="exportBook()">{{$t('EXPORT')}}</button>
-    </div>
+    <div><p><b>{{ mydata }}</b></p></div>
 </div>
 </template>
 <script>
@@ -18,8 +15,6 @@ export default {
   },
   methods: {
     exportBook: function () {
-      // const scope = this
-      window.$('#printBookButton').hide()
       var markup = document.documentElement.outerHTML
       ipcRenderer.send('EXPORT-WORD-BOOK', markup)
     }
@@ -29,10 +24,9 @@ export default {
     const scope = this
     ipcRenderer.on('EXPORT-DOCX-GET-BOOK', function (event, data) {
       scope.mydata = data
-    })
-
-    ipcRenderer.on('EXPORT-DOCX-SHOW-BUTTON', function (event, data) {
-      window.$('#printBookButton').show()
+      setTimeout(function () {
+        scope.exportBook()
+      }, 500)
     })
   }
 }
