@@ -78,9 +78,6 @@
               <div v-html="character.goals" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';"></div>
             </div>
           </div>
-          <div class="row" v-bind:key="relation.id" v-for="relation in character.relations">
-            <span >{{relation.character_relations}}</span>
-          </div>
           <b-table striped hover :items="character.relations" :fields="characterRelationsFields"></b-table>
         </div>
       </div>

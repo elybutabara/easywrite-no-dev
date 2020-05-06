@@ -58,10 +58,44 @@
             </div><br/>
             <div class="row">
               <div class="col-md-12">
-                <label class="text-capitalize">{{$tc('NOTES')}} :</label>
+                <div style="border-bottom: 1px solid  lightgray">
+                  <label class="text-capitalize">{{$tc('CONTENT')}} :</label>
+                </div>
+                <br/>
+              </div>
+              <div class="col-md-12" v-html="scene.scene_version[scene.scene_version.length-1].content"></div>
+            </div><br/>
+            <div class="row">
+              <div class="col-md-12">
+                <div style="border-bottom: 1px solid  lightgray">
+                  <label class="text-capitalize">{{$tc('NOTES')}} :</label>
+                </div>
+              </div>
+              <br/>
+              <div class="col-md-12" v-html="scene.notes"></div>
+            </div><br/>
+            <div class="row">
+              <div class="col-md-12">
+                <label class="text-capitalize">{{$tc('CHARACTER',2)}} {{$t('IN')}} {{$t('THIS')}} {{$tc('SCENE',1)}} :</label>
               </div>
               <div class="col-md-12">
-                <label class="text-capitalize">{{scene.notes}}</label>
+                <b-table striped hover :items="scene.characters" :fields="characterFields"></b-table>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <label class="text-capitalize">{{$tc('LOCATION',2)}} {{$t('IN')}} {{$t('THIS')}} {{$tc('SCENE',1)}} :</label>
+              </div>
+              <div class="col-md-12">
+                <b-table striped hover :items="scene.locations" :fields="locationFields"></b-table>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <label class="text-capitalize">{{$tc('ITEM',2)}} {{$t('IN')}} {{$t('THIS')}} {{$tc('SCENE',1)}} :</label>
+              </div>
+              <div class="col-md-12">
+                <b-table striped hover :items="scene.items" :fields="itemFields"></b-table>
               </div>
             </div>
           </div>
@@ -82,7 +116,44 @@ export default {
     return {
       chapters: [],
       characterRelations: [],
-      characterRelationsFields: ['relation', 'fullname', 'shortname', 'nickname'],
+      characterFields: [
+        {
+          key:'character.fullname',
+          label: this.$t('FULLNAME')
+        },
+        {
+          key:'character.shortname',
+          label: this.$t('SHORTNAME')
+        },
+        {
+          key:'character.nickname',
+          label: this.$t('NICKNAME')
+        },
+        {
+          key:'character.occupation',
+          label: this.$t('OCCUPATION')
+        },
+      ],
+      locationFields: [
+        {
+          key:'location.location',
+          label: this.$t('FULLNAME')
+        },
+        {
+          key:'location.AKA',
+          label: this.$t('SHORTNAME')
+        },
+      ],
+      itemFields: [
+        {
+          key:'item.itemname',
+          label: this.$t('FULLNAME')
+        },
+        {
+          key:'item.AKA',
+          label: this.$t('SHORTNAME')
+        },
+      ],
       bookUUID: null,
       bookTitle: null,
       page: {
@@ -96,25 +167,6 @@ export default {
       const scope = this
       window.$('#printCharacterButton').hide()
       ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdfName: scope.bookTitle + ' - ' + this.$tc('CHARACTER', 2)})
-    },
-    viewChapters: function () {
-      var scope = this
-      let chapters = scope.$store.getters.getChaptersByBook(scope.bookUUID)
-      chapters.forEach(function (item, index) {
-        let chapter = chapters[index]
-
-        scope.$store.dispatch('loadScenesByChapter', chapter.uuid)
-        setTimeout(function () {
-          chapter.scene = scope.$store.getters.getScenesByChapter(chapter.uuid)
-          scope.chapters.push(chapter)
-        }, 500)
-
-        if (index === (chapters.length - 1)) {
-          setTimeout(function () {
-            scope.page.is_ready = true
-          }, 500)
-        }
-      })
     }
   },
   beforeMount () {},
@@ -123,10 +175,12 @@ export default {
     ipcRenderer.on('EXPORT_PDF_LIST_CHAPTERS', function (event, data) {
       scope.bookUUID = data.bookUUID
       scope.bookTitle = data.title
-      scope.$store.dispatch('loadChaptersByBook', scope.bookUUID)
 
+      scope.$store.dispatch('loadChaptersWithScenesByBook', scope.bookUUID)
       setTimeout(function () {
-        scope.viewChapters()
+        scope.chapters = scope.$store.getters.getChaptersByBook(scope.bookUUID)
+        console.log(scope.chapters)
+        scope.page.is_ready = true
       }, 500)
     })
 

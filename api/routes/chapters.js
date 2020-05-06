@@ -6,7 +6,7 @@ const router = express.Router()
 
 // const diffMatchPatch = require('diff-match-patch')
 
-const { ChapterController, SceneController, ChapterVersionController, BookChapterHistoryController } = require(path.join(__dirname, '..', 'controllers'))
+const { ChapterController, SceneController, SceneItemController, SceneLocationController, SceneCharacterController, ChapterVersionController, BookChapterHistoryController } = require(path.join(__dirname, '..', 'controllers'))
 
 router.get('/:chapterId/scenes', async function (req, res) {
   const scenes = await SceneController.getAllSceneByChapterId(req.params.chapterId)
@@ -28,7 +28,15 @@ router.get('/:bookUUID/scenes-with-relation', async function (req, res) {
   let allChapters = []
   const chapters = await ChapterController.getAllByBookId(param)
   for (let chapter of chapters) {
-    chapter.scene = await SceneController.getAllSceneWithRelationByChapterId(chapter.uuid)
+    let scenes = await SceneController.getAllSceneByChapterId(chapter.uuid)
+    let allScene = []
+    for (let scene of scenes) {
+      scene.characters = await SceneCharacterController.getAllSceneCharactersBySceneId(scene.uuid)
+      scene.locations = await SceneLocationController.getAllSceneLocationsBySceneId(scene.uuid)
+      scene.items = await SceneItemController.getAllSceneItemsBySceneId(scene.uuid)
+      allScene.push(scene)
+    }
+    chapter.scene = allScene
     allChapters.push(chapter)
   }
   res
