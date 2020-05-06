@@ -735,6 +735,10 @@ export default {
         let version = scope.$store.getters.findLatestSceneVersionByScene(sceneProp)
         let progress = scope.$store.getters.getTodayAuthorPersonalProgressForScene(sceneProp)
 
+        console.log('scene')
+        console.log(scene)
+        console.log(scope.data)
+
         // scene
         scope.data.title = scene.title
         scope.data.short_description = scene.short_description
@@ -745,6 +749,8 @@ export default {
         scope.data.character_id_vp = scene.character_id_vp
         scope.data.date_starts = scene.date_starts
         scope.data.date_ends = scene.date_ends
+        scope.data.notes = scene.notes
+        scope.data.viewpoint_description = scene.viewpoint_description
 
         scope.tempSceneStart = scene.date_starts
         scope.tempSceneEnd = scene.date_ends
