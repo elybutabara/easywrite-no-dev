@@ -5,6 +5,7 @@ const fs = require('fs')
 const log = require('electron-log')
 const appUpdate = require('./api/updater')
 const reportContent = require('./reports/report_content')
+// const htmlDocx = require('html-docx-js')
 
 if(fs.existsSync(path.join(process.resourcesPath || '','prod.env'))){
   process.env.NODE_ENV = 'production'
@@ -45,7 +46,7 @@ function createWindow () {
 
   // mainWindow.webContents.openDevTools()
   if (process.env.NODE_ENV == 'development') {
-   //  mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
     let url = 'http://localhost:8080/'
     // and load the index.html of the app.
     // mainWindow.loadFile(url + 'dev/')
@@ -102,8 +103,22 @@ ipcMain.on('show-save-as-dialog-content', function (e, cat) {
     ]
   }).then(result => {
     if(result.canceled === false){
-      reportContent.getContent(result.filePath , cat.content)
-      mainWindow.webContents.send('success-exporting', result.filePath)
+      // reportContent.getContent(result.filePath , cat.content)
+      var HtmlDocx = require('html-docx-js');
+      var fs = require('fs');
+
+      var outputFile = result.filePath;
+      var docx = HtmlDocx.asBlob(cat.content);
+      fs.writeFile(outputFile, docx, function(err) {
+           if (err) {
+              mainWindow.webContents.send('error-exporting', result.filePath)
+           }
+           else{
+              mainWindow.webContents.send('success-exporting', result.filePath)
+           }
+
+      });
+      
     }
   }).catch(err => {
 
@@ -362,3 +377,111 @@ function createExportWindow(data) {
     exportWindow = null
   })
 }
+
+ipcMain.on('EXPORT-DOCX-SHOW-BOOK-WINDOW', function (event, Book) {
+  createExportWindowBook()
+  exportWindow.on('ready-to-show', function () {
+    exportWindow.show()
+    exportWindow.webContents.send('EXPORT-DOCX-GET-BOOK',Book)
+    console.log(Book + '2')
+  })
+})
+
+function createExportWindowBook() {
+  exportWindow = new BrowserWindow({
+    title: app.name+' v'+app.getVersion(),
+    icon: path.resolve('src/assets/img/easywrite-new.ico'),
+    webPreferences: {
+      webSecurity: false,
+      nodeIntegration: true,
+      preload: path.join(__dirname, 'preload.js'),
+      plugins: true
+    },
+    protocol: 'file:',
+    slashes: true,
+    movable: true,
+    show:false,
+    parent:mainWindow,
+  })
+  exportWindow.setSize(1280, 920)
+  exportWindow.center()
+  exportWindow.setMenu(null)
+
+  if (process.env.NODE_ENV == 'development') {
+    exportWindow.webContents.openDevTools()
+    let url = 'http://localhost:8080/'
+    exportWindow.loadURL(url + 'dev/' + '/#/exportbook')
+  } else {
+    exportWindow.loadFile(`${__dirname}/dist/export.html`)
+  }
+
+  exportWindow.on('closed', function () {
+    exportWindow = null
+  })
+}
+
+ipcMain.on('EXPORT-WORD-BOOK', function (event, data) {
+
+  dialog.showSaveDialog(mainWindow, {
+    defaultPath: data,
+    properties: ['openFile', 'openDirectory','showOverwriteConfirmation'],
+    filters: [
+      { name: 'Doc Files', extensions: ['docx'] }
+    ]
+  }).then(result => {
+    if(result.canceled){
+      
+    }else{
+      var HtmlDocx = require('html-docx-js');
+      var fs = require('fs');
+
+      var outputFile = result.filePath;
+      var docx = HtmlDocx.asBlob(data);
+      fs.writeFile(outputFile, docx, function(err) {
+           if (err) {
+            exportWindow.webContents.send('error-exporting', result.filePath)
+           }
+           else{
+            exportWindow.webContents.send('success-exporting', result.filePath)
+           }
+
+      });
+    }
+  }).catch(err => {
+    log.error(err)
+  })
+})
+
+// ipcMain.on('EXPORT-WORD-BOOK', function (event, data) {
+//   dialog.showSaveDialog(mainWindow, {
+//     defaultPath: data,
+//     properties: ['openFile', 'openDirectory','showOverwriteConfirmation'],
+//     filters: [
+//       { name: 'Doc Files', extensions: ['docx'] }
+//     ]
+//   }).then(result => {
+//     if(result.canceled){
+//       exportWindow.webContents.send('EXPORT-DOCX-SHOW-BUTTON')
+//     }else{
+//       const fs = require('fs')
+//       const electron = require('electron')
+//       exportWindow.webContents.printToPDF({}, (success, errorType) => {
+//         log.error(errorType)
+//       }).then(function (data) {
+//         const docPath = path.resolve(result.filePath)
+//         fs.writeFile(docPath, data, function (error) {
+//           if (error) {
+//             log.error(error)
+//           }
+//           electron.shell.openExternal('file://' + docPath)
+//           exportWindow.webContents.send('success-exporting',docPath)
+//           exportWindow.webContents.send('EXPORT-DOCX-SHOW-BUTTON')
+//         })
+//       }).catch(function (err) {
+//         log.error(err)
+//       })
+//     }
+//   }).catch(err => {
+//     log.error(err)
+//   })
+// })

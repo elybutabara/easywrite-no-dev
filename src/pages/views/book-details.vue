@@ -7,9 +7,9 @@
                 <small>{{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
             </div>
             <div class="actions">
+                <button class="es-button-white" @click="exportBook()">{{$t('EXPORT').toUpperCase()}} {{$tc('BOOK', 1).toUpperCase()}}</button>
                 <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'storyboard-' + page.data.uuid, tabComponent: 'storyboard',  tabData: page.data, tabTitle: 'Story Board - ' + properties.title, newTab: true})">{{ $tc('STORYBOARD', 2) }}</button>
                 <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: 'Edit - ' + properties.title, newTab: true})">{{ $t('EDIT') }}</button>
-
                 <button class="es-button-red" @click="deleteBook()">{{ $t('DELETE') }}</button>
             </div>
         </div>
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+const {ipcRenderer} = window.require('electron')
 export default {
   name: 'book-details',
   props: ['properties'],
@@ -76,6 +77,11 @@ export default {
             })
         }
       })
+    },
+    exportBook: function () {
+      const scope = this
+      console.log(scope.properties.title + '1')
+      ipcRenderer.send('EXPORT-DOCX-SHOW-BOOK-WINDOW', scope.properties.title)
     }
   },
   mounted () {

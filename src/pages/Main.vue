@@ -173,6 +173,15 @@ ipcRenderer.on('success-exporting', function (event, data) {
     text: data
   })
 })
+
+ipcRenderer.on('error-exporting', function (event, data) {
+  window.swal.fire({
+    icon: 'error',
+    title: 'Unsuccessfuly Exported, your file is already open. Please close your file before exporting',
+    text: data
+  })
+})
+
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>

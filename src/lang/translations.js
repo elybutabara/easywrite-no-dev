@@ -1,11 +1,7 @@
 export default {
   // English
   en: {
-    LOADING_STORY_BOARD_PLEASE_WAIT: 'Loading Story Board, please wait...',
     A_LIST_OF_SCENES_THAT_DOES_NOT_BELONG_TO_ANY_CHAPTERS: 'A list of scenes that does not belong to any chapters',
-    WEATHER: 'Weather',
-    DATE_END: 'Date End',
-    DATE_START: 'Date Start',
     ABOUT: 'About',
     ADD_IT_INTO_SCENE: 'to add it into to the scene',
     ADD_NEW_SCENE: 'Add New Scene',
@@ -47,7 +43,9 @@ export default {
     DASHBOARD: 'Dashboard',
     DATA_SYNCER: 'Data Syncer',
     DATA: 'Data',
+    DATE_END: 'Date End',
     DATE_MODIFIED: 'Date Modified',
+    DATE_START: 'Date Start',
     DATE: 'Date',
     DELETE: 'Delete',
     DESCRIPTION: 'Description',
@@ -72,6 +70,7 @@ export default {
     ITEM_NAME: 'Item Name',
     ITEM: 'Item | Items',
     LIST: 'List',
+    LOADING_STORY_BOARD_PLEASE_WAIT: 'Loading Story Board, please wait...',
     LOCATION: 'Location | Locations',
     LOGIN: 'Login',
     MAX_CHARACTERS_IS_30: 'Max characters is 30',
@@ -142,6 +141,7 @@ export default {
     VERSION: 'Version | Versions',
     VIEW: 'View',
     VIEWPOINT: 'Viewpoint',
+    WEATHER: 'Weather',
     WELCOME_TO_EASYWRITE: 'Welcome to EasyWrite, please login to your account to continue.',
     WELCOME: 'Welcome',
     WORD_COUNT_FOR_THE_DAY: 'Word count for the day',
