@@ -1,3 +1,4 @@
+const {ipcRenderer} = window.require('electron')
 export default {
   strict: true,
   data: {
@@ -12,7 +13,7 @@ export default {
     },
 
     pmdTimer: {
-      pmd_min: 25,
+      pmd_min: 1,
       pmd_sec: 0,
       pmd_selected: '25'
     },
@@ -59,14 +60,7 @@ export default {
           if (state.pmdTimer.pmd_min === 0 && state.pmdTimer.pmd_sec === 0) {
             clearInterval(this.clock)
 
-            window.swal.fire({
-              icon: 'error',
-              title: 'Times up!',
-              text: 'Your Pomodoro Expires.',
-              customClass: {
-                container: 'pomodoro-expired-alert animated heartBeat'
-              }
-            })
+            ipcRenderer.send('SHOW_SWAL_TIMESUP_STARTER')
 
             state.togglePMD.pmd_toggle = 'Start'
           } else {

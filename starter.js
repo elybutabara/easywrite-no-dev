@@ -442,6 +442,7 @@ ipcMain.on('EXPORT-WORD-BOOK', function (event, data) {
            }
            else{
             mainWindow.webContents.send('success-exporting', result.filePath)
+            mainWindow.webContents.send('CHANGE_EXPORT_BOOK_BUTTON_NAME')
            }
 
       });
@@ -449,6 +450,10 @@ ipcMain.on('EXPORT-WORD-BOOK', function (event, data) {
   }).catch(err => {
     log.error(err)
   })
+})
+
+ipcMain.on('SHOW_SWAL_TIMESUP_STARTER', function (event, data) {
+  mainWindow.webContents.send('SHOW_SWAL_TIMESUP')
 })
 
 // ipcMain.on('EXPORT-WORD-BOOK', function (event, data) {

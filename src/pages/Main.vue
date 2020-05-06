@@ -159,6 +159,18 @@ export default {
     setTimeout(function () {
       scope.ready = true
     }, 1000)
+
+    ipcRenderer.on('SHOW_SWAL_TIMESUP', function (event, data) {
+      console.log('asdsadasdsdsadsa')
+      window.swal.fire({
+        icon: 'error',
+        title: scope.$t('TIMES_UP'),
+        text: scope.$t('YOUR_POMODORO_EXPIRES'),
+        customClass: {
+          container: 'pomodoro-expired-alert animated heartBeat'
+        }
+      })
+    })
   }
 }
 
