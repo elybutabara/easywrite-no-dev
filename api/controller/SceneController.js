@@ -66,6 +66,18 @@ class SceneController {
     return scenes
   }
 
+  static getAllSceneWithRelationByChapterId (chapterId) {
+    var scenes = Scene.query()
+      .withGraphJoined('scene_character', {maxBatchSize: 1})
+      .withGraphJoined('scene_location', {maxBatchSize: 1})
+      .withGraphJoined('scene_item', {maxBatchSize: 1})
+      .where('book_scenes.chapter_id', chapterId)
+      .whereNull('book_scenes.deleted_at')
+      .orderBy('order')
+
+    return scenes
+  }
+
   static getSceneById (sceneId) {
     const scene = Scene.query().findById(sceneId)
       .withGraphJoined('scene_version', {maxBatchSize: 1})

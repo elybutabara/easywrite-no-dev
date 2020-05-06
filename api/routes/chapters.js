@@ -16,6 +16,26 @@ router.get('/:chapterId/scenes', async function (req, res) {
     .json(scenes)
 })
 
+router.get('/:bookUUID/scenes-with-relation', async function (req, res) {
+  const param = {
+    bookId: req.params.bookUUID,
+    search: ''
+  }
+
+  if (req.query.search) {
+    param.search = req.query.search
+  }
+  let allChapters = []
+  const chapters = await ChapterController.getAllByBookId(param)
+  for (let chapter of chapters) {
+    chapter.scene = await SceneController.getAllSceneWithRelationByChapterId(chapter.uuid)
+    allChapters.push(chapter)
+  }
+  res
+    .status(200)
+    .json(allChapters)
+})
+
 router.get('/:chapterId/versions', async function (req, res) {
   const chapterVersions = await ChapterVersionController.getAllChapterVersionsByChapterId(req.params.chapterId)
 
