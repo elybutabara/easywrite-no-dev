@@ -17,33 +17,51 @@
         <div v-bind:key="scene.id" v-for="scene in chapter.scene">
           <div class="es-panel">
             <div class="row">
-              <div class="col-md-12">
-                  <label class="text-capitalize">{{$tc('CHAPTER')}}: {{chapter.title}}</label>
+              <div class="col-md-2">
+                <label class="text-capitalize">{{$tc('CHAPTER')}} :</label>
+              </div>
+              <div class="col-md-10">
+                <label class="text-capitalize">{{chapter.title}}</label>
               </div>
             </div>
             <div class="row">
-              <div class="col-md-12">
-                <label class="text-capitalize">{{$tc('SCENE')}}: {{scene.title}}</label>
+              <div class="col-md-2">
+                <label class="text-capitalize">{{$tc('SCENE')}} :</label>
+              </div>
+              <div class="col-md-10">
+                <label class="text-capitalize">{{scene.title}}</label>
               </div>
             </div>
             <div class="row">
-              <div class="col-md-12">
-                <label class="text-capitalize">{{$tc('TYPE_OF_SCENE')}}: {{scene.typeofscene}}</label>
+              <div class="col-md-2">
+                <label class="text-capitalize">{{$tc('TYPE_OF_SCENE')}} :</label>
+              </div>
+              <div class="col-md-10">
+                <label class="text-capitalize">{{scene.typeofscene}}</label>
               </div>
             </div>
             <div class="row">
-              <div class="col-md-12">
-                <label class="text-capitalize">{{$tc('DATE_START')}}: {{scene.date_starts}}</label>
+              <div class="col-md-2">
+                <label class="text-capitalize">{{$tc('DATE_START')}} :</label>
+              </div>
+              <div class="col-md-10">
+                <label class="text-capitalize">{{scene.date_starts}}</label>
               </div>
             </div>
             <div class="row">
-              <div class="col-md-12">
-                <label class="text-capitalize">{{$tc('DATE_END')}}: {{scene.date_ends}}</label>
+              <div class="col-md-2">
+                <label class="text-capitalize">{{$tc('DATE_END')}} :</label>
               </div>
-            </div>
+              <div class="col-md-10">
+                <label class="text-capitalize">{{scene.date_ends}}</label>
+              </div>
+            </div><br/>
             <div class="row">
               <div class="col-md-12">
-                <label class="text-capitalize">{{$tc('NOTES')}}: {{scene.notes}}</label>
+                <label class="text-capitalize">{{$tc('NOTES')}} :</label>
+              </div>
+              <div class="col-md-12">
+                <label class="text-capitalize">{{scene.notes}}</label>
               </div>
             </div>
           </div>
