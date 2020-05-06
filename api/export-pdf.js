@@ -2,23 +2,20 @@ const { app, BrowserWindow, Menu, ipcMain , systemPreferences, dialog} = require
 const path = require('path')
 const fs = require('fs')
 const electron = require('electron')
-let mainwindow,exportWindow
-
-exports.initPdfWindow = (window) => {
-  mainwindow = window
-}
+let exportWindow
 
 ipcMain.on('EXPORT_PDF_SHOW_CHARACTERS', function (event, data) {
-  createExportWindow({exportBy:'export-characters',data:data})
+  createExportWindow({exportBy:'export-characters'})
   exportWindow.on('ready-to-show', function () {
-    exportWindow.webContents.send('EXPORT_PDF_LIST_CHARACTERS',data)
+    exportWindow.webContents.send('EXPORT_PDF_LIST_CHARACTERS',data.book)
     exportWindow.show()
   })
 })
 
-ipcMain.on('EXPORT_PDF_CONFIRM_GENERATE', function (event, args) {
+ipcMain.on('EXPORT_PDF_CONFIRM_GENERATE', function (event, data) {
+  let pdf = data.pdf
   dialog.showSaveDialog(exportWindow, {
-    defaultPath: args.pdfName,
+    defaultPath: pdf.name,
     properties: ['openFile', 'openDirectory','showOverwriteConfirmation'],
     filters: [
       { name: 'PDF Files', extensions: ['pdf'] }
@@ -29,9 +26,9 @@ ipcMain.on('EXPORT_PDF_CONFIRM_GENERATE', function (event, args) {
     }else{
       exportWindow.webContents.printToPDF({}, (success, errorType) => {
         log.error(errorType)
-      }).then(function (data) {
+      }).then(function (htmlBuffer) {
         const pdfPath = path.resolve(result.filePath)
-        fs.writeFile(pdfPath, data, function (error) {
+        fs.writeFile(pdfPath, htmlBuffer, function (error) {
           if (error) {
             log.error(error)
           }
@@ -45,6 +42,14 @@ ipcMain.on('EXPORT_PDF_CONFIRM_GENERATE', function (event, args) {
     }
   }).catch(err => {
     log.error(err)
+  })
+})
+
+ipcMain.on('EXPORT_PDF_SHOW_SCENE', function (event, data) {
+  createExportWindow({exportBy:'export-scenes',data:data})
+  exportWindow.on('ready-to-show', function () {
+    exportWindow.show()
+    exportWindow.webContents.send('EXPORT_PDF_LIST_CHAPTERS',data)
   })
 })
 
@@ -62,7 +67,6 @@ function createExportWindow(data) {
     slashes: true,
     movable: true,
     show:false,
-    parent:mainwindow,
   })
   exportWindow.setSize(1280, 920)
   exportWindow.center()
@@ -81,11 +85,3 @@ function createExportWindow(data) {
     exportWindow = null
   })
 }
-
-ipcMain.on('EXPORT_PDF_SHOW_SCENE', function (event, data) {
-  createExportWindow({exportBy:'export-scenes',data:data})
-  exportWindow.on('ready-to-show', function () {
-    exportWindow.show()
-    exportWindow.webContents.send('EXPORT_PDF_LIST_CHAPTERS',data)
-  })
-})

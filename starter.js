@@ -90,8 +90,6 @@ function createWindow () {
   ipcMain.on('REFRESH_MENUITEMS', function (e, cat) {
     Menu.setApplicationMenu(menu.getMenu(mainWindow))
   })
-
-  exportPdf.initPdfWindow(mainWindow)
 }
 
 ipcMain.on('SET_DEFAULT_LANG', function (e, cat) {

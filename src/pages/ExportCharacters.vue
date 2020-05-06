@@ -109,7 +109,10 @@ export default {
     exportCharacter: function () {
       const scope = this
       window.$('#printCharacterButton').hide()
-      ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdfName: scope.bookTitle + ' - ' + this.$tc('CHARACTER', 2)})
+      let pdf = {
+        name: scope.bookTitle + ' - ' + this.$tc('CHARACTER', 2)
+      }
+      ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf:pdf})
     },
     viewCharacters: function () {
       const scope = this
@@ -139,9 +142,9 @@ export default {
   beforeMount () {},
   mounted () {
     const scope = this
-    ipcRenderer.on('EXPORT_PDF_LIST_CHARACTERS', function (event, data) {
-      scope.bookUUID = data.bookUUID
-      scope.bookTitle = data.title
+    ipcRenderer.on('EXPORT_PDF_LIST_CHARACTERS', function (event, book) {
+      scope.bookUUID = book.bookUUID
+      scope.bookTitle = book.title
       scope.$store.dispatch('loadCharactersByBook', scope.bookUUID)
 
       setTimeout(function () {

@@ -166,7 +166,10 @@ export default {
     exportCharacter: function () {
       const scope = this
       window.$('#printCharacterButton').hide()
-      ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdfName: scope.bookTitle + ' - ' + this.$tc('CHARACTER', 2)})
+      let pdf = {
+        name: scope.bookTitle + ' - ' + this.$tc('SCENE', 2)
+      }
+      ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf:pdf})
     }
   },
   beforeMount () {},

@@ -95,7 +95,11 @@ export default {
     },
     exportCharacter: function () {
       const scope = this
-      ipcRenderer.send('EXPORT_PDF_SHOW_CHARACTERS', {bookUUID: scope.bookUUID, title: scope.properties.title})
+      let book = {
+        bookUUID: scope.bookUUID,
+        title: scope.properties.title
+      }
+      ipcRenderer.send('EXPORT_PDF_SHOW_CHARACTERS', {book:book})
     }
   },
   mounted () {
