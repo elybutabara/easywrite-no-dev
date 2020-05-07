@@ -12,7 +12,7 @@ autoUpdater.logger = null
 autoUpdater.autoInstallOnAppQuit = true
 autoUpdater.autoDownload = false
 // console.log = log.log
-exports.check = () => {
+exports.checkAppUpdates = () => {
   global.updateInfo = {
     hasUpdate: false,
     version: null
