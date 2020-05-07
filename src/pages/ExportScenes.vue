@@ -118,41 +118,41 @@ export default {
       characterRelations: [],
       characterFields: [
         {
-          key:'character.fullname',
+          key: 'character.fullname',
           label: this.$t('FULLNAME')
         },
         {
-          key:'character.shortname',
+          key: 'character.shortname',
           label: this.$t('SHORTNAME')
         },
         {
-          key:'character.nickname',
+          key: 'character.nickname',
           label: this.$t('NICKNAME')
         },
         {
-          key:'character.occupation',
+          key: 'character.occupation',
           label: this.$t('OCCUPATION')
-        },
+        }
       ],
       locationFields: [
         {
-          key:'location.location',
+          key: 'location.location',
           label: this.$t('FULLNAME')
         },
         {
-          key:'location.AKA',
+          key: 'location.AKA',
           label: this.$t('SHORTNAME')
-        },
+        }
       ],
       itemFields: [
         {
-          key:'item.itemname',
+          key: 'item.itemname',
           label: this.$t('FULLNAME')
         },
         {
-          key:'item.AKA',
+          key: 'item.AKA',
           label: this.$t('SHORTNAME')
-        },
+        }
       ],
       bookUUID: null,
       bookTitle: null,
@@ -169,7 +169,7 @@ export default {
       let pdf = {
         name: scope.bookTitle + ' - ' + this.$tc('SCENE', 2)
       }
-      ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf:pdf})
+      ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
     }
   },
   beforeMount () {},

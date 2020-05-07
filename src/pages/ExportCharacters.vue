@@ -112,7 +112,7 @@ export default {
       let pdf = {
         name: scope.bookTitle + ' - ' + this.$tc('CHARACTER', 2)
       }
-      ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf:pdf})
+      ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
     },
     viewCharacters: function () {
       const scope = this
@@ -124,7 +124,6 @@ export default {
           let relation = []
           characterRelation = scope.$store.getters.getRelationsByCharacter(character.uuid)
           characterRelation.forEach(function (rel) {
-            // relation fullname shortname nickname
             relation.push({
               relation: rel.relation.relation,
               fullname: rel.character_relation.fullname,

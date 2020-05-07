@@ -99,7 +99,7 @@ export default {
         bookUUID: scope.bookUUID,
         title: scope.properties.title
       }
-      ipcRenderer.send('EXPORT_PDF_SHOW_CHARACTERS', {book:book})
+      ipcRenderer.send('EXPORT_PDF_SHOW_CHARACTERS', {book: book})
     }
   },
   mounted () {
