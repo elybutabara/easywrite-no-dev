@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain , dialog} = require('electron')
 const path = require('path')
 const fs = require('fs')
 const electron = require('electron')
+const log = require('electron-log')
 let exportWindow
 
 function createExportWindow(data) {
@@ -11,7 +12,7 @@ function createExportWindow(data) {
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true,
-      preload: path.resolve('preload.js'),
+      preload: path.resolve(process.env.basePath, 'preload.js'),
       plugins: true
     },
     protocol: 'file:',
@@ -29,7 +30,7 @@ function createExportWindow(data) {
     let url = 'http://localhost:8080/'
     exportWindow.loadURL(url + 'dev/' + '/#/'+ data.exportBy)
   } else {
-    exportWindow.loadFile(path.resolve(`${__dirname}/../dist/export.html`))
+    exportWindow.loadFile(path.resolve(__dirname,'../../../dist/export.html'))
   }
 
   exportWindow.on('closed', function () {

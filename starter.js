@@ -3,10 +3,10 @@ const { app, BrowserWindow, Menu, ipcMain , systemPreferences, dialog} = require
 const path = require('path')
 const fs = require('fs')
 const log = require('electron-log')
-const appUpdate = require('./api/updater')
-const reportContent = require('./reports/report_content')
-const exportPdf = require('./api/starter-extensions/export-reports/pdf/export-pdf')
-
+//basePath is needed in some separate files
+process.env.basePath = path.resolve(__dirname)
+log.info(path.resolve('./'))
+log.info(path.resolve(__dirname))
 if(fs.existsSync(path.join(process.resourcesPath || '','prod.env'))){
   process.env.NODE_ENV = 'production'
   global.resourcePath = app.getPath('userData')
@@ -15,10 +15,16 @@ if(fs.existsSync(path.join(process.resourcesPath || '','prod.env'))){
   global.resourcePath = path.resolve('./resources')
 }
 
-checkFreshInstallation()
+/*
+* Include all separate files below
+* */
+const autoUpdate = require('./starter-extensions/auto-update/auto-update')
+autoUpdate.initializeDatabase()//initialize database before using server
 const route = require('./api/server')
 const listener = require('./api/listener.js')
 const menu = require('./menu')
+const exportPdf = require('./starter-extensions/export-reports/pdf/export-pdf')
+const reportContent = require('./reports/report_content')
 
 //disable unwanted Emoji and Dictation in Menu before calling app event
 if(process.platform == "darwin"){
@@ -44,7 +50,7 @@ function createWindow () {
     }
   })
 
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
   if (process.env.NODE_ENV == 'development') {
    //  mainWindow.webContents.openDevTools()
     let url = 'http://localhost:8080/'
@@ -84,7 +90,7 @@ function createWindow () {
   })
 
   if(process.env.NODE_ENV != 'development') {
-    appUpdate.processUpdate(mainWindow)
+    autoUpdate.processUpdate(mainWindow)
   }
 
   ipcMain.on('REFRESH_MENUITEMS', function (e, cat) {
@@ -113,56 +119,14 @@ ipcMain.on('show-save-as-dialog-content', function (e, cat) {
   })
 })
 
-
-/*
-function createLoginWindow () {
-  loginWindow = new BrowserWindow({
-    resizable: false,
-    frame: false,
-    show: false,
-    width : 390,
-    height: 380,
-    icon: path.resolve('src/assets/img/easywrite.png'),
-    webPreferences: {
-      webSecurity: false,
-      nodeIntegration: true
-    }
-  })
-
-  if (process.env.NODE_ENV == 'development') {
-    let url = 'http://localhost:8080/'
-
-    // Load login html file into window
-    loginWindow.loadURL(url + 'dev/#/auth')
-  } else {
-    // and load the index.html of the app.
-    // eslint-disable-next-line no-template-curly-in-string
-    // let url = 'file://C:\\Users\\Admin\\Desktop\\FINAL\\spa\\'
-    // mainWindow.loadFile(url + 'prod/index.html')
-    // mainWindow.loadURL(url + 'dist/index.html')
-    loginWindow.loadFile(`${__dirname}/dist/auth.html`)
-  }
-
-  // only show window after the contents are loaded , it will delay load because of background
-  loginWindow.webContents.once('did-finish-load', function(){
-    loginWindow.show();
-  });
-
-  ipcMain.on('createMainWindow', function (e, cat) {
-    global.loginInfo = cat
-    createWindow()
-  })
-}
-*/
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', function appReady() {
-  checkForVersionUpdates()
+  autoUpdate.checkForVersionUpdates()
   createWindow()
   if(process.env.NODE_ENV != 'development'){
-    appUpdate.check()
+    autoUpdate.check()
   }
 })
 
@@ -181,115 +145,4 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-
-function checkFreshInstallation () {
-  const fs = require('fs')
-  const fsj = require('fs-jetpack')
-  let src,dist
-  if(process.env.NODE_ENV === 'development'){
-    src = path.resolve('./api', 'base.db')
-    dist = path.resolve(__dirname,'config', 'db', 'development.db')
-  }else{
-    // process.env.DEMO = true
-    src = path.join(process.resourcesPath, 'app.asar', 'api', 'base.db')
-    if(process.env.DEMO){
-      /*
-      * Application is not installed and running in downloaded folder
-      * */
-      if(process.platform == 'darwin' ){
-        //db is place in userData since some userdata is retricted to write in mac
-        dist = path.resolve(app.getPath('userData'), 'demo', 'db', 'demo.db')
-
-        let deleteRecursive = function (path) {
-          if( fs.existsSync(path) ) {
-            // log.info('exist delte')
-            // log.info(path)
-            fs.readdirSync(path).forEach(function(file,index){
-              let curPath = path + "/" + file
-              if(fs.lstatSync(curPath).isDirectory()) { // recurse
-                // log.info('rescures')
-                deleteRecursive(curPath)
-              } else { // delete file
-                fs.unlinkSync(curPath)
-              }
-            })
-            fs.rmdirSync(path)
-          }
-        }
-        deleteRecursive(path.resolve(app.getPath('userData'), 'demo'))
-      }else{
-        dist = path.resolve(process.resourcesPath, 'demo', 'db', 'demo.db')
-      }
-    }else{
-      dist = path.resolve(app.getPath('userData'), 'resources', 'db', 'easywrite.db')
-    }
-  }
-
-  process.env.dblocation = dist
-
-  if (
-    fs.existsSync(src) &&
-    fs.statSync(src).isFile() &&
-    !fs.existsSync(dist)
-  ) {
-    fsj.copy(src, dist)
-    log.info("fresh install")
-    fs.chmod(dist, '0700', function (err) {
-      if (err){
-        log.error(err)
-        throw err
-      }
-    })
-  }
-}
-
-function checkForVersionUpdates(){
-  let knexMigrate = require('knex-migrate')
-  let data = {
-    migrations : path.resolve(__dirname, './api/migrations')
-  }
-
-  knexConnection.schema.hasTable('migration_version_control').then(async(exists)=>{
-    if(exists){
-      await knexConnection.first().from('migration_version_control').orderByRaw('version_id DESC').then(function (res) {
-        if(res){
-          data.from = res.name
-        }
-      })
-    }
-
-    let directory_pathName
-    await knexMigrate('up', data, ({ action, migration })=>{
-      log.info('Doing ' + action + ' on ' + migration)
-
-      directory_pathName = migration.split(path.sep)
-    }).then(function () {
-      const { v1: uuidv1 } = require('uuid')
-      /*generate_UID*/
-      if(Array.isArray(directory_pathName)){
-          knexConnection.table('migration_version_control').insert({
-            'version_uid' : uuidv1(),
-            'full_path' : data.migrations,
-            'directory': directory_pathName[0],
-            'name' : directory_pathName[1],
-            'created_at' : knexConnection.fn.now(),
-            'updated_at' : knexConnection.fn.now()
-          }).catch((err)=>{
-            log.error(err)
-          })
-      }
-    }).catch((err)=>{
-      log.error(err)
-    })
-  }).catch((err)=>{
-    log.error(err)
-  })
-
-
-}
-
-ipcMain.on('install-update', function (e, cat) {
-  const {autoUpdater} = require('electron-updater')
-  autoUpdater.quitAndInstall()
-})
 

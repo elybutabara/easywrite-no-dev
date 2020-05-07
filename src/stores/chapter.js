@@ -109,7 +109,7 @@ export default {
       let bookUUID = payload
       Vue.set(state.chapters, bookUUID, { rows: [] })
       axios
-        .get('http://localhost:3000/chapters/' + bookUUID + '/scenes-with-relation')
+        .get('http://localhost:3000/chapters/' + bookUUID + '/chapters-with-scenes-with-relations')
         .then(response => {
           state.chapters[bookUUID] = { is_open: false, rows: response.data }
           for (let i = 0; i < state.chapters[bookUUID].rows.length; i++) {

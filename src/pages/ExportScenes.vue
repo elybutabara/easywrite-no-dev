@@ -203,10 +203,5 @@ export default {
       page-break-after: avoid;
     }
   }
-  .uploaded-file-preview { width:100%; cursor: pointer; }
-  .uploaded-file-preview img { width:100%; }
-  .uploaded-file-preview .default-preview { min-height: 180px; background-color: #293742; color: #fff; text-align: center; }
-  .uploaded-file-preview .default-preview i { font-size: 105px; line-height: 180px; opacity: 0.8; }
-
   .rows-print-as-pages{margin-top: 10px}
 </style>

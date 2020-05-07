@@ -16,7 +16,7 @@ router.get('/:chapterId/scenes', async function (req, res) {
     .json(scenes)
 })
 
-router.get('/:bookUUID/scenes-with-relation', async function (req, res) {
+router.get('/:bookUUID/chapters-with-scenes-with-relations', async function (req, res) {
   const param = {
     bookId: req.params.bookUUID,
     search: ''
