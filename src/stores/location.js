@@ -8,8 +8,6 @@ export default {
   },
   getters: {
     getLocationsByBook: state => (bookUUID) => {
-      console.log('LOCATIONS')
-      console.log(state.locations)
       if (state.locations.hasOwnProperty(bookUUID)) {
         return state.locations[bookUUID].rows
       }

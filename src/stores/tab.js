@@ -13,6 +13,18 @@ export default {
     getTabs: state => {
       return state.tabs
     },
+    getModifiedTabs: state => {
+      var tabs = []
+
+      for (let i = 0; i < state.tabs.items.length; i++) {
+        let current = state.tabs.items[i]
+        if (current.modified) {
+          tabs.push(current)
+        }
+      }
+
+      return tabs
+    },
     getTabsByID: state => (id) => {
       return id
     },
