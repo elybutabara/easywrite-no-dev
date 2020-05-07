@@ -123,7 +123,7 @@
                     </draggable>
                     </div>
                 </draggable>
-                <div class="es-storyboard-content-inner" v-bind:class="{'minify': full }">
+                <div class="es-storyboard-content-inner" v-bind:class="{'minify': !full }">
                     <div v-bind:class="{'view-list': other_scenes_view === 'list', 'view-minimize': other_scenes_view === 'minimize'}"  class="handle-chapters chapter-wrapper">
                         <div class="title" v-b-tooltip.hover v-bind:title="$t('OTHER_SCENES')">
                             {{ $t('OTHER_SCENES') }}
