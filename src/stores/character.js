@@ -22,10 +22,13 @@ export default {
     },
     findCharacter: state => (payload) => {
       let bookUUID = payload.book_id
+      let characterUUID = payload.uuid
+      console.log('store characters.js')
+      console.log(payload)
       if (state.characters[bookUUID] !== undefined) {
         for (let i = 0; i < state.characters[bookUUID].rows.length; i++) {
           let current = state.characters[bookUUID].rows[i]
-          if (current.uuid === payload.uuid) {
+          if (current.uuid === characterUUID) {
             return state.characters[bookUUID].rows[i]
           }
         }

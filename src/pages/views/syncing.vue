@@ -16,7 +16,7 @@
                 <div class="es-card-content">
                     <p class="intro-message">
                         <i style="font-size:80px;" class="las la-sync"></i> <br/>
-                        {{$t('SYNCING_YOUR_DATA')}} {{$t('FROM_DESKTOP_TO_WEB_VICE_VERSA')}}...
+                        {{ $t('SYNCING_YOUR_DATA')}} {{$t('FROM_DESKTOP_TO_WEB_VICE_VERSA') }}...
                         <br/>
                         <br/>
                         <button class="syncer-button" @click="checkConnection()">{{$t('START_SYNCING')}}</button>
@@ -94,6 +94,19 @@
                        <button v-if="autostart" class="syncer-button" @click="backToDashboard()">OK</button>
                        <button v-else class="syncer-button" @click="backToIntro()">OK</button>
                    </div>
+                </div>
+            </div>
+            <div v-if="stage == 'no-connection'" class="es-card">
+                <div class="es-card-header">{{ $t('NO_CONNECTION') }}</div>
+                <div class="es-card-content">
+                    <br/>
+                    <br/>
+                    <i style="font-size:60px; color:#e3d457;" class="las la-exclamation-triangle"></i>
+                    <p style="font-size:20px;">Failed syncing data, Please check your internet connection...</p>
+                    <button class="syncer-button" @click="backToDashboard()">OK</button>
+                    <br/>
+                    <br/>
+                    <br/>
                 </div>
             </div>
         </div>
@@ -189,6 +202,27 @@ export default {
   methods: {
     checkConnection: function () {
       var scope = this
+      var modified = scope.$store.getters.getModifiedTabs
+
+      if (modified.length > 0) {
+        var text = ''
+        for (let i = 0; i < modified.length; i++) {
+          let current = modified[i]
+          text += '<p style="margin:0px;">' + current.title + '</p>'
+        }
+        window.swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Unable to sync, you have unsave changes:',
+          html: text + '<br/>'
+        })
+      } else {
+        scope.proceedChecking()
+      }
+    },
+    proceedChecking: function () {
+      var scope = this
+
       scope.stage = 'connecting'
       scope.progress_message = scope.$t('ESTABLISHING_CONNECTION') + '...'
 
@@ -203,6 +237,7 @@ export default {
         .catch(function (error) {
         // handle error
           console.log(error)
+          scope.stage = 'no-connection'
         })
         .finally(function () {
         // always executed

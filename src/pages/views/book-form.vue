@@ -125,8 +125,25 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              var userID = this.$store.getters.getUserID
-              scope.$store.dispatch('getBooksByAuthorID', userID)
+              scope.$store.dispatch('updateBookList', response.data)
+              if (scope.data.id !== null) {
+                scope.$store.dispatch('changeTabTitle', {
+                  key: 'book-form-' + response.data.uuid,
+                  title: this.$t('EDIT') + ' - ' + response.data.title
+                })
+              } else {
+                scope.data.id = response.data.id
+                scope.data.uuid = response.data.uuid
+                scope.CHANGE_COMPONENT({
+                  tabKey: 'book-details-' + response.data.uuid,
+                  tabComponent: 'book-details',
+                  tabData: response,
+                  tabTitle: response.data.title,
+                  tabIndex: scope.$store.getters.getActiveTab
+                })
+              }
+              // var userID = this.$store.getters.getUserID
+              // scope.$store.dispatch('getBooksByAuthorID', userID)
             })
           }
         })
