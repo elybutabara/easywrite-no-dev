@@ -178,7 +178,7 @@ ipcRenderer.on('SET_TRANSLATION_DOM', function (event, data) {
   localStorage.setItem('translation', data)
 })
 
-ipcRenderer.on('success-exporting', function (event, data) {
+ipcRenderer.on('SHOW-SWAL-SUCCESS-EXPORTING', function (event, data) {
   window.swal.fire({
     icon: 'success',
     title: 'Successfuly Exported To',
@@ -186,7 +186,7 @@ ipcRenderer.on('success-exporting', function (event, data) {
   })
 })
 
-ipcRenderer.on('error-exporting', function (event, data) {
+ipcRenderer.on('SHOW-SWAL-ERROR-EXPORTING', function (event, data) {
   window.swal.fire({
     icon: 'error',
     title: 'Unsuccessfuly Exported, your file is already open. Please close your file before exporting',

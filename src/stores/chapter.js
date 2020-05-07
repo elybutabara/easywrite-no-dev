@@ -105,6 +105,18 @@ export default {
           }
         })
     },
+    loadChaptersWithScenesByBook (state, payload) {
+      let bookUUID = payload
+      Vue.set(state.chapters, bookUUID, { rows: [] })
+      axios
+        .get('http://localhost:3000/chapters/' + bookUUID + '/chapters-with-scenes-with-relations')
+        .then(response => {
+          state.chapters[bookUUID] = { is_open: false, rows: response.data }
+          for (let i = 0; i < state.chapters[bookUUID].rows.length; i++) {
+            Vue.set(state.chapters[bookUUID].rows[i], 'is_open', false)
+          }
+        })
+    },
     loadChapterHistory (state, payload) {
       let chapterID = payload
       Vue.set(state.chapter_history, chapterID, { rows: [] })
@@ -220,6 +232,9 @@ export default {
     },
     loadChaptersByBook ({ commit, state }, payload) {
       commit('loadChaptersByBook', payload)
+    },
+    loadChaptersWithScenesByBook ({ commit, state }, payload) {
+      commit('loadChaptersWithScenesByBook', payload)
     },
     loadChapterHistory ({ commit, state }, payload) {
       commit('loadChapterHistory', payload)

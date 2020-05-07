@@ -89,15 +89,20 @@ export default {
         }
       })
     },
+
     exportBook: function () {
       const scope = this
       scope.export_book = scope.$t('LOADING').toUpperCase() + '....'
-      ipcRenderer.send('EXPORT-DOCX-SHOW-BOOK-WINDOW', scope.properties.title)
+
+      let book = scope.properties
+
+      ipcRenderer.send('EXPORT-DOCX-SHOW-BOOK-WINDOW', book)
 
       ipcRenderer.on('CHANGE_EXPORT_BOOK_BUTTON_NAME', function (event, data) {
         scope.export_book = scope.$t('EXPORT').toUpperCase() + ' ' + scope.$tc('BOOK', 1).toUpperCase()
       })
     }
+
   },
   mounted () {
     var scope = this
