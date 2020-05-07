@@ -1,5 +1,5 @@
 <template>
-<div v-if="page.is_ready" class="container">
+<div v-if="page.is_ready && characters" class="es-page-content" style="height: auto">
   <div class="es-page-head">
     <div class="inner">
       <div class="details">
@@ -19,8 +19,8 @@
             <div class="col-md-6">
               <div class="form-group">
                 <div class="uploaded-file-preview">
-                  <div v-if="character.picture == false" class="default-preview"><i class="fa fa-image"></i></div>
-                  <div v-if="character.picture != false"><img :src="character.picture_src"></div>
+                  <div v-if="character.picture == null" class="default-preview"><i class="fa fa-image"></i></div>
+                  <div v-else><img :src="character.picture_src"></div>
                 </div>
               </div>
             </div>
@@ -78,9 +78,6 @@
               <div v-html="character.goals" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';"></div>
             </div>
           </div>
-          <div class="row" v-bind:key="relation.id" v-for="relation in character.relations">
-            <span >{{relation.character_relations}}</span>
-          </div>
           <b-table striped hover :items="character.relations" :fields="characterRelationsFields"></b-table>
         </div>
       </div>
@@ -112,9 +109,12 @@ export default {
     exportCharacter: function () {
       const scope = this
       window.$('#printCharacterButton').hide()
-      ipcRenderer.send('EXPORT:pdf', {pdfName: scope.bookTitle + ' - ' + this.$tc('CHARACTER', 2)})
+      let pdf = {
+        name: scope.bookTitle + ' - ' + this.$tc('CHARACTER', 2)
+      }
+      ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
     },
-    setCharacters: function () {
+    viewCharacters: function () {
       const scope = this
       let characters = scope.$store.getters.getCharactersByBook(scope.bookUUID)
       characters.forEach(function (character, index) {
@@ -124,7 +124,6 @@ export default {
           let relation = []
           characterRelation = scope.$store.getters.getRelationsByCharacter(character.uuid)
           characterRelation.forEach(function (rel) {
-            // relation fullname shortname nickname
             relation.push({
               relation: rel.relation.relation,
               fullname: rel.character_relation.fullname,
@@ -134,6 +133,7 @@ export default {
           })
           character.relations = relation
           scope.characters.push(character)
+          scope.page.is_ready = true
         }, 550)
       })
     }
@@ -141,21 +141,19 @@ export default {
   beforeMount () {},
   mounted () {
     const scope = this
-    ipcRenderer.on('EXPORT:list-character', function (event, data) {
-      scope.bookUUID = data.bookUUID
-      scope.bookTitle = data.title
+    ipcRenderer.on('EXPORT_PDF_LIST_CHARACTERS', function (event, book) {
+      scope.bookUUID = book.bookUUID
+      scope.bookTitle = book.title
       scope.$store.dispatch('loadCharactersByBook', scope.bookUUID)
+
+      setTimeout(function () {
+        scope.viewCharacters()
+      }, 550)
     })
 
-    ipcRenderer.on('EXPORT:show-button', function (event, data) {
+    ipcRenderer.on('EXPORT_PDF_SHOW_BUTTON', function (event, data) {
       window.$('#printCharacterButton').show()
     })
-
-    setTimeout(function () {
-      scope.setCharacters()
-
-      scope.page.is_ready = true
-    }, 550)
   }
 }
 </script>

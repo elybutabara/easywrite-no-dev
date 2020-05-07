@@ -6,6 +6,7 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import App from './App'
 import ExportCharacters from './pages/ExportCharacters'
+import ExportScenes from './pages/ExportScenes'
 import router from './router'
 import mixins from './utils/mixins'
 import cookie from './utils/cookie'
@@ -148,6 +149,15 @@ if (process.env.NODE_ENV === 'production') {
     i18n,
     components: { ExportCharacters },
     template: '<ExportCharacters/>'
+  })
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: '#export-scenes',
+    store,
+    router,
+    i18n,
+    components: { ExportScenes },
+    template: '<ExportScenes/>'
   })
 }
 

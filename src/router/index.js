@@ -4,6 +4,8 @@ import Main from '@/pages/Main'
 import Auth from '@/pages/Auth'
 import ExportCharacters from '@/pages/ExportCharacters'
 import ExportBook from '@/pages/reports/ExportBook'
+import ExportScenes from '@/pages/ExportScenes'
+
 import StoreAuth from '@/stores/auth'
 
 Vue.use(Router)
@@ -42,7 +44,7 @@ export default new Router({
       meta: { protected: false }
     },
     {
-      path: '/characters',
+      path: '/export-characters',
       name: 'ExportCharacters',
       beforeEnter: checkAuth,
       component: ExportCharacters,
@@ -54,6 +56,14 @@ export default new Router({
       beforeEnter: checkAuth,
       component: ExportBook,
       meta: { protected: false }
+    },
+    {
+      path: '/export-scenes',
+      name: 'ExportScenes',
+      beforeEnter: checkAuth,
+      component: ExportScenes,
+      meta: { protected: false }
     }
+
   ]
 })
