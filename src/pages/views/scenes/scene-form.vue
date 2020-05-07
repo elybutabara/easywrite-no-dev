@@ -285,7 +285,7 @@
 </template>
 
 <script>
-import TinyMCE from '../../components/TinyMCE'
+import TinyMCE from '../../../components/TinyMCE'
 
 export default {
   name: 'book-form',

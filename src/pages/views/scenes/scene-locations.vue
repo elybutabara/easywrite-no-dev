@@ -1,21 +1,21 @@
 <template>
 <div>
-    <div v-if="page.is_ready" class="page-scene-items ">
+    <div v-if="page.is_ready" class="page-scene-locations ">
         <div class="es-scene-children-wrapper" style="">
-            <button @click="showChildrenItemList()" class="btn-dark" style="float:right;">{{$t('ADD_SCENE_ITEMS')}}</button>
-            <div class="heading">{{$tc('ITEM', 2)}}</div>
+            <button @click="showChildrenItemList()" class="btn-dark" style="float:right;">{{$t('ADD_SCENE_LOCATIONS')}}</button>
+            <div class="heading">{{$tc('LOCATION', 2)}}</div>
             <div class="es-row">
-                <div class="es-col " v-bind:key="scene_item.id" v-for="scene_item in $store.getters.getSceneItems(scene.uuid)">
+                <div class="es-col " v-bind:key="scene_location.id" v-for="scene_location in $store.getters.getSceneLocations(scene.uuid)">
                     <div class="es-card">
                         <div class="es-card-content">
-                            <p class="title ellipsis-2">{{ scene_item.item.itemname || 'Untitled' }}</p>
-                            <i class="description ellipsis-2" v-if="scene_item.item.description !== '' && scene_item.item.description !== null" v-html="scene_item.item.description"></i>
+                            <p class="title ellipsis-2">{{ scene_location.location.location || 'Untitled' }}</p>
+                            <i class="description ellipsis-2" v-if="scene_location.location.description !== '' && scene_location.location.description !== null" v-html="scene_location.location.description"></i>
                             <i class="description ellipsis-2" v-else>{{$t('NO_DESCRIPTION')}}</i>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-details-' + scene_item.item.uuid, tabComponent: 'item-details',  tabData: {  book: book, item: scene_item.item }, tabTitle: scene_item.item.itemname})"><i class="lar la-eye"></i> {{$t('VIEW')}}</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + scene_item.item.uuid, tabComponent: 'item-form',  tabData: { book: book, item: scene_item.item }, tabTitle: scene_item.item.itemname, newTab: true})"><i class="las la-pencil-alt"></i>  {{$t('EDIT')}}</button>
-                            <button class="btn-delete" @click="deleteSceneItem(scene_item)"><i class="las la-trash-alt"></i> {{$t('DELETE')}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-details-' + scene_location.location.uuid, tabComponent: 'location-details',  tabData: { book: book, location: scene_location.location }, tabTitle: scene_location.location.location})"><i class="lar la-eye"></i> {{$t('VIEW')}}</button>
+                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + scene_location.location.uuid, tabComponent: 'location-form', tabData: { book: book, location: scene_location.location }, tabTitle: $t('EDIT')+ ' - ' + scene_location.location.location, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT').toUpperCase()}}</button>
+                            <button class="btn-delete"  @click="deleteSceneLocation(scene_location)"><i class="las la-trash-alt"></i> {{$t('DELETE')}}</button>
                         </div>
                     </div>
                 </div>
@@ -23,11 +23,11 @@
             <div v-if="adding" class="scene-children-items slideInRight animated">
                 <div class="note">
                     <i @click="hideChildrenItemList()" class="closer fas fa-times"></i>
-                    <strong>{{$t('DOUBLE_CLICK')}}</strong> {{$tc('ITEM', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}
+                    <strong>{{$t('DOUBLE_CLICK')}}</strong> {{$tc('LOCATION', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}
                 </div>
                 <div class="scene-children-items-list" >
-                    <div v-bind:key="item.id" v-for="item in GET_ITEMS_BY_BOOK(scene.book_id)">
-                        <div class="scene-children-item" @dblclick="save(item)" v-if="!isIncluded(item)">{{ item.itemname }}</div>
+                    <div v-bind:key="location.id" v-for="location in GET_LOCATIONS_BY_BOOK(scene.book_id)">
+                        <div class="scene-children-item" @dblclick="save(location)" v-if="!isIncluded(location)">{{ location.location }}</div>
                     </div>
                 </div>
             </div>
@@ -37,9 +37,9 @@
 </template>
 
 <script>
-import TinyMCE from '../../components/TinyMCE'
+import TinyMCE from '../../../components/TinyMCE'
 export default {
-  name: 'scene-items',
+  name: 'scene-locations',
   props: ['properties'],
   data: function () {
     return {
@@ -60,12 +60,12 @@ export default {
     }
   },
   methods: {
-    isIncluded: function (item) {
+    isIncluded: function (location) {
       var scope = this
-      var scenes = scope.$store.getters.getSceneItems(scope.scene.uuid)
+      var scenes = scope.$store.getters.getSceneLocations(scope.scene.uuid)
       for (let i = 0; i < scenes.length; i++) {
         let scene = scenes[i]
-        if (scene.item.uuid === item.uuid) {
+        if (scene.location.uuid === location.uuid) {
           return true
         }
       }
@@ -79,23 +79,23 @@ export default {
       var scope = this
       scope.adding = false
     },
-    save (item) {
+    save (location) {
       var scope = this
 
-      var sceneItem = {
+      var sceneLocation = {
         book_scene_id: scope.scene.uuid,
-        book_item_id: item.uuid
+        book_location_id: location.uuid
       }
 
       scope.axios
-        .post('http://localhost:3000/scene-items', sceneItem)
+        .post('http://localhost:3000/scene-locations', sceneLocation)
         .then(response => {
           if (response.data) {
-            scope.$store.dispatch('addSceneItemToList', response.data)
+            scope.$store.dispatch('addSceneLocationToList', response.data)
           }
         })
     },
-    deleteSceneItem: function (item) {
+    deleteSceneLocation: function (location) {
       var scope = this
       window.swal.fire({
         title: this.$t('ARE_YOU_SURE'),
@@ -109,7 +109,7 @@ export default {
       }).then((result) => {
         if (result.value) {
           scope.axios
-            .delete('http://localhost:3000/scene-items/' + item.uuid)
+            .delete('http://localhost:3000/scene-locations/' + location.uuid)
             .then(response => {
               if (response.data) {
                 window.swal.fire({
@@ -119,7 +119,7 @@ export default {
                   showConfirmButton: false,
                   timer: 1500
                 }).then(() => {
-                  scope.$store.dispatch('removeSceneItemFromList', item)
+                  scope.$store.dispatch('removeSceneLocationFromList', location)
                 })
               }
             })
@@ -133,6 +133,7 @@ export default {
   mounted () {
     var scope = this
     scope.scene = scope.properties.scene
+    scope.$store.dispatch('loadLocationsByScene', scope.scene)
     setTimeout(function () {
       scope.page.is_ready = true
     }, 500)

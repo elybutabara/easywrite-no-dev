@@ -1,14 +1,14 @@
 <template>
-<div class="page-location-form">
-   <div class="es-page-head">
+<div v-if="page.is_ready" class="page-item-form">
+    <div class="es-page-head">
         <div class="inner">
             <div class="details">
                 <div  v-if="data.id != null">
-                    <h4>{{$t('EDIT')}}: <strong>{{ data.location }}</strong></h4>
+                    <h4>{{$t('EDIT')}}: <strong>{{ data.itemname }}</strong></h4>
                     <small>{{$t('DATE_MODIFIED')}}: {{ data.updated_at }}</small>
                 </div>
                 <div v-else>
-                    <h4>{{$t('CREATE')}} {{$t('NEW')}} {{$tc('LOCATION', 1)}}</h4>
+                    <h4>{{$t('CREATE')}} {{$t('NEW')}} {{$tc('ITEM', 1)}}</h4>
                 </div>
             </div>
             <div class="actions">
@@ -17,18 +17,16 @@
             </div>
         </div>
     </div>
-
     <div class="es-page-breadcrumbs">
-        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-        /
-        <button @click="CHANGE_COMPONENT({tabKey: 'location-listing-' + book.uuid, tabComponent: 'location-listing', tabData: book, tabTitle: $tc('LOCATION', 2) + ' - ' + book.title})">{{ $tc('LOCATION', 2) }}</button>
-        /
+       <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+       /
+       <button @click="CHANGE_COMPONENT({tabKey: 'item-listing-' + book.uuid, tabComponent: 'item-listing', tabData: book, tabTitle: $tc('ITEM', 2) + ' - ' + book.title})">{{ $tc('ITEM', 2) }}</button>
+       /
         <button class="current">
-            <span v-if="location !== null">{{ location.location }}</span>
-            <span v-else>New Location</span>
+            <span v-if="item !== null">{{ item.itemname }}</span>
+            <span v-else>New Item</span>
         </button>
     </div>
-
     <div class="es-page-content">
         <div class="container">
             <div class="es-panel">
@@ -46,20 +44,20 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                  <label for="input-title">{{$tc('LOCATION', 1)}}: </label>
+                                  <label for="input-itemname">{{$t('ITEM_NAME')}}: </label>
                                   <b-form-input
-                                    id="input-title"
-                                    v-model="data.location"
-                                    :state="feedback.location.state"
+                                    id="input-itemname"
+                                    v-model="data.itemname"
+                                    :state="feedback.itemname.state"
                                     aria-describedby="input-live-help input-live-feedback"
-                                    :placeholder="$tc('LOCATION', 1)"
+                                    :placeholder="$t('ITEM_NAME')"
                                     @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
                                     trim
                                   ></b-form-input>
 
                                   <!-- This will only be shown if the preceding input has an invalid state -->
-                                  <b-form-invalid-feedback id="input-title-feedback">
-                                    {{ feedback.location.message }}
+                                  <b-form-invalid-feedback id="input-itemname-feedback">
+                                    {{ feedback.itemname.message }}
                                   </b-form-invalid-feedback>
                                 </div>
                             </div>
@@ -97,18 +95,21 @@
 </template>
 
 <script>
-import TinyMCE from '../../components/TinyMCE'
+import TinyMCE from '../../../components/TinyMCE'
 
 export default {
   name: 'book-form',
   props: ['properties'],
   data: function () {
     return {
+      page: {
+        is_ready: false
+      },
       data: {
         id: null,
         uuid: null,
         book_id: null,
-        location: '',
+        itemname: '',
         AKA: '',
         tags: '',
         description: ''
@@ -117,7 +118,7 @@ export default {
       file: '',
       tempDescription: '',
       feedback: {
-        location: {
+        itemname: {
           state: null,
           message: null
         }
@@ -131,8 +132,8 @@ export default {
     book: function () {
       return this.properties.book
     },
-    location: function () {
-      return this.properties.location
+    item: function () {
+      return this.properties.item
     }
   },
   methods: {
@@ -145,6 +146,7 @@ export default {
     displayImage: function () {
       var scope = this
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+
       let reader = new FileReader()
 
       scope.file = this.$refs.fileInput.files[0]
@@ -180,21 +182,26 @@ export default {
         formData.append('single-picture-file', scope.file)
 
         scope.axios
-          .post('http://localhost:3000/upload/locations/image', formData, {
+          .post('http://localhost:3000/upload/items/image', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
           })
           .then(response => {
-            window.$('#location-details [name="picture"]').val(response.data.file.name)
+            window.$('#item-details [name="picture"]').val(response.data.file.name)
 
             scope.data.pictures = response.data.file.name
-            scope.saveLocation()
+            scope.saveItem()
           }).catch(function () {
-            console.log('FAILURE!!')
+            scope.$notify({
+              group: 'notification',
+              type: 'error',
+              title: 'Failed',
+              text: 'An error occur while processing...'
+            })
           })
       } else {
-        scope.saveLocation()
+        scope.saveItem()
       }
     },
     setAll (obj, val) {
@@ -204,20 +211,19 @@ export default {
     },
     setFeedbackNull () {
       var scope = this
-      scope.setAll(scope.feedback.location, null)
+      scope.setAll(scope.feedback.itemname, null)
     },
-    saveLocation () {
+    saveItem () {
       var scope = this
       var hasError = false
-
       scope.data.description = scope.tempDescription
 
       // Clear all error in form
       scope.setFeedbackNull()
 
-      if (!scope.data.location) {
-        scope.feedback.location.message = this.$tc('LOCATION', 1) + ' ' + this.$t('IS_REQUIRED')
-        scope.feedback.location.state = false
+      if (!scope.data.itemname) {
+        scope.feedback.itemname.message = this.$t('ITEM_NAME') + ' ' + this.$t('IS_REQUIRED')
+        scope.feedback.itemname.state = false
         hasError = true
       }
 
@@ -226,14 +232,13 @@ export default {
       }
 
       scope.axios
-        .post('http://localhost:3000/locations', scope.data)
+        .post('http://localhost:3000/items', scope.data)
         .then(response => {
-          if (response.data) {
-            console.log(response.data)
+          if (response) {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$tc('LOCATION', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
+              title: this.$tc('ITEM', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
@@ -242,31 +247,31 @@ export default {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
-                scope.$store.dispatch('updateLocationList', response.data)
-                scope.CHANGE_COMPONENT({tabKey: 'location-form-' + response.data.uuid, tabComponent: 'location-form', tabData: { book: scope.book, location: response.data }, tabTitle: this.$t('EDIT') + ' - ' + response.data.location, tabIndex: scope.$store.getters.getActiveTab})
+                scope.$store.dispatch('updateItemList', response.data)
+                scope.CHANGE_COMPONENT({tabKey: 'item-form-' + response.data.uuid, tabComponent: 'item-form', tabData: { book_id: response.data.book_id, item: response.data }, tabTitle: this.$t('EDIT') + ' - ' + response.data.itemname, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
-                scope.$store.dispatch('updateLocationList', response.data)
-                scope.$store.dispatch('changeTabTitle', { key: 'location-form-' + response.data.uuid, title: this.$t('EDIT') + ' - ' + response.data.location })
+                scope.$store.dispatch('updateItemList', response.data)
+                scope.$store.dispatch('changeTabTitle', { key: 'item-form-' + response.data.uuid, title: this.$t('EDIT') + ' - ' + response.data.itemname })
               }
 
-              scope.loadLocation(response.data)
+              scope.loadItem(response.data)
             })
           }
         })
     },
-    loadLocation (locationProp) {
+    loadItem (itemProp) {
       var scope = this
       setTimeout(function () {
-        let location = scope.$store.getters.findLocation(locationProp)
-        scope.data.location = location.location
-        scope.data.AKA = location.AKA
-        scope.data.tags = location.tags
-        scope.data.description = location.description
-        scope.data.pictures = location.pictures
-        scope.picture_src = location.picture_src
+        let item = scope.$store.getters.findItem(itemProp)
+        scope.data.itemname = item.itemname
+        scope.data.AKA = item.AKA
+        scope.data.tags = item.tags
+        scope.data.description = item.description
+        scope.data.pictures = item.pictures
+        scope.picture_src = item.picture_src
       }, 500)
     }
   },
@@ -274,25 +279,25 @@ export default {
     var scope = this
     scope.data.book_id = scope.properties.book.uuid
 
-    if (scope.properties.location) {
-      scope.$set(scope.data, 'id', scope.properties.location.id)
-      scope.$set(scope.data, 'uuid', scope.properties.location.uuid)
+    if (scope.properties.item) {
+      scope.$set(scope.data, 'id', scope.properties.item.id)
+      scope.$set(scope.data, 'uuid', scope.properties.item.uuid)
     }
   },
   mounted () {
     var scope = this
-
     if (scope.data.uuid) {
-      window.$('.page-location-form .page-title h3').html('Update ' + scope.properties.location.location)
-      scope.loadLocation(scope.data)
+      scope.loadItem(scope.data)
     }
+
+    setTimeout(function () {
+      scope.page.is_ready = true
+    }, 550)
   }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .page-book-form { padding:20px; }
-
   .page-title { font-family: 'Crimson Roman Bold'; position:relative; padding-top:20px; }
   .page-title h3 { font-size:35px; }
 

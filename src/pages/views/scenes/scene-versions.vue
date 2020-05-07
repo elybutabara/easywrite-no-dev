@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import TinyMCE from '../../components/TinyMCE'
+import TinyMCE from '../../../components/TinyMCE'
 export default {
   name: 'scene-versions',
   props: ['properties'],

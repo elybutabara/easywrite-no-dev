@@ -1,16 +1,16 @@
 <template>
-<div v-if="page.is_ready" class="page-scene-compare-versions ">
+<div v-if="page.is_ready" class="page-chapter-compare-versions ">
 
-    <div v-if="comparing" class="scene-version-difference">
-        <div class="scene-version-difference-content" v-html="diff_content"></div>
+    <div v-if="comparing" class="chapter-version-difference">
+        <div class="chapter-version-difference-content" v-html="diff_content"></div>
         <div class="settings">
             <span class="heading">{{$t('COMPARISON_SETTINGS').toUpperCase()}}</span>
             <br/>
-            <select @change="changeSceneVersion1(),showDifference()" v-model="v1.uuid">
+            <select @change="changeChapterVersion1(),showDifference()" v-model="v1.uuid">
                 <option value="null">{{$t('SELECT_A_VERSION').toUpperCase()}}</option>
                 <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$tc('VERSION', 1)}} {{ index + 1 }}</option>
             </select>
-            <select @change="changeSceneVersion2(),showDifference()" v-model="v2.uuid">
+            <select @change="changeChapterVersion2(),showDifference()" v-model="v2.uuid">
                 <option value="null">{{$t('SELECT_A_VERSION').toUpperCase()}}</option>
                 <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$tc('VERSION', 1)}} {{ index + 1 }}</option>
             </select>
@@ -21,9 +21,9 @@
         </div>
     </div>
 
-    <div v-if="!comparing" class="scene-compare-versions-options" >
+    <div v-if="!comparing" class="chapter-compare-versions-options" >
         <div class="versions">
-            <select @change="changeSceneVersion1()" v-model="v1.uuid">
+            <select @change="changeChapterVersion1()" v-model="v1.uuid">
                 <option value="null">{{$t('SELECT_A_VERSION').toUpperCase()}}</option>
                 <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$tc('VERSION', 1)}} {{ index + 1 }}</option>
             </select>
@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="versions">
-            <select @change="changeSceneVersion2()" v-model="v2.uuid">
+            <select @change="changeChapterVersion2()" v-model="v2.uuid">
                 <option value="null">{{$t('SELECT_A_VERSION').toUpperCase()}}</option>
                 <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$tc('VERSION', 1)}} {{ index + 1 }}</option>
             </select>
@@ -47,11 +47,11 @@
 </div>
 </template>
 <script>
-import TinyMCE from '../../components/TinyMCE'
+import TinyMCE from '../../../components/TinyMCE'
 const DiffMatchPatch = require('diff-match-patch')
 
 export default {
-  name: 'scene-compare-versions',
+  name: 'chapter-compare-versions',
   props: ['properties'],
   data: function () {
     return {
@@ -60,19 +60,19 @@ export default {
         is_ready: false,
         data: null
       },
-      scene: null,
+      chapter: null,
       versions: [],
       v1: {
         id: null,
         uuid: null,
-        scene_id: null,
+        chapter_id: null,
         content: '',
         change_description: ''
       },
       v2: {
         id: null,
         uuid: null,
-        scene_id: null,
+        chapter_id: null,
         content: '',
         change_description: ''
       },
@@ -86,7 +86,7 @@ export default {
   computed: {
   },
   methods: {
-    changeSceneVersion1: function () {
+    changeChapterVersion1: function () {
       var scope = this
       let versions = scope.versions
       for (let i = 0; i < versions.length; i++) {
@@ -100,7 +100,7 @@ export default {
         }
       }
     },
-    changeSceneVersion2: function () {
+    changeChapterVersion2: function () {
       var scope = this
       let versions = scope.versions
       for (let i = 0; i < versions.length; i++) {
@@ -144,7 +144,7 @@ export default {
         scope.v2.content = version.content
       }
     },
-    changesceneVersion: function () {
+    changeChapterVersion: function () {
       var scope = this
       let versions = scope.versions
       for (let i = 0; i < versions.length; i++) {
@@ -201,8 +201,8 @@ export default {
   },
   mounted () {
     var scope = this
-    scope.scene = scope.properties.scene
-    scope.versions = scope.$store.getters.getScenesByChapter(scope.scene.uuid)
+    scope.chapter = scope.properties.chapter
+    scope.versions = scope.GET_CHAPTER_VERSIONS_BY_CHAPTER(scope.chapter.uuid)
 
     setTimeout(function () {
       scope.getLatestVersion()
@@ -215,16 +215,16 @@ export default {
 <style scoped>
     .switch-version { text-align:right; }
 
-    .scene-compare-versions-options { display:flex; }
-    .scene-compare-versions-options .versions { width:50%; padding:10px; }
-    .scene-compare-versions-options .versions select { padding:5px 7px; width:100%; }
-    .scene-compare-versions-options .versions .content { margin-top:10px; padding:20px; border:1px solid #ccc; height:calc(100vh - 415px); overflow-y:scroll; }
+    .chapter-compare-versions-options { display:flex; }
+    .chapter-compare-versions-options .versions { width:50%; padding:10px; }
+    .chapter-compare-versions-options .versions select { padding:5px 7px; width:100%; }
+    .chapter-compare-versions-options .versions .content { margin-top:10px; padding:20px; border:1px solid #ccc; height:calc(100vh - 415px); overflow-y:scroll; }
 
-    .scene-version-difference { display:flex; justify-content: space-between; }
-    .scene-version-difference .scene-version-difference-content { width:calc(100% - 320px); height:calc(100vh - 310px); overflow-y:auto; }
-    .scene-version-difference .settings { width:280px; height:200px; background:#324553; border:1px solid #ccc; padding:10px 15px; }
-    .scene-version-difference .settings .heading { color:#fff; font-size:14px; }
-    .scene-version-difference .settings select { margin-top:10px; padding:5px 7px; width:100%; }
+    .chapter-version-difference { display:flex; justify-content: space-between; }
+    .chapter-version-difference .chapter-version-difference-content { width:calc(100% - 320px); height:calc(100vh - 310px); overflow-y:auto; }
+    .chapter-version-difference .settings { width:280px; height:200px; background:#324553; border:1px solid #ccc; padding:10px 15px; }
+    .chapter-version-difference .settings .heading { color:#fff; font-size:14px; }
+    .chapter-version-difference .settings select { margin-top:10px; padding:5px 7px; width:100%; }
 
     .btn-dark { margin-top:5px; background:#324553; color:#fff; border:none; border-radius:3px; height:35px; line-height:35px; padding:0px 10px; }
     .btn-red { margin-top:5px; background:#892d3a; color:#fff; border:none; border-radius:3px; height:35px; line-height:35px; padding:0px 10px; }

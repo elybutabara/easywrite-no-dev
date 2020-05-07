@@ -106,12 +106,12 @@
 </template>
 
 <script>
-import TinyMCE from '../../components/TinyMCE'
-import SceneLocations from '@/components/pages/scene-locations'
-import SceneItems from '@/components/pages/scene-items'
-import SceneCharacters from '@/components/pages/scene-characters'
-import SceneVersions from '@/components/pages/scene-versions'
-import SceneCompareVersions from '@/components/pages/scene-compare-versions'
+import TinyMCE from '../../../components/TinyMCE'
+import SceneLocations from '@/pages/views/scenes/scene-locations'
+import SceneItems from '@/pages/views/scenes/scene-items'
+import SceneCharacters from '@/pages/views/scenes/scene-characters'
+import SceneVersions from '@/pages/views/scenes/scene-versions'
+import SceneCompareVersions from '@/pages/views/scenes/scene-compare-versions'
 
 const {ipcRenderer} = window.require('electron')
 

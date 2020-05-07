@@ -82,10 +82,10 @@
 </template>
 
 <script>
-import TinyMCE from '../../components/TinyMCE'
-import ChapterScenes from '@/components/pages/chapter-scenes'
-import ChapterVersions from '@/components/pages/chapter-versions'
-import ChapterCompareVersions from '@/components/pages/chapter-compare-versions'
+import TinyMCE from '../../../components/TinyMCE'
+import ChapterScenes from '@/pages/views/chapters/chapter-scenes'
+import ChapterVersions from '@/pages/views/chapters/chapter-versions'
+import ChapterCompareVersions from '@/pages/views/chapters/chapter-compare-versions'
 import moment from 'moment'
 
 const {ipcRenderer} = window.require('electron')

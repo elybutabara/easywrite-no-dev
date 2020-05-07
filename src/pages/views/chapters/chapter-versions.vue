@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import TinyMCE from '../../components/TinyMCE'
+import TinyMCE from '../../../components/TinyMCE'
 export default {
   name: 'chapter-versions',
   props: ['properties'],
