@@ -2,11 +2,9 @@
 const { app, BrowserWindow, Menu, ipcMain , systemPreferences, dialog} = require('electron')
 const path = require('path')
 const fs = require('fs')
-const log = require('electron-log')
+// const log = require('electron-log')
 //basePath is needed in some separate files
 process.env.basePath = path.resolve(__dirname)
-log.info(path.resolve('./'))
-log.info(path.resolve(__dirname))
 if(fs.existsSync(path.join(process.resourcesPath || '','prod.env'))){
   process.env.NODE_ENV = 'production'
   global.resourcePath = app.getPath('userData')
@@ -126,7 +124,7 @@ app.on('ready', function appReady() {
   autoUpdate.checkForVersionUpdates()
   createWindow()
   if(process.env.NODE_ENV != 'development'){
-    autoUpdate.check()
+    autoUpdate.checkAppUpdates()
   }
 })
 
