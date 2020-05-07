@@ -262,7 +262,7 @@ export default {
     },
     exportContent: function () {
       var scope = this
-      ipcRenderer.send('show-save-as-dialog-content', {content: scope.getSceneContent, defaultfilename: scope.properties.scene.title + ' - ' + this.$t('CONTENT')})
+      ipcRenderer.send('EXPORT-CONTENT-DOCX', {content: scope.getSceneContent, defaultfilename: scope.properties.scene.title + ' - ' + this.$t('CONTENT')})
     }
   },
   mounted () {

@@ -27,3 +27,4 @@ output/
 private/
 *.diff
 !*api/base.db
+desktop.ini

@@ -90,6 +90,7 @@ export default {
             scope.actionmutateTimer()
             // scope.COOKIE_SET('username', scope.username, 365)
             localStorage.setItem('username', scope.username)
+            localStorage.setItem('password', scope.password)
             scope.$router.push({name: 'Main'})
           }, 100)
         })
@@ -110,6 +111,7 @@ export default {
           delete response.data.author.id
           // scope.COOKIE_SET('username', scope.username, 365)
           localStorage.setItem('username', scope.username)
+          localStorage.setItem('password', scope.password)
           scope.$set(response.data.user, 'password', scope.password)
           scope.$set(response.data.user, 'token', response.data.success.token)
           scope.$set(response.data.user, 'author', response.data.author)
@@ -191,6 +193,7 @@ export default {
     ipcRenderer.send('REFRESH_MENUITEMS')
 
     scope.username = localStorage.getItem('username')
+    scope.password = localStorage.getItem('password')
   }
 }
 

@@ -217,7 +217,7 @@ export default {
     },
     exportContent: function () {
       var scope = this
-      ipcRenderer.send('show-save-as-dialog-content', {content: scope.getChapterContent, defaultfilename: scope.page.title + ' - ' + this.$t('CONTENT')})
+      ipcRenderer.send('EXPORT-CONTENT-DOCX', {content: scope.getChapterContent, defaultfilename: scope.page.title + ' - ' + this.$t('CONTENT')})
     }
   },
   beforeUpdate () {

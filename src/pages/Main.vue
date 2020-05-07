@@ -171,6 +171,18 @@ export default {
     ipcRenderer.on('SYNC_DATA', function (event, data) {
       scope.CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing', tabData: null, tabTitle: scope.$t('SYNC_DATA'), newTab: true})
     })
+
+    ipcRenderer.on('SHOW_SWAL_TIMESUP', function (event, data) {
+      console.log('asdsadasdsdsadsa')
+      window.swal.fire({
+        icon: 'error',
+        title: scope.$t('TIMES_UP'),
+        text: scope.$t('YOUR_POMODORO_EXPIRES'),
+        customClass: {
+          container: 'pomodoro-expired-alert animated heartBeat'
+        }
+      })
+    })
   }
 }
 
@@ -178,13 +190,22 @@ ipcRenderer.on('SET_TRANSLATION_DOM', function (event, data) {
   localStorage.setItem('translation', data)
 })
 
-ipcRenderer.on('success-exporting', function (event, data) {
+ipcRenderer.on('SHOW-SWAL-SUCCESS-EXPORTING', function (event, data) {
   window.swal.fire({
     icon: 'success',
     title: 'Successfuly Exported To',
     text: data
   })
 })
+
+ipcRenderer.on('SHOW-SWAL-ERROR-EXPORTING', function (event, data) {
+  window.swal.fire({
+    icon: 'error',
+    title: 'Unsuccessfuly Exported, your file is already open. Please close your file before exporting',
+    text: data
+  })
+})
+
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>

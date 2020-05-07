@@ -7,9 +7,9 @@
                 <small>{{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
             </div>
             <div class="actions">
+                <button class="es-button-white" @click="exportBook()">{{export_book}}</button>
                 <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'storyboard-' + page.data.uuid, tabComponent: 'storyboard',  tabData: page.data, tabTitle: 'Story Board - ' + properties.title, newTab: true})">{{ $tc('STORYBOARD', 2) }}</button>
                 <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: 'Edit - ' + properties.title, newTab: true})">{{ $t('EDIT') }}</button>
-
                 <button class="es-button-red" @click="deleteBook()">{{ $t('DELETE') }}</button>
             </div>
         </div>
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+const {ipcRenderer} = window.require('electron')
 export default {
   name: 'book-details',
   props: ['properties'],
@@ -34,8 +35,12 @@ export default {
         is_ready: false,
         title: '',
         data: null
-      }
+      },
+      export_book: this.$t('EXPORT').toUpperCase() + ' ' + this.$tc('BOOK', 1).toUpperCase()
     }
+  },
+  computed: {
+
   },
   methods: {
     updateBook () {
@@ -45,6 +50,13 @@ export default {
       scope.$parent.changeComponent('book-form', scope.properties, scope.properties.title, true)
       scope.$store.commit('addTab', { title: scope.properties.title, component: 'book-form', data: scope.properties })
     },
+
+    getExportButtonName () {
+      var buttonName = this.$t('EXPORT').toUpperCase() + ' ' + this.$tc('BOOK', 1).toUpperCase()
+
+      return buttonName
+    },
+
     deleteBook () {
       var scope = this
       window.swal.fire({
@@ -76,7 +88,21 @@ export default {
             })
         }
       })
+    },
+
+    exportBook: function () {
+      const scope = this
+      scope.export_book = scope.$t('LOADING').toUpperCase() + '....'
+
+      let book = scope.properties
+
+      ipcRenderer.send('EXPORT-DOCX-SHOW-BOOK-WINDOW', book)
+
+      ipcRenderer.on('CHANGE_EXPORT_BOOK_BUTTON_NAME', function (event, data) {
+        scope.export_book = scope.$t('EXPORT').toUpperCase() + ' ' + scope.$tc('BOOK', 1).toUpperCase()
+      })
     }
+
   },
   mounted () {
     var scope = this
@@ -85,6 +111,7 @@ export default {
     scope.page.is_ready = true
   }
 }
+
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>

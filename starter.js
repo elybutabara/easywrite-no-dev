@@ -4,7 +4,8 @@ const path = require('path')
 const fs = require('fs')
 const log = require('electron-log')
 const appUpdate = require('./api/updater')
-const reportContent = require('./reports/report_content')
+// const reportContent = require('./reports/report_content')
+const exportdocx = require('./starter-extensions/export-reports/docx/export-docx')
 
 if(fs.existsSync(path.join(process.resourcesPath || '','prod.env'))){
   process.env.NODE_ENV = 'production'
@@ -45,7 +46,7 @@ function createWindow () {
 
   // mainWindow.webContents.openDevTools()
   if (process.env.NODE_ENV == 'development') {
-   //  mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
     let url = 'http://localhost:8080/'
     // and load the index.html of the app.
     // mainWindow.loadFile(url + 'dev/')
@@ -83,6 +84,8 @@ function createWindow () {
   })
   appUpdate.processUpdate(mainWindow)
 
+  exportdocx.initMainWindow(mainWindow)
+
   ipcMain.on('REFRESH_MENUITEMS', function (e, cat) {
     Menu.setApplicationMenu(menu.getMenu(mainWindow))
   })
@@ -93,22 +96,7 @@ ipcMain.on('SET_DEFAULT_LANG', function (e, cat) {
   menu.setMenu(cat)
 })
 
-ipcMain.on('show-save-as-dialog-content', function (e, cat) {
-    dialog.showSaveDialog(mainWindow, {
-    defaultPath: cat.defaultfilename,
-    properties: ['openFile', 'openDirectory','showOverwriteConfirmation'],
-    filters: [
-      { name: 'Doc Files', extensions: ['docx'] }
-    ]
-  }).then(result => {
-    if(result.canceled === false){
-      reportContent.getContent(result.filePath , cat.content)
-      mainWindow.webContents.send('success-exporting', result.filePath)
-    }
-  }).catch(err => {
 
-  })
-})
 
 
 /*
@@ -362,3 +350,8 @@ function createExportWindow(data) {
     exportWindow = null
   })
 }
+
+
+ipcMain.on('SHOW_SWAL_TIMESUP_STARTER', function (event, data) {
+  mainWindow.webContents.send('SHOW_SWAL_TIMESUP')
+})

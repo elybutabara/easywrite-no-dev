@@ -123,6 +123,8 @@ const store = new Vuex.Store({
 Vue.mixin(mixins)
 Vue.mixin(cookie)
 
+// console.log(VueSanitize)
+
 // eslint-disable-next-line no-new
 new Vue({
   el: '#app',
