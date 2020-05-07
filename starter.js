@@ -48,7 +48,7 @@ function createWindow () {
     }
   })
 
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
   if (process.env.NODE_ENV == 'development') {
    //  mainWindow.webContents.openDevTools()
     let url = 'http://localhost:8080/'

@@ -24,7 +24,7 @@ function createExportWindow(data) {
   exportWindow.center()
   exportWindow.setMenu(null)
 
-  exportWindow.webContents.openDevTools()
+  // exportWindow.webContents.openDevTools()
   if (process.env.NODE_ENV == 'development') {
     exportWindow.webContents.openDevTools()
     let url = 'http://localhost:8080/'
