@@ -1,25 +1,25 @@
 <template>
-  <div id="auth" class="page-auth">
-      <!--
+<div id="auth" class="page-auth">
+    <!--
     <div class="login-form text-center">
-      <form v-on:submit.prevent="authenticate()">
-        <h1 class="no-margin">Easy Write</h1>
-        <p><small>Welcome Back! Please login to continue.</small></p><br>
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text"  id="basic-addon1"><i class="fa fa-envelope"></i></span>
-          </div>
-          <input required type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1" v-model="username" >
-        </div>
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-adon1"><i class="fa fa-lock"></i></span>
-          </div>
-          <input required type="password" class="form-control" placeholder="Password" aria-describedby="basic-addon1" v-model="password">
-        </div>
-        <button @click="closeForm()" type="button" class="btn btn-light">Cancel</button>
-        <button type="submit" class="btn btn-light">Login</button>
-      </form>
+        <form v-on:submit.prevent="authenticate()">
+            <h1 class="no-margin">Easy Write</h1>
+            <p><small>Welcome Back! Please login to continue.</small></p><br>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"  id="basic-addon1"><i class="fa fa-envelope"></i></span>
+                </div>
+                <input required type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1" v-model="username" >
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-adon1"><i class="fa fa-lock"></i></span>
+                </div>
+                <input required type="password" class="form-control" placeholder="Password" aria-describedby="basic-addon1" v-model="password">
+            </div>
+            <button @click="closeForm()" type="button" class="btn btn-light">Cancel</button>
+            <button type="submit" class="btn btn-light">Login</button>
+        </form>
     </div>
     -->
    <div class="es-login-wrapper">
@@ -48,7 +48,7 @@
            </div>
        </div>
    </div>
-  </div>
+</div>
 </template>
 
 <script>

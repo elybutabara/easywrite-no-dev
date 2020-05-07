@@ -1,6 +1,5 @@
 <template>
 <div v-if="page.is_ready" class="page-scene-compare-versions ">
-
     <div v-if="comparing" class="scene-version-difference">
         <div class="scene-version-difference-content" v-html="diff_content"></div>
         <div class="settings">
@@ -20,7 +19,6 @@
             </div>
         </div>
     </div>
-
     <div v-if="!comparing" class="scene-compare-versions-options" >
         <div class="versions">
             <select @change="changeSceneVersion1()" v-model="v1.uuid">

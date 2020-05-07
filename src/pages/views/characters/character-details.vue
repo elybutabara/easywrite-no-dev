@@ -19,7 +19,6 @@
                 </span>
             </h2>
             <p class="aka">{{ properties.character.nickname || 'Not Set' }}</p>
-
             <div class="es-panel-tab" style="">
                 <a @click="changeTab('description')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'description'}">{{$t('DESCRIPTION')}}</a>
                 <a @click="changeTab('bio')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'bio'}">{{$t('BIO')}}</a>
@@ -67,26 +66,22 @@
             <div class="cta" @click="deleteCharacter(properties.character)">{{$t('DELETE').toUpperCase()}}</div>
         </div>
     </div>
-
     <div class="es-dialog-overlay" v-bind:class="{'open' : relation_form.is_open }">
         <div class="es-dialog-content">
             <div style="margin-bottom:15px;">
                 <label class="typo__label">{{$tc('RELATION', 1)}}: </label>
                 <multiselect v-model="selected_relation" :options="relations" :placeholder="$t('SELECT') + ' '+ $tc('RELATION',1)" label="relation" track-by="relation" :taggable="true" @tag="addRelation" tag-placeholder="Press enter to add as new relation" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectedLabel="$t('SELECTED')"></multiselect>
             </div>
-
             <div style="margin-bottom:15px;">
                 <label class="typo__label">{{$tc('CHARACTER', 1)}}: </label>
                 <multiselect v-model="selected_character" :options="characters" :placeholder="$t('SELECT') + ' '+ $tc('CHARACTER',1)" label="fullname" track-by="fullname" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')" :selectedLabel="$t('SELECTED')"></multiselect>
             </div>
-
-             <div style="text-align:right;">
+            <div style="text-align:right;">
                 <b-button @click="saveRelationDetail()" variant="dark">{{$t('SAVE')}}</b-button>
                 <b-button @click="toggleRelationForm()" ref="btn_cancel_relation" v-b-toggle.collapse-1 variant="dark">{{$t('CANCEL')}}</b-button>
             </div>
         </div>
     </div>
-
 </div>
 </template>
 

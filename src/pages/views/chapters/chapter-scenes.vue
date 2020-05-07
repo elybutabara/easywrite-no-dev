@@ -1,30 +1,30 @@
 <template>
-    <div v-if="page.is_ready" class="page-chapter-scenes ">
+<div v-if="page.is_ready" class="page-chapter-scenes ">
         <div style="padding:0px 10px; text-align:right; margin-bottom:20px;">
             <button @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + chapter.uuid, tabComponent: 'scene-form',  tabData: { book: book, chapter: chapter, scene: null }, tabTitle: 'New Scene', newTab: true})" class="btn-new-scene">
                 <i class="las la-plus"></i> {{$t('ADD_NEW_SCENE').toUpperCase()}}
             </button>
         </div>
-        <draggable v-model="scenes" draggable=".es-col" class="es-row">
-            <div class="es-col " v-for="scene in scenes" v-bind:key="scene.id">
-                <div class="es-card">
-                    <div class="es-card-content">
-                      <div class="es-card-actions">
+    <draggable v-model="scenes" draggable=".es-col" class="es-row">
+        <div class="es-col " v-for="scene in scenes" v-bind:key="scene.id">
+            <div class="es-card">
+                <div class="es-card-content">
+                    <div class="es-card-actions">
                         <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + scene.uuid, tabComponent: 'scene-form',  tabData: { book: book, scene: scene, chapter: chapter}, tabTitle: 'Edit ' + scene.title, newTab: true })"><i class="las la-pencil-alt"></i></button>
                         <button class="btn-circle" @click="deleteScene(scene)"><i class="las la-trash-alt"></i></button>
                         <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + scene.uuid, tabComponent: 'scene-details',  tabData: { book: book, scene: scene, chapter: chapter}, tabTitle: scene.title, newTab: true })"><i class="lar la-eye"></i></button>
-                      </div>
-                        <p class="title ellipsis-2">{{ scene.title || 'Untitled' }}</p>
-                        <i class="description ellipsis-2">{{ scene.short_description || $t('NO_SHORT_DESCRIPTION') + '...'  }}</i>
                     </div>
-                    <div class="es-card-footer">
-                        <small>{{$tc('VERSION', 2)}}: {{ scene.scene_version.length }}</small>
-                        <small style="float:right;">{{$t('WORD_COUNT')}}: {{ WORD_COUNT(scene.scene_version[0].content) }}</small>
-                    </div>
+                    <p class="title ellipsis-2">{{ scene.title || 'Untitled' }}</p>
+                    <i class="description ellipsis-2">{{ scene.short_description || $t('NO_SHORT_DESCRIPTION') + '...'  }}</i>
+                </div>
+                <div class="es-card-footer">
+                    <small>{{$tc('VERSION', 2)}}: {{ scene.scene_version.length }}</small>
+                    <small style="float:right;">{{$t('WORD_COUNT')}}: {{ WORD_COUNT(scene.scene_version[0].content) }}</small>
                 </div>
             </div>
-        </draggable>
-    </div>
+        </div>
+    </draggable>
+</div>
 </template>
 <script>
 import draggable from 'vuedraggable'

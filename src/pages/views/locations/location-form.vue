@@ -1,6 +1,6 @@
 <template>
 <div class="page-location-form">
-   <div class="es-page-head">
+    <div class="es-page-head">
         <div class="inner">
             <div class="details">
                 <div  v-if="data.id != null">
@@ -17,7 +17,6 @@
             </div>
         </div>
     </div>
-
     <div class="es-page-breadcrumbs">
         <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
         /
@@ -28,7 +27,6 @@
             <span v-else>New Location</span>
         </button>
     </div>
-
     <div class="es-page-content">
         <div class="container">
             <div class="es-panel">
@@ -37,8 +35,8 @@
                         <div class="form-group">
                             <input v-on:change="displayImage" ref="fileInput" type="file" class="single-picture-file" name="single-picture-file" accept=".png, .jpg, .jpeg">
                             <div @click="$refs.fileInput.click()" class="uploaded-file-preview">
-                              <div v-if="picture_src"><img :src="picture_src"></div>
-                              <div v-else class="default-preview"><i class="fa fa-image"></i></div>
+                                <div v-if="picture_src"><img :src="picture_src"></div>
+                                <div v-else class="default-preview"><i class="fa fa-image"></i></div>
                             </div>
                         </div>
                     </div>
@@ -46,21 +44,20 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                  <label for="input-title">{{$tc('LOCATION', 1)}}: </label>
-                                  <b-form-input
-                                    id="input-title"
-                                    v-model="data.location"
-                                    :state="feedback.location.state"
-                                    aria-describedby="input-live-help input-live-feedback"
-                                    :placeholder="$tc('LOCATION', 1)"
-                                    @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
-                                    trim
-                                  ></b-form-input>
-
-                                  <!-- This will only be shown if the preceding input has an invalid state -->
-                                  <b-form-invalid-feedback id="input-title-feedback">
-                                    {{ feedback.location.message }}
-                                  </b-form-invalid-feedback>
+                                    <label for="input-title">{{$tc('LOCATION', 1)}}: </label>
+                                    <b-form-input
+                                        id="input-title"
+                                        v-model="data.location"
+                                        :state="feedback.location.state"
+                                        aria-describedby="input-live-help input-live-feedback"
+                                        :placeholder="$tc('LOCATION', 1)"
+                                        @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
+                                        trim
+                                    ></b-form-input>
+                                    <!-- This will only be shown if the preceding input has an invalid state -->
+                                    <b-form-invalid-feedback id="input-title-feedback">
+                                        {{ feedback.location.message }}
+                                    </b-form-invalid-feedback>
                                 </div>
                             </div>
                         </div>

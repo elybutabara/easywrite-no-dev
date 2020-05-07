@@ -1,7 +1,7 @@
 <template>
 <div class="page-book-lising">
-   <syncing v-if="syncing.open" :properties="{ fullscreen: syncing.fullscreen, autostart: syncing.autostart }"></syncing>
-   <div class="es-page-head">
+    <syncing v-if="syncing.open" :properties="{ fullscreen: syncing.fullscreen, autostart: syncing.autostart }"></syncing>
+    <div class="es-page-head">
         <div class="inner">
             <div class="details">
                 <h4>{{$t('WELCOME')}}{{ getAuthorName }}!</h4>
@@ -22,7 +22,6 @@
             <hr/>
             <report />
         </div>
-
         <div style="margin-top:10px; margin-bottom:20px; max-width: 1320px; display:flex; width:calc(100% - 40px); margin:0px auto; justify-content: space-between;">
             <div style="background:#fff; width:calc(100% - 320px); padding:20px 20px; border: 1px solid #e0e5ee;">
                 <h4>Your literary family</h4>
@@ -83,7 +82,6 @@
                Pilot reader is under the umbrella of the Writers' School, and thus part of the literary family.
             </p>
         </div>
-
         <div class="es-panel">
             <h4>Your literary family</h4>
             <p>

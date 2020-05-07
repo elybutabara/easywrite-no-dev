@@ -1,21 +1,21 @@
 <template>
 <div>
-<div v-if="page.is_ready" class="page-scene-versions ">
-    <div class="switch-version">
-        <select @change="changeSceneVersion()" v-model="version.uuid" style="padding:5px 7px;">
-            <option value="null">{{$t('SELECT_A_VERSION').toUpperCase()}}</option>
-            <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$tc('VERSION', 1)}} {{ index + 1 }}</option>
-        </select>
+    <div v-if="page.is_ready" class="page-scene-versions ">
+        <div class="switch-version">
+            <select @change="changeSceneVersion()" v-model="version.uuid" style="padding:5px 7px;">
+                <option value="null">{{$t('SELECT_A_VERSION').toUpperCase()}}</option>
+                <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$tc('VERSION', 1)}} {{ index + 1 }}</option>
+            </select>
+        </div>
+        <div class="scene-version-description">
+            <strong>{{$t('DESCRIPTION')}}</strong>
+            <div v-if="version.change_description !== 'undefined' && version.change_description !== null && version.change_description !== ''" v-html="version.change_description" class="description"></div>
+            <div v-else vclass="description">{{$t('NO_DESCRIPTION_ON_THIS')}} <strong>{{$tc('VERSION', 1).toLowerCase()}}</strong>.</div>
+        </div>
+        <div class="scene-version-content">
+            <div v-html="version.content" class="description" ></div>
+        </div>
     </div>
-    <div class="scene-version-description">
-        <strong>{{$t('DESCRIPTION')}}</strong>
-        <div v-if="version.change_description !== 'undefined' && version.change_description !== null && version.change_description !== ''" v-html="version.change_description" class="description"></div>
-        <div v-else vclass="description">{{$t('NO_DESCRIPTION_ON_THIS')}} <strong>{{$tc('VERSION', 1).toLowerCase()}}</strong>.</div>
-    </div>
-    <div class="scene-version-content">
-        <div v-html="version.content" class="description" ></div>
-    </div>
-</div>
 </div>
 </template>
 

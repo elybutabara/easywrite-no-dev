@@ -18,10 +18,10 @@
         </div>
     </div>
     <div class="es-page-breadcrumbs">
-       <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-       /
-       <button @click="CHANGE_COMPONENT({tabKey: 'item-listing-' + book.uuid, tabComponent: 'item-listing', tabData: book, tabTitle: $tc('ITEM', 2) + ' - ' + book.title})">{{ $tc('ITEM', 2) }}</button>
-       /
+        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+        /
+        <button @click="CHANGE_COMPONENT({tabKey: 'item-listing-' + book.uuid, tabComponent: 'item-listing', tabData: book, tabTitle: $tc('ITEM', 2) + ' - ' + book.title})">{{ $tc('ITEM', 2) }}</button>
+        /
         <button class="current">
             <span v-if="item !== null">{{ item.itemname }}</span>
             <span v-else>New Item</span>
@@ -44,21 +44,20 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                  <label for="input-itemname">{{$t('ITEM_NAME')}}: </label>
-                                  <b-form-input
-                                    id="input-itemname"
-                                    v-model="data.itemname"
-                                    :state="feedback.itemname.state"
-                                    aria-describedby="input-live-help input-live-feedback"
-                                    :placeholder="$t('ITEM_NAME')"
-                                    @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
-                                    trim
-                                  ></b-form-input>
-
-                                  <!-- This will only be shown if the preceding input has an invalid state -->
-                                  <b-form-invalid-feedback id="input-itemname-feedback">
-                                    {{ feedback.itemname.message }}
-                                  </b-form-invalid-feedback>
+                                    <label for="input-itemname">{{$t('ITEM_NAME')}}: </label>
+                                    <b-form-input
+                                        id="input-itemname"
+                                        v-model="data.itemname"
+                                        :state="feedback.itemname.state"
+                                        aria-describedby="input-live-help input-live-feedback"
+                                        :placeholder="$t('ITEM_NAME')"
+                                        @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
+                                        trim
+                                    ></b-form-input>
+                                    <!-- This will only be shown if the preceding input has an invalid state -->
+                                    <b-form-invalid-feedback id="input-itemname-feedback">
+                                        {{ feedback.itemname.message }}
+                                    </b-form-invalid-feedback>
                                 </div>
                             </div>
                         </div>

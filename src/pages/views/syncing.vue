@@ -1,7 +1,7 @@
 <template>
 <div class="page-syncing" v-bind:class="{'fullscreen' : fullscreen}">
-   <div>
-       <div class="es-page-head">
+    <div>
+        <div class="es-page-head">
             <div class="inner">
                 <div class="details">
                     <h4>{{$t('SYNCING')}}</h4>
@@ -9,8 +9,7 @@
                 </div>
             </div>
         </div>
-
-       <div class="es-page-content">
+        <div class="es-page-content">
             <div v-if="stage == 'intro'" class="es-card fadeIn animated">
                 <div class="es-card-header">{{$t('DATA_SYNCER')}}</div>
                 <div class="es-card-content">
@@ -110,8 +109,7 @@
                 </div>
             </div>
         </div>
-
-   </div>
+    </div>
 </div>
 </template>
 
@@ -172,8 +170,8 @@ export default {
         { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: [], packed: [] },
         { title: 'Scene Items', api: 'book-scene-items', local: 'scene-items', downloaded: [], packed: [] },
         { title: 'Scene Locations', api: 'book-scene-locations', local: 'scene-locations', downloaded: [], packed: [] },
-        { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: [], packed: [] },
-        { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
+        { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: [], packed: [] }
+        // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
       ],
       bookUUID: ''
     }

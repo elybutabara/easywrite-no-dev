@@ -27,34 +27,34 @@
                         </label>
                     </div>
                 </div>
-                 <span class="btn-option" v-bind:class="{'active' : details.show_short_description}" @click="toggleData('short-description')">
+                <span class="btn-option" v-bind:class="{'active' : details.show_short_description}" @click="toggleData('short-description')">
                     <i v-if="details.show_short_description" class="las la-check"></i>
                     Short Description
-                  </span>
-                 <span class="btn-option" v-bind:class="{'active' : details.show_time}" @click="toggleData('time')">
+                </span>
+                <span class="btn-option" v-bind:class="{'active' : details.show_time}" @click="toggleData('time')">
                     <i v-if="details.show_time" class="las la-check"></i>
                     Time
-                 </span>
-                 <span class="btn-option" v-bind:class="{'active' : details.show_objects}" @click="toggleData('objects')">
+                </span>
+                <span class="btn-option" v-bind:class="{'active' : details.show_objects}" @click="toggleData('objects')">
                     <i v-if="details.show_objects" class="las la-check"></i>
                     Objects
-                 </span>
-                 <span class="btn-option" v-bind:class="{'active' : details.show_weather}" @click="toggleData('weather')">
+                </span>
+                <span class="btn-option" v-bind:class="{'active' : details.show_weather}" @click="toggleData('weather')">
                     <i v-if="details.show_weather" class="las la-check"></i>
                     Weather
-                 </span>
-                 <span class="btn-option" v-bind:class="{'active' : details.show_perspective}" @click="toggleData('perspective')">
+                </span>
+                <span class="btn-option" v-bind:class="{'active' : details.show_perspective}" @click="toggleData('perspective')">
                     <i v-if="details.show_perspective" class="las la-check"></i>
                     Perspective
-                 </span>
-                 <span class="btn-option" v-bind:class="{'active' : details.show_marks}" @click="toggleData('marks')">
+                </span>
+                <span class="btn-option" v-bind:class="{'active' : details.show_marks}" @click="toggleData('marks')">
                     <i v-if="details.show_marks" class="las la-check"></i>
                     Marks
-                 </span>
-                 <span class="btn-option" v-bind:class="{'active' : details.show_locations}" @click="toggleData('locations')">
+                </span>
+                <span class="btn-option" v-bind:class="{'active' : details.show_locations}" @click="toggleData('locations')">
                     <i v-if="details.show_locations" class="las la-check"></i>
                     The Localizer
-                 </span>
+                </span>
             </div>
             <div class="es-storyboard-content">
                 <draggable v-model="chapters" group="chapters" draggable=".handle-chapters" class="es-storyboard-content-inner" :empty-insert-threshold="100" :scroll-sensitivity="500" :force-fallback="true" v-bind:class="{'minify': !full }">
@@ -62,65 +62,63 @@
                         <div class="title" v-b-tooltip.hover v-bind:title="displayTitle(chapter.short_description)">
                             {{ displayTitle(chapter.title) }}
                         </div>
-
                         <div @click="toggleView(chapter, 'grid')" class="btn-view view-grid" v-bind:class="{'active': chapter.view === 'grid'}"><i class="las la-table"></i></div>
                         <div @click="toggleView(chapter, 'list')" class="btn-view view-list" v-bind:class="{'active': chapter.view === 'list'}"><i class="las la-th-list"></i></div>
                         <div @click="toggleView(chapter, 'minimize')" class="btn-view view-minimize" v-bind:class="{'active': chapter.view === 'minimize'}"><i class="las la-window-minimize"></i></div>
-
                         <draggable v-if="chapter.view !== 'minimize'"  class="scene-draggable" :list="$store.getters.getScenesByChapter(chapter.uuid)" group="scenes" @change="sortScene(chapter.uuid)" :empty-insert-threshold="100" :scroll-sensitivity="500" :force-fallback="true" draggable=".handle-scenes" >
-                        <div class="handle-scenes scene-wrapper" :key="scene.id" v-for="scene in $store.getters.getScenesByChapter(chapter.uuid)">
-                            <div class="scene-card">
-                                <p class="ellipsis-2 scene-title">{{ displayTitle(scene.title) }}</p>
-                                <div class="details-container">
-                                    <div v-if="details.show_short_description" class="details">
-                                        <p class="label"><i class="las la-info-circle"></i> {{$t('SHORT_DESCRIPTION')}}</p>
-                                        <span class="data">{{ scene.short_description || 'No short description' }}</span>
-                                    </div>
-                                    <div v-if="details.show_time" class="details">
-                                        <p class="label"><i class="las la-clock"></i> {{ $t('DATE_START') }}</p>
-                                        <span class="data">{{ scene.date_starts || 'Not Set' }}</span>
-                                    </div>
-                                    <div v-if="details.show_time" class="details">
-                                        <p class="label"><i class="las la-clock"></i> {{ $t('DATE_END') }}</p>
-                                        <span class="data">{{ scene.date_ends || 'Not Set' }}</span>
-                                    </div>
-                                    <div v-if="details.show_objects" class="details">
-                                        <p class="label"><i class="las la-list"></i> {{ $t('OBJECTS') }}</p>
-                                        <span class="data">
-                                            <i class="boxed" :key="item.uuid" v-for="item in $store.getters.getSceneItems(scene.uuid)">
-                                                {{ item.item.itemname }}
-                                            </i>
-                                        </span>
-                                    </div>
-                                    <div v-if="details.show_weather" class="details">
-                                        <p class="label"><i class="las la-cloud-sun"></i> {{ $t('WEATHER') }}</p>
-                                        <span class="data">{{ scene.weather || 'Not Set' }}</span>
-                                    </div>
-                                    <div v-if="details.show_perspective" class="details">
-                                        <p class="label"><i class="las la-eye"></i> {{ $t('PERSPECTIVE') }}</p>
-                                        <span class="data" v-if="scene.character_id_vp !== -1">{{ $store.getters.findCharacter({book_id: scene.book_id, uuid: scene.character_id_vp }).fullname }}</span>
-                                        <span class="data" v-else>{{ $store.getters.getAuthorName }}</span>
-                                    </div>
-                                    <div v-if="details.show_marks" class="details">
-                                        <p class="label"><i class="las la-user"></i> {{ $t('MARKS') }}</p>
-                                        <span class="data">
-                                            <i class="boxed" :key="character.uuid" v-for="character in $store.getters.getSceneCharacters(scene.uuid)">
-                                                {{ character.character.fullname }}
-                                            </i>
-                                        </span>
-                                    </div>
-                                    <div v-if="details.show_locations" class="details">
-                                        <p class="label"><i class="las la-map-marker-alt"></i> {{ $t('LOCATIONS') }}</p>
-                                        <span class="data">
-                                            <i class="boxed" :key="location.uuid" v-for="location in $store.getters.getSceneLocations(scene.uuid)">
-                                                {{ location.location.location }}
-                                            </i>
-                                        </span>
+                            <div class="handle-scenes scene-wrapper" :key="scene.id" v-for="scene in $store.getters.getScenesByChapter(chapter.uuid)">
+                                <div class="scene-card">
+                                    <p class="ellipsis-2 scene-title">{{ displayTitle(scene.title) }}</p>
+                                    <div class="details-container">
+                                        <div v-if="details.show_short_description" class="details">
+                                            <p class="label"><i class="las la-info-circle"></i> {{$t('SHORT_DESCRIPTION')}}</p>
+                                            <span class="data">{{ scene.short_description || 'No short description' }}</span>
+                                        </div>
+                                        <div v-if="details.show_time" class="details">
+                                            <p class="label"><i class="las la-clock"></i> {{ $t('DATE_START') }}</p>
+                                            <span class="data">{{ scene.date_starts || 'Not Set' }}</span>
+                                        </div>
+                                        <div v-if="details.show_time" class="details">
+                                            <p class="label"><i class="las la-clock"></i> {{ $t('DATE_END') }}</p>
+                                            <span class="data">{{ scene.date_ends || 'Not Set' }}</span>
+                                        </div>
+                                        <div v-if="details.show_objects" class="details">
+                                            <p class="label"><i class="las la-list"></i> {{ $t('OBJECTS') }}</p>
+                                            <span class="data">
+                                                <i class="boxed" :key="item.uuid" v-for="item in $store.getters.getSceneItems(scene.uuid)">
+                                                    {{ item.item.itemname }}
+                                                </i>
+                                            </span>
+                                        </div>
+                                        <div v-if="details.show_weather" class="details">
+                                            <p class="label"><i class="las la-cloud-sun"></i> {{ $t('WEATHER') }}</p>
+                                            <span class="data">{{ scene.weather || 'Not Set' }}</span>
+                                        </div>
+                                        <div v-if="details.show_perspective" class="details">
+                                            <p class="label"><i class="las la-eye"></i> {{ $t('PERSPECTIVE') }}</p>
+                                            <span class="data" v-if="scene.character_id_vp !== -1">{{ $store.getters.findCharacter({book_id: scene.book_id, uuid: scene.character_id_vp }).fullname }}</span>
+                                            <span class="data" v-else>{{ $store.getters.getAuthorName }}</span>
+                                        </div>
+                                        <div v-if="details.show_marks" class="details">
+                                            <p class="label"><i class="las la-user"></i> {{ $t('MARKS') }}</p>
+                                            <span class="data">
+                                                <i class="boxed" :key="character.uuid" v-for="character in $store.getters.getSceneCharacters(scene.uuid)">
+                                                    {{ character.character.fullname }}
+                                                </i>
+                                            </span>
+                                        </div>
+                                        <div v-if="details.show_locations" class="details">
+                                            <p class="label"><i class="las la-map-marker-alt"></i> {{ $t('LOCATIONS') }}</p>
+                                            <span class="data">
+                                                <i class="boxed" :key="location.uuid" v-for="location in $store.getters.getSceneLocations(scene.uuid)">
+                                                    {{ location.location.location }}
+                                                </i>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </draggable>
+                        </draggable>
                     </div>
                 </draggable>
                 <div class="es-storyboard-content-inner" v-bind:class="{'minify': !full }">
@@ -134,59 +132,59 @@
                         <div @click="toggleOtherScenesView('minimize')" class="btn-view view-minimize" v-bind:class="{'active': other_scenes_view === 'minimize'}"><i class="las la-window-minimize"></i></div>
 
                         <draggable v-if="other_scenes_view !== 'minimize'"  class="scene-draggable" :list="$store.getters.getScenesByBook(bookUUID)" group="scenes" @change="sortScene(null)" :empty-insert-threshold="100" :scroll-sensitivity="500" :force-fallback="true" draggable=".handle-scenes" >
-                        <div class="handle-scenes scene-wrapper" :key="scene.id" v-for="scene in $store.getters.getScenesByBook(bookUUID)">
-                            <div class="scene-card">
-                                <p class="ellipsis-2 scene-title">{{ displayTitle(scene.title) }}</p>
-                                <div class="details-container">
-                                    <div v-if="details.show_short_description" class="details">
-                                        <p class="label"><i class="las la-info-circle"></i> {{$t('SHORT_DESCRIPTION')}}</p>
-                                        <span class="data">{{ scene.short_description || 'No short description' }}</span>
-                                    </div>
-                                    <div v-if="details.show_time" class="details">
-                                        <p class="label"><i class="las la-clock"></i> {{ $t('DATE_START') }}</p>
-                                        <span class="data">{{ scene.date_starts || 'Not Set' }}</span>
-                                    </div>
-                                    <div v-if="details.show_time" class="details">
-                                        <p class="label"><i class="las la-clock"></i> {{ $t('DATE_END') }}</p>
-                                        <span class="data">{{ scene.date_ends || 'Not Set' }}</span>
-                                    </div>
-                                    <div v-if="details.show_objects" class="details">
-                                        <p class="label"><i class="las la-list"></i> {{ $t('OBJECTS') }}</p>
-                                        <span class="data">
-                                            <i class="boxed" :key="item.uuid" v-for="item in $store.getters.getSceneItems(scene.uuid)">
-                                                {{ item.item.itemname }}
-                                            </i>
-                                        </span>
-                                    </div>
-                                    <div v-if="details.show_weather" class="details">
-                                        <p class="label"><i class="las la-cloud-sun"></i> {{ $t('WEATHER') }}</p>
-                                        <span class="data">{{ scene.weather || 'Not Set' }}</span>
-                                    </div>
-                                    <div v-if="details.show_perspective" class="details">
-                                        <p class="label"><i class="las la-eye"></i> {{ $t('PERSPECTIVE') }}</p>
-                                        <span class="data" v-if="scene.character_id_vp !== -1">{{ $store.getters.findCharacter({book_id: scene.book_id, uuid: scene.character_id_vp }).fullname }}</span>
-                                        <span class="data" v-else>{{ $store.getters.getAuthorName }}</span>
-                                    </div>
-                                    <div v-if="details.show_marks" class="details">
-                                        <p class="label"><i class="las la-user"></i> {{ $t('MARKS') }}</p>
-                                        <span class="data">
-                                            <i class="boxed" :key="character.uuid" v-for="character in $store.getters.getSceneCharacters(scene.uuid)">
-                                                {{ character.character.fullname }}
-                                            </i>
-                                        </span>
-                                    </div>
-                                    <div v-if="details.show_locations" class="details">
-                                        <p class="label"><i class="las la-map-marker-alt"></i> {{ $t('LOCATIONS') }}</p>
-                                        <span class="data">
-                                            <i class="boxed" :key="location.uuid" v-for="location in $store.getters.getSceneLocations(scene.uuid)">
-                                                {{ location.location.location }}
-                                            </i>
-                                        </span>
+                            <div class="handle-scenes scene-wrapper" :key="scene.id" v-for="scene in $store.getters.getScenesByBook(bookUUID)">
+                                <div class="scene-card">
+                                    <p class="ellipsis-2 scene-title">{{ displayTitle(scene.title) }}</p>
+                                    <div class="details-container">
+                                        <div v-if="details.show_short_description" class="details">
+                                            <p class="label"><i class="las la-info-circle"></i> {{$t('SHORT_DESCRIPTION')}}</p>
+                                            <span class="data">{{ scene.short_description || 'No short description' }}</span>
+                                        </div>
+                                        <div v-if="details.show_time" class="details">
+                                            <p class="label"><i class="las la-clock"></i> {{ $t('DATE_START') }}</p>
+                                            <span class="data">{{ scene.date_starts || 'Not Set' }}</span>
+                                        </div>
+                                        <div v-if="details.show_time" class="details">
+                                            <p class="label"><i class="las la-clock"></i> {{ $t('DATE_END') }}</p>
+                                            <span class="data">{{ scene.date_ends || 'Not Set' }}</span>
+                                        </div>
+                                        <div v-if="details.show_objects" class="details">
+                                            <p class="label"><i class="las la-list"></i> {{ $t('OBJECTS') }}</p>
+                                            <span class="data">
+                                                <i class="boxed" :key="item.uuid" v-for="item in $store.getters.getSceneItems(scene.uuid)">
+                                                    {{ item.item.itemname }}
+                                                </i>
+                                            </span>
+                                        </div>
+                                        <div v-if="details.show_weather" class="details">
+                                            <p class="label"><i class="las la-cloud-sun"></i> {{ $t('WEATHER') }}</p>
+                                            <span class="data">{{ scene.weather || 'Not Set' }}</span>
+                                        </div>
+                                        <div v-if="details.show_perspective" class="details">
+                                            <p class="label"><i class="las la-eye"></i> {{ $t('PERSPECTIVE') }}</p>
+                                            <span class="data" v-if="scene.character_id_vp !== -1">{{ $store.getters.findCharacter({book_id: scene.book_id, uuid: scene.character_id_vp }).fullname }}</span>
+                                            <span class="data" v-else>{{ $store.getters.getAuthorName }}</span>
+                                        </div>
+                                        <div v-if="details.show_marks" class="details">
+                                            <p class="label"><i class="las la-user"></i> {{ $t('MARKS') }}</p>
+                                            <span class="data">
+                                                <i class="boxed" :key="character.uuid" v-for="character in $store.getters.getSceneCharacters(scene.uuid)">
+                                                    {{ character.character.fullname }}
+                                                </i>
+                                            </span>
+                                        </div>
+                                        <div v-if="details.show_locations" class="details">
+                                            <p class="label"><i class="las la-map-marker-alt"></i> {{ $t('LOCATIONS') }}</p>
+                                            <span class="data">
+                                                <i class="boxed" :key="location.uuid" v-for="location in $store.getters.getSceneLocations(scene.uuid)">
+                                                    {{ location.location.location }}
+                                                </i>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </draggable>
+                        </draggable>
                     </div>
                 </div>
             </div>
@@ -197,7 +195,6 @@
         <p style="margin-top:10px;">{{$t('LOADING_STORY_BOARD_PLEASE_WAIT')}}</p>
     </div>
 </div>
-
 </template>
 
 <script>

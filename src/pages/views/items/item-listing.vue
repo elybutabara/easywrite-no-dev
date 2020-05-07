@@ -1,7 +1,7 @@
 <template>
 <div class="page-item-listing">
-   <div>
-       <div class="es-page-head">
+    <div>
+        <div class="es-page-head">
             <div class="inner">
                 <div class="details">
                     <h4>{{$tc('ITEM',2)}}</h4>
@@ -35,7 +35,7 @@
                 </div>
             </div>
         </div>
-   </div>
+    </div>
 </div>
 </template>
 

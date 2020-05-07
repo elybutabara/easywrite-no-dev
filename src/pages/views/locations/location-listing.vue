@@ -1,7 +1,7 @@
 <template>
 <div class="page-location-listing">
-   <div>
-       <div class="es-page-head">
+    <div>
+        <div class="es-page-head">
             <div class="inner">
                 <div class="details">
                     <h4>{{$tc('LOCATION',2)}}</h4>
@@ -12,13 +12,11 @@
                 </div>
             </div>
         </div>
-
         <div class="es-page-breadcrumbs">
-           <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-           /
-           <button class="current">{{ $tc('LOCATION', 2) }}</button>
+            <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+            /
+            <button class="current">{{ $tc('LOCATION', 2) }}</button>
         </div>
-
         <div class="es-page-content">
             <div class="es-row">
                 <div class="es-col fadeIn animated" v-for="location in locations" v-bind:key="location.id">
@@ -37,8 +35,7 @@
                 </div>
             </div>
         </div>
-
-   </div>
+    </div>
 </div>
 </template>
 

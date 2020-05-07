@@ -51,12 +51,6 @@ export default {
       scope.$store.commit('addTab', { title: scope.properties.title, component: 'book-form', data: scope.properties })
     },
 
-    getExportButtonName () {
-      var buttonName = this.$t('EXPORT').toUpperCase() + ' ' + this.$tc('BOOK', 1).toUpperCase()
-
-      return buttonName
-    },
-
     deleteBook () {
       var scope = this
       window.swal.fire({

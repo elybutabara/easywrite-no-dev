@@ -1,6 +1,6 @@
 <template>
 <div class="page-character-listing">
-   <div>
+    <div>
         <div class="es-page-head">
             <div class="inner">
                 <div class="details">
@@ -13,14 +13,12 @@
                 </div>
             </div>
         </div>
-
         <div class="es-page-breadcrumbs">
-           <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-           /
-           <button class="current">{{ $tc('CHARACTER', 2) }}</button>
+            <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+            /
+            <button class="current">{{ $tc('CHARACTER', 2) }}</button>
         </div>
-
-       <div class="es-page-content">
+        <div class="es-page-content">
             <div class="es-row">
                 <div class="es-col fadeIn animated" v-for="character in characters" v-bind:key="character.id">
                     <div class="es-card">
@@ -38,8 +36,7 @@
                 </div>
             </div>
         </div>
-
-   </div>
+    </div>
 </div>
 </template>
 

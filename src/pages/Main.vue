@@ -173,7 +173,6 @@ export default {
     })
 
     ipcRenderer.on('SHOW_SWAL_TIMESUP', function (event, data) {
-      console.log('asdsadasdsdsadsa')
       window.swal.fire({
         icon: 'error',
         title: scope.$t('TIMES_UP'),

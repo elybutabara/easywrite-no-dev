@@ -1,6 +1,6 @@
 <template>
 <div class="page-scene-listing">
-   <div>
+    <div>
         <div class="es-page-head">
             <div class="inner">
                 <div class="details">
@@ -12,13 +12,11 @@
                 </div>
             </div>
         </div>
-
         <div class="es-page-breadcrumbs">
-           <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-           /
-           <button class="current">{{ $tc('OTHER_SCENES', 2) }}</button>
+            <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+            /
+            <button class="current">{{ $tc('OTHER_SCENES', 2) }}</button>
         </div>
-
         <div class="es-page-content">
             <draggable v-model="scenes" draggable=".es-col" class="es-row">
                 <div class="es-col fadeIn animated" v-for="scene in scenes" v-bind:key="scene.id">
@@ -40,7 +38,7 @@
                 </div>
             </draggable>
         </div>
-   </div>
+    </div>
 </div>
 </template>
 

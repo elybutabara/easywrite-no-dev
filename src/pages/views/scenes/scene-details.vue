@@ -1,108 +1,106 @@
 <template>
-  <div>
+<div>
     <div v-if="page.is_ready" class="page-scene-details">
-    <div class="es-page-head">
-        <div class="inner">
-            <div class="details">
-                <div>
-                    <h4><strong>{{ properties.scene.title }}</strong></h4>
+        <div class="es-page-head">
+            <div class="inner">
+                <div class="details">
+                    <div>
+                        <h4><strong>{{ properties.scene.title }}</strong></h4>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.scene.uuid, tabComponent: 'scene-form', tabData: { book: book, scene: properties.scene, chapter: chapter }, tabTitle: $t('EDIT')+ ' - ' +  properties.scene.title, newTab: true})">{{$t('EDIT').toUpperCase()}}</button>
+                    <button class="es-button-white" @click="deleteScene(properties.scene)">{{$t('DELETE').toUpperCase()}}</button>
                 </div>
             </div>
-            <div class="actions">
-                <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
-                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.scene.uuid, tabComponent: 'scene-form', tabData: { book: book, scene: properties.scene, chapter: chapter }, tabTitle: $t('EDIT')+ ' - ' +  properties.scene.title, newTab: true})">{{$t('EDIT').toUpperCase()}}</button>
-                <button class="es-button-white" @click="deleteScene(properties.scene)">{{$t('DELETE').toUpperCase()}}</button>
-            </div>
         </div>
-    </div>
-
-    <div v-if="chapter !== null" class="es-page-breadcrumbs">
-        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-        /
-        <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $tc('CHAPTER', 2) + ' - ' + book.title})">{{ $tc('CHAPTER', 2) }}</button>
-        /
-        <button @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + book.uuid, tabComponent: 'chapter-details', tabData: { book: book, chapter: chapter }, tabTitle: 'VIEW - ' + chapter.title})">{{ chapter.title || 'Untitled' }}</button>
-        /
-        <button class="current">
-            <span>{{ scene.title || 'Untitled' }}</span>
-        </button>
-    </div>
-    <div v-else class="es-page-breadcrumbs">
-        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-        /
-        <button @click="CHANGE_COMPONENT({tabKey: 'scene-listing-' + book.uuid, tabComponent: 'scene-listing', tabData: book, tabTitle: $tc('OTHER_SCENES', 2) + ' - ' + book.title})">{{ $tc('OTHER_SCENES', 2) }}</button>
-        /
-        <button class="current">
-            <span>{{ scene.title || 'Untitled' }}</span>
-        </button>
-    </div>
-
-    <div class="es-scene-details-tab">
-        <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-scene-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
-        <div v-bind:class="{ 'active' : tab.active == 'locations' }" @click="changeTab('locations')" class="es-scene-details-tab-item">{{$tc('LOCATION', 2).toUpperCase()}}</div>
-        <div v-bind:class="{ 'active' : tab.active == 'items' }" @click="changeTab('items')" class="es-scene-details-tab-item">{{$tc('ITEM', 2).toUpperCase()}}</div>
-        <div v-bind:class="{ 'active' : tab.active == 'characters' }" @click="changeTab('characters')" class="es-scene-details-tab-item">{{$tc('CHARACTER', 2).toUpperCase()}}</div>
-        <div v-bind:class="{ 'active' : tab.active == 'versions' }" @click="changeTab('versions')" class="es-scene-details-tab-item">{{$tc('VERSION', 2).toUpperCase()}}</div>
-        <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-scene-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
-    </div>
-    <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">
-        <div class="export-content"><button class="es-button-white" @click="exportContent()">{{$t('EXPORT')}} {{$t('CONTENT')}}</button></div>
-        <div v-html="getSceneContent" class="description" ></div>
-    </div>
-    <div v-if="tab.active === 'locations'"  class="es-scene-details-tab-content no-padding">
-        <scene-locations :properties="{ book: book, scene: page.data.scene }"></scene-locations>
-    </div>
-    <div v-if="tab.active === 'items'"  class="es-scene-details-tab-content no-padding">
-        <scene-items :properties="{ book: book, scene: page.data.scene }"></scene-items>
-    </div>
-    <div v-if="tab.active === 'characters'"  class="es-scene-details-tab-content no-padding">
-        <scene-characters :properties="{ book: book, scene: page.data.scene }"></scene-characters>
-    </div>
-    <div v-if="tab.active === 'versions'"  class="es-scene-details-tab-content">
-        <scene-versions :properties="{ scene: page.data.scene }"></scene-versions>
-    </div>
-    <div v-if="tab.active === 'compare-versions'"  class="es-scene-details-tab-content">
-        <scene-compare-versions :properties="{ scene: page.data.scene }"></scene-compare-versions>
-    </div>
-    <b-overlay :show="busy" no-wrap fixed @shown="$refs.dialog.focus()" @hidden="$refs.button.focus()">
-      <template v-slot:overlay>
-        <div
-          id="overlay-background"
-          ref="dialog"
-          tabindex="-1"
-          role="dialog"
-          aria-modal="false"
-          aria-labelledby="form-confirm-label"
-          class="p-3"
-        >
-          <b-container class="bv-example-row">
-            <b-card-group deck>
-              <b-card :header="$t('SAVE_AS_NEW_VERSION')"  class="text-center">
-                <b-row style="margin-bottom: 1rem;" class="text-left">
-                  <b-col>
-                    <label>{{$t('DESCRIPTION')}}: </label>
-                    <tiny-editor :initValue="scene_version.change_description"
-                                 v-on:getEditorContent="setDescription"
-                                 class="form-control"
-                    />
-                  </b-col>
-                </b-row>
-                <b-row>
-                  <b-col>
-                    <div class="text-right">
-                      <b-button variant="outline-dark" class="mr-2" @click="busy = !busy">{{$t('CANCEL')}}</b-button>
-                      <b-button variant="dark" @click="saveNewVersion">{{$t('SAVE')}}</b-button>
-                    </div>
-                  </b-col>
-                </b-row>
-              </b-card>
-            </b-card-group>
-          </b-container>
+        <div v-if="chapter !== null" class="es-page-breadcrumbs">
+            <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+            /
+            <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $tc('CHAPTER', 2) + ' - ' + book.title})">{{ $tc('CHAPTER', 2) }}</button>
+            /
+            <button @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + book.uuid, tabComponent: 'chapter-details', tabData: { book: book, chapter: chapter }, tabTitle: 'VIEW - ' + chapter.title})">{{ chapter.title || 'Untitled' }}</button>
+            /
+            <button class="current">
+                <span>{{ scene.title || 'Untitled' }}</span>
+            </button>
         </div>
-      </template>
-    </b-overlay>
+        <div v-else class="es-page-breadcrumbs">
+            <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+            /
+            <button @click="CHANGE_COMPONENT({tabKey: 'scene-listing-' + book.uuid, tabComponent: 'scene-listing', tabData: book, tabTitle: $tc('OTHER_SCENES', 2) + ' - ' + book.title})">{{ $tc('OTHER_SCENES', 2) }}</button>
+            /
+            <button class="current">
+                <span>{{ scene.title || 'Untitled' }}</span>
+            </button>
+        </div>
+        <div class="es-scene-details-tab">
+            <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-scene-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
+            <div v-bind:class="{ 'active' : tab.active == 'locations' }" @click="changeTab('locations')" class="es-scene-details-tab-item">{{$tc('LOCATION', 2).toUpperCase()}}</div>
+            <div v-bind:class="{ 'active' : tab.active == 'items' }" @click="changeTab('items')" class="es-scene-details-tab-item">{{$tc('ITEM', 2).toUpperCase()}}</div>
+            <div v-bind:class="{ 'active' : tab.active == 'characters' }" @click="changeTab('characters')" class="es-scene-details-tab-item">{{$tc('CHARACTER', 2).toUpperCase()}}</div>
+            <div v-bind:class="{ 'active' : tab.active == 'versions' }" @click="changeTab('versions')" class="es-scene-details-tab-item">{{$tc('VERSION', 2).toUpperCase()}}</div>
+            <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-scene-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
+        </div>
+        <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">
+            <div class="export-content"><button class="es-button-white" @click="exportContent()">{{$t('EXPORT')}} {{$t('CONTENT')}}</button></div>
+            <div v-html="getSceneContent" class="description" ></div>
+        </div>
+        <div v-if="tab.active === 'locations'"  class="es-scene-details-tab-content no-padding">
+            <scene-locations :properties="{ book: book, scene: page.data.scene }"></scene-locations>
+        </div>
+        <div v-if="tab.active === 'items'"  class="es-scene-details-tab-content no-padding">
+            <scene-items :properties="{ book: book, scene: page.data.scene }"></scene-items>
+        </div>
+        <div v-if="tab.active === 'characters'"  class="es-scene-details-tab-content no-padding">
+            <scene-characters :properties="{ book: book, scene: page.data.scene }"></scene-characters>
+        </div>
+        <div v-if="tab.active === 'versions'"  class="es-scene-details-tab-content">
+            <scene-versions :properties="{ scene: page.data.scene }"></scene-versions>
+        </div>
+        <div v-if="tab.active === 'compare-versions'"  class="es-scene-details-tab-content">
+            <scene-compare-versions :properties="{ scene: page.data.scene }"></scene-compare-versions>
+        </div>
+        <b-overlay :show="busy" no-wrap fixed @shown="$refs.dialog.focus()" @hidden="$refs.button.focus()">
+            <template v-slot:overlay>
+                <div
+                    id="overlay-background"
+                    ref="dialog"
+                    tabindex="-1"
+                    role="dialog"
+                    aria-modal="false"
+                    aria-labelledby="form-confirm-label"
+                    class="p-3"
+                >
+                    <b-container class="bv-example-row">
+                        <b-card-group deck>
+                            <b-card :header="$t('SAVE_AS_NEW_VERSION')"  class="text-center">
+                                <b-row style="margin-bottom: 1rem;" class="text-left">
+                                    <b-col>
+                                        <label>{{$t('DESCRIPTION')}}: </label>
+                                        <tiny-editor :initValue="scene_version.change_description"
+                                                     v-on:getEditorContent="setDescription"
+                                                     class="form-control"
+                                        />
+                                    </b-col>
+                                </b-row>
+                                <b-row>
+                                    <b-col>
+                                        <div class="text-right">
+                                            <b-button variant="outline-dark" class="mr-2" @click="busy = !busy">{{$t('CANCEL')}}</b-button>
+                                            <b-button variant="dark" @click="saveNewVersion">{{$t('SAVE')}}</b-button>
+                                        </div>
+                                    </b-col>
+                                </b-row>
+                            </b-card>
+                        </b-card-group>
+                    </b-container>
+                </div>
+            </template>
+        </b-overlay>
     </div>
-  </div>
+</div>
 </template>
 
 <script>

@@ -1,84 +1,84 @@
 <template>
-  <div>
+<div>
     <div v-if="page.is_ready" class="page-chapter-details">
-      <div class="es-page-head">
-        <div class="inner">
-          <div class="details">
-            <div>
-              <h4><strong>{{ chapter.title }}</strong></h4>
+        <div class="es-page-head">
+            <div class="inner">
+                <div class="details">
+                    <div>
+                      <h4><strong>{{ chapter.title }}</strong></h4>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({ tabKey: 'chapter-form-' + chapter.uuid, tabComponent: 'chapter-form',  tabData: { book: book, chapter:  chapter }, tabTitle: $t('EDIT')+ ' - ' +  chapter.title, newTab: true })">{{$t('EDIT').toUpperCase()}}</button>
+                    <button class="es-button-white" @click="deleteChapter(chapter)">{{$t('DELETE').toUpperCase()}}</button>
+                </div>
             </div>
-          </div>
-          <div class="actions">
-            <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
-            <button class="es-button-white" @click="CHANGE_COMPONENT({ tabKey: 'chapter-form-' + chapter.uuid, tabComponent: 'chapter-form',  tabData: { book: book, chapter:  chapter }, tabTitle: $t('EDIT')+ ' - ' +  chapter.title, newTab: true })">{{$t('EDIT').toUpperCase()}}</button>
-            <button class="es-button-white" @click="deleteChapter(chapter)">{{$t('DELETE').toUpperCase()}}</button>
-          </div>
         </div>
-      </div>
-      <div class="es-page-breadcrumbs">
-       <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-       /
-       <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $tc('CHAPTER', 2) + ' - ' + book.title})">{{ $tc('CHAPTER', 2) }}</button>
-       /
-       <button class="current">{{ chapter.title }}</button>
-      </div>
-      <div class="es-chapter-details-tab">
-        <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-chapter-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
-        <div v-bind:class="{ 'active' : tab.active == 'scenes' }" @click="changeTab('scenes')" class="es-chapter-details-tab-item">{{$tc('SCENE', 2).toUpperCase()}}</div>
-        <div v-bind:class="{ 'active' : tab.active == 'versions' }" @click="changeTab('versions')" class="es-chapter-details-tab-item">{{$tc('VERSION', 2).toUpperCase()}}</div>
-        <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-chapter-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
-      </div>
-      <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
-        <div class="export-content"><button class="es-button-white" @click="exportContent()">{{$t('EXPORT')}} {{$t('CONTENT')}}</button></div>
-        <div v-html="getChapterContent" class="description" ></div>
-      </div>
-      <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
-        <chapter-scenes :properties="{ book: book, chapter: chapter }"></chapter-scenes>
-      </div>
-      <div v-if="tab.active === 'versions'"  class="es-chapter-details-tab-content">
-        <chapter-versions :properties="{ chapter: chapter }"></chapter-versions>
-      </div>
-      <div v-if="tab.active === 'compare-versions'"  class="es-chapter-details-tab-content">
-        <chapter-compare-versions :properties="{ chapter: chapter }"></chapter-compare-versions>
-      </div>
+        <div class="es-page-breadcrumbs">
+            <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+            /
+            <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $tc('CHAPTER', 2) + ' - ' + book.title})">{{ $tc('CHAPTER', 2) }}</button>
+            /
+            <button class="current">{{ chapter.title }}</button>
+        </div>
+        <div class="es-chapter-details-tab">
+            <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-chapter-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
+            <div v-bind:class="{ 'active' : tab.active == 'scenes' }" @click="changeTab('scenes')" class="es-chapter-details-tab-item">{{$tc('SCENE', 2).toUpperCase()}}</div>
+            <div v-bind:class="{ 'active' : tab.active == 'versions' }" @click="changeTab('versions')" class="es-chapter-details-tab-item">{{$tc('VERSION', 2).toUpperCase()}}</div>
+            <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-chapter-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
+        </div>
+        <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
+            <div class="export-content"><button class="es-button-white" @click="exportContent()">{{$t('EXPORT')}} {{$t('CONTENT')}}</button></div>
+            <div v-html="getChapterContent" class="description" ></div>
+        </div>
+        <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
+            <chapter-scenes :properties="{ book: book, chapter: chapter }"></chapter-scenes>
+        </div>
+        <div v-if="tab.active === 'versions'"  class="es-chapter-details-tab-content">
+            <chapter-versions :properties="{ chapter: chapter }"></chapter-versions>
+        </div>
+        <div v-if="tab.active === 'compare-versions'"  class="es-chapter-details-tab-content">
+            <chapter-compare-versions :properties="{ chapter: chapter }"></chapter-compare-versions>
+        </div>
     </div>
     <b-overlay :show="busy" no-wrap fixed @shown="$refs.dialog.focus()" @hidden="$refs.button.focus()">
-      <template v-slot:overlay>
-        <div
-          id="overlay-background"
-          ref="dialog"
-          tabindex="-1"
-          role="dialog"
-          aria-modal="false"
-          aria-labelledby="form-confirm-label"
-          class="p-3"
-        >
-          <b-container class="bv-example-row">
-            <b-card-group deck>
-              <b-card :header="$t('SAVE_AS_NEW_VERSION')" class="text-center">
-                <b-row style="margin-bottom: 1rem;" class="text-left">
-                  <b-col>
-                    <label>{{$t('DESCRIPTION')}}: </label>
-                    <tiny-editor :initValue="chapter_version.change_description"
-                                 v-on:getEditorContent="setDescription"
-                                 class="form-control"
-                    />
-                  </b-col>
-                </b-row>
-                <b-row>
-                  <b-col>
-                    <div class="text-right">
-                      <b-button variant="outline-dark" class="mr-2" @click="busy = !busy">{{$t('CANCEL')}}</b-button><b-button variant="dark" @click="saveNewVersion">{{$t('SAVE')}}</b-button>
-                    </div>
-                  </b-col>
-                </b-row>
-              </b-card>
-            </b-card-group>
-          </b-container>
-        </div>
-      </template>
+        <template v-slot:overlay>
+            <div
+                id="overlay-background"
+                ref="dialog"
+                tabindex="-1"
+                role="dialog"
+                aria-modal="false"
+                aria-labelledby="form-confirm-label"
+                class="p-3"
+            >
+                <b-container class="bv-example-row">
+                    <b-card-group deck>
+                        <b-card :header="$t('SAVE_AS_NEW_VERSION')" class="text-center">
+                            <b-row style="margin-bottom: 1rem;" class="text-left">
+                                <b-col>
+                                    <label>{{$t('DESCRIPTION')}}: </label>
+                                    <tiny-editor :initValue="chapter_version.change_description"
+                                                 v-on:getEditorContent="setDescription"
+                                                 class="form-control"
+                                    />
+                                </b-col>
+                            </b-row>
+                            <b-row>
+                                <b-col>
+                                    <div class="text-right">
+                                        <b-button variant="outline-dark" class="mr-2" @click="busy = !busy">{{$t('CANCEL')}}</b-button><b-button variant="dark" @click="saveNewVersion">{{$t('SAVE')}}</b-button>
+                                    </div>
+                                </b-col>
+                            </b-row>
+                        </b-card>
+                    </b-card-group>
+                </b-container>
+            </div>
+        </template>
     </b-overlay>
-  </div>
+</div>
 </template>
 
 <script>

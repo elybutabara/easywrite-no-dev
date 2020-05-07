@@ -22,7 +22,6 @@
             <div class="cta" @click="deleteLocation(properties.location)">{{$t('DELETE').toUpperCase()}}</div>
         </div>
     </div>
-
 </div>
 </template>
 

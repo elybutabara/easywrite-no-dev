@@ -7,15 +7,15 @@
                 <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ book.title }}</small>
             </div>
             <div class="actions">
-              <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
-              <button class="es-button-white" @click="exportScenes(book.uuid)">{{$tc('EXPORT', 1).toUpperCase()}} {{$tc('SCENE', 2).toUpperCase()}} {{$tc('LIST', 1).toUpperCase()}}</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
+                <button class="es-button-white" @click="exportScenes(book.uuid)">{{$tc('EXPORT', 1).toUpperCase()}} {{$tc('SCENE', 2).toUpperCase()}} {{$tc('LIST', 1).toUpperCase()}}</button>
             </div>
         </div>
     </div>
     <div class="es-page-breadcrumbs">
-       <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-       /
-       <button class="current">{{ $tc('CHAPTER', 2) }}</button>
+        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+        /
+        <button class="current">{{ $tc('CHAPTER', 2) }}</button>
     </div>
     <div class="es-page-content">
         <draggable v-model="chapters" draggable=".es-col" class="es-row">
@@ -41,7 +41,6 @@
         </draggable>
     </div>
 </div>
-
 </template>
 
 <script>

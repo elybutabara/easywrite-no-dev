@@ -153,8 +153,8 @@ ul { margin-left:0px; list-style:none;  }
 .es-tree-view ul li:last-child:before { background:#293742; height:auto; top:1em; bottom:0 }
 .es-tree-view ul li img { height:14px; }
 .es-tree-view li a { text-decoration: none; color:#369; }
-.es-tree-view .level-1 li ul, .es-tree-view .level-1 li > ul > li { display:none!important; }
-.es-tree-view .level-1 li.open ul, .es-tree-view .level-1 li.open > ul > li{ display:block!important; }
+.es-tree-view .level-1 li ul, .es-tree-view .level-1 li > ul > li { display:none; }
+.es-tree-view .level-1 li.open ul, .es-tree-view .level-1 li.open > ul > li{ display:block; }
 
 .es-row { display:flex; flex-wrap: wrap; }
 .es-row .es-col { width:25%; padding:10px; }
@@ -182,7 +182,7 @@ ul { margin-left:0px; list-style:none;  }
 .es-page-head .inner { display:flex; justify-content: space-between; }
 .es-page-head .inner .details h4 { color:#324553; margin:0px; }
 .es-page-head .inner .details small { font-size:14px; color:#506d84; }
-.es-page-head .inner .actions { min-width:150px; text-align:right; }
+.es-page-head .inner .actions { min-width:320px; text-align:right; }
 .es-page-head .inner .actions .es-button-white { font-size:12px; color:#324553; padding:3px 15px; background:#fff; border:1px solid #506d84; border-radius:3px; }
 .es-page-head .inner .actions .es-button-red { font-size:12px; color:#fff; padding:3px 15px; background:#6f2f3c; border:1px solid #682b37; border-radius:3px; }
 
@@ -212,7 +212,7 @@ ul { margin-left:0px; list-style:none;  }
 
 .ellipsis-1 {
   word-wrap: break-word;
-  display: -webkit-box!important;
+  display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -221,7 +221,7 @@ ul { margin-left:0px; list-style:none;  }
 
 .ellipsis-2 {
   word-wrap: break-word;
-  display: -webkit-box!important;
+  display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -230,12 +230,12 @@ ul { margin-left:0px; list-style:none;  }
 
 .ellipsis-3 {
     word-wrap: break-word;
-    display: -webkit-box!important;
+    display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
+}
 
 .b-overlay .position-absolute {
   width: 75%;

@@ -1,158 +1,158 @@
 <template>
 <div v-if="page.is_ready" class="page-chapter-form">
-  <div class="es-page-head">
-    <div class="inner">
-      <div class="details">
-        <div v-if="data.id != null">
-          <h4>{{$t('EDIT')}}: <strong>{{ data.title }}</strong></h4>
-          <small>{{$t('DATE_MODIFIED')}}: {{ data.updated_at }}</small>
+    <div class="es-page-head">
+        <div class="inner">
+            <div class="details">
+                <div v-if="data.id != null">
+                    <h4>{{$t('EDIT')}}: <strong>{{ data.title }}</strong></h4>
+                    <small>{{$t('DATE_MODIFIED')}}: {{ data.updated_at }}</small>
+                </div>
+                <div v-else>
+                    <h4>{{$t('CREATE_NEW_CHAPTER')}}</h4>
+                </div>
+            </div>
+            <div class="actions">
+                <button v-if="data.id != null" class="es-button-white" @click="saveChapter()">{{$t('SAVE_CHANGES')}}</button>
+                <button v-else class="es-button-white" @click="saveChapter()">{{$t('SAVE')}}</button>
+            </div>
         </div>
-        <div v-else>
-          <h4>{{$t('CREATE_NEW_CHAPTER')}}</h4>
-        </div>
-      </div>
-      <div class="actions">
-        <button v-if="data.id != null" class="es-button-white" @click="saveChapter()">{{$t('SAVE_CHANGES')}}</button>
-        <button v-else class="es-button-white" @click="saveChapter()">{{$t('SAVE')}}</button>
-      </div>
     </div>
-  </div>
-  <div class="es-page-breadcrumbs">
-    <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-    /
-    <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $tc('CHAPTER', 2) + ' - ' + book.title})">{{ $tc('CHAPTER', 2) }}</button>
-    /
-    <button class="current">
-        <span v-if="chapter !== null">{{ chapter.title }}</span>
-        <span v-else>{{$t('NEW_CHAPTER')}}</span>
-    </button>
-  </div>
-  <div class="es-page-content">
-    <div class="container">
-      <div class="es-accordion">
-        <div class="item" v-bind:class="{'active': accordion['chapter-details'] === 'active'}">
-          <div class="label" @click="toggleAccordion('chapter-details')">
-            {{$t('CHAPTER_DETAILS').toUpperCase()}}
-            <div class="icon">
-              <i v-if="accordion['chapter-details'] === 'active'" class="fas fa-chevron-down"></i>
-              <i v-if="accordion['chapter-details'] !== 'active'" class="fas fa-chevron-right"></i>
-            </div>
-          </div>
-          <div class="content ">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label for="input-title">{{$t('TITLE')}}: </label>
-                  <b-form-input
-                    id="input-title"
-                    v-model="data.title"
-                    :state="feedback.title.state"
-                    aria-describedby="input-live-help input-live-feedback"
-                    :placeholder="$t('CHAPTER_TITLE')"
-                    @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
-                    trim
-                  ></b-form-input>
-                  <!-- This will only be shown if the preceding input has an invalid state -->
-                  <b-form-invalid-feedback id="input-title-feedback">
-                    {{ feedback.title.message }}
-                  </b-form-invalid-feedback>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label for="input-short-description">{{$t('SHORT_DESCRIPTION')}}: </label>
-                  <b-form-input
-                    id="input-short-description"
-                    v-model="data.short_description"
-                    :state="feedback.short_description.state"
-                    aria-describedby="input-live-help input-live-feedback"
-                    :placeholder="$t('SHORT_DESCRIPTION')"
-                    @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
-                    trim
-                  ></b-form-input>
-                  <!-- This will only be shown if the preceding input has an invalid state -->
-                  <b-form-invalid-feedback id="input-short-description-feedback">
-                    {{ feedback.short_description.message }}
-                  </b-form-invalid-feedback>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="item" v-bind:class="{'active': accordion['content'] === 'active'}">
-          <div class="label" @click="toggleAccordion('content')">
-            {{$t('CONTENT').toUpperCase()}}
-            <div class="icon">
-              <i v-if="accordion['content'] === 'active'" class="fas fa-chevron-down"></i>
-              <i v-if="accordion['content'] !== 'active'" class="fas fa-chevron-right"></i>
-            </div>
-          </div>
-          <div class="content ">
-            <div class="row">
-              <div class="col-md-12">
-                <div v-if="chapter_history.length" class="text-right">
-                  <button class="es-button-white margin-bottom-1rem" @click="show_history = !show_history">{{$t('SHOW_HISTORY')}}</button>
-                </div>
-                <div class="form-group">
-                  <tiny-editor :initValue="data.chapter_version.content" v-on:getEditorContent="setContent" class="form-control" />
-                </div>
-                <div v-if="show_history" class="chapter-history-items slideInRight animated">
-                  <div class="note">
-                    <i @click="show_history = !show_history" class="btn-close fas fa-times"></i>
-                    <strong>{{$t('DOUBLE_CLICK')}}</strong> {{$t('TO_VIEW_HISTORY')}}
-                  </div>
-                  <div class="chapter-history-list" >
-                    <div v-bind:key="history.uuid" v-for="history in chapter_history">
-                      <div class="history-item" @dblclick="viewHistory(history)">
-                        <div class="view-all">
-                          <span class="float-left">{{$t('WORD_COUNT')}}: {{ WORD_COUNT(history.content) }}</span>
-                          <em class="float-right"><span>{{ history.created_at }}</span></em>
+    <div class="es-page-breadcrumbs">
+        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+        /
+        <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $tc('CHAPTER', 2) + ' - ' + book.title})">{{ $tc('CHAPTER', 2) }}</button>
+        /
+        <button class="current">
+            <span v-if="chapter !== null">{{ chapter.title }}</span>
+            <span v-else>{{$t('NEW_CHAPTER')}}</span>
+        </button>
+    </div>
+    <div class="es-page-content">
+        <div class="container">
+            <div class="es-accordion">
+                <div class="item" v-bind:class="{'active': accordion['chapter-details'] === 'active'}">
+                    <div class="label" @click="toggleAccordion('chapter-details')">
+                        {{$t('CHAPTER_DETAILS').toUpperCase()}}
+                        <div class="icon">
+                            <i v-if="accordion['chapter-details'] === 'active'" class="fas fa-chevron-down"></i>
+                            <i v-if="accordion['chapter-details'] !== 'active'" class="fas fa-chevron-right"></i>
                         </div>
-                        <div class="clearfix"></div>
-                        <div v-html="history.content" class="ellipsis-2"></div>
-                      </div>
                     </div>
-                  </div>
+                    <div class="content ">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="input-title">{{$t('TITLE')}}: </label>
+                                    <b-form-input
+                                        id="input-title"
+                                        v-model="data.title"
+                                        :state="feedback.title.state"
+                                        aria-describedby="input-live-help input-live-feedback"
+                                        :placeholder="$t('CHAPTER_TITLE')"
+                                        @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
+                                        trim
+                                    ></b-form-input>
+                                    <!-- This will only be shown if the preceding input has an invalid state -->
+                                    <b-form-invalid-feedback id="input-title-feedback">
+                                        {{ feedback.title.message }}
+                                    </b-form-invalid-feedback>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="input-short-description">{{$t('SHORT_DESCRIPTION')}}: </label>
+                                    <b-form-input
+                                        id="input-short-description"
+                                        v-model="data.short_description"
+                                        :state="feedback.short_description.state"
+                                        aria-describedby="input-live-help input-live-feedback"
+                                        :placeholder="$t('SHORT_DESCRIPTION')"
+                                        @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
+                                        trim
+                                    ></b-form-input>
+                                    <!-- This will only be shown if the preceding input has an invalid state -->
+                                    <b-form-invalid-feedback id="input-short-description-feedback">
+                                        {{ feedback.short_description.message }}
+                                    </b-form-invalid-feedback>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
+                <div class="item" v-bind:class="{'active': accordion['content'] === 'active'}">
+                    <div class="label" @click="toggleAccordion('content')">
+                        {{$t('CONTENT').toUpperCase()}}
+                        <div class="icon">
+                            <i v-if="accordion['content'] === 'active'" class="fas fa-chevron-down"></i>
+                            <i v-if="accordion['content'] !== 'active'" class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="content ">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div v-if="chapter_history.length" class="text-right">
+                                    <button class="es-button-white margin-bottom-1rem" @click="show_history = !show_history">{{$t('SHOW_HISTORY')}}</button>
+                                </div>
+                                <div class="form-group">
+                                    <tiny-editor :initValue="data.chapter_version.content" v-on:getEditorContent="setContent" class="form-control" />
+                                </div>
+                                <div v-if="show_history" class="chapter-history-items slideInRight animated">
+                                    <div class="note">
+                                        <i @click="show_history = !show_history" class="btn-close fas fa-times"></i>
+                                        <strong>{{$t('DOUBLE_CLICK')}}</strong> {{$t('TO_VIEW_HISTORY')}}
+                                    </div>
+                                    <div class="chapter-history-list" >
+                                        <div v-bind:key="history.uuid" v-for="history in chapter_history">
+                                            <div class="history-item" @dblclick="viewHistory(history)">
+                                                <div class="view-all">
+                                                    <span class="float-left">{{$t('WORD_COUNT')}}: {{ WORD_COUNT(history.content) }}</span>
+                                                    <em class="float-right"><span>{{ history.created_at }}</span></em>
+                                                </div>
+                                                <div class="clearfix"></div>
+                                                <div v-html="history.content" class="ellipsis-2"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-  <b-overlay :show="view_history" no-wrap fixed>
-    <template v-slot:overlay>
-      <div
-        id="overlay-background"
-        ref="dialog"
-        tabindex="-1"
-        role="dialog"
-        aria-modal="false"
-        aria-labelledby="form-confirm-label"
-        class="p-3"
-      >
-        <b-container class="bv-example-row">
-          <b-card-group deck>
-            <b-card header="Content">
-              <template class="text-center" v-slot:header>
-                <h4 class="mb-0">{{$t('CONTENT')}}</h4>
-              </template>
-              <div class="margin-bottom-1rem">
-                <div v-html="historyContent" class="history-content" ></div>
-              </div>
-              <div class="text-right">
-                <button class="es-button-white" @click="useHistoryCont()">{{$t('APPLY_TO_CONTENT')}}</button>
-                <button class="es-button-white" @click="view_history = !view_history">{{$t('CLOSE')}}</button>
-              </div>
-            </b-card>
-          </b-card-group>
-        </b-container>
-      </div>
-    </template>
-  </b-overlay>
+    <b-overlay :show="view_history" no-wrap fixed>
+        <template v-slot:overlay>
+            <div
+              id="overlay-background"
+              ref="dialog"
+              tabindex="-1"
+              role="dialog"
+              aria-modal="false"
+              aria-labelledby="form-confirm-label"
+              class="p-3"
+            >
+                <b-container class="bv-example-row">
+                    <b-card-group deck>
+                        <b-card header="Content">
+                            <template class="text-center" v-slot:header>
+                                <h4 class="mb-0">{{$t('CONTENT')}}</h4>
+                            </template>
+                            <div class="margin-bottom-1rem">
+                                <div v-html="historyContent" class="history-content" ></div>
+                            </div>
+                            <div class="text-right">
+                                <button class="es-button-white" @click="useHistoryCont()">{{$t('APPLY_TO_CONTENT')}}</button>
+                                <button class="es-button-white" @click="view_history = !view_history">{{$t('CLOSE')}}</button>
+                            </div>
+                        </b-card>
+                    </b-card-group>
+                </b-container>
+            </div>
+        </template>
+    </b-overlay>
 </div>
 </template>
 

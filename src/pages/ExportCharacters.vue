@@ -1,88 +1,88 @@
 <template>
 <div v-if="page.is_ready && characters" class="es-page-content" style="height: auto">
-  <div class="es-page-head">
-    <div class="inner">
-      <div class="details">
-        <h4>{{$tc('CHARACTER',2)}}</h4>
-        <small>{{$t('BELOW_ARE_THE_LIST_OF_CHARACTERS_UNDER')}} {{ bookTitle }}</small>
-      </div>
-      <div class="actions">
-        <button id="printCharacterButton" class="es-button-white" @click="exportCharacter()">{{$t('EXPORT')}}</button>
-      </div>
-    </div>
-  </div>
-  <div>
-    <div v-if="characters != null" class="rows-print-as-pages">
-      <div v-bind:key="character.id" v-for="character in characters">
-        <div class="es-panel">
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group">
-                <div class="uploaded-file-preview">
-                  <div v-if="character.picture == null" class="default-preview"><i class="fa fa-image"></i></div>
-                  <div v-else><img :src="character.picture_src"></div>
-                </div>
-              </div>
+    <div class="es-page-head">
+        <div class="inner">
+            <div class="details">
+                <h4>{{$tc('CHARACTER',2)}}</h4>
+                <small>{{$t('BELOW_ARE_THE_LIST_OF_CHARACTERS_UNDER')}} {{ bookTitle }}</small>
             </div>
-            <div class="col-md-6">
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <label class="text-capitalize">{{$t('FULLNAME')}}: {{character.fullname}}</label>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <label class="text-capitalize">{{$t('SHORTNAME')}}: {{character.shortname}}</label>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <label class="text-capitalize">{{$t('NICKNAME')}}: {{character.nickname}}</label>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <label class="text-capitalize">{{$t('OCCUPATION')}}: {{character.occupation}}</label>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <label >{{$t('BIRTHDATE')}}: {{character.birthdate}}</label>
-                  </div>
-                </div>
-              </div>
+            <div class="actions">
+                <button id="printCharacterButton" class="es-button-white" @click="exportCharacter()">{{$t('EXPORT')}}</button>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <label>{{$t('DESCRIPTION')}}: </label>
-            </div>
-            <div class="col-md-12">
-              <div v-html="character.description" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';"></div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <label>{{$t('BIO')}}: </label>
-            </div>
-            <div class="col-md-12">
-              <div v-html="character.bio" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';"></div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <label>{{$t('GOALS')}}: </label>
-            </div>
-            <div class="col-md-12">
-              <div v-html="character.goals" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';"></div>
-            </div>
-          </div>
-          <b-table striped hover :items="character.relations" :fields="characterRelationsFields"></b-table>
         </div>
-      </div>
     </div>
-  </div>
+    <div>
+        <div v-if="characters != null" class="rows-print-as-pages">
+            <div v-bind:key="character.id" v-for="character in characters">
+                <div class="es-panel">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="uploaded-file-preview">
+                                    <div v-if="character.picture == null" class="default-preview"><i class="fa fa-image"></i></div>
+                                    <div v-else><img :src="character.picture_src"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="text-capitalize">{{$t('FULLNAME')}}: {{character.fullname}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="text-capitalize">{{$t('SHORTNAME')}}: {{character.shortname}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="text-capitalize">{{$t('NICKNAME')}}: {{character.nickname}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="text-capitalize">{{$t('OCCUPATION')}}: {{character.occupation}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label >{{$t('BIRTHDATE')}}: {{character.birthdate}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>{{$t('DESCRIPTION')}}: </label>
+                        </div>
+                        <div class="col-md-12">
+                            <div v-html="character.description" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>{{$t('BIO')}}: </label>
+                        </div>
+                        <div class="col-md-12">
+                            <div v-html="character.bio" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>{{$t('GOALS')}}: </label>
+                        </div>
+                        <div class="col-md-12">
+                            <div v-html="character.goals" style="padding:10px 0px; font-size:18px; font-family:'Crimson Roman';"></div>
+                        </div>
+                    </div>
+                    <b-table striped hover :items="character.relations" :fields="characterRelationsFields"></b-table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </template>
 
