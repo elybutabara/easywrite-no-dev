@@ -5,7 +5,7 @@ const fs = require('fs')
 const log = require('electron-log')
 const appUpdate = require('./api/updater')
 const reportContent = require('./reports/report_content')
-const exportPdf = require('./api/export-pdf')
+const exportPdf = require('./api/starter-extensions/export-reports/pdf/export-pdf')
 
 if(fs.existsSync(path.join(process.resourcesPath || '','prod.env'))){
   process.env.NODE_ENV = 'production'

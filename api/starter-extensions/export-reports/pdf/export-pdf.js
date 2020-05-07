@@ -1,14 +1,55 @@
-const { app, BrowserWindow, Menu, ipcMain , systemPreferences, dialog} = require('electron')
+const { app, BrowserWindow, ipcMain , dialog} = require('electron')
 const path = require('path')
 const fs = require('fs')
 const electron = require('electron')
 let exportWindow
+
+function createExportWindow(data) {
+  exportWindow = new BrowserWindow({
+    title: app.name+' v'+app.getVersion(),
+    icon: path.resolve('src/assets/img/easywrite-new.ico'),
+    webPreferences: {
+      webSecurity: false,
+      nodeIntegration: true,
+      preload: path.resolve('preload.js'),
+      plugins: true
+    },
+    protocol: 'file:',
+    slashes: true,
+    movable: true,
+    show:false,
+  })
+  exportWindow.setSize(1280, 920)
+  exportWindow.center()
+  exportWindow.setMenu(null)
+
+  exportWindow.webContents.openDevTools()
+  if (process.env.NODE_ENV == 'development') {
+    exportWindow.webContents.openDevTools()
+    let url = 'http://localhost:8080/'
+    exportWindow.loadURL(url + 'dev/' + '/#/'+ data.exportBy)
+  } else {
+    exportWindow.loadFile(path.resolve(`${__dirname}/../dist/export.html`))
+  }
+
+  exportWindow.on('closed', function () {
+    exportWindow = null
+  })
+}
 
 ipcMain.on('EXPORT_PDF_SHOW_CHARACTERS', function (event, data) {
   createExportWindow({exportBy:'export-characters'})
   exportWindow.on('ready-to-show', function () {
     exportWindow.webContents.send('EXPORT_PDF_LIST_CHARACTERS',data.book)
     exportWindow.show()
+  })
+})
+
+ipcMain.on('EXPORT_PDF_SHOW_SCENE', function (event, data) {
+  createExportWindow({exportBy:'export-scenes',data:data})
+  exportWindow.on('ready-to-show', function () {
+    exportWindow.show()
+    exportWindow.webContents.send('EXPORT_PDF_LIST_CHAPTERS',data)
   })
 })
 
@@ -44,44 +85,3 @@ ipcMain.on('EXPORT_PDF_CONFIRM_GENERATE', function (event, data) {
     log.error(err)
   })
 })
-
-ipcMain.on('EXPORT_PDF_SHOW_SCENE', function (event, data) {
-  createExportWindow({exportBy:'export-scenes',data:data})
-  exportWindow.on('ready-to-show', function () {
-    exportWindow.show()
-    exportWindow.webContents.send('EXPORT_PDF_LIST_CHAPTERS',data)
-  })
-})
-
-function createExportWindow(data) {
-  exportWindow = new BrowserWindow({
-    title: app.name+' v'+app.getVersion(),
-    icon: path.resolve('src/assets/img/easywrite-new.ico'),
-    webPreferences: {
-      webSecurity: false,
-      nodeIntegration: true,
-      preload: path.resolve(__dirname,'../', 'preload.js'),
-      plugins: true
-    },
-    protocol: 'file:',
-    slashes: true,
-    movable: true,
-    show:false,
-  })
-  exportWindow.setSize(1280, 920)
-  exportWindow.center()
-  exportWindow.setMenu(null)
-
-  exportWindow.webContents.openDevTools()
-  if (process.env.NODE_ENV == 'development') {
-    exportWindow.webContents.openDevTools()
-    let url = 'http://localhost:8080/'
-    exportWindow.loadURL(url + 'dev/' + '/#/'+ data.exportBy)
-  } else {
-    exportWindow.loadFile(path.resolve(`${__dirname}/../dist/export.html`))
-  }
-
-  exportWindow.on('closed', function () {
-    exportWindow = null
-  })
-}

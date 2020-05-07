@@ -1,5 +1,5 @@
 <template>
-<div v-if="page.is_ready && characters" class="container">
+<div v-if="page.is_ready && characters" class="es-page-content" style="height: auto">
   <div class="es-page-head">
     <div class="inner">
       <div class="details">

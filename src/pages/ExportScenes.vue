@@ -182,7 +182,6 @@ export default {
       scope.$store.dispatch('loadChaptersWithScenesByBook', scope.bookUUID)
       setTimeout(function () {
         scope.chapters = scope.$store.getters.getChaptersByBook(scope.bookUUID)
-        console.log(scope.chapters)
         scope.page.is_ready = true
       }, 500)
     })
