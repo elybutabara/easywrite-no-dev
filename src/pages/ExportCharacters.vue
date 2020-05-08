@@ -96,7 +96,28 @@ export default {
     return {
       characters: [],
       characterRelations: [],
-      characterRelationsFields: ['relation', 'fullname', 'shortname', 'nickname'],
+      characterRelationsFields: [
+        {
+          key: 'relation',
+          label: this.$tc('RELATION'),
+          sortable: true
+        },
+        {
+          key: 'fullname',
+          label: this.$tc('FULLNAME'),
+          sortable: true
+        },
+        {
+          key: 'shortname',
+          label: this.$tc('SHORTNAME'),
+          sortable: true
+        },
+        {
+          key: 'nickname',
+          label: this.$tc('NICKNAME'),
+          sortable: true
+        }
+      ],
       bookUUID: null,
       bookTitle: null,
       page: {

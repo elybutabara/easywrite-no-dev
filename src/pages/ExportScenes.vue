@@ -119,39 +119,47 @@ export default {
       characterFields: [
         {
           key: 'character.fullname',
-          label: this.$t('FULLNAME')
+          label: this.$t('FULLNAME'),
+          sortable: true
         },
         {
           key: 'character.shortname',
-          label: this.$t('SHORTNAME')
+          label: this.$t('SHORTNAME'),
+          sortable: true
         },
         {
           key: 'character.nickname',
-          label: this.$t('NICKNAME')
+          label: this.$t('NICKNAME'),
+          sortable: true
         },
         {
           key: 'character.occupation',
-          label: this.$t('OCCUPATION')
+          label: this.$t('OCCUPATION'),
+          sortable: true
         }
       ],
       locationFields: [
         {
           key: 'location.location',
-          label: this.$t('FULLNAME')
+          label: this.$tc('LOCATION', 1),
+          sortable: true
         },
         {
           key: 'location.AKA',
-          label: this.$t('SHORTNAME')
+          label: this.$t('AKA'),
+          sortable: true
         }
       ],
       itemFields: [
         {
           key: 'item.itemname',
-          label: this.$t('FULLNAME')
+          label: this.$t('ITEM_NAME'),
+          sortable: true
         },
         {
           key: 'item.AKA',
-          label: this.$t('SHORTNAME')
+          label: this.$t('AKA'),
+          sortable: true
         }
       ],
       bookUUID: null,
