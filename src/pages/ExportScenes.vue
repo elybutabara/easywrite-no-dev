@@ -221,6 +221,9 @@ export default {
     getViewPointCharacter: function (scene) {
       const scope = this
       let vpCharacter = ''
+      if (scene.character_id_vp === -1) {
+        return this.$tc('AUTHOR')
+      }
       for (const key in scope.allCharacterFromBook) {
         let character = scope.allCharacterFromBook[key]
         if (character.uuid === scene.character_id_vp) {
