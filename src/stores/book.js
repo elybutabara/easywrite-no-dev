@@ -159,28 +159,17 @@ export default {
       for (let i = 0; i < state.books[authorUUID].rows.length; i++) {
         let current = state.books[authorUUID].rows[i]
         if (current.uuid === payload.uuid) {
-          /*
-            let isOpen = current.is_open
-            let isChaptersFolderOpen = current.is_chapters_folder_open
-            let isItemsFolderOpen = current.is_items_folder_open
-            let isLocationsFolderOpen = current.is_locations_folder_open
-            let isCharactersFolderOpen = current.is_characters_folder_open
-            let isScenesFolderOpen = current.is_scenes_folder_open
-            */
-          state.books[authorUUID].rows[i] = payload
-          /*
-            state.books[authorUUID].rows[i].is_open = isOpen
-            state.books[authorUUID].rows[i].is_chapters_folder_open = isChaptersFolderOpen
-            Vue.set(state.books[authorUUID].rows[i], 'is_items_folder_open', isItemsFolderOpen)
-            Vue.set(state.books[authorUUID].rows[i], 'is_locations_folder_open', isLocationsFolderOpen)
-            Vue.set(state.books[authorUUID].rows[i], 'is_characters_folder_open', isCharactersFolderOpen)
-            Vue.set(state.books[authorUUID].rows[i], 'is_scenes_folder_open', isScenesFolderOpen)
-            */
+          for (var key in payload) {
+            if (state.books[authorUUID].rows[i][key]) {
+              state.books[authorUUID].rows[i][key] = payload[key]
+            }
+          }
           break
         } else if (i === (state.books[authorUUID].rows.length - 1) && current.uuid !== payload.uuid) {
           // use this to get the total number of chapters under book
-          let count = state.books[authorUUID].rows.length
           state.books[authorUUID].rows.push({})
+          let count = state.books[authorUUID].rows.length
+          console.log('HERE COUNT ' + count)
           Vue.set(state.books[authorUUID].rows, count, payload)
           Vue.set(state.books[authorUUID].rows[count], 'is_open', false)
           Vue.set(state.books[authorUUID].rows[count], 'is_chapters_folder_open', false)
