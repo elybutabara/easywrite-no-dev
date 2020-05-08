@@ -78,7 +78,7 @@ exports.initMainWindow = (window) => {
       webPreferences: {
         webSecurity: false,
         nodeIntegration: true,
-        preload: path.join(__dirname, 'preload.js'),
+        preload: path.resolve(process.env.basePath, 'preload.js'),
         plugins: true
       },
       protocol: 'file:',
@@ -95,7 +95,7 @@ exports.initMainWindow = (window) => {
       let url = 'http://localhost:8080/'
       ExportWindow.loadURL(url + 'dev/' + '/#/exportbook')
     } else {
-      ExportWindow.loadFile(`${__dirname}/dist/export.html`)
+      ExportWindow.loadFile(path.resolve(__dirname, '../../../dist/export.html'))
     }
 
     ExportWindow.on('closed', function () {
