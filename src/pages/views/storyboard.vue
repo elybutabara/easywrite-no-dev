@@ -29,31 +29,31 @@
                 </div>
                 <span class="btn-option" v-bind:class="{'active' : details.show_short_description}" @click="toggleData('short-description')">
                     <i v-if="details.show_short_description" class="las la-check"></i>
-                    Short Description
+                    {{$t('SHORT_DESCRIPTION')}}
                 </span>
                 <span class="btn-option" v-bind:class="{'active' : details.show_time}" @click="toggleData('time')">
                     <i v-if="details.show_time" class="las la-check"></i>
-                    Time
+                    {{$t('TIME')}}
                 </span>
                 <span class="btn-option" v-bind:class="{'active' : details.show_objects}" @click="toggleData('objects')">
                     <i v-if="details.show_objects" class="las la-check"></i>
-                    Objects
+                    {{$tc('ITEM', 2)}}
                 </span>
                 <span class="btn-option" v-bind:class="{'active' : details.show_weather}" @click="toggleData('weather')">
                     <i v-if="details.show_weather" class="las la-check"></i>
-                    Weather
+                    {{$t('WEATHER')}}
                 </span>
                 <span class="btn-option" v-bind:class="{'active' : details.show_perspective}" @click="toggleData('perspective')">
                     <i v-if="details.show_perspective" class="las la-check"></i>
-                    Perspective
+                    {{$t('POINT_OF_VIEW')}}
                 </span>
                 <span class="btn-option" v-bind:class="{'active' : details.show_marks}" @click="toggleData('marks')">
                     <i v-if="details.show_marks" class="las la-check"></i>
-                    Marks
+                    {{$tc('CHARACTER', 2)}}
                 </span>
                 <span class="btn-option" v-bind:class="{'active' : details.show_locations}" @click="toggleData('locations')">
                     <i v-if="details.show_locations" class="las la-check"></i>
-                    The Localizer
+                    {{$tc('LOCATION', 2)}}
                 </span>
             </div>
             <div class="es-storyboard-content">
@@ -83,7 +83,7 @@
                                             <span class="data">{{ scene.date_ends || 'Not Set' }}</span>
                                         </div>
                                         <div v-if="details.show_objects" class="details">
-                                            <p class="label"><i class="las la-list"></i> {{ $t('OBJECTS') }}</p>
+                                            <p class="label"><i class="las la-list"></i> {{$tc('ITEM', 2)}}</p>
                                             <span class="data">
                                                 <i class="boxed" :key="item.uuid" v-for="item in $store.getters.getSceneItems(scene.uuid)">
                                                     {{ item.item.itemname }}
@@ -95,12 +95,12 @@
                                             <span class="data">{{ scene.weather || 'Not Set' }}</span>
                                         </div>
                                         <div v-if="details.show_perspective" class="details">
-                                            <p class="label"><i class="las la-eye"></i> {{ $t('PERSPECTIVE') }}</p>
+                                            <p class="label"><i class="las la-eye"></i> {{ $t('POINT_OF_VIEW') }}</p>
                                             <span class="data" v-if="scene.character_id_vp !== -1">{{ $store.getters.findCharacter({book_id: scene.book_id, uuid: scene.character_id_vp }).fullname }}</span>
                                             <span class="data" v-else>{{ $store.getters.getAuthorName }}</span>
                                         </div>
                                         <div v-if="details.show_marks" class="details">
-                                            <p class="label"><i class="las la-user"></i> {{ $t('MARKS') }}</p>
+                                            <p class="label"><i class="las la-user"></i> {{$tc('CHARACTER', 2)}}</p>
                                             <span class="data">
                                                 <i class="boxed" :key="character.uuid" v-for="character in $store.getters.getSceneCharacters(scene.uuid)">
                                                     {{ character.character.fullname }}
@@ -108,7 +108,7 @@
                                             </span>
                                         </div>
                                         <div v-if="details.show_locations" class="details">
-                                            <p class="label"><i class="las la-map-marker-alt"></i> {{ $t('LOCATIONS') }}</p>
+                                            <p class="label"><i class="las la-map-marker-alt"></i> {{$tc('LOCATION', 2)}}</p>
                                             <span class="data">
                                                 <i class="boxed" :key="location.uuid" v-for="location in $store.getters.getSceneLocations(scene.uuid)">
                                                     {{ location.location.location }}
@@ -149,7 +149,7 @@
                                             <span class="data">{{ scene.date_ends || 'Not Set' }}</span>
                                         </div>
                                         <div v-if="details.show_objects" class="details">
-                                            <p class="label"><i class="las la-list"></i> {{ $t('OBJECTS') }}</p>
+                                            <p class="label"><i class="las la-list"></i> {{$tc('ITEM', 2)}}</p>
                                             <span class="data">
                                                 <i class="boxed" :key="item.uuid" v-for="item in $store.getters.getSceneItems(scene.uuid)">
                                                     {{ item.item.itemname }}
@@ -161,12 +161,12 @@
                                             <span class="data">{{ scene.weather || 'Not Set' }}</span>
                                         </div>
                                         <div v-if="details.show_perspective" class="details">
-                                            <p class="label"><i class="las la-eye"></i> {{ $t('PERSPECTIVE') }}</p>
+                                            <p class="label"><i class="las la-eye"></i> {{ $t('POINT_OF_VIEW') }}</p>
                                             <span class="data" v-if="scene.character_id_vp !== -1">{{ $store.getters.findCharacter({book_id: scene.book_id, uuid: scene.character_id_vp }).fullname }}</span>
                                             <span class="data" v-else>{{ $store.getters.getAuthorName }}</span>
                                         </div>
                                         <div v-if="details.show_marks" class="details">
-                                            <p class="label"><i class="las la-user"></i> {{ $t('MARKS') }}</p>
+                                            <p class="label"><i class="las la-user"></i> {{$tc('CHARACTER', 2)}}</p>
                                             <span class="data">
                                                 <i class="boxed" :key="character.uuid" v-for="character in $store.getters.getSceneCharacters(scene.uuid)">
                                                     {{ character.character.fullname }}
@@ -174,7 +174,7 @@
                                             </span>
                                         </div>
                                         <div v-if="details.show_locations" class="details">
-                                            <p class="label"><i class="las la-map-marker-alt"></i> {{ $t('LOCATIONS') }}</p>
+                                            <p class="label"><i class="las la-map-marker-alt"></i> {{$tc('LOCATION', 2)}}</p>
                                             <span class="data">
                                                 <i class="boxed" :key="location.uuid" v-for="location in $store.getters.getSceneLocations(scene.uuid)">
                                                     {{ location.location.location }}
