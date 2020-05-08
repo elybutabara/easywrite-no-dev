@@ -9,7 +9,11 @@
                 </div>
                 <div class="actions">
                     <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form', tabData: { list_index: -1, book: book, character: null }, tabTitle: $t('NEW') + ' ' + $tc('CHARACTER',1), newTab: true})">{{$t('NEW').toUpperCase()}} {{$tc('CHARACTER', 1).toUpperCase()}}</button>
-                    <button class="es-button-white" @click="exportCharacter()">{{$tc('EXPORT', 1).toUpperCase()}} {{$tc('CHARACTER', 2).toUpperCase()}} {{$tc('LIST', 1).toUpperCase()}}</button>
+                    <button v-if="exportOnProgress === false" class="es-button-white" @click="exportCharacter()">{{$tc('EXPORT', 1).toUpperCase()}} {{$tc('CHARACTER', 2).toUpperCase()}} {{$tc('LIST', 1).toUpperCase()}}</button>
+                    <b-button  v-if="exportOnProgress === true" disabled class="es-button-white">
+                      <b-spinner small type="grow"></b-spinner>
+                      <span>{{exportLoading}}</span>
+                    </b-button>
                 </div>
             </div>
         </div>
@@ -47,6 +51,8 @@ export default {
   props: ['properties'],
   data: function () {
     return {
+      exportOnProgress: false,
+      exportLoading: this.$t('Loading'),
       bookUUID: ''
     }
   },
@@ -96,6 +102,7 @@ export default {
         bookUUID: scope.bookUUID,
         title: scope.properties.title
       }
+      scope.exportOnProgress = true
       ipcRenderer.send('EXPORT_PDF_SHOW_CHARACTERS', {book: book})
     }
   },
@@ -103,6 +110,9 @@ export default {
     var scope = this
     // scope.getCharacters(scope.properties.id)
     scope.bookUUID = scope.properties.uuid
+    ipcRenderer.on('EXPORT_PDF_ENABLE_BUTTON', function () {
+      scope.exportOnProgress = false
+    })
   }
 }
 </script>

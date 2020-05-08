@@ -27,8 +27,9 @@ exports.initMainWindow = (window) => {
           }
         })
       }
+      if (ExportWindow != null) ExportWindow.close()
     }).catch(() => {
-
+      if (ExportWindow != null) ExportWindow.close()
     })
   })
 
@@ -65,8 +66,10 @@ exports.initMainWindow = (window) => {
             MainWindow.webContents.send('SHOW-SWAL-SUCCESS-EXPORTING', result.filePath)
           }
         })
+        if (ExportWindow != null) ExportWindow.close()
       }
     }).catch(err => {
+      if (ExportWindow != null) ExportWindow.close()
       log.error(err)
     })
   })

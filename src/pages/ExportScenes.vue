@@ -6,9 +6,9 @@
                 <h4>{{ $t('LIST') }} {{ $t('OF') }} {{$tc('SCENE',2)}}</h4>
                 <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ $tc('BOOK') }} : {{ bookTitle }}</small>
             </div>
-            <div class="actions">
-                <button id="printCharacterButton" class="es-button-white" @click="exportCharacter()">{{$t('EXPORT')}}</button>
-            </div>
+<!--            <div class="actions">-->
+<!--                <button id="printCharacterButton" class="es-button-white" @click="exportCharacter()">{{$t('EXPORT')}}</button>-->
+<!--            </div>-->
         </div>
     </div>
     <div>
@@ -250,16 +250,24 @@ export default {
 
       scope.$store.dispatch('loadCharactersByBook', scope.bookUUID)
       scope.$store.dispatch('loadChaptersWithScenesByBook', scope.bookUUID)
+
       setTimeout(function () {
         scope.allCharacterFromBook = scope.$store.getters.getCharactersByBook(scope.bookUUID)
         scope.chapters = scope.$store.getters.getChaptersByBook(scope.bookUUID)
         scope.page.is_ready = true
       }, 500)
+
+      setTimeout(function () {
+        let pdf = {
+          name: scope.bookTitle + ' - ' + scope.$tc('SCENE', 2)
+        }
+        ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
+      }, 500)
     })
 
-    ipcRenderer.on('EXPORT_PDF_SHOW_BUTTON', function (event, data) {
-      window.$('#printCharacterButton').show()
-    })
+    // ipcRenderer.on('EXPORT_PDF_SHOW_BUTTON', function (event, data) {
+    //   window.$('#printCharacterButton').show()
+    // })
   }
 }
 </script>

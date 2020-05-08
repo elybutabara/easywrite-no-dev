@@ -86,7 +86,7 @@ function createWindow () {
     mainWindow.setSize(1280, 920)
     mainWindow.center()
   })
-
+  exportPdf.initMainWindow(mainWindow)
   exportdocx.initMainWindow(mainWindow)
 
   if(process.env.NODE_ENV != 'development') {
