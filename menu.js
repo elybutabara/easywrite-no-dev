@@ -9,7 +9,7 @@ let tray = null
 const mainMenuTemplate = [
   {
     label:'Dashboard',
-    icon: path.resolve('src/assets/img/easywrite-new.ico'),
+    //icon: path.resolve('src/assets/img/easywrite-new.ico'),
     accelerator: "CmdOrCtrl+D",
     click: function (menuItem, currentWindow) {
       mainWindow.webContents.send('GO_TO_DASHBOARD')

@@ -132,8 +132,8 @@ export default {
               var userUUID = this.$store.getters.getUserID
               var authorUUID = this.$store.getters.getAuthorID
               scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
-              scope.$store.dispatch('getBooksByAuthorID', userUUID)
               */
+              scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
               scope.$store.dispatch('updateBookList', response.data)
               if (scope.data.id !== null) {
                 scope.$store.dispatch('changeTabTitle', {

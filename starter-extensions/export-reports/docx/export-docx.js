@@ -35,7 +35,7 @@ exports.initMainWindow = (window) => {
   ipcMain.on('EXPORT-DOCX-SHOW-BOOK-WINDOW', function (event, data) {
     createExportWindowBook()
     ExportWindow.on('ready-to-show', function () {
-      ExportWindow.show()
+      // ExportWindow.show()
       ExportWindow.webContents.send('EXPORT-DOCX-GET-BOOK', data)
     })
   })
@@ -58,10 +58,11 @@ exports.initMainWindow = (window) => {
         var docx = HtmlDocx.asBlob(data.html)
         fs.writeFile(outputFile, docx, function (err) {
           if (err) {
+            MainWindow.webContents.send('CHANGE_EXPORT_BOOK_BUTTON_NAME')
             MainWindow.webContents.send('SHOW-SWAL-ERROR-EXPORTING', result.filePath)
           } else {
-            MainWindow.webContents.send('SHOW-SWAL-SUCCESS-EXPORTING', result.filePath)
             MainWindow.webContents.send('CHANGE_EXPORT_BOOK_BUTTON_NAME')
+            MainWindow.webContents.send('SHOW-SWAL-SUCCESS-EXPORTING', result.filePath)
           }
         })
       }
