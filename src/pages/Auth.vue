@@ -85,7 +85,7 @@ export default {
             author: response.data.author
           })
           setTimeout(function () {
-            ipcRenderer.send('RESIZE_MAIN_WINDOW', response)
+            ipcRenderer.send('RESIZE_MAIN_WINDOW', { lang: scope.menuval })
             // start time worked counter
             scope.actionmutateTimer()
             // scope.COOKIE_SET('username', scope.username, 365)
@@ -146,7 +146,7 @@ export default {
                 author: response.data.author
               })
               setTimeout(function () {
-                ipcRenderer.send('RESIZE_MAIN_WINDOW', response)
+                ipcRenderer.send('RESIZE_MAIN_WINDOW', { lang: scope.menuval })
                 // start time worked counter
                 scope.actionmutateTimer()
                 scope.$router.push({name: 'Main'})
@@ -189,11 +189,12 @@ export default {
 
     scope.getMenuLang(cultureInfo)
     scope.$i18n.locale = cultureInfo
-    ipcRenderer.send('SET_DEFAULT_LANG', scope.menuval)
-    // ipcRenderer.send('REFRESH_MENUITEMS')
+    ipcRenderer.send('SET_DEFAULTS', { lang: scope.menuval })
 
     scope.username = localStorage.getItem('username')
     scope.password = localStorage.getItem('password')
+
+    scope.CHANGE_MENU_TITLE(scope.$t('LOGIN'))
   }
 }
 

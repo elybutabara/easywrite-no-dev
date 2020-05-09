@@ -25,8 +25,9 @@ export default {
 
       return tabs
     },
+    // Ismael: Before it return the id and now i change it to return the tab using the id as the index
     getTabsByID: state => (id) => {
-      return id
+      return state.tabs.items[id]
     },
     getActiveTab: state => {
       return state.tabs.active_index

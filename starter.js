@@ -2,6 +2,7 @@
 const { app, BrowserWindow, Menu, ipcMain , systemPreferences, dialog} = require('electron')
 const path = require('path')
 const fs = require('fs')
+
 // const log = require('electron-log')
 //basePath is needed in some separate files
 process.env.basePath = path.resolve(__dirname)
@@ -40,6 +41,7 @@ function createWindow () {
     title: app.name+' v'+app.getVersion(),
     width : 500,
     height: 600,
+    frame: false,
     icon: path.resolve('src/assets/img/easywrite-new.ico'),
     webPreferences: {
       webSecurity: false,
@@ -64,8 +66,6 @@ function createWindow () {
     mainWindow.loadFile(`${__dirname}/dist/index.html`)
   }
 
-  Menu.setApplicationMenu(null)
-
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 
@@ -81,8 +81,8 @@ function createWindow () {
   listener.loadApi(mainWindow)
 
   // resize after authentication
-  ipcMain.on('RESIZE_MAIN_WINDOW', function (e, cat) {
-    Menu.setApplicationMenu(menu.getMenu(mainWindow))
+  ipcMain.on('RESIZE_MAIN_WINDOW', function (e, args) {
+    mainWindow.webContents.send('SET_MAIN_MENU', { page: 'dashboard', lang: args.lang, locale: args.locale })
     mainWindow.setSize(1280, 920)
     mainWindow.center()
   })
@@ -93,14 +93,16 @@ function createWindow () {
     autoUpdate.processUpdate(mainWindow)
   }
 
-  ipcMain.on('REFRESH_MENUITEMS', function (e, cat) {
-    Menu.setApplicationMenu(menu.getMenu(mainWindow))
+  // This method is called to setup menu in login page
+  ipcMain.on('SET_DEFAULTS', function (e, args) {
+    mainWindow.webContents.send('SET_MAIN_MENU', { page: 'login', lang: args.lang, locale: args.locale })
+  })
+
+  // This method will be called every time you want to change the menu title
+  ipcMain.on('SET_TITLE', function (e, title) {
+    mainWindow.webContents.send('SET_MAIN_MENU_TITLE', title + ' - ' + app.name)
   })
 }
-
-ipcMain.on('SET_DEFAULT_LANG', function (e, cat) {
-  menu.setMenu(cat)
-})
 
 
 // This method will be called when Electron has finished
