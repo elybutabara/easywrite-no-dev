@@ -67,7 +67,7 @@ function createWindow () {
   }
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -85,6 +85,7 @@ function createWindow () {
     mainWindow.webContents.send('SET_MAIN_MENU', { page: 'dashboard', lang: args.lang, locale: args.locale })
     mainWindow.setSize(1280, 920)
     mainWindow.center()
+    mainWindow.setResizable(true)
   })
 
   exportdocx.initMainWindow(mainWindow)
@@ -95,7 +96,15 @@ function createWindow () {
 
   // This method is called to setup menu in login page
   ipcMain.on('SET_DEFAULTS', function (e, args) {
-    mainWindow.webContents.send('SET_MAIN_MENU', { page: 'login', lang: args.lang, locale: args.locale })
+    if(args.reload) {
+      mainWindow.reload()
+      return true
+    }
+
+    mainWindow.webContents.send('SET_MAIN_MENU', { page: 'login', lang: args.lang })
+    mainWindow.setSize(500, 600)
+    mainWindow.center()
+    mainWindow.setResizable(false)
   })
 
   // This method will be called every time you want to change the menu title
@@ -103,7 +112,6 @@ function createWindow () {
     mainWindow.webContents.send('SET_MAIN_MENU_TITLE', title + ' - ' + app.name)
   })
 }
-
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

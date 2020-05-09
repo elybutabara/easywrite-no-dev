@@ -2,6 +2,8 @@
 let mainWindow
 const { Menu } = require('electron');
 
+const shell = require('electron').shell
+
 // const {ipcRenderer} = window.require('electron')
 let tray = null
 // Create menu templete
@@ -25,6 +27,14 @@ const mainMenuTemplate = [
         }
       },
       { type: "separator" },
+      {
+        label: "Logout",
+        accelerator: "Alt+L",
+        click: function (menuItem, currentWindow) {
+          currentWindow.webContents.send('LOGOUT')
+        }
+      },
+      { type: "separator" },
       { label: "Exit", role: 'close'},
     ]
   },
@@ -35,7 +45,6 @@ const mainMenuTemplate = [
         label:'Dashboard',
         accelerator: "CmdOrCtrl+D",
         click: function (menuItem, currentWindow) {
-          console.log('GO_TO_DASHBOARD')
           currentWindow.webContents.send('GO_TO_DASHBOARD')
         }
       }
@@ -100,6 +109,23 @@ const mainMenuTemplate = [
         click: function (menuItem, currentWindow) {
           currentWindow.webContents.send('TRANSLATE','sv')
           currentWindow.webContents.send('SET_TRANSLATION_DOM','sv')
+        }
+      }
+    ]
+  },
+  {
+    label:'Help',
+    submenu:[
+      {
+        label:'Register',
+        click: function (menuItem, currentWindow) {
+          shell.openExternal('https://www.pilotleser.no/auth/signup')
+        }
+      },
+      {
+        label:'About',
+        click: function (menuItem, currentWindow) {
+          currentWindow.webContents.send('DISPLAY_ABOUT')
         }
       }
     ]

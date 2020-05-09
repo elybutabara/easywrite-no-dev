@@ -36,6 +36,7 @@ ipcRenderer.on('SET_MAIN_MENU_TITLE', function (event, title) {
 // data.lang: is use to determine what will be the default language to be use/selected
 ipcRenderer.on('SET_MAIN_MENU', function (event, data) {
   let menu = new Menu()
+  let maximizable = true
 
   if (titlebar) titlebar.dispose()
 
@@ -58,7 +59,11 @@ ipcRenderer.on('SET_MAIN_MENU', function (event, data) {
 
           menu.append(new MenuItem(item));
         }
+        if(item.label === 'Help') {
+          menu.append(new MenuItem(item));
+        }
       })
+      maximizable = false
       break;
     default:
       menu = null
@@ -69,7 +74,8 @@ ipcRenderer.on('SET_MAIN_MENU', function (event, data) {
   titlebar = new customTitlebar.Titlebar({
     backgroundColor: customTitlebar.Color.fromHex('#324553'),
     icon: '../assets/images/easywrite-new.ico',
-    menu: menu
+    menu: menu,
+    maximizable: maximizable
   })
 
   Menu.setApplicationMenu(menu)

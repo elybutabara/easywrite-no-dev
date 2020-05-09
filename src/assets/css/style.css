@@ -251,6 +251,10 @@ ul { margin-left:0px; list-style:none;  }
   margin-bottom: 1rem!important;
 }
 
+.titlebar .window-controls-container .window-icon-bg.inactive {
+  display: none;
+}
+
 @media screen and (max-width: 1300px) {
 	.es-content { padding-right:10px;  }
 	.es-content .header .cta-container { display:none;  }

@@ -181,6 +181,7 @@ export default {
     var scope = this
     let cultureInfo = ''
 
+    // Ismael: i think this need to be in the mixin.js so that it will be globalize and any page get this
     if (localStorage.getItem('translation') == null | localStorage.getItem('translation') === 'null') {
       cultureInfo = navigator.language.slice(0, 2)
     } else {

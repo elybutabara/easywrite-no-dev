@@ -187,6 +187,11 @@ export default {
   }
 }
 
+ipcRenderer.on('LOGOUT', function (e, data) {
+  // Check something before calling the SET_DELFAULT
+  ipcRenderer.send('SET_DEFAULTS', { reload: true })
+})
+
 ipcRenderer.on('SET_TRANSLATION_DOM', function (event, data) {
   localStorage.setItem('translation', data)
 })
