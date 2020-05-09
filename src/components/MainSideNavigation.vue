@@ -1,7 +1,7 @@
 <template>
 <div class="left-side-bar no-select">
         <div class="header">
-            <img src="@/assets/img/es-logo-white.png">
+            <img src="@/assets/img/EasyWrite Logo White.png">
         </div>
         <div class="search-box">
             <input type="text" :placeholder = " $t('SEARCH_KEYWORD')">

@@ -26,7 +26,7 @@
        <div class="es-login">
            <div class="inner">
                <div class="heading">
-                   <img src="@/assets/img/es-logo-white.png">
+                   <img src="@/assets/img/EasyWrite Logo White.png">
                </div>
                <div class="content">
                    <form v-on:submit.prevent="authenticate()">
@@ -190,7 +190,7 @@ export default {
     scope.getMenuLang(cultureInfo)
     scope.$i18n.locale = cultureInfo
     ipcRenderer.send('SET_DEFAULT_LANG', scope.menuval)
-    ipcRenderer.send('REFRESH_MENUITEMS')
+    // ipcRenderer.send('REFRESH_MENUITEMS')
 
     scope.username = localStorage.getItem('username')
     scope.password = localStorage.getItem('password')
