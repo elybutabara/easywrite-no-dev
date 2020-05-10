@@ -14,7 +14,13 @@ import Notifications from 'vue-notification'
 import Multiselect from 'vue-multiselect'
 import { BootstrapVue } from 'bootstrap-vue'
 import VueI18n from 'vue-i18n'
-import messages from '@/lang/translations'
+import da from '@/lang/danish'
+import en from '@/lang/english'
+import fi from '@/lang/finnish'
+import is from '@/lang/icelandic'
+import nb from '@/lang/norwegian'
+import es from '@/lang/spanish'
+import sv from '@/lang/swedish'
 
 import tab from './stores/tab'
 import auth from './stores/auth'
@@ -81,9 +87,8 @@ window.$ = window.jQuery = require('jquery')
 window.moment = require('moment')
 window.swal = require('sweetalert2')
 window.he = require('he')
-
-window.API_URL = (process.env.NODE_ENV === 'production') ? 'https://api.pilotleser.no/dev' : 'https://api-pilot.orosage.com/dev'
-// window.API_URL = (process.env.NODE_ENV === 'production') ? 'https://api.pilotleser.no/live' : 'https://api.pilotleser.no/live'
+// window.API_URL = (process.env.NODE_ENV === 'production') ? 'https://api.pilotleser.no/dev' : 'https://api-pilot.orosage.com/dev'
+window.API_URL = (process.env.NODE_ENV === 'production') ? 'https://api.pilotleser.no/live' : 'https://api.pilotleser.no/live'
 
 // window.$.fn.select2.defaults.set('theme', 'bootstrap')
 
@@ -97,7 +102,12 @@ Vue.component('tiny-editor', TinyMCE)
 // Install BootstrapVue
 Vue.use(BootstrapVue)
 // Vue.use(jQuery)
+
 Vue.use(VueI18n)
+
+const messages = {
+  da, en, fi, is, nb, es, sv
+}
 
 const i18n = new VueI18n({
   fallbackLocale: 'en',
@@ -123,8 +133,6 @@ const store = new Vuex.Store({
 // all global functions goes here...
 Vue.mixin(mixins)
 Vue.mixin(cookie)
-
-// console.log(VueSanitize)
 
 // eslint-disable-next-line no-new
 new Vue({

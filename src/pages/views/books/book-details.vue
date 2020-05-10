@@ -8,8 +8,8 @@
             </div>
             <div class="actions">
                 <button class="es-button-white" @click="exportBook()">{{export_book}}</button>
-                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'storyboard-' + page.data.uuid, tabComponent: 'storyboard',  tabData: page.data, tabTitle: 'Story Board - ' + properties.title, newTab: true})">{{ $tc('STORYBOARD', 2) }}</button>
-                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: 'Edit - ' + properties.title, newTab: true})">{{ $t('EDIT') }}</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'storyboard-' + page.data.uuid, tabComponent: 'storyboard',  tabData: page.data, tabTitle: 'Story Board - ' + properties.title, newTab: true})">Story Board</button>
+                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: $t('EDIT') + ' - ' + properties.title, newTab: true})">{{ $t('EDIT') }}</button>
                 <button class="es-button-red" @click="deleteBook()">{{ $t('DELETE') }}</button>
             </div>
         </div>
@@ -92,7 +92,7 @@ export default {
 
       ipcRenderer.send('EXPORT-DOCX-SHOW-BOOK-WINDOW', book)
 
-      ipcRenderer.on('CHANGE_EXPORT_BOOK_BUTTON_NAME', function (event, data) {
+      ipcRenderer.on('CHANGE-EXPORT-BOOK-BUTTON-NAME', function (event, data) {
         scope.export_book = scope.$t('EXPORT').toUpperCase() + ' ' + scope.$tc('BOOK', 1).toUpperCase()
       })
     }

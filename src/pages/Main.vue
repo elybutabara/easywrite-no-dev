@@ -6,9 +6,9 @@
             <div class="es-top-parent">
                <pomodoro-timer></pomodoro-timer>
                 <div class="es-top-nav">
-                    <!-- <button @click="CHANGE_COMPONENT({tabKey: 'dashboard', tabComponent: 'dashboard',  tabData: null, tabTitle: $t('DASHBOARD')})"> {{ $t('DASHBOARD') }}</button>
+                    <button @click="CHANGE_COMPONENT({tabKey: 'dashboard', tabComponent: 'dashboard',  tabData: null, tabTitle: $t('DASHBOARD')})"> {{ $t('DASHBOARD') }}</button>
                     <button @click="CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing',  tabData: null, tabTitle: $t('SYNC_DATA'), newTab: true})">{{ $t('SYNC_DATA') }}</button>
-                    <button @click="CHANGE_COMPONENT({tabKey: 'book-form', tabComponent: 'book-form',  tabData: null, tabTitle: $t('NEW_BOOK'), newTab: true})">{{ $t('NEW_BOOK') }}</button> -->
+                    <button @click="CHANGE_COMPONENT({tabKey: 'book-form', tabComponent: 'book-form',  tabData: null, tabTitle: $t('NEW_BOOK'), newTab: true})">{{ $t('NEW_BOOK') }}</button>
                 </div>
             </div>
             <div class="es-tab-nav">
@@ -182,27 +182,27 @@ export default {
         }
       })
     })
+
+    ipcRenderer.on('SHOW-SWAL-SUCCESS-EXPORTING', function (event, data) {
+      window.swal.fire({
+        icon: 'success',
+        title: scope.$t('SUCCESSFULY_EXPORTED_TO'),
+        text: data
+      })
+    })
+
+    ipcRenderer.on('SHOW-SWAL-ERROR-EXPORTING', function (event, data) {
+      window.swal.fire({
+        icon: 'error',
+        title: scope.$t('UNSUCCESSFULY_EXPORTED_YOUR_FILE_IS_ALREADY_OPEN_PLEASE_CLOSE_YOUR_FILE_BEFORE_EXPORTING'),
+        text: data
+      })
+    })
   }
 }
 
 ipcRenderer.on('SET_TRANSLATION_DOM', function (event, data) {
   localStorage.setItem('translation', data)
-})
-
-ipcRenderer.on('SHOW-SWAL-SUCCESS-EXPORTING', function (event, data) {
-  window.swal.fire({
-    icon: 'success',
-    title: 'Successfuly Exported To',
-    text: data
-  })
-})
-
-ipcRenderer.on('SHOW-SWAL-ERROR-EXPORTING', function (event, data) {
-  window.swal.fire({
-    icon: 'error',
-    title: 'Unsuccessfuly Exported, your file is already open. Please close your file before exporting',
-    text: data
-  })
 })
 
 </script>

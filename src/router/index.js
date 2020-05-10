@@ -51,7 +51,7 @@ export default new Router({
       meta: { protected: false }
     },
     {
-      path: '/exportbook',
+      path: '/export-book',
       name: 'ExportBook',
       beforeEnter: checkAuth,
       component: ExportBook,
