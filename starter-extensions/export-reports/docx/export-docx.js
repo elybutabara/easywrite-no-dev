@@ -49,7 +49,7 @@ exports.initMainWindow = (window) => {
       ]
     }).then(result => {
       if (result.canceled) {
-        MainWindow.webContents.send('CHANGE_EXPORT_BOOK_BUTTON_NAME')
+        MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
       } else {
         var HtmlDocx = require('html-docx-js')
         var fs = require('fs')
@@ -58,10 +58,10 @@ exports.initMainWindow = (window) => {
         var docx = HtmlDocx.asBlob(data.html)
         fs.writeFile(outputFile, docx, function (err) {
           if (err) {
-            MainWindow.webContents.send('CHANGE_EXPORT_BOOK_BUTTON_NAME')
+            MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
             MainWindow.webContents.send('SHOW-SWAL-ERROR-EXPORTING', result.filePath)
           } else {
-            MainWindow.webContents.send('CHANGE_EXPORT_BOOK_BUTTON_NAME')
+            MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
             MainWindow.webContents.send('SHOW-SWAL-SUCCESS-EXPORTING', result.filePath)
           }
         })
@@ -93,7 +93,7 @@ exports.initMainWindow = (window) => {
     if (process.env.NODE_ENV === 'development') {
       ExportWindow.webContents.openDevTools()
       let url = 'http://localhost:8080/'
-      ExportWindow.loadURL(url + 'dev/' + '/#/exportbook')
+      ExportWindow.loadURL(url + 'dev/' + '/#/export-book')
     } else {
       ExportWindow.loadFile(`${__dirname}/dist/export.html`)
     }

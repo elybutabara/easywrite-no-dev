@@ -15,7 +15,7 @@
         <div class="es-page-breadcrumbs">
             <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
             /
-            <button class="current">{{ $tc('STORYBOARD', 2) }}</button>
+            <button class="current">Story Board</button>
         </div>
         <div class="es-page-content" style="bcakground:#293742; padding:0px;">
             <div class="es-storyboard-settings no-select">
