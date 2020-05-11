@@ -8,6 +8,7 @@ const { remote } = require('electron')
 const { Menu, MenuItem } = remote
 
 const path = require('path')
+const url = require('url')
 
 const menuTemplate = require('./menu')
 
@@ -73,7 +74,7 @@ ipcRenderer.on('SET_MAIN_MENU', function (event, data) {
   // Icon cannot be seen in development but it can be seen in production
   titlebar = new customTitlebar.Titlebar({
     backgroundColor: customTitlebar.Color.fromHex('#324553'),
-    icon: '../assets/images/easywrite-new.ico',
+    icon: url.format(path.join(__dirname, '/assets', '/images', '/easywrite-new.ico')),
     menu: menu,
     maximizable: maximizable
   })

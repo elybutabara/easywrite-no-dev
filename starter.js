@@ -85,7 +85,7 @@ function createWindow () {
     mainWindow.webContents.send('SET_MAIN_MENU', { page: 'dashboard', lang: args.lang, locale: args.locale })
     mainWindow.setSize(1280, 920)
     mainWindow.center()
-    mainWindow.setResizable(true)
+    mainWindow.maximize()
   })
 
   exportdocx.initMainWindow(mainWindow)
@@ -104,7 +104,6 @@ function createWindow () {
     mainWindow.webContents.send('SET_MAIN_MENU', { page: 'login', lang: args.lang })
     mainWindow.setSize(500, 600)
     mainWindow.center()
-    mainWindow.setResizable(false)
   })
 
   // This method will be called every time you want to change the menu title
