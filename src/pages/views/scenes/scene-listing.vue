@@ -8,14 +8,14 @@
                     <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.uuid, tabComponent: 'scene-form', tabData: { book: book, scene: null }, tabTitle: $t('NEW') + ' ' + $tc('SCENE',1), newTab: true})">{{$t('NEW').toUpperCase()}} {{$tc('SCENE', 1).toUpperCase()}}</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.uuid, tabComponent: 'scene-form', tabData: { book: book, scene: null }, tabTitle: $t('NEW') + ' ' + $t('SCENE'), newTab: true})">{{$t('NEW').toUpperCase()}} {{$t('SCENE').toUpperCase()}}</button>
                 </div>
             </div>
         </div>
         <div class="es-page-breadcrumbs">
             <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
             /
-            <button class="current">{{ $tc('OTHER_SCENES', 2) }}</button>
+            <button class="current">{{ $t('OTHER_SCENES') }}</button>
         </div>
         <div class="es-page-content">
             <draggable v-model="scenes" draggable=".es-col" class="es-row">
@@ -31,7 +31,7 @@
                             <i class="description ellipsis-2">{{ scene.short_description || $t('NO_SHORT_DESCRIPTION') + '...'  }}</i>
                         </div>
                         <div class="es-card-footer">
-                            <small>{{$tc('VERSION', 2)}}: {{ scene.scene_version.length }}</small>
+                            <small>{{$t('VERSIONS')}}: {{ scene.scene_version.length }}</small>
                             <small style="float:right;">{{$t('WORD_COUNT')}}: {{ WORD_COUNT(scene.scene_version[0].content) }}</small>
                         </div>
                     </div>

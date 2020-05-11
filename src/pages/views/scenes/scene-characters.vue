@@ -3,7 +3,7 @@
     <div v-if="page.is_ready" class="page-scene-characters ">
         <div class="es-scene-children-wrapper" style="">
             <button @click="showChildrenItemList()" class="btn-dark" style="float:right;">{{$t('ADD_SCENE_CHARACTERS')}}</button>
-            <div class="heading">{{$tc('CHARACTER', 2)}}</div>
+            <div class="heading">{{$t('CHARACTERS')}}</div>
             <div class="es-row">
                 <div class="es-col" v-for="scene_character in scene_characters" v-bind:key="scene_character.id">
                     <div class="es-card">
@@ -23,7 +23,7 @@
             <div v-if="adding" class="scene-children-items slideInRight animated">
                 <div class="note">
                     <i @click="hideChildrenItemList()" class="closer fas fa-times"></i>
-                    <strong>{{$t('DOUBLE_CLICK')}}</strong> {{$tc('CHARACTER', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}
+                    <strong>{{$t('DOUBLE_CLICK')}}</strong> {{$t('CHARACTER').toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}
                 </div>
                 <div class="scene-children-items-list" >
                     <div v-bind:key="character.id" v-for="character in GET_CHARACTERS_BY_BOOK(scene.book_id)">

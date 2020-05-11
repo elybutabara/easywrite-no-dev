@@ -30,7 +30,7 @@
                </div>
                <div class="content">
                    <form v-on:submit.prevent="authenticate()">
-                       <h6 class="version no-margin" style="color: white;font-size: small">{{ $tc('VERSION', 1) }} {{ version }}</h6>
+                       <h6 class="version no-margin" style="color: white;font-size: small">{{ $t('VERSION') }} {{ version }}</h6>
                        <p class="welcome">{{ $t('WELCOME_TO_EASYWRITE') }}</p>
                        <div class="input-group line">
                            <label>Username</label>

@@ -3,7 +3,7 @@
     <div class="es-page-head">
         <div class="inner">
             <div class="details">
-                <h4>{{$tc('CHARACTER',2)}}</h4>
+                <h4>{{$t('CHARACTERS')}}</h4>
                 <small>{{$t('BELOW_ARE_THE_LIST_OF_CHARACTERS_UNDER')}} {{ bookTitle }}</small>
             </div>
             <div class="actions">
@@ -99,22 +99,22 @@ export default {
       characterRelationsFields: [
         {
           key: 'relation',
-          label: this.$tc('RELATION'),
+          label: this.$t('RELATION'),
           sortable: true
         },
         {
           key: 'fullname',
-          label: this.$tc('FULLNAME'),
+          label: this.$t('FULLNAME'),
           sortable: true
         },
         {
           key: 'shortname',
-          label: this.$tc('SHORTNAME'),
+          label: this.$t('SHORTNAME'),
           sortable: true
         },
         {
           key: 'nickname',
-          label: this.$tc('NICKNAME'),
+          label: this.$t('NICKNAME'),
           sortable: true
         }
       ],
@@ -131,7 +131,7 @@ export default {
       const scope = this
       window.$('#printCharacterButton').hide()
       let pdf = {
-        name: scope.bookTitle + ' - ' + this.$tc('CHARACTER', 2)
+        name: scope.bookTitle + ' - ' + this.$t('CHARACTERS')
       }
       ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
     },

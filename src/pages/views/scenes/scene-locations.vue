@@ -3,7 +3,7 @@
     <div v-if="page.is_ready" class="page-scene-locations ">
         <div class="es-scene-children-wrapper" style="">
             <button @click="showChildrenItemList()" class="btn-dark" style="float:right;">{{$t('ADD_SCENE_LOCATIONS')}}</button>
-            <div class="heading">{{$tc('LOCATION', 2)}}</div>
+            <div class="heading">{{$t('LOCATIONS')}}</div>
             <div class="es-row">
                 <div class="es-col " v-bind:key="scene_location.id" v-for="scene_location in $store.getters.getSceneLocations(scene.uuid)">
                     <div class="es-card">
@@ -23,7 +23,7 @@
             <div v-if="adding" class="scene-children-items slideInRight animated">
                 <div class="note">
                     <i @click="hideChildrenItemList()" class="closer fas fa-times"></i>
-                    <strong>{{$t('DOUBLE_CLICK')}}</strong> {{$tc('LOCATION', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}
+                    <strong>{{$t('DOUBLE_CLICK')}}</strong> {{$t('LOCATION').toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}
                 </div>
                 <div class="scene-children-items-list" >
                     <div v-bind:key="location.id" v-for="location in GET_LOCATIONS_BY_BOOK(scene.book_id)">

@@ -4,7 +4,7 @@
             <span>
                 <img v-if="$store.getters.isBookLocationsFolderOpen(book)" src="@/assets/img/icons/folder-open.svg">
                 <img v-else src="@/assets/img/icons/folder.svg">
-                {{ $tc('LOCATION', 2) }}
+                {{ $t('LOCATIONS') }}
             </span>
         </div>
         <ul class="level-3">

@@ -7,11 +7,11 @@
             <br/>
             <select @change="changeChapterVersion1(),showDifference()" v-model="v1.uuid">
                 <option value="null">{{$t('SELECT_A_VERSION').toUpperCase()}}</option>
-                <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$tc('VERSION', 1)}} {{ index + 1 }}</option>
+                <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$t('VERSION')}} {{ index + 1 }}</option>
             </select>
             <select @change="changeChapterVersion2(),showDifference()" v-model="v2.uuid">
                 <option value="null">{{$t('SELECT_A_VERSION').toUpperCase()}}</option>
-                <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$tc('VERSION', 1)}} {{ index + 1 }}</option>
+                <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$t('VERSION')}} {{ index + 1 }}</option>
             </select>
             <div style="margin-top:15px;">
                 <button style="display:none;" @click="showDifference()" class="btn-red btn-block">{{$t('COMPARE_VERSIONS').toUpperCase()}}</button>
@@ -23,7 +23,7 @@
         <div class="versions">
             <select @change="changeChapterVersion1()" v-model="v1.uuid">
                 <option value="null">{{$t('SELECT_A_VERSION').toUpperCase()}}</option>
-                <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$tc('VERSION', 1)}} {{ index + 1 }}</option>
+                <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$t('VERSION')}} {{ index + 1 }}</option>
             </select>
             <div class="content">
                 <div v-html="v1.content" class="description" ></div>
@@ -32,7 +32,7 @@
         <div class="versions">
             <select @change="changeChapterVersion2()" v-model="v2.uuid">
                 <option value="null">{{$t('SELECT_A_VERSION').toUpperCase()}}</option>
-                <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$tc('VERSION', 1)}} {{ index + 1 }}</option>
+                <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$t('VERSION')}} {{ index + 1 }}</option>
             </select>
             <div class="content">
                 <div v-html="v2.content" class="description" ></div>
