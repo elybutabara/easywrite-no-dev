@@ -1,4 +1,7 @@
 // Mixins are a flexible way to distribute reusable functionalities for Vue components.
+const electron = window.require('electron')
+const {ipcRenderer} = electron
+
 export default {
   name: 'mixins',
   data () {
@@ -20,6 +23,8 @@ export default {
       let isNewTab = (data.newTab) ? data.newTab : false
       let tabIndex = (data.tabIndex === null || data.tabIndex === undefined) ? 0 : data.tabIndex
       let settings = { key: data.tabKey, component: data.tabComponent, data: data.tabData, title: data.tabTitle, index: tabIndex, modified: false }
+
+      scope.CHANGE_MENU_TITLE(settings.title)
 
       if (isNewTab) {
         // scope.$store.dispatch('newTab', { key: key, title: tabTitle, component: tabComponent, data: tabData })
@@ -75,6 +80,10 @@ export default {
     },
     CHANGE_TAB: function (index) {
       var scope = this
+
+      let next = this.$store.getters.getTabsByID(index)
+      scope.CHANGE_MENU_TITLE(next.title)
+
       scope.$store.dispatch('changeTab', index)
     },
     REMOVE_TAB: function (index) {
@@ -91,6 +100,8 @@ export default {
         showCancelButton: true
       }).then((result) => {
         if (result.value) {
+          let next = this.$store.getters.getTabsByID(index - 1)
+          scope.CHANGE_MENU_TITLE(next.title)
           scope.$store.dispatch('removeTab', index)
         }
       })
@@ -207,6 +218,9 @@ export default {
             })
         }
       })
+    },
+    CHANGE_MENU_TITLE: function (title) {
+      ipcRenderer.send('SET_TITLE', title)
     }
   }
 }

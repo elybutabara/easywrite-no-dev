@@ -26,6 +26,7 @@
     "bootstrap": "^4.4.1",
     "bootstrap-vue": "^2.7.0",
     "cross-env": "^7.0.0",
+    "custom-electron-titlebar": "^3.2.2-hotfix62",
     "diff-match-patch": "^1.0.4",
     "electron-log": "^4.0.7",
     "electron-updater": "^4.2.5",

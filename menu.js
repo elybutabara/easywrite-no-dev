@@ -1,36 +1,37 @@
 'use strict'
 let mainWindow
 const { Menu } = require('electron');
-const path = require('path');
+
+const shell = require('electron').shell
 
 // const {ipcRenderer} = window.require('electron')
 let tray = null
 // Create menu templete
 const mainMenuTemplate = [
   {
-    label:'Dashboard',
-    //icon: path.resolve('src/assets/img/easywrite-new.ico'),
-    accelerator: "CmdOrCtrl+D",
-    click: function (menuItem, currentWindow) {
-      mainWindow.webContents.send('GO_TO_DASHBOARD')
-    }
-  },
-  {
     label:'File',
     submenu:[
-      { 
-        label: "New Book", 
-        accelerator: "CmdOrCtrl+B", 
+      {
+        label: "New Book",
+        accelerator: "CmdOrCtrl+B",
         click: function (menuItem, currentWindow) {
-          mainWindow.webContents.send('NEW_BOOK')
+          currentWindow.webContents.send('NEW_BOOK')
         }
       },
       { type: "separator" },
-      { 
-        label: "Sync Data", 
-        accelerator: "CmdOrCtrl+Alt+S", 
+      {
+        label: "Sync Data",
+        accelerator: "CmdOrCtrl+Alt+S",
         click: function (menuItem, currentWindow) {
-          mainWindow.webContents.send('SYNC_DATA')
+          currentWindow.webContents.send('SYNC_DATA')
+        }
+      },
+      { type: "separator" },
+      {
+        label: "Logout",
+        accelerator: "Alt+L",
+        click: function (menuItem, currentWindow) {
+          currentWindow.webContents.send('LOGOUT')
         }
       },
       { type: "separator" },
@@ -38,76 +39,100 @@ const mainMenuTemplate = [
     ]
   },
   {
+    label:'View',
+    submenu:[
+      {
+        label:'Dashboard',
+        accelerator: "CmdOrCtrl+D",
+        click: function (menuItem, currentWindow) {
+          currentWindow.webContents.send('GO_TO_DASHBOARD')
+        }
+      }
+    ]
+  },
+  {
     label:'Translations',
     submenu:[
       {label: "English",
-       type: 'checkbox',
+       type: 'radio',
        checked: true,
-        click() {
-          mainWindow.webContents.send('REFRESH_MENU', ControlState(0)) // main.js then to starter to refresh menu
-          mainWindow.webContents.send('TRANSLATE','en') //main.js
-          mainWindow.webContents.send('SET_TRANSLATION_DOM','en') // Main.vue
+        click: function (menuItem, currentWindow) {
+          // currentWindow.webContents.send('REFRESH_MENU', ControlState(0)) // main.js then to starter to refresh menu
+          currentWindow.webContents.send('TRANSLATE','en') //main.js
+          currentWindow.webContents.send('SET_TRANSLATION_DOM','en') // Main.vue
         }
       },
       {label: "Danish",
-       type: 'checkbox',
+       type: 'radio',
         checked: false,
-        click() {
-          mainWindow.webContents.send('REFRESH_MENU', ControlState(1))
-          mainWindow.webContents.send('TRANSLATE','da')
-          mainWindow.webContents.send('SET_TRANSLATION_DOM','da')
+        click: function (menuItem, currentWindow) {
+          currentWindow.webContents.send('TRANSLATE','da')
+          currentWindow.webContents.send('SET_TRANSLATION_DOM','da')
 
         },
       },
       {label: "Finnish",
-      type: 'checkbox',
+      type: 'radio',
         checked: false,
-        click() {
-          mainWindow.webContents.send('REFRESH_MENU', ControlState(2))
-          mainWindow.webContents.send('TRANSLATE','fi')  
-          mainWindow.webContents.send('SET_TRANSLATION_DOM','fi')
+        click: function (menuItem, currentWindow) {
+          currentWindow.webContents.send('TRANSLATE','fi')
+          currentWindow.webContents.send('SET_TRANSLATION_DOM','fi')
         }
       },
       {label: "Icelandic",
-       type: 'checkbox',
+       type: 'radio',
         checked: false,
-        click() {
-          mainWindow.webContents.send('REFRESH_MENU', ControlState(3))
-          mainWindow.webContents.send('TRANSLATE','is')
-          mainWindow.webContents.send('SET_TRANSLATION_DOM','is')
+        click: function (menuItem, currentWindow) {
+          currentWindow.webContents.send('TRANSLATE','is')
+          currentWindow.webContents.send('SET_TRANSLATION_DOM','is')
         }
       },
       {label: "Norwegian",
-       type: 'checkbox',
+       type: 'radio',
         checked: false,
-        click() {
-          mainWindow.webContents.send('REFRESH_MENU', ControlState(4))
-          mainWindow.webContents.send('TRANSLATE','nb')
-          mainWindow.webContents.send('SET_TRANSLATION_DOM','nb')
+        click: function (menuItem, currentWindow) {
+          currentWindow.webContents.send('TRANSLATE','nb')
+          currentWindow.webContents.send('SET_TRANSLATION_DOM','nb')
         }
       },
       {label: "Spanish",
-       type: 'checkbox',
+       type: 'radio',
         checked: false,
-        click() {
-          mainWindow.webContents.send('REFRESH_MENU', ControlState(5))
-          mainWindow.webContents.send('TRANSLATE','es')
-          mainWindow.webContents.send('SET_TRANSLATION_DOM','es')
+        click: function (menuItem, currentWindow) {
+          currentWindow.webContents.send('TRANSLATE','es')
+          currentWindow.webContents.send('SET_TRANSLATION_DOM','es')
         }
       },
       {label: "Swedish",
-       type: 'checkbox',
+       type: 'radio',
         checked: false,
-        click() {
-          mainWindow.webContents.send('REFRESH_MENU', ControlState(6))
-          mainWindow.webContents.send('TRANSLATE','sv')
-          mainWindow.webContents.send('SET_TRANSLATION_DOM','sv')
+        click: function (menuItem, currentWindow) {
+          currentWindow.webContents.send('TRANSLATE','sv')
+          currentWindow.webContents.send('SET_TRANSLATION_DOM','sv')
+        }
+      }
+    ]
+  },
+  {
+    label:'Help',
+    submenu:[
+      {
+        label:'Register',
+        click: function (menuItem, currentWindow) {
+          shell.openExternal('https://www.pilotleser.no/auth/signup')
+        }
+      },
+      {
+        label:'About',
+        click: function (menuItem, currentWindow) {
+          currentWindow.webContents.send('DISPLAY_ABOUT')
         }
       }
     ]
   }
 ];
 
+// Ismael: i dont think we still need this if were using the custom menu
 function ControlState(val) {
   let menuCount = mainMenuTemplate.length - 1
   if(process.env.NODE_ENV!=='production') menuCount -= 1
@@ -167,6 +192,12 @@ exports.getMenu = function (window) {
   return Menu.buildFromTemplate(mainMenuTemplate)
 }
 
+// This return the menu template
+exports.getMenuTemplate = function () {
+  return mainMenuTemplate
+}
+
+// Ismael: i dont think we still need this if were using the custom menu
 exports.setMenu = function (data) {
   ControlState(data)
 }
