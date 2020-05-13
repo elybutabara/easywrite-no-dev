@@ -40,6 +40,8 @@
                            <label>Password</label>
                            <input v-model="password" type="password" :placeholder = " $t('ENTER_YOUR_PASSWORD_HERE') ">
                        </div>
+                       <div class="remember-me"><b-form-checkbox v-model="status" value="accepted" unchecked-value="not_accepted">Remember me</b-form-checkbox></div>
+                       <br/>
                        <div class="input-group">
                            <button type="submit">{{ $t('LOGIN') }}</button>
                        </div>
@@ -190,6 +192,10 @@ export default {
     var scope = this
     let cultureInfo = ''
 
+    if (localStorage.getItem('remember_me') === 'remember') {
+      scope.status = 'accepted'
+      scope.authenticate()
+    }
     // Ismael: i think this need to be in the mixin.js so that it will be globalize and any page get this
     if (localStorage.getItem('translation') == null | localStorage.getItem('translation') === 'null') {
       cultureInfo = navigator.language.slice(0, 2)
@@ -212,6 +218,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.remember-me {color:ghostwhite;}
 body { background:#293742 !important; }
 .es-login-wrapper {background:#293742 !important; display: table; position: absolute;  top: 0; left: 0; height: 100%; width: 100%; }
 .es-login-wrapper .es-login { display: table-cell; vertical-align: middle; }

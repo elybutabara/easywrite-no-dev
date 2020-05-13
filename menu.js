@@ -31,6 +31,7 @@ const mainMenuTemplate = [
         label: "Logout",
         accelerator: "Alt+L",
         click: function (menuItem, currentWindow) {
+          localStorage.setItem('remember_me', '')
           currentWindow.webContents.send('LOGOUT')
         }
       },
