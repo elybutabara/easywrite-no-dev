@@ -8,7 +8,7 @@
                     <small>{{$t('DATE_MODIFIED')}}: {{ data.updated_at }}</small>
                 </div>
                 <div v-else>
-                    <h4>{{$t('CREATE')}} {{$t('NEW')}} {{$t('LOCATION')}}</h4>
+                    <h4>{{$t('CREATE_NEW_LOCATION')}}</h4>
                 </div>
             </div>
             <div class="actions">

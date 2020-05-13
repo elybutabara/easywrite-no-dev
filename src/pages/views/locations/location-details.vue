@@ -13,9 +13,9 @@
         <div class="es-panel-content">
             <div class="image-container"><img :src="properties.location.picture_src" /></div>
             <h2 class="title">{{ properties.location.location  || 'Untitled' }}</h2>
-            <p class="aka">{{ properties.location.AKA || $t('AKA') + ' ' + $t('NOT_SET')}}</p>
+            <p class="aka">{{ properties.location.AKA || $t('AKA_NOT_SET')}}</p>
             <i class="description" v-if="properties.location.description !== '' && properties.location.description !== null" v-html="properties.location.description" ></i>
-            <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}</i>
+            <i class="description" v-else>{{$t('NO_DESCRIPTION')}}</i>
         </div>
         <div class="es-panel-footer">
             <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + properties.location.uuid, tabComponent: 'location-form', tabData: { book: book, location: location }, tabTitle: $t('EDIT')+ ' - ' + properties.location.location, newTab: true})">{{$t('EDIT').toUpperCase()}}</div>

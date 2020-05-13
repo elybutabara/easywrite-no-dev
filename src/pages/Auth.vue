@@ -67,7 +67,8 @@ export default {
       window: remote.getCurrentWindow(),
       version: remote.app.getVersion(),
       menuval: 0,
-      translation: ''
+      translation: '',
+      status: 'not_accepted'
     }
   },
   methods: {
@@ -88,9 +89,13 @@ export default {
             ipcRenderer.send('RESIZE_MAIN_WINDOW', { lang: scope.menuval })
             // start time worked counter
             scope.actionmutateTimer()
-            // scope.COOKIE_SET('username', scope.username, 365)
+            // set local storage
             localStorage.setItem('username', scope.username)
             localStorage.setItem('password', scope.password)
+            if (scope.status === 'accepted') {
+              localStorage.setItem('remember_me', 'remember')
+            }
+
             scope.$router.push({name: 'Main'})
           }, 100)
         })
@@ -109,9 +114,13 @@ export default {
         .then(function (response) {
           delete response.data.user.id
           delete response.data.author.id
-          // scope.COOKIE_SET('username', scope.username, 365)
+          // set local storage
           localStorage.setItem('username', scope.username)
           localStorage.setItem('password', scope.password)
+          if (scope.status === 'accepted') {
+            localStorage.setItem('remember_me', 'remember')
+          }
+
           scope.$set(response.data.user, 'password', scope.password)
           scope.$set(response.data.user, 'token', response.data.success.token)
           scope.$set(response.data.user, 'author', response.data.author)

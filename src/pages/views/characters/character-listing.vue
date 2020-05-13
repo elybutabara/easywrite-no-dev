@@ -8,8 +8,8 @@
                     <small>{{$t('BELOW_ARE_THE_LIST_OF_CHARACTERS_UNDER')}} {{ book.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form', tabData: { list_index: -1, book: book, character: null }, tabTitle: $t('NEW') + ' ' + $t('CHARACTER'), newTab: true})">{{$t('NEW').toUpperCase()}} {{$t('CHARACTER').toUpperCase()}}</button>
-                    <button class="es-button-white" @click="exportCharacter()">{{$t('EXPORT').toUpperCase()}} {{$t('CHARACTERS').toUpperCase()}} {{$t('LIST').toUpperCase()}}</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form', tabData: { list_index: -1, book: book, character: null }, tabTitle: $t('NEW_CHARACTER'), newTab: true})">{{$t('NEW_CHARACTER').toUpperCase()}}</button>
+                    <button class="es-button-white" @click="exportCharacter()">{{$t('EXPORT_CHARACTERS_LIST').toUpperCase()}}</button>
                 </div>
             </div>
         </div>
@@ -25,7 +25,7 @@
                         <div class="es-card-content">
                             <p class="title ellipsis-2">{{ character.fullname || 'Untitled' }}</p>
                             <i class="description ellipsis-2" v-if="character.description !== '' && character.description !== null" v-html="character.description"></i>
-                            <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}...</i>
+                            <i class="description" v-else>{{$t('NO_DESCRIPTION')}}...</i>
                         </div>
                         <div class="es-card-footer">
                             <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-details-' + character.uuid, tabComponent: 'character-details',  tabData: { book: book, character: character }, tabTitle: $t('VIEW')+ ' - ' + character.fullname})"><i class="lar la-eye"></i> {{$t('VIEW')}}</button>

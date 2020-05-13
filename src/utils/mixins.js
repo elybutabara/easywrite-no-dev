@@ -66,15 +66,15 @@ export default {
         if (model === 'books') {
           scope.CHANGE_COMPONENT({tabKey: 'book-details-' + data.uuid, tabComponent: 'book-details', tabData: data, tabTitle: data.title})
         } else if (model === 'chapters') {
-          scope.CHANGE_COMPONENT({tabKey: 'chapter-listing-' + data.uuid, tabComponent: 'chapter-listing', tabData: data, tabTitle: 'Chapters - ' + data.title})
+          scope.CHANGE_COMPONENT({tabKey: 'chapter-listing-' + data.uuid, tabComponent: 'chapter-listing', tabData: data, tabTitle: this.$t('CHAPTERS') + ' - ' + data.title})
         } else if (model === 'items') {
-          scope.CHANGE_COMPONENT({tabKey: 'item-listing-' + data.uuid, tabComponent: 'item-listing', tabData: data, tabTitle: 'Items - ' + data.title})
+          scope.CHANGE_COMPONENT({tabKey: 'item-listing-' + data.uuid, tabComponent: 'item-listing', tabData: data, tabTitle: this.$t('ITEMS') + ' - ' + data.title})
         } else if (model === 'locations') {
-          scope.CHANGE_COMPONENT({tabKey: 'location-listing-' + data.uuid, tabComponent: 'location-listing', tabData: data, tabTitle: 'Location - ' + data.title})
+          scope.CHANGE_COMPONENT({tabKey: 'location-listing-' + data.uuid, tabComponent: 'location-listing', tabData: data, tabTitle: this.$t('LOCATIONS') + ' - ' + data.title})
         } else if (model === 'characters') {
-          scope.CHANGE_COMPONENT({tabKey: 'character-listing-' + data.uuid, tabComponent: 'character-listing', tabData: data, tabTitle: 'Character - ' + data.title})
+          scope.CHANGE_COMPONENT({tabKey: 'character-listing-' + data.uuid, tabComponent: 'character-listing', tabData: data, tabTitle: this.$t('CHARACTERS') + ' - ' + data.title})
         } else if (model === 'scenes') {
-          scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + data.uuid, tabComponent: 'scene-listing', tabData: data, tabTitle: 'Scenes - ' + data.title})
+          scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + data.uuid, tabComponent: 'scene-listing', tabData: data, tabTitle: this.$t('OTHER_SCENES') + ' - ' + data.title})
         }
       }
     },
@@ -95,9 +95,10 @@ export default {
       window.swal.fire({
         position: 'center',
         icon: 'warning',
-        title: 'Would you like to close this tab without saving your changes?',
+        title: this.$t('WOULD_YOU_LIKE_TO_CLOSE_THIS_TAB_WITHOUT_SAVING_YOUR_CHANGES'),
         showConfirmButton: true,
-        showCancelButton: true
+        showCancelButton: true,
+        cancelButtonText: this.$t('CANCEL')
       }).then((result) => {
         if (result.value) {
           let next = this.$store.getters.getTabsByID(index - 1)

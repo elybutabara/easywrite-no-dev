@@ -23,7 +23,7 @@
             <div v-if="adding" class="scene-children-items slideInRight animated">
                 <div class="note">
                     <i @click="hideChildrenItemList()" class="closer fas fa-times"></i>
-                    <strong>{{$t('DOUBLE_CLICK')}}</strong> {{$t('CHARACTER').toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}
+                    {{$t('DOUBLE_CLICK_CHARACTER_TO_ADD_IT_INTO_THE_SCENE')}}
                 </div>
                 <div class="scene-children-items-list" >
                     <div v-bind:key="character.id" v-for="character in GET_CHARACTERS_BY_BOOK(scene.book_id)">

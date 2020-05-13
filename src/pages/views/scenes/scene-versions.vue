@@ -10,7 +10,7 @@
         <div class="scene-version-description">
             <strong>{{$t('DESCRIPTION')}}</strong>
             <div v-if="version.change_description !== 'undefined' && version.change_description !== null && version.change_description !== ''" v-html="version.change_description" class="description"></div>
-            <div v-else vclass="description">{{$t('NO_DESCRIPTION_ON_THIS')}} <strong>{{$t('VERSION').toLowerCase()}}</strong>.</div>
+            <div v-else vclass="description">{{$t('NO_DESCRIPTION_ON_THIS_VERSION')}}.</div>
         </div>
         <div class="scene-version-content">
             <div v-html="version.content" class="description" ></div>

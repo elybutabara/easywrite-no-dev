@@ -16,13 +16,14 @@ export default {
         resize: false,
         hidden_input: false,
         plugins: [
-          'autolink link lists charmap hr anchor',
+          'autolink lists charmap hr anchor',
           'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime nonbreaking',
           'table contextmenu directionality template paste textcolor print'// remove autoresize
         ],
         toolbar: [
           'undo | redo | fontselect | fontsizeselect | copy | cut | paste | bold | italic | underline | strikethrough | forecolor | backcolor | leftChev | rightChev | enDash | numlist | bullist | alignleft | aligncenter | alignright | alignjustify | removeformat | print'
         ],
+
         browser_spellcheck: true,
         menubar: false,
         branding: false,

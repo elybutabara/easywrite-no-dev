@@ -8,7 +8,7 @@
                     <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.uuid, tabComponent: 'scene-form', tabData: { book: book, scene: null }, tabTitle: $t('NEW') + ' ' + $t('SCENE'), newTab: true})">{{$t('NEW').toUpperCase()}} {{$t('SCENE').toUpperCase()}}</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.uuid, tabComponent: 'scene-form', tabData: { book: book, scene: null }, tabTitle: $t('NEW_SCENE'), newTab: true})">{{$t('NEW_SCENE').toUpperCase()}}</button>
                 </div>
             </div>
         </div>

@@ -8,7 +8,7 @@
                     <small>{{$t('DATE_MODIFIED')}}: {{ data.updated_at }}</small>
                 </div>
                 <div v-else>
-                    <h4>{{$t('CREATE')}} {{$t('NEW')}} {{$t('ITEM')}}</h4>
+                    <h4>{{$t('CREATE_NEW_ITEM')}}</h4>
                 </div>
             </div>
             <div class="actions">
@@ -24,7 +24,7 @@
         /
         <button class="current">
             <span v-if="item !== null">{{ item.itemname }}</span>
-            <span v-else>New Item</span>
+            <span v-else>{{$t('NEW_ITEM')}}</span>
         </button>
     </div>
     <div class="es-page-content">

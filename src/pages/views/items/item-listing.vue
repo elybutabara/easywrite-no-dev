@@ -8,7 +8,7 @@
                     <small>{{$t('BELOW_ARE_THE_LIST_OF_ITEMS_UNDER')}} {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'item-form', tabComponent: 'item-form', tabData: { list_index: -1, book: book, item: null }, tabTitle: $t('NEW') + ' ' + $t('ITEM'), newTab: true })">{{$t('NEW').toUpperCase()}} {{$t('ITEM').toUpperCase()}}</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'item-form', tabComponent: 'item-form', tabData: { list_index: -1, book: book, item: null }, tabTitle: $t('NEW_ITEM'), newTab: true })">{{$t('NEW_ITEM').toUpperCase()}}</button>
                 </div>
             </div>
         </div>
@@ -24,7 +24,7 @@
                         <div class="es-card-content">
                             <p class="title ellipsis-2">{{ item.itemname || 'Untitled' }}</p>
                             <i class="description ellipsis-2" v-if="item.description !== '' && item.description !== null" v-html="item.description"></i>
-                            <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}...</i>
+                            <i class="description" v-else>{{$t('NO_DESCRIPTION')}}...</i>
                         </div>
                         <div class="es-card-footer">
                             <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'item-details-' + item.uuid, tabComponent: 'item-details', tabData: { book: book, item: item }, tabTitle: $t('VIEW')+ ' - ' + item.itemname})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>

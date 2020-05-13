@@ -8,7 +8,7 @@
                     <small>{{$t('BELOW_ARE_THE_LIST_OF_LOCATIONS_UNDER')}} {{ properties.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'location-form', tabComponent: 'location-form', tabData: { list_index: -1, book: book, location: null }, tabTitle: $t('NEW') + ' ' + $t('LOCATION'), newTab: true})">{{$t('NEW').toUpperCase()}} {{$t('LOCATION').toUpperCase()}}</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'location-form', tabComponent: 'location-form', tabData: { list_index: -1, book: book, location: null }, tabTitle: $t('NEW_LOCATION'), newTab: true})">{{$t('NEW_LOCATION').toUpperCase()}}</button>
                 </div>
             </div>
         </div>
@@ -24,7 +24,7 @@
                         <div class="es-card-content">
                             <p class="title ellipsis-2">{{ location.location || 'Untitled' }}</p>
                             <i class="description ellipsis-2" v-if="location.description !== '' && location.description !== null" v-html="location.description"></i>
-                            <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}...</i>
+                            <i class="description" v-else>{{$t('NO_DESCRIPTION')}}...</i>
                         </div>
                         <div class="es-card-footer">
                             <button class="btn-"  @click="CHANGE_COMPONENT({tabKey: 'location-details-' + location.uuid, tabComponent: 'location-details', tabData: { book: book, location: location }, tabTitle:  $t('VIEW')+ ' - ' + location.location, newTab})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>

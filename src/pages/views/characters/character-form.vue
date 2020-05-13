@@ -24,7 +24,7 @@
         /
         <button class="current">
             <span v-if="character !== null">{{ character.fullname }}</span>
-            <span v-else>New Character</span>
+            <span v-else>{{$t('NEW_CHARACTER')}}</span>
         </button>
     </div>
     <div class="es-page-content">

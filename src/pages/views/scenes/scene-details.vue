@@ -44,7 +44,7 @@
             <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-scene-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
         </div>
         <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">
-            <div class="export-content"><button class="es-button-white" @click="exportContent()">{{$t('EXPORT')}} {{$t('CONTENT')}}</button></div>
+            <div class="export-content"><button class="es-button-white" @click="exportContent()">{{$t('EXPORT_CONTENT')}}</button></div>
             <div v-html="getSceneContent" class="description" ></div>
         </div>
         <div v-if="tab.active === 'locations'"  class="es-scene-details-tab-content no-padding">
