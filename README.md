@@ -1,4 +1,4 @@
-# EasyWriteApp
+# EasyWrite
 
 > Easy Write Application , The best app for writer!
 

@@ -1,11 +1,12 @@
 {
   "name": "EasyWrite",
   "main": "starter.js",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "description": "Easy Write Application , The best app for writer!",
   "author": "EayWriteDeveloper",
   "private": true,
   "scripts": {
+    "code-sign-mac": "codesign --deep --force --verbose --sign - electron.app",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "cross-env NODE_ENV=development electron .",
     "unit": "jest --config test/unit/jest.conf.js --coverage",

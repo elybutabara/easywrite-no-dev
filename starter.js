@@ -88,10 +88,7 @@ function createWindow () {
   })
 
   exportdocx.initMainWindow(mainWindow)
-
-  if(process.env.NODE_ENV != 'development') {
-    autoUpdate.processUpdate(mainWindow)
-  }
+  autoUpdate.processUpdate(mainWindow)
 
   ipcMain.on('REFRESH_MENUITEMS', function (e, cat) {
     Menu.setApplicationMenu(menu.getMenu(mainWindow))
@@ -109,9 +106,7 @@ ipcMain.on('SET_DEFAULT_LANG', function (e, cat) {
 app.on('ready', function appReady() {
   autoUpdate.checkForVersionUpdates()
   createWindow()
-  if(process.env.NODE_ENV != 'development'){
-    autoUpdate.checkAppUpdates()
-  }
+  autoUpdate.checkAppUpdates()
 })
 
 // Quit when all windows are closed.

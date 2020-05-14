@@ -15,7 +15,9 @@ const Platform = builder.Platform
 const spinner = ora('building for production...')
 const moment = require('moment')
 spinner.start()
-
+const certificate = require("./certificate/certificate.env")
+process.env.CSS_NAME = certificate.CSS_NAME
+process.env.CSS_KEY_PASSWORD = certificate.CSS_KEY_PASSWORD
 let buildOptions = {
   "appId": "com.forfatterskolen.easywrite",
   "productName": app.name,
@@ -46,15 +48,16 @@ let buildOptions = {
   ],
   "mac": {
     "category": "public.app-category.productivity",
-    "target": "dmg",
+    "target": ["dmg","zip"],
     "icon": path.resolve('src/assets/img/easywrite.png'),
     "publish" : [{
       "provider": "github",
       "private": true,
       "token": "dfd1c61fcb090ecba24909875e177c5326ad449d",
       "owner": "rancorfloydz",
-      "repo": "easywrite-v2-updater-mac"
-    }]
+      "repo": "easywrite-mac"
+    }],
+    "provisioningProfile": path.resolve('build/certificate/EasyWrite.provisionprofile')
   },
   "win": {
     "target": [
