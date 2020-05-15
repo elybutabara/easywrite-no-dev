@@ -4,19 +4,19 @@
         <div class="es-page-head">
             <div class="inner">
                 <div class="details">
-                    <h4>{{$tc('CHARACTER',2)}}</h4>
+                    <h4>{{$t('CHARACTERS')}}</h4>
                     <small>{{$t('BELOW_ARE_THE_LIST_OF_CHARACTERS_UNDER')}} {{ book.title }}</small>
                 </div>
                 <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form', tabData: { list_index: -1, book: book, character: null }, tabTitle: $t('NEW') + ' ' + $tc('CHARACTER',1), newTab: true})">{{$t('NEW').toUpperCase()}} {{$tc('CHARACTER', 1).toUpperCase()}}</button>
-                    <button class="es-button-white" @click="exportCharacter()">{{$tc('EXPORT', 1).toUpperCase()}} {{$tc('CHARACTER', 2).toUpperCase()}} {{$tc('LIST', 1).toUpperCase()}}</button>
+                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form', tabData: { list_index: -1, book: book, character: null }, tabTitle: $t('NEW_CHARACTER'), newTab: true})">{{$t('NEW_CHARACTER').toUpperCase()}}</button>
+                    <button class="es-button-white" @click="exportCharacter()">{{$t('EXPORT_CHARACTERS_LIST').toUpperCase()}}</button>
                 </div>
             </div>
         </div>
         <div class="es-page-breadcrumbs">
             <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
             /
-            <button class="current">{{ $tc('CHARACTER', 2) }}</button>
+            <button class="current">{{ $t('CHARACTERS') }}</button>
         </div>
         <div class="es-page-content">
             <div class="es-row">
@@ -25,7 +25,7 @@
                         <div class="es-card-content">
                             <p class="title ellipsis-2">{{ character.fullname || 'Untitled' }}</p>
                             <i class="description ellipsis-2" v-if="character.description !== '' && character.description !== null" v-html="character.description"></i>
-                            <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}...</i>
+                            <i class="description" v-else>{{$t('NO_DESCRIPTION')}}...</i>
                         </div>
                         <div class="es-card-footer">
                             <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-details-' + character.uuid, tabComponent: 'character-details',  tabData: { book: book, character: character }, tabTitle: $t('VIEW')+ ' - ' + character.fullname})"><i class="lar la-eye"></i> {{$t('VIEW')}}</button>

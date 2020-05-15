@@ -49,7 +49,6 @@ exports.initMainWindow = (window) => {
       ]
     }).then(result => {
       if (result.canceled) {
-        MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
       } else {
         var HtmlDocx = require('html-docx-js')
         var fs = require('fs')
@@ -58,14 +57,13 @@ exports.initMainWindow = (window) => {
         var docx = HtmlDocx.asBlob(data.html)
         fs.writeFile(outputFile, docx, function (err) {
           if (err) {
-            MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
             MainWindow.webContents.send('SHOW-SWAL-ERROR-EXPORTING', result.filePath)
           } else {
-            MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
             MainWindow.webContents.send('SHOW-SWAL-SUCCESS-EXPORTING', result.filePath)
           }
         })
       }
+      MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
     }).catch(err => {
       log.error(err)
     })

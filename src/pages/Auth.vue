@@ -30,7 +30,7 @@
                </div>
                <div class="content">
                    <form v-on:submit.prevent="authenticate()">
-                       <h6 class="version no-margin" style="color: white;font-size: small">{{ $tc('VERSION', 1) }} {{ version }}</h6>
+                       <h6 class="version no-margin" style="color: white;font-size: small">{{ $t('VERSION') }} {{ version }}</h6>
                        <p class="welcome">{{ $t('WELCOME_TO_EASYWRITE') }}</p>
                        <div class="input-group line">
                            <label>Username</label>
@@ -40,6 +40,8 @@
                            <label>Password</label>
                            <input v-model="password" type="password" :placeholder = " $t('ENTER_YOUR_PASSWORD_HERE') ">
                        </div>
+                       <div class="remember-me"><b-form-checkbox v-model="status" value="accepted" unchecked-value="not_accepted">Remember me</b-form-checkbox></div>
+                       <br/>
                        <div class="input-group">
                            <button type="submit">{{ $t('LOGIN') }}</button>
                        </div>
@@ -67,7 +69,8 @@ export default {
       window: remote.getCurrentWindow(),
       version: remote.app.getVersion(),
       menuval: 0,
-      translation: ''
+      translation: '',
+      status: 'not_accepted'
     }
   },
   methods: {
@@ -85,12 +88,16 @@ export default {
             author: response.data.author
           })
           setTimeout(function () {
-            ipcRenderer.send('RESIZE_MAIN_WINDOW', response)
+            ipcRenderer.send('RESIZE_MAIN_WINDOW', { lang: scope.menuval })
             // start time worked counter
             scope.actionmutateTimer()
-            // scope.COOKIE_SET('username', scope.username, 365)
+            // set local storage
             localStorage.setItem('username', scope.username)
             localStorage.setItem('password', scope.password)
+            if (scope.status === 'accepted') {
+              localStorage.setItem('remember_me', 'remember')
+            }
+
             scope.$router.push({name: 'Main'})
           }, 100)
         })
@@ -109,9 +116,13 @@ export default {
         .then(function (response) {
           delete response.data.user.id
           delete response.data.author.id
-          // scope.COOKIE_SET('username', scope.username, 365)
+          // set local storage
           localStorage.setItem('username', scope.username)
           localStorage.setItem('password', scope.password)
+          if (scope.status === 'accepted') {
+            localStorage.setItem('remember_me', 'remember')
+          }
+
           scope.$set(response.data.user, 'password', scope.password)
           scope.$set(response.data.user, 'token', response.data.success.token)
           scope.$set(response.data.user, 'author', response.data.author)
@@ -146,7 +157,7 @@ export default {
                 author: response.data.author
               })
               setTimeout(function () {
-                ipcRenderer.send('RESIZE_MAIN_WINDOW', response)
+                ipcRenderer.send('RESIZE_MAIN_WINDOW', { lang: scope.menuval })
                 // start time worked counter
                 scope.actionmutateTimer()
                 scope.$router.push({name: 'Main'})
@@ -181,6 +192,11 @@ export default {
     var scope = this
     let cultureInfo = ''
 
+    if (localStorage.getItem('remember_me') === 'remember') {
+      scope.status = 'accepted'
+      scope.authenticate()
+    }
+    // Ismael: i think this need to be in the mixin.js so that it will be globalize and any page get this
     if (localStorage.getItem('translation') == null | localStorage.getItem('translation') === 'null') {
       cultureInfo = navigator.language.slice(0, 2)
     } else {
@@ -189,11 +205,12 @@ export default {
 
     scope.getMenuLang(cultureInfo)
     scope.$i18n.locale = cultureInfo
-    ipcRenderer.send('SET_DEFAULT_LANG', scope.menuval)
-    // ipcRenderer.send('REFRESH_MENUITEMS')
+    ipcRenderer.send('SET_DEFAULTS', { lang: scope.menuval })
 
     scope.username = localStorage.getItem('username')
     scope.password = localStorage.getItem('password')
+
+    scope.CHANGE_MENU_TITLE(scope.$t('LOGIN'))
   }
 }
 
@@ -201,6 +218,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.remember-me {color:ghostwhite;}
 body { background:#293742 !important; }
 .es-login-wrapper {background:#293742 !important; display: table; position: absolute;  top: 0; left: 0; height: 100%; width: 100%; }
 .es-login-wrapper .es-login { display: table-cell; vertical-align: middle; }

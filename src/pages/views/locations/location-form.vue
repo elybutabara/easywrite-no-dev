@@ -8,7 +8,7 @@
                     <small>{{$t('DATE_MODIFIED')}}: {{ data.updated_at }}</small>
                 </div>
                 <div v-else>
-                    <h4>{{$t('CREATE')}} {{$t('NEW')}} {{$tc('LOCATION', 1)}}</h4>
+                    <h4>{{$t('CREATE_NEW_LOCATION')}}</h4>
                 </div>
             </div>
             <div class="actions">
@@ -20,7 +20,7 @@
     <div class="es-page-breadcrumbs">
         <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
         /
-        <button @click="CHANGE_COMPONENT({tabKey: 'location-listing-' + book.uuid, tabComponent: 'location-listing', tabData: book, tabTitle: $tc('LOCATION', 2) + ' - ' + book.title})">{{ $tc('LOCATION', 2) }}</button>
+        <button @click="CHANGE_COMPONENT({tabKey: 'location-listing-' + book.uuid, tabComponent: 'location-listing', tabData: book, tabTitle: $t('LOCATIONS') + ' - ' + book.title})">{{ $t('LOCATIONS') }}</button>
         /
         <button class="current">
             <span v-if="location !== null">{{ location.location }}</span>
@@ -44,13 +44,13 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="input-title">{{$tc('LOCATION', 1)}}: </label>
+                                    <label for="input-title">{{$t('LOCATION')}}: </label>
                                     <b-form-input
                                         id="input-title"
                                         v-model="data.location"
                                         :state="feedback.location.state"
                                         aria-describedby="input-live-help input-live-feedback"
-                                        :placeholder="$tc('LOCATION', 1)"
+                                        :placeholder="$t('LOCATION')"
                                         @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
                                         trim
                                     ></b-form-input>
@@ -213,7 +213,7 @@ export default {
       scope.setFeedbackNull()
 
       if (!scope.data.location) {
-        scope.feedback.location.message = this.$tc('LOCATION', 1) + ' ' + this.$t('IS_REQUIRED')
+        scope.feedback.location.message = this.$t('LOCATION') + ' ' + this.$t('IS_REQUIRED')
         scope.feedback.location.state = false
         hasError = true
       }
@@ -230,7 +230,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$tc('LOCATION', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
+              title: this.$t('LOCATION') + ' ' + this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {

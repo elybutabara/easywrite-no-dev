@@ -3,8 +3,8 @@
     <div class="es-page-head">
         <div class="inner">
             <div class="details">
-                <h4>{{ $t('LIST') }} {{ $t('OF') }} {{$tc('SCENE',2)}}</h4>
-                <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ $tc('BOOK') }} : {{ bookTitle }}</small>
+                <h4>{{ $t('LIST') }} {{ $t('OF') }} {{$t('SCENES')}}</h4>
+                <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ $t('BOOK') }} : {{ bookTitle }}</small>
             </div>
             <div class="actions">
                 <button id="printCharacterButton" class="es-button-white" @click="exportCharacter()">{{$t('EXPORT')}}</button>
@@ -18,7 +18,7 @@
                     <div class="es-panel">
                         <div class="row">
                             <div class="col-md-2">
-                                <label class="">{{$tc('CHAPTER')}} :</label>
+                                <label class="">{{$t('CHAPTER')}} :</label>
                             </div>
                             <div class="col-md-10">
                                 <label class="">{{chapter.title}}</label>
@@ -26,7 +26,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-2">
-                                <label class="">{{$tc('SCENE')}} {{$tc('TITLE')}}:</label>
+                                <label class="">{{$t('SCENE')}} {{$t('TITLE')}}:</label>
                             </div>
                             <div class="col-md-10">
                                 <label class="">{{scene.title}}</label>
@@ -34,7 +34,7 @@
                         </div>
                         <div class="row">
                           <div class="col-md-2">
-                            <label class="">{{$tc('SHORT_DESCRIPTION')}} :</label>
+                            <label class="">{{$t('SHORT_DESCRIPTION')}} :</label>
                           </div>
                           <div class="col-md-10">
                             <label class="">{{scene.short_description}}</label>
@@ -42,7 +42,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-2">
-                                <label class="">{{$tc('TYPE_OF_SCENE')}} :</label>
+                                <label class="">{{$t('TYPE_OF_SCENE')}} :</label>
                             </div>
                             <div class="col-md-10">
                                 <label class="">{{scene.typeofscene}}</label>
@@ -50,7 +50,7 @@
                         </div>
                         <div class="row">
                           <div class="col-md-2">
-                            <label class="">{{$tc('IMPORTANCE')}} :</label>
+                            <label class="">{{$t('IMPORTANCE')}} :</label>
                           </div>
                           <div class="col-md-10">
                             <label class="">{{scene.importance}}</label>
@@ -58,7 +58,7 @@
                         </div>
                         <div class="row">
                           <div class="col-md-2">
-                            <label class="">{{$tc('WEATHER')}} :</label>
+                            <label class="">{{$t('WEATHER')}} :</label>
                           </div>
                           <div class="col-md-10">
                             <label class="">{{scene.weather_type}}</label>
@@ -66,7 +66,7 @@
                         </div>
                         <div class="row">
                           <div class="col-md-2">
-                            <label class="">{{$tc('STATUS')}} :</label>
+                            <label class="">{{$t('STATUS')}} :</label>
                           </div>
                           <div class="col-md-10">
                             <label class="">{{scene.status}}</label>
@@ -74,7 +74,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-2">
-                                <label class="">{{$tc('DATE_START')}} :</label>
+                                <label class="">{{$t('DATE_START')}} :</label>
                             </div>
                             <div class="col-md-10">
                                 <label class="">{{scene.date_starts}}</label>
@@ -82,7 +82,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-2">
-                                <label class="">{{$tc('DATE_END')}} :</label>
+                                <label class="">{{$t('DATE_END')}} :</label>
                             </div>
                             <div class="col-md-10">
                                 <label class="">{{scene.date_ends}}</label>
@@ -90,7 +90,7 @@
                         </div><br/>
                         <div class="row">
                           <div class="col-md-2">
-                            <label class="">{{$tc('POINT_OF_VIEW')}} :</label>
+                            <label class="">{{$t('POINT_OF_VIEW')}} :</label>
                           </div>
                           <div class="col-md-10">
                             <label class="">{{getViewPointCharacter(scene)}}</label>
@@ -99,7 +99,7 @@
                         <div class="row">
                           <div class="col-md-12">
                             <div style="border-bottom: 1px solid  lightgray">
-                              <label class="mb-0">{{$tc('POINT_OF_VIEW')}} {{$tc('DESCRIPTION')}} :</label>
+                              <label class="mb-0">{{$t('POINT_OF_VIEW')}} {{$t('DESCRIPTION')}} :</label>
                             </div>
                           </div>
                           <div class="col-md-12" v-html="scene.viewpoint_description"></div>
@@ -107,7 +107,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div style="border-bottom: 1px solid  lightgray">
-                                    <label class="mb-0">{{$tc('CONTENT')}} :</label>
+                                    <label class="mb-0">{{$t('CONTENT')}} :</label>
                                 </div>
                             </div>
                             <div class="col-md-12" v-html="scene.scene_version[scene.scene_version.length-1].content"></div>
@@ -115,14 +115,14 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div style="border-bottom: 1px solid  lightgray">
-                                    <label class="mb-0">{{$tc('NOTES')}} :</label>
+                                    <label class="mb-0">{{$t('NOTES')}} :</label>
                                 </div>
                             </div>
                             <div class="col-md-12" v-html="scene.notes"></div>
                         </div><br/><br/>
                         <div class="row">
                             <div class="col-md-12">
-                                <label class="">{{$tc('CHARACTER',2)}} {{$t('IN')}} {{$t('THIS')}} {{$tc('SCENE',1)}} :</label>
+                                <label class="">{{$t('CHARACTERS')}} {{$t('IN')}} {{$t('THIS')}} {{$t('SCENE')}} :</label>
                             </div>
                             <div class="col-md-12">
                                 <b-table striped hover :items="scene.characters" :fields="characterFields"></b-table>
@@ -130,7 +130,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <label class="">{{$tc('LOCATION',2)}} {{$t('IN')}} {{$t('THIS')}} {{$tc('SCENE',1)}} :</label>
+                                <label class="">{{$t('LOCATIONS')}} {{$t('IN')}} {{$t('THIS')}} {{$t('SCENE')}} :</label>
                             </div>
                             <div class="col-md-12">
                                 <b-table striped hover :items="scene.locations" :fields="locationFields"></b-table>
@@ -138,7 +138,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <label class="">{{$tc('ITEM',2)}} {{$t('IN')}} {{$t('THIS')}} {{$tc('SCENE',1)}} :</label>
+                                <label class="">{{$t('ITEMS')}} {{$t('IN')}} {{$t('THIS')}} {{$t('SCENE')}} :</label>
                             </div>
                             <div class="col-md-12">
                                 <b-table striped hover :items="scene.items" :fields="itemFields"></b-table>
@@ -188,7 +188,7 @@ export default {
       locationFields: [
         {
           key: 'location.location',
-          label: this.$tc('LOCATION', 1),
+          label: this.$t('LOCATION'),
           sortable: true
         },
         {
@@ -222,7 +222,7 @@ export default {
       const scope = this
       let vpCharacter = ''
       if (scene.character_id_vp === -1) {
-        return this.$tc('AUTHOR')
+        return this.$t('AUTHOR')
       }
       for (const key in scope.allCharacterFromBook) {
         let character = scope.allCharacterFromBook[key]
@@ -236,7 +236,7 @@ export default {
       const scope = this
       window.$('#printCharacterButton').hide()
       let pdf = {
-        name: scope.bookTitle + ' - ' + this.$tc('SCENE', 2)
+        name: scope.bookTitle + ' - ' + this.$t('SCENES')
       }
       ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
     }

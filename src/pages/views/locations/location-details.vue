@@ -3,7 +3,7 @@
     <div class="es-page-breadcrumbs">
         <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
         /
-        <button @click="CHANGE_COMPONENT({tabKey: 'location-listing-' + book.uuid, tabComponent: 'location-listing', tabData: book, tabTitle: $tc('LOCATION', 2) + ' - ' + book.title})">{{ $tc('LOCATION', 2) }}</button>
+        <button @click="CHANGE_COMPONENT({tabKey: 'location-listing-' + book.uuid, tabComponent: 'location-listing', tabData: book, tabTitle: $t('LOCATIONS') + ' - ' + book.title})">{{ $t('LOCATIONS') }}</button>
         /
         <button class="current">
             <span>{{ location.location }}</span>
@@ -13,9 +13,9 @@
         <div class="es-panel-content">
             <div class="image-container"><img :src="properties.location.picture_src" /></div>
             <h2 class="title">{{ properties.location.location  || 'Untitled' }}</h2>
-            <p class="aka">{{ properties.location.AKA || $t('AKA') + ' ' + $t('NOT_SET')}}</p>
+            <p class="aka">{{ properties.location.AKA || $t('AKA_NOT_SET')}}</p>
             <i class="description" v-if="properties.location.description !== '' && properties.location.description !== null" v-html="properties.location.description" ></i>
-            <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}</i>
+            <i class="description" v-else>{{$t('NO_DESCRIPTION')}}</i>
         </div>
         <div class="es-panel-footer">
             <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + properties.location.uuid, tabComponent: 'location-form', tabData: { book: book, location: location }, tabTitle: $t('EDIT')+ ' - ' + properties.location.location, newTab: true})">{{$t('EDIT').toUpperCase()}}</div>
@@ -70,7 +70,7 @@ export default {
                   timer: 1500
                 }).then(() => {
                   scope.$store.dispatch('removeLocationFromList', location)
-                  scope.CHANGE_COMPONENT({tabKey: 'location-listing-' + location.book_id, tabComponent: 'location-listing', tabData: { uuid: location.book_id }, tabTitle: this.$tc('LOCATION', 2) + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
+                  scope.CHANGE_COMPONENT({tabKey: 'location-listing-' + location.book_id, tabComponent: 'location-listing', tabData: { uuid: location.book_id }, tabTitle: this.$t('LOCATIONS') + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
                 })
               }
             })

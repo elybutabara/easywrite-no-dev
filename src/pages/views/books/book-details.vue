@@ -36,7 +36,7 @@ export default {
         title: '',
         data: null
       },
-      export_book: this.$t('EXPORT').toUpperCase() + ' ' + this.$tc('BOOK', 1).toUpperCase()
+      export_book: this.$t('EXPORT_BOOK').toUpperCase()
     }
   },
   computed: {
@@ -93,7 +93,7 @@ export default {
       ipcRenderer.send('EXPORT-DOCX-SHOW-BOOK-WINDOW', book)
 
       ipcRenderer.on('CHANGE-EXPORT-BOOK-BUTTON-NAME', function (event, data) {
-        scope.export_book = scope.$t('EXPORT').toUpperCase() + ' ' + scope.$tc('BOOK', 1).toUpperCase()
+        scope.export_book = scope.$t('EXPORT_BOOK').toUpperCase()
       })
     }
 

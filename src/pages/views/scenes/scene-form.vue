@@ -47,8 +47,8 @@
                                 </b-form-invalid-feedback>
                             </b-col>
                             <b-col>
-                                <label>{{$tc('CHAPTER',1)}}: </label>
-                                <multiselect class="custom-multiselect" :preselectFirst="true" :allow-empty="false" v-model="selected_chapter" :options="options_chapters"  @select="selectMultiselect" :placeholder="$t('SELECT') + ' ' + $tc('CHAPTER',1)" label="title" track-by="uuid" :deselectLabel="$t('SELECTED')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+                                <label>{{$t('CHAPTER')}}: </label>
+                                <multiselect class="custom-multiselect" :preselectFirst="true" :allow-empty="false" v-model="selected_chapter" :options="options_chapters"  @select="selectMultiselect" :placeholder="$t('SELECT') + ' ' + $t('CHAPTER')" label="title" track-by="uuid" :deselectLabel="$t('SELECTED')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
                             </b-col>
                         </b-row>
                         <b-row class="margin-bottom-1rem">
@@ -94,7 +94,7 @@
                                 <div v-if="show_history" class="scene-history-items slideInRight animated">
                                     <div class="note">
                                         <i @click="show_history = !show_history" class="btn-close fas fa-times"></i>
-                                        <strong>{{$t('DOUBLE_CLICK')}}</strong> {{$t('TO_VIEW_HISTORY')}}
+                                        {{$t('DOUBLE_CLICK_TO_VIEW_HISTORY')}}
                                     </div>
                                     <div class="scene-history-list" >
                                         <div v-bind:key="history.uuid" v-for="history in scene_history">
@@ -115,7 +115,7 @@
                 </div>
                 <div class="item" v-bind:class="{'active': accordion['more-details'] === 'active'}">
                     <div class="label" @click="toggleAccordion('more-details')">
-                        {{$t('MORE').toUpperCase()}} {{$t('DETAILS').toUpperCase()}}
+                        {{$t('MORE_DETAILS').toUpperCase()}}
                         <div class="icon">
                             <i v-if="accordion['more-details'] === 'active'" class="fas fa-chevron-down"></i>
                             <i v-if="accordion['more-details'] !== 'active'" class="fas fa-chevron-right"></i>
@@ -192,7 +192,7 @@
                         </b-row>
                         <b-row class="margin-bottom-1rem">
                             <b-col>
-                                <label>{{$t('VIEWPOINT')}} {{$t('DESCRIPTION')}}: </label>
+                                <label>{{$t('VIEWPOINT_DESCRIPTION')}}: </label>
                                 <tiny-editor :initValue="data.viewpoint_description"
                                             v-on:getEditorContent="setViewpointDescription"
                                             class="form-control"
@@ -203,14 +203,14 @@
                 </div>
                 <div class="item" v-bind:class="{'active': accordion['items'] === 'active'}">
                     <div class="label" @click="toggleAccordion('items')">
-                        {{$tc('ITEM',2).toUpperCase()}}
+                        {{$t('ITEMS').toUpperCase()}}
                         <div class="icon">
                             <i v-if="accordion['items'] === 'active'" class="fas fa-chevron-down"></i>
                             <i v-if="accordion['items'] !== 'active'" class="fas fa-chevron-right"></i>
                         </div>
                     </div>
                     <div class="content ">
-                        <p><strong>{{$t('CLICK')}}</strong> {{$tc('ITEM', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}</p>
+                        <p>{{$t('CLICK_ITEM_TO_ADD_IT_INTO_THE_SCENE')}}</p>
                         <div @click="toggleChild('items',item)" v-bind:class="{'selected' : selected_items.includes(item.uuid) }" class="es-toggle-select" v-bind:key="item.id" v-for="item in $store.getters.getItemsByBook(book.uuid)">
                             <i v-if="selected_items.includes(item.uuid)" class="fas fa-check"></i> &nbsp;{{ item.itemname }}
                         </div>
@@ -218,14 +218,14 @@
                 </div>
                 <div class="item" v-bind:class="{'active': accordion['characters'] === 'active'}">
                     <div class="label" @click="toggleAccordion('characters')">
-                        {{$tc('CHARACTER',2).toUpperCase()}}
+                        {{$t('CHARACTERS').toUpperCase()}}
                         <div class="icon">
                             <i v-if="accordion['characters'] === 'active'" class="fas fa-chevron-down"></i>
                             <i v-if="accordion['characters'] !== 'active'" class="fas fa-chevron-right"></i>
                         </div>
                     </div>
                     <div class="content ">
-                        <p><strong>{{$t('CLICK')}}</strong> {{$tc('CHARACTER', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}</p>
+                        <p>{{$t('CLICK_CHARACTER_TO_ADD_IT_INTO_THE_SCENE')}}</p>
                         <div @click="toggleChild('characters',character)" v-bind:class="{'selected' : selected_characters.includes(character.uuid) }" class="es-toggle-select" v-bind:key="character.id" v-for="character in $store.getters.getCharactersByBook(book.uuid)">
                             <i v-if="selected_characters.includes(character.uuid)" class="fas fa-check"></i> &nbsp;{{ character.fullname }}
                         </div>
@@ -233,14 +233,14 @@
                 </div>
                 <div class="item" v-bind:class="{'active': accordion['locations'] === 'active'}">
                     <div class="label" @click="toggleAccordion('locations')">
-                        {{$tc('LOCATION',2).toUpperCase()}}
+                        {{$t('LOCATIONS').toUpperCase()}}
                         <div class="icon">
                             <i v-if="accordion['locations'] === 'active'" class="fas fa-chevron-down"></i>
                             <i v-if="accordion['locations'] !== 'active'" class="fas fa-chevron-right"></i>
                         </div>
                     </div>
                     <div class="content ">
-                        <p><strong>{{$t('CLICK')}}</strong> {{$tc('LOCATION', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}</p>
+                        <p>{{$t('CLICK_LOCATION_TO_ADD_IT_INTO_THE_SCENE')}}</p>
                         <div @click="toggleChild('locations',location)" v-bind:class="{'selected' : selected_locations.includes(location.uuid) }" class="es-toggle-select" v-bind:key="location.id" v-for="location in $store.getters.getLocationsByBook(book.uuid)">
                         <i v-if="selected_locations.includes(location.uuid)" class="fas fa-check"></i> &nbsp;{{ location.location }}
                         </div>
@@ -323,7 +323,7 @@ export default {
       selected_weather_type: null,
       selected_character_id_vp: {text: 'Author', value: '-1'},
       // Options for multiselect
-      options_chapters: [{title: 'Other Scene', uuid: '-1'}],
+      options_chapters: [{title: this.$t('OTHER_SCENE'), uuid: '-1'}],
       options_typeofscene: [
         {text: 'Action', value: 'Action'},
         {text: 'Reaction', value: 'Reaction'}
@@ -631,7 +631,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$tc('SCENE', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
+              title: this.$t('SCENE') + ' ' + this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {

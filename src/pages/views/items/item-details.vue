@@ -3,7 +3,7 @@
     <div class="es-page-breadcrumbs">
         <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
         /
-        <button @click="CHANGE_COMPONENT({tabKey: 'item-listing-' + book.uuid, tabComponent: 'item-listing', tabData: book, tabTitle: $tc('ITEM', 2) + ' - ' + book.title})">{{ $tc('ITEM', 2) }}</button>
+        <button @click="CHANGE_COMPONENT({tabKey: 'item-listing-' + book.uuid, tabComponent: 'item-listing', tabData: book, tabTitle: $t('ITEMS') + ' - ' + book.title})">{{ $t('ITEMS') }}</button>
         /
         <button class="current">{{ item.itemname }}</button>
     </div>
@@ -11,9 +11,9 @@
         <div class="es-panel-content">
             <div class="image-container"><img :src="properties.item.picture_src" /></div>
             <h2 class="title">{{ properties.item.itemname || 'Untitled' }}</h2>
-            <p class="aka">{{ properties.item.AKA || $t('AKA') + ' ' + $t('NOT_SET')}}</p>
+            <p class="aka">{{ properties.item.AKA || $t('AKA_NOT_SET') }}</p>
             <i class="description" v-if="properties.item.description !== '' && properties.item.description !== null" v-html="properties.item.description" ></i>
-            <i class="description" v-else>{{$t('NO')}} {{$t('DESCRIPTION')}}</i>
+            <i class="description" v-else>{{$t('NO_DESCRIPTION')}}</i>
         </div>
         <div class="es-panel-footer">
             <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'item-form-' + properties.item.uuid, tabComponent: 'item-form', tabData: { book: book, item: properties.item }, tabTitle: $t('EDIT')+ ' - ' + properties.item.itemname, newTab: true})">{{$t('EDIT').toUpperCase()}}</div>
@@ -68,7 +68,7 @@ export default {
                   timer: 1500
                 }).then(() => {
                   scope.$store.dispatch('removeItemFromList', item)
-                  scope.CHANGE_COMPONENT({tabKey: 'item-listing-' + item.book_id, tabComponent: 'item-listing', tabData: { uuid: item.book_id }, tabTitle: this.$tc('ITEM', 2) + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
+                  scope.CHANGE_COMPONENT({tabKey: 'item-listing-' + item.book_id, tabComponent: 'item-listing', tabData: { uuid: item.book_id }, tabTitle: this.$t('ITEMS') + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
                 })
               }
             })

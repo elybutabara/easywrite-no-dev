@@ -1,4 +1,7 @@
 // Mixins are a flexible way to distribute reusable functionalities for Vue components.
+const electron = window.require('electron')
+const {ipcRenderer} = electron
+
 export default {
   name: 'mixins',
   data () {
@@ -21,6 +24,8 @@ export default {
       let tabIndex = (data.tabIndex === null || data.tabIndex === undefined) ? 0 : data.tabIndex
       let settings = { key: data.tabKey, component: data.tabComponent, data: data.tabData, title: data.tabTitle, index: tabIndex, modified: false }
 
+      scope.CHANGE_MENU_TITLE(settings.title)
+
       if (isNewTab) {
         // scope.$store.dispatch('newTab', { key: key, title: tabTitle, component: tabComponent, data: tabData })
         scope.$store.dispatch('newTab', settings)
@@ -37,19 +42,19 @@ export default {
         scope.CHANGE_COMPONENT({tabKey: 'book-details-' + data.uuid, tabComponent: 'book-details', tabData: data, tabTitle: data.title})
       } else if (model === 'chapters') {
         scope.$store.dispatch('loadChaptersByBook', data.uuid)
-        scope.CHANGE_COMPONENT({tabKey: 'chapter-listing-' + data.uuid, tabComponent: 'chapter-listing', tabData: data, tabTitle: this.$tc('CHAPTER', 2) + ' - ' + data.title})
+        scope.CHANGE_COMPONENT({tabKey: 'chapter-listing-' + data.uuid, tabComponent: 'chapter-listing', tabData: data, tabTitle: this.$t('CHAPTERS') + ' - ' + data.title})
       } else if (model === 'items') {
         scope.$store.dispatch('loadItemsByBook', data.uuid)
-        scope.CHANGE_COMPONENT({tabKey: 'item-listing-' + data.uuid, tabComponent: 'item-listing', tabData: data, tabTitle: this.$tc('ITEM', 2) + ' - ' + data.title})
+        scope.CHANGE_COMPONENT({tabKey: 'item-listing-' + data.uuid, tabComponent: 'item-listing', tabData: data, tabTitle: this.$t('ITEMS') + ' - ' + data.title})
       } else if (model === 'characters') {
         scope.$store.dispatch('loadCharactersByBook', data.uuid)
-        scope.CHANGE_COMPONENT({tabKey: 'character-listing-' + data.uuid, tabComponent: 'character-listing', tabData: data, tabTitle: this.$tc('CHARACTER', 2) + ' - ' + data.title})
+        scope.CHANGE_COMPONENT({tabKey: 'character-listing-' + data.uuid, tabComponent: 'character-listing', tabData: data, tabTitle: this.$t('CHARACTERS') + ' - ' + data.title})
       } else if (model === 'locations') {
         scope.$store.dispatch('loadLocationsByBook', data.uuid)
-        scope.CHANGE_COMPONENT({tabKey: 'location-listing-' + data.uuid, tabComponent: 'location-listing', tabData: data, tabTitle: this.$tc('LOCATION', 2) + ' - ' + data.title})
+        scope.CHANGE_COMPONENT({tabKey: 'location-listing-' + data.uuid, tabComponent: 'location-listing', tabData: data, tabTitle: this.$t('LOCATIONS') + ' - ' + data.title})
       } else if (model === 'scenes') {
         scope.$store.dispatch('loadScenesByBook', data.uuid)
-        scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + data.uuid, tabComponent: 'scene-listing', tabData: data, tabTitle: this.$tc('OTHER_SCENES', 2) + ' - ' + data.title})
+        scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + data.uuid, tabComponent: 'scene-listing', tabData: data, tabTitle: this.$t('OTHER_SCENES') + ' - ' + data.title})
       }
     },
     TOGGLE_TREE: function (model, index, isOpen, data) {
@@ -61,20 +66,24 @@ export default {
         if (model === 'books') {
           scope.CHANGE_COMPONENT({tabKey: 'book-details-' + data.uuid, tabComponent: 'book-details', tabData: data, tabTitle: data.title})
         } else if (model === 'chapters') {
-          scope.CHANGE_COMPONENT({tabKey: 'chapter-listing-' + data.uuid, tabComponent: 'chapter-listing', tabData: data, tabTitle: 'Chapters - ' + data.title})
+          scope.CHANGE_COMPONENT({tabKey: 'chapter-listing-' + data.uuid, tabComponent: 'chapter-listing', tabData: data, tabTitle: this.$t('CHAPTERS') + ' - ' + data.title})
         } else if (model === 'items') {
-          scope.CHANGE_COMPONENT({tabKey: 'item-listing-' + data.uuid, tabComponent: 'item-listing', tabData: data, tabTitle: 'Items - ' + data.title})
+          scope.CHANGE_COMPONENT({tabKey: 'item-listing-' + data.uuid, tabComponent: 'item-listing', tabData: data, tabTitle: this.$t('ITEMS') + ' - ' + data.title})
         } else if (model === 'locations') {
-          scope.CHANGE_COMPONENT({tabKey: 'location-listing-' + data.uuid, tabComponent: 'location-listing', tabData: data, tabTitle: 'Location - ' + data.title})
+          scope.CHANGE_COMPONENT({tabKey: 'location-listing-' + data.uuid, tabComponent: 'location-listing', tabData: data, tabTitle: this.$t('LOCATIONS') + ' - ' + data.title})
         } else if (model === 'characters') {
-          scope.CHANGE_COMPONENT({tabKey: 'character-listing-' + data.uuid, tabComponent: 'character-listing', tabData: data, tabTitle: 'Character - ' + data.title})
+          scope.CHANGE_COMPONENT({tabKey: 'character-listing-' + data.uuid, tabComponent: 'character-listing', tabData: data, tabTitle: this.$t('CHARACTERS') + ' - ' + data.title})
         } else if (model === 'scenes') {
-          scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + data.uuid, tabComponent: 'scene-listing', tabData: data, tabTitle: 'Scenes - ' + data.title})
+          scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + data.uuid, tabComponent: 'scene-listing', tabData: data, tabTitle: this.$t('OTHER_SCENES') + ' - ' + data.title})
         }
       }
     },
     CHANGE_TAB: function (index) {
       var scope = this
+
+      let next = this.$store.getters.getTabsByID(index)
+      scope.CHANGE_MENU_TITLE(next.title)
+
       scope.$store.dispatch('changeTab', index)
     },
     REMOVE_TAB: function (index) {
@@ -86,11 +95,14 @@ export default {
       window.swal.fire({
         position: 'center',
         icon: 'warning',
-        title: 'Would you like to close this tab without saving your changes?',
+        title: this.$t('WOULD_YOU_LIKE_TO_CLOSE_THIS_TAB_WITHOUT_SAVING_YOUR_CHANGES'),
         showConfirmButton: true,
-        showCancelButton: true
+        showCancelButton: true,
+        cancelButtonText: this.$t('CANCEL')
       }).then((result) => {
         if (result.value) {
+          let next = this.$store.getters.getTabsByID(index - 1)
+          scope.CHANGE_MENU_TITLE(next.title)
           scope.$store.dispatch('removeTab', index)
         }
       })
@@ -207,6 +219,9 @@ export default {
             })
         }
       })
+    },
+    CHANGE_MENU_TITLE: function (title) {
+      ipcRenderer.send('SET_TITLE', title)
     }
   }
 }

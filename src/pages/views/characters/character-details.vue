@@ -3,7 +3,7 @@
     <div class="es-page-breadcrumbs">
         <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
         /
-        <button @click="CHANGE_COMPONENT({tabKey: 'character-listing-' + book.uuid, tabComponent: 'character-listing', tabData: book, tabTitle: $tc('CHARACTER', 2) + ' - ' + book.title})">{{ $tc('CHARACTER', 2) }}</button>
+        <button @click="CHANGE_COMPONENT({tabKey: 'character-listing-' + book.uuid, tabComponent: 'character-listing', tabData: book, tabTitle: $t('CHARACTERS') + ' - ' + book.title})">{{ $t('CHARACTERS') }}</button>
         /
         <button class="current">
             <span>{{ character.fullname }}</span>
@@ -23,7 +23,7 @@
                 <a @click="changeTab('description')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'description'}">{{$t('DESCRIPTION')}}</a>
                 <a @click="changeTab('bio')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'bio'}">{{$t('BIO')}}</a>
                 <a @click="changeTab('goals')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'goals'}">{{$t('GOALS')}}</a>
-                <a @click="changeTab('relations')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'relations'}">{{$tc('RELATION', 2)}}</a>
+                <a @click="changeTab('relations')" href="javascript:void(0);" v-bind:class="{ 'active' : tab.active == 'relations'}">{{$t('RELATIONS')}}</a>
             </div>
             <div class="es-panel-tab-content">
                 <div v-if="tab.active == 'description'">
@@ -44,7 +44,7 @@
                                 <div class="relation">&nbsp;</div>
                                 <div @click="toggleRelationForm()" style="border:2px dashed #c0c6d1; color:#c0c6d1; cursor:pointer; position:absolute; top:0px; left:0px; width:100%; height:100%; background:#f5f8fa; font-size:90px; padding:5px 10px;">
                                     <i class="las la-user-alt"></i>
-                                    <p style="margin-top:-30px; font-size:14px; font-weight:600;">{{$t('CLICK')}} {{$t('TO_ADD').toLowerCase()}} {{$tc('RELATION', 2)}}</p>
+                                    <p style="margin-top:-30px; font-size:14px; font-weight:600;">{{$t('CLICK_TO_ADD_RELATIONS')}}</p>
                                 </div>
                             </div>
                         </div>
@@ -69,12 +69,12 @@
     <div class="es-dialog-overlay" v-bind:class="{'open' : relation_form.is_open }">
         <div class="es-dialog-content">
             <div style="margin-bottom:15px;">
-                <label class="typo__label">{{$tc('RELATION', 1)}}: </label>
-                <multiselect v-model="selected_relation" :options="relations" :placeholder="$t('SELECT') + ' '+ $tc('RELATION',1)" label="relation" track-by="relation" :taggable="true" @tag="addRelation" tag-placeholder="Press enter to add as new relation" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectedLabel="$t('SELECTED')"></multiselect>
+                <label class="typo__label">{{$t('RELATION')}}: </label>
+                <multiselect v-model="selected_relation" :options="relations" :placeholder="$t('SELECT_RELATION')" label="relation" track-by="relation" :taggable="true" @tag="addRelation" tag-placeholder="Press enter to add as new relation" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectedLabel="$t('SELECTED')"></multiselect>
             </div>
             <div style="margin-bottom:15px;">
-                <label class="typo__label">{{$tc('CHARACTER', 1)}}: </label>
-                <multiselect v-model="selected_character" :options="characters" :placeholder="$t('SELECT') + ' '+ $tc('CHARACTER',1)" label="fullname" track-by="fullname" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')" :selectedLabel="$t('SELECTED')"></multiselect>
+                <label class="typo__label">{{$t('CHARACTER')}}: </label>
+                <multiselect v-model="selected_character" :options="characters" :placeholder="$t('SELECT_CHARACTER')" label="fullname" track-by="fullname" :deselectLabel="$t('PLEASE_ENTER_TO_DESELECT')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')" :selectedLabel="$t('SELECTED')"></multiselect>
             </div>
             <div style="text-align:right;">
                 <b-button @click="saveRelationDetail()" variant="dark">{{$t('SAVE')}}</b-button>
@@ -154,7 +154,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$tc('RELATION', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
+              title: this.$t('RELATION') + ' ' + this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
@@ -210,7 +210,7 @@ export default {
         return window.swal.fire({
           position: 'center',
           icon: 'error',
-          title: this.$tc('RELATION', 1) + ' ' + this.$t('ALREADY_EXIST'),
+          title: this.$t('RELATION') + ' ' + this.$t('ALREADY_EXIST'),
           showConfirmButton: false,
           timer: 1500
         })
@@ -267,7 +267,7 @@ export default {
                   timer: 1500
                 }).then(() => {
                   scope.$store.dispatch('removeCharacterFromList', character)
-                  scope.CHANGE_COMPONENT({tabKey: 'character-listing-' + character.book_id, tabComponent: 'character-listing', tabData: { uuid: character.book_id }, tabTitle: this.$tc('CHARACTER', 2) + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
+                  scope.CHANGE_COMPONENT({tabKey: 'character-listing-' + character.book_id, tabComponent: 'character-listing', tabData: { uuid: character.book_id }, tabTitle: this.$t('CHARACTERS') + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
                 })
               }
             })

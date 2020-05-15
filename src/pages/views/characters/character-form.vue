@@ -8,7 +8,7 @@
                     <small>{{$t('DATE_MODIFIED')}}: {{ data.updated_at }}</small>
                 </div>
                 <div v-else>
-                    <h4>{{$t('CREATE')}} {{$t('NEW')}} {{$tc('CHARACTER', 1)}}</h4>
+                    <h4>{{$t('CREATE_NEW_CHARACTER')}}</h4>
                 </div>
             </div>
             <div class="actions">
@@ -20,11 +20,11 @@
     <div class="es-page-breadcrumbs">
         <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
         /
-        <button @click="CHANGE_COMPONENT({tabKey: 'character-listing-' + book.uuid, tabComponent: 'character-listing', tabData: book, tabTitle: $tc('CHARACTER', 2) + ' - ' + book.title})">{{ $tc('CHARACTER', 2) }}</button>
+        <button @click="CHANGE_COMPONENT({tabKey: 'character-listing-' + book.uuid, tabComponent: 'character-listing', tabData: book, tabTitle: $t('CHARACTERS') + ' - ' + book.title})">{{ $t('CHARACTERS') }}</button>
         /
         <button class="current">
             <span v-if="character !== null">{{ character.fullname }}</span>
-            <span v-else>New Character</span>
+            <span v-else>{{$t('NEW_CHARACTER')}}</span>
         </button>
     </div>
     <div class="es-page-content">
@@ -85,7 +85,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="birthdate-datepicker">{{$t('BIRTHDATE')}}: </label>
-                            <b-form-datepicker @context="onBirthdateContext" id="birthdate-datepicker" :placeholder="$t('NO')+' '+ $t('SELECTED') + ' ' + $t('DATE')" v-model="data.birthdate" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"></b-form-datepicker>
+                            <b-form-datepicker @context="onBirthdateContext" id="birthdate-datepicker" :placeholder="$t('NO_SELECTED_DATE')" v-model="data.birthdate" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"></b-form-datepicker>
                         </div>
                     </div>
                 </div>
@@ -265,7 +265,7 @@ export default {
       scope.setFeedbackNull()
 
       if (!scope.data.fullname) {
-        scope.feedback.fullname.message = this.$tc('FULLNAME', 1) + ' ' + this.$t('IS_REQUIRED')
+        scope.feedback.fullname.message = this.$t('FULLNAME') + ' ' + this.$t('IS_REQUIRED')
         scope.feedback.fullname.state = false
         hasError = true
       }
@@ -282,7 +282,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$tc('CHARACTER', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
+              title: this.$t('CHARACTER') + ' ' + this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {

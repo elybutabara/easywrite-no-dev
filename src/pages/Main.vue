@@ -160,6 +160,8 @@ export default {
       scope.ready = true
     }, 1000)
 
+    scope.CHANGE_MENU_TITLE(scope.$t('DASHBOARD'))
+
     ipcRenderer.on('GO_TO_DASHBOARD', function (event, data) {
       scope.CHANGE_COMPONENT({tabKey: 'dashboard', tabComponent: 'dashboard', tabData: null, tabTitle: scope.$t('DASHBOARD')})
     })
@@ -200,6 +202,11 @@ export default {
     })
   }
 }
+
+ipcRenderer.on('LOGOUT', function (e, data) {
+  // Check something before calling the SET_DELFAULT
+  ipcRenderer.send('SET_DEFAULTS', { reload: true })
+})
 
 ipcRenderer.on('SET_TRANSLATION_DOM', function (event, data) {
   localStorage.setItem('translation', data)

@@ -20,7 +20,7 @@
     <div class="es-page-breadcrumbs">
         <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
         /
-        <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $tc('CHAPTER', 2) + ' - ' + book.title})">{{ $tc('CHAPTER', 2) }}</button>
+        <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})">{{ $t('CHAPTERS') }}</button>
         /
         <button class="current">
             <span v-if="chapter !== null">{{ chapter.title }}</span>
@@ -285,7 +285,7 @@ export default {
 
       // Check if title is empty and return error
       if (!scope.data.title) {
-        scope.feedback.title.message = this.$t('TITLE') + ' ' + this.$t('IS_REQUIRED')
+        scope.feedback.title.message = this.$t('TITLE_IS_REQUIRED')
         scope.feedback.title.state = false
         isValid = false
       }
@@ -316,7 +316,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$tc('CHAPTER', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
+              title: this.$t('CHAPTER') + ' ' + this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {

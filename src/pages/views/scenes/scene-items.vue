@@ -3,7 +3,7 @@
     <div v-if="page.is_ready" class="page-scene-items ">
         <div class="es-scene-children-wrapper" style="">
             <button @click="showChildrenItemList()" class="btn-dark" style="float:right;">{{$t('ADD_SCENE_ITEMS')}}</button>
-            <div class="heading">{{$tc('ITEM', 2)}}</div>
+            <div class="heading">{{$t('ITEMS')}}</div>
             <div class="es-row">
                 <div class="es-col " v-bind:key="scene_item.id" v-for="scene_item in $store.getters.getSceneItems(scene.uuid)">
                     <div class="es-card">
@@ -23,7 +23,7 @@
             <div v-if="adding" class="scene-children-items slideInRight animated">
                 <div class="note">
                     <i @click="hideChildrenItemList()" class="closer fas fa-times"></i>
-                    <strong>{{$t('DOUBLE_CLICK')}}</strong> {{$tc('ITEM', 1).toLowerCase()}} {{$t('ADD_IT_INTO_SCENE')}}
+                    {{$t('DOUBLE_CLICK_ITEM_TO_ADD_IT_INTO_THE_SCENE')}}
                 </div>
                 <div class="scene-children-items-list" >
                     <div v-bind:key="item.id" v-for="item in GET_ITEMS_BY_BOOK(scene.book_id)">

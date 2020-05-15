@@ -14,7 +14,7 @@
 
             <div v-bind:key="chapter.id" v-for="chapter in chapters">
                 <div class="es-panel">
-                  <div><label>{{$tc('CHAPTER', 1)}} : {{chapter.title}}</label></div>
+                  <div><label>{{$t('CHAPTER')}} : {{chapter.title}}</label></div>
                   <div><label>{{$t('SHORT_DESCRIPTION')}} : {{chapter.short_description}}</label></div>
                   <div>{{ $t('CONTENT') + ': '}}</div>
                   <div v-html="chapter.chapter_version[chapter.chapter_version.length-1].content"></div>
@@ -22,7 +22,7 @@
 
               <div v-bind:key="scene.id" v-for="scene in chapter.scene">
                 <div class="es-panel">
-                    <div><label>{{$tc('SCENE', 1)}} : {{scene.title}}</label></div>
+                    <div><label>{{$t('SCENE')}} : {{scene.title}}</label></div>
                     <div><label>{{$t('SHORT_DESCRIPTION')}} : {{scene.short_description}}</label></div>
                     <div><label>{{$t('IMPORTANCE')}} : {{scene.importance}}</label></div>
                     <div><label>{{$t('TAGS')}} : {{scene.tags}}</label></div>
@@ -32,13 +32,13 @@
                     <div><label>{{$t('DATE_END')}} : {{scene.date_ends}}</label></div>
                     <div><label>{{$t('WEATHER')}} : {{scene.weather}}</label></div>
                     <br/>
-                    <div><label>{{$tc('CONTENT')}} :</label><br/></div>
+                    <div><label>{{$t('CONTENT')}} :</label><br/></div>
                     <div v-html="scene.scene_version[scene.scene_version.length-1].content"></div>
                     <br/>
-                      <div><label>{{$tc('NOTES')}} :</label></div>
+                      <div><label>{{$t('NOTES')}} :</label></div>
                     <div v-html="scene.notes"></div>
                     <br/>
-                    <div><label>{{$tc('VIEWPOINT')}} :</label></div>
+                    <div><label>{{$t('VIEWPOINT')}} :</label></div>
                     <div v-html="scene.viewpoint_description"></div>
                     <br/>
 
@@ -67,7 +67,7 @@
       <div v-if="scenes" class="rows-print-as-pages">
         <div v-bind:key="scene.id" v-for="scene in scenes">
           <div class="es-panel">
-            <div><label>{{$tc('SCENE', 1)}} : {{scene.title}}</label></div>
+            <div><label>{{$t('SCENE')}} : {{scene.title}}</label></div>
             <div><label>{{$t('SHORT_DESCRIPTION')}} : {{scene.short_description}}</label></div>
             <div><label>{{$t('IMPORTANCE')}} : {{scene.importance}}</label></div>
             <div><label>{{$t('TAGS')}} : {{scene.tags}}</label></div>
@@ -77,13 +77,13 @@
             <div><label>{{$t('DATE_END')}} : {{scene.date_ends}}</label></div>
             <div><label>{{$t('WEATHER')}} : {{scene.weather}}</label></div>
             <br/>
-            <div><label>{{$tc('CONTENT')}} :</label><br/></div>
+            <div><label>{{$t('CONTENT')}} :</label><br/></div>
             <div v-html="scene.scene_version[scene.scene_version.length-1].content"></div>
             <br/>
-              <div><label>{{$tc('NOTES')}} :</label></div>
+              <div><label>{{$t('NOTES')}} :</label></div>
             <div v-html="scene.notes"></div>
             <br/>
-            <div><label>{{$tc('VIEWPOINT')}} :</label></div>
+            <div><label>{{$t('VIEWPOINT')}} :</label></div>
             <div v-html="scene.viewpoint_description"></div>
             <br/>
 
@@ -105,33 +105,33 @@
         </div>
       </div>
 
-      <div><center><h2>{{$tc('LOCATION', 2)}}</h2></center></div>
+      <div><center><h2>{{$t('LOCATIONS')}}</h2></center></div>
 
       <div v-if="locations" class="rows-print-as-pages">
         <div v-bind:key="location.id" v-for="location in locations">
           <div class="es-panel">
-            <div><label>{{$tc('LOCATION', 1)}} : {{location.location}}</label></div>
+            <div><label>{{$t('LOCATION')}} : {{location.location}}</label></div>
             <div><label>{{$t('AKA')}} : {{location.AKA}}</label></div>
-            <div><label>{{$tc('DESCRIPTION')}} :</label></div>
+            <div><label>{{$t('DESCRIPTION')}} :</label></div>
             <div v-html="location.description"></div>
           </div>
         </div>
       </div>
 
-      <div><center><h2>{{$tc('ITEM', 2)}}</h2></center></div>
+      <div><center><h2>{{$t('ITEMS')}}</h2></center></div>
 
       <div v-if="items" class="rows-print-as-pages">
         <div v-bind:key="item.id" v-for="item in items">
           <div class="es-panel">
-            <div><label>{{$tc('ITEM', 1)}} : {{item.itemname}}</label></div>
+            <div><label>{{$t('ITEM')}} : {{item.itemname}}</label></div>
             <div><label>{{$t('AKA')}} : {{item.AKA}}</label></div>
-            <div><label>{{$tc('DESCRIPTION')}} :</label></div>
+            <div><label>{{$t('DESCRIPTION')}} :</label></div>
             <div v-html="item.description"></div>
           </div>
         </div>
       </div>
 
-      <div><center><h2>{{$tc('CHARACTER', 2)}}</h2></center></div>
+      <div><center><h2>{{$t('CHARACTERS')}}</h2></center></div>
 
       <div v-if="characters" class="rows-print-as-pages">
         <div v-bind:key="character.id" v-for="character in characters">
@@ -141,13 +141,13 @@
             <div><label>{{$t('NICKNAME')}} : {{character.nickname}}</label></div>
             <div><label>{{$t('OCCUPATION')}} : {{character.occupation}}</label></div>
             <div><label>{{$t('BIRTHDATE')}} : {{character.birthdate}}</label></div>
-            <div><label>{{$tc('DESCRIPTION')}} :</label></div>
+            <div><label>{{$t('DESCRIPTION')}} :</label></div>
             <div v-html="character.description"></div>
             <br/>
-            <div><label>{{$tc('BIO')}} :</label></div>
+            <div><label>{{$t('BIO')}} :</label></div>
             <div v-html="character.bio"></div>
             <br/>
-            <div><label>{{$tc('GOALS')}} :</label></div>
+            <div><label>{{$t('GOALS')}} :</label></div>
             <div v-html="character.goals"></div>
           </div>
         </div>
