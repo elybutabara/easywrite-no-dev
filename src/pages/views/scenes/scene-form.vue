@@ -734,8 +734,8 @@ export default {
         let progress = scope.$store.getters.getTodayAuthorPersonalProgressForScene(sceneProp)
 
         console.log('scene')
-        console.log(scene)
-        console.log(scope.data)
+        // console.log(scene)
+        // console.log(scope.data)
 
         // scene
         scope.data.title = scene.title
@@ -851,7 +851,7 @@ export default {
         // scope.options_chapters
 
         var bookCharacters = scope.$store.getters.getCharactersByBook(scope.properties.book.uuid)
-        console.log(bookCharacters)
+        // console.log(bookCharacters)
         for (let i = 0; i < bookCharacters.length; i++) {
           let character = bookCharacters[i]
           scope.options_character_id_vp.push({ text: character.fullname, value: character.uuid })

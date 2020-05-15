@@ -195,7 +195,7 @@ export default {
     },
     updateChapterVersionList (state, payload) {
       let chapterUUID = payload.chapter_id
-      console.log(payload)
+      // console.log(payload)
       if (!state.chapter_versions[chapterUUID]) {
         Vue.set(state.chapter_versions, chapterUUID, { rows: [] })
         // add row

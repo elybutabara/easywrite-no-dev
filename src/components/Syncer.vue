@@ -152,9 +152,9 @@ export default {
     }
   },
   mounted () {
-    var scope = this
-    console.log(scope)
-    console.log(scope.$attrs.value)
+    // var scope = this
+    // console.log(scope)
+    // console.log(scope.$attrs.value)
   }
 }
 </script>

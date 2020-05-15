@@ -85,9 +85,9 @@ export default {
   },
   methods: {
     log: function (chapterUUID) {
-      console.log(chapterUUID)
-      console.log(this.list1)
-      console.log(this.list2)
+      // console.log(chapterUUID)
+      // console.log(this.list1)
+      // console.log(this.list2)
     },
     displayTitle: function (title) {
       if (title === null) {

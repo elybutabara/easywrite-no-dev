@@ -123,7 +123,7 @@ export default {
         .post('http://localhost:3000/users', data)
         .then(response => {
           if (response.data) {
-            console.log(response.data)
+            // console.log(response.data)
             window.swal.fire({
               position: 'center',
               icon: 'success',

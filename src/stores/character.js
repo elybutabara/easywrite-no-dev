@@ -24,7 +24,7 @@ export default {
       let bookUUID = payload.book_id
       let characterUUID = payload.uuid
       console.log('store characters.js')
-      console.log(payload)
+      // console.log(payload)
       if (state.characters[bookUUID] !== undefined) {
         for (let i = 0; i < state.characters[bookUUID].rows.length; i++) {
           let current = state.characters[bookUUID].rows[i]

@@ -50,7 +50,7 @@ export default {
   },
   mounted () {
     var scope = this
-    console.log(scope.properties)
+    // console.log(scope.properties)
     scope.component.is_ready = true
   }
 }

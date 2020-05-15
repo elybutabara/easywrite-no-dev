@@ -25,8 +25,8 @@ class UserController {
       var user = await User.query().insert(row)
       var author = await Author.query().insert(row.author)
 
-      console.log(user)
-      console.log(author)
+      // console.log(user)
+      // console.log(author)
 
       // update uuid to match web
       data = await User.query()

@@ -23,7 +23,7 @@ class ReaderController {
     }
 
     console.log('bookUUIDs')
-    console.log(bookUUIDs)
+    // console.log(bookUUIDs)
 
     const books = Book.query()
       .withGraphJoined('book_genre_collection')

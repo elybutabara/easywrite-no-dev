@@ -292,7 +292,7 @@ export default {
         let current = state.scene_versions[sceneUUID].rows[i]
         if (current.uuid === payload.uuid) {
           Vue.set(state.scene_versions[sceneUUID].rows, i, payload)
-          console.log('UPDATED ' + payload.content)
+          // console.log('UPDATED ' + payload.content)
           break
         } else if (i === (state.scene_versions[sceneUUID].rows.length - 1) && current.uuid !== payload.uuid) {
           // use this to get the total number of locations under book
