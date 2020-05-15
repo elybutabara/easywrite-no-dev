@@ -126,6 +126,7 @@ export default {
       autostart: false,
       stage: 'intro',
       current: 0,
+      authorUUID: null,
       progress_message: 'Initializing...',
       download: {
         pointer: 0,
@@ -488,7 +489,11 @@ export default {
     updateListByModel: function (model, data) {
       var scope = this
       if (model === 'Books') {
-        scope.$store.dispatch('updateBookList', data)
+        if (scope.authorUUID === data.author_id) {
+          scope.$store.dispatch('updateBookList', data)
+        } else {
+          scope.$store.dispatch('updateBooksIReadList', { book: data, author_id: scope.authorUUID })
+        }
       } else if (model === 'Chapters') {
         scope.$store.dispatch('updateChapterList', data)
       } else if (model === 'Chapter Versions') {
@@ -567,7 +572,7 @@ export default {
   },
   mounted () {
     var scope = this
-
+    scope.authorUUID = scope.$store.getters.getAuthorID
     if (scope.properties !== null && scope.properties.fullscreen) {
       scope.fullscreen = true
     }

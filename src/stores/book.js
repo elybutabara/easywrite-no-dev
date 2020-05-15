@@ -258,42 +258,44 @@ export default {
         }
       }
     },
-    updateBookIReadList (state, payload) {
+    updateBooksIReadList (state, payload) {
+      // authententicated author_id, we use this to get "book i read" of the authenticated user
       let authorUUID = payload.author_id
-      if (!state.books[authorUUID] || !state.books.hasOwnProperty(authorUUID) || state.books[authorUUID].rows.length < 1) {
+      let book = payload.book
+      if (!state.books_i_read[authorUUID] || !state.books_i_read.hasOwnProperty(authorUUID) || state.books_i_read[authorUUID].rows.length < 1) {
         console.log('ADDED AUTHOR!')
-        Vue.set(state.books, authorUUID, { rows: [] })
+        Vue.set(state.books_i_read, authorUUID, { rows: [] })
         // add row
-        state.books[authorUUID].rows.push({})
-        Vue.set(state.books[authorUUID].rows, 0, payload)
-        Vue.set(state.books[authorUUID].rows[0], 'is_open', false)
-        Vue.set(state.books[authorUUID].rows[0], 'is_chapters_folder_open', false)
-        Vue.set(state.books[authorUUID].rows[0], 'is_items_folder_open', false)
-        Vue.set(state.books[authorUUID].rows[0], 'is_locations_folder_open', false)
-        Vue.set(state.books[authorUUID].rows[0], 'is_characters_folder_open', false)
-        Vue.set(state.books[authorUUID].rows[0], 'is_scenes_folder_open', false)
+        state.books_i_read[authorUUID].rows.push({})
+        Vue.set(state.books_i_read[authorUUID].rows, 0, book)
+        Vue.set(state.books_i_read[authorUUID].rows[0], 'is_open', false)
+        Vue.set(state.books_i_read[authorUUID].rows[0], 'is_chapters_folder_open', false)
+        Vue.set(state.books_i_read[authorUUID].rows[0], 'is_items_folder_open', false)
+        Vue.set(state.books_i_read[authorUUID].rows[0], 'is_locations_folder_open', false)
+        Vue.set(state.books_i_read[authorUUID].rows[0], 'is_characters_folder_open', false)
+        Vue.set(state.books_i_read[authorUUID].rows[0], 'is_scenes_folder_open', false)
         return
       }
 
-      for (let i = 0; i < state.books[authorUUID].rows.length; i++) {
-        let current = state.books[authorUUID].rows[i]
-        if (current.uuid === payload.uuid) {
-          for (var key in payload) {
-            if (state.books[authorUUID].rows[i][key]) {
-              state.books[authorUUID].rows[i][key] = payload[key]
+      for (let i = 0; i < state.books_i_read[authorUUID].rows.length; i++) {
+        let current = state.books_i_read[authorUUID].rows[i]
+        if (current.uuid === book.uuid) {
+          for (var key in book) {
+            if (state.books_i_read[authorUUID].rows[i][key]) {
+              state.books_i_read[authorUUID].rows[i][key] = book[key]
             }
           }
           break
-        } else if (i === (state.books[authorUUID].rows.length - 1) && current.uuid !== payload.uuid) {
+        } else if (i === (state.books_i_read[authorUUID].rows.length - 1) && current.uuid !== book.uuid) {
           // use this to get the total number of chapters under book
-          Vue.set(payload, 'is_open', false)
-          Vue.set(payload, 'is_chapters_folder_open', false)
-          Vue.set(payload, 'is_items_folder_open', false)
-          Vue.set(payload, 'is_locations_folder_open', false)
-          Vue.set(payload, 'is_characters_folder_open', false)
-          Vue.set(payload, 'is_scenes_folder_open', false)
+          Vue.set(book, 'is_open', false)
+          Vue.set(book, 'is_chapters_folder_open', false)
+          Vue.set(book, 'is_items_folder_open', false)
+          Vue.set(book, 'is_locations_folder_open', false)
+          Vue.set(book, 'is_characters_folder_open', false)
+          Vue.set(book, 'is_scenes_folder_open', false)
 
-          state.books[authorUUID].rows.push(payload)
+          state.books_i_read[authorUUID].rows.push(book)
           // let count = state.books[authorUUID].rows.length
         }
       }
@@ -316,6 +318,9 @@ export default {
     },
     updateBookList ({ commit, state }, payload) {
       commit('updateBookList', payload)
+    },
+    updateBooksIReadList ({ commit, state }, payload) {
+      commit('updateBooksIReadList', payload)
     },
     removeBookFromList ({ commit, state }, payload) {
       commit('removeBookFromList', payload)
