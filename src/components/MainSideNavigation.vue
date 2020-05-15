@@ -1,5 +1,5 @@
 <template>
-<div class="left-side-bar no-select">
+<div class="left-side-bar no-select" :style="updateStyle()">
         <div class="header">
             <img src="@/assets/img/EasyWrite Logo White.png">
         </div>
@@ -77,6 +77,7 @@ export default {
       locations: [],
       other_scenes: [],
       tab: 'my-books',
+      platform: '',
       auto_update: {
         version: '',
         downloaded_version: '',
@@ -106,6 +107,12 @@ export default {
     }
   },
   methods: {
+    updateStyle: function () {
+      let scope = this
+      if (scope.platform === 'darwin') {
+        return 'top:20px;'
+      }
+    },
     changeComponent: function (tabComponent, data, tabTitle = 'New Tab', newTab = false, tabIndex = 0) {
       var scope = this
       // scope.$parent.changeComponent(component, data)
@@ -200,6 +207,10 @@ export default {
   mounted () {
     var scope = this
     scope.checkAppUpdate()
+    ipcRenderer.send('GET_PROCESS_PLATFORM')
+    ipcRenderer.on('PROCESS_PLATFORM', function (event, data) {
+      scope.platform = data.platform
+    })
   }
 }
 </script>

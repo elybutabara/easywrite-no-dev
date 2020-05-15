@@ -42,6 +42,7 @@ function createWindow () {
     width : 500,
     height: 600,
     frame: false,
+    titleBarStyle: 'hidden',
     icon: path.resolve('src/assets/img/easywrite-new.ico'),
     webPreferences: {
       webSecurity: false,
@@ -87,9 +88,14 @@ function createWindow () {
     mainWindow.center()
     mainWindow.maximize()
   })
+
   exportPdf.initMainWindow(mainWindow)
   exportdocx.initMainWindow(mainWindow)
   autoUpdate.processUpdate(mainWindow)
+
+  ipcMain.on('GET_PROCESS_PLATFORM', function (e, args) {
+    mainWindow.webContents.send('PROCESS_PLATFORM',{platform: process.platform})
+  })
 
   // This method is called to setup menu in login page
   ipcMain.on('SET_DEFAULTS', function (e, args) {
