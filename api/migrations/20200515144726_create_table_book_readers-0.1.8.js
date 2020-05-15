@@ -5,7 +5,7 @@ exports.up = async function (knex) {
       await knex.schema.createTable('book_readers', function (t) {
         t.increments('id')
         t.text('uuid')
-        t.specificType('author_id', 'BLOB')
+        t.text('author_id')
         t.text('book_id')
         t.text('role')
         t.integer('status')
