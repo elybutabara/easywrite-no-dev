@@ -40,7 +40,7 @@
                            <label>Password</label>
                            <input v-model="password" type="password" :placeholder = " $t('ENTER_YOUR_PASSWORD_HERE') ">
                        </div>
-                       <div class="remember-me"><b-form-checkbox v-model="status" value="accepted" unchecked-value="not_accepted">Remember me</b-form-checkbox></div>
+                       <div class="remember-me"><b-form-checkbox v-model="status" value="accepted" unchecked-value="not_accepted">{{ $t('REMEMBER_ME') }}</b-form-checkbox></div>
                        <br/>
                        <div class="input-group">
                            <button type="submit">{{ $t('LOGIN') }}</button>

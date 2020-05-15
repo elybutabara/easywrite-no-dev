@@ -1,4 +1,5 @@
 export default {
+  REMEMBER_ME: 'Remember Me',
   A_LIST_OF_SCENES_THAT_DOES_NOT_BELONG_TO_ANY_CHAPTERS: 'A list of scenes that does not belong to any chapters',
   ABOUT: 'About',
   ADD_IT_INTO_SCENE: 'to add it into to the scene',
