@@ -33,6 +33,12 @@
                 <location-details :key="tab.key" v-if="tab.component == 'location-details'" :properties="tab.data"></location-details>
                 <character-details :key="tab.key" v-if="tab.component == 'character-details'" :properties="tab.data"></character-details>
 
+                <books-i-read-book-details :key="tab.key" v-if="tab.component == 'books-i-read-book-details'" :properties="tab.data"></books-i-read-book-details>
+                <books-i-read-chapter-listing :key="tab.key" v-if="tab.component == 'books-i-read-chapter-listing'" :properties="tab.data"></books-i-read-chapter-listing>
+                <books-i-read-scene-listing :key="tab.key" v-if="tab.component == 'books-i-read-scene-listing'" :properties="tab.data"></books-i-read-scene-listing>
+                <books-i-read-chapter-details :key="tab.key" v-if="tab.component == 'books-i-read-chapter-details'" :properties="tab.data"></books-i-read-chapter-details>
+                <books-i-read-scene-details :key="tab.key" v-if="tab.component == 'books-i-read-scene-details'" :properties="tab.data"></books-i-read-scene-details>
+
                 <book-form :key="tab.key" v-if="tab.component == 'book-form'" :properties="tab.data"></book-form>
                 <location-form :key="tab.key" v-if="tab.component == 'location-form'" :properties="tab.data"></location-form>
                 <item-form :key="tab.key" v-if="tab.component == 'item-form'" :properties="tab.data"></item-form>
@@ -75,6 +81,13 @@ import CharacterForm from '@/pages/views/characters/character-form'
 import SceneForm from '@/pages/views/scenes/scene-form'
 import ChapterForm from '@/pages/views/chapters/chapter-form'
 import PomodoroTimer from '@/components/PomodoroTimer'
+
+// books i read
+import BooksIReadBookDetails from '@/pages/views/books-i-read/book-details'
+import BooksIReadChapterListing from '@/pages/views/books-i-read/chapter-listing'
+import BooksIReadSceneListing from '@/pages/views/books-i-read/scene-listing'
+import BooksIReadChapterDetails from '@/pages/views/books-i-read/chapter-details'
+import BooksIReadSceneDetails from '@/pages/views/books-i-read/scene-details'
 
 // const electron = window.require('electron')
 // const remote = electron.remote
@@ -121,6 +134,11 @@ export default {
     'chapter-form': ChapterForm,
     'scene-form': SceneForm,
     'character-form': CharacterForm,
+    'books-i-read-book-details': BooksIReadBookDetails,
+    'books-i-read-chapter-listing': BooksIReadChapterListing,
+    'books-i-read-scene-listing': BooksIReadSceneListing,
+    'books-i-read-chapter-details': BooksIReadChapterDetails,
+    'books-i-read-scene-details': BooksIReadSceneDetails,
     'pomodoro-timer': PomodoroTimer
   },
   methods: {
@@ -155,6 +173,7 @@ export default {
     var userUUID = this.$store.getters.getUserID
     var authorUUID = this.$store.getters.getAuthorID
     scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+    scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
     // scope.$store.dispatch('getBooksByAuthorID', userID)
     setTimeout(function () {
       scope.ready = true

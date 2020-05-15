@@ -4,7 +4,7 @@ const path = require('path')
 const express = require('express')
 const router = express.Router()
 
-const { UserController, BookController } = require(path.join(__dirname, '..', 'controllers'))
+const { UserController, BookController, ReaderController } = require(path.join(__dirname, '..', 'controllers'))
 
 router.get('/login', async function (req, res) {
   const user = await UserController.authenticate(req.query.username, req.query.password)
@@ -39,6 +39,13 @@ router.post('/synced', async function (req, res) {
   res
     .status(200)
     .json(user)
+})
+
+router.get('/:userId/books-i-read', async function (req, res) {
+  const books = await ReaderController.getAllBooksIReadByUserId(req.params.userId)
+  res
+    .status(200)
+    .json(books)
 })
 
 router.get('/:userId/books', async function (req, res) {
