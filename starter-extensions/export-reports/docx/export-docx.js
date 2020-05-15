@@ -35,7 +35,7 @@ exports.initMainWindow = (window) => {
   ipcMain.on('EXPORT-DOCX-SHOW-BOOK-WINDOW', function (event, data) {
     createExportWindowBook()
     ExportWindow.on('ready-to-show', function () {
-      ExportWindow.show()
+      // ExportWindow.show()
       ExportWindow.webContents.send('EXPORT-DOCX-GET-BOOK', data)
     })
   })
@@ -76,7 +76,7 @@ exports.initMainWindow = (window) => {
       webPreferences: {
         webSecurity: false,
         nodeIntegration: true,
-        preload: path.join(__dirname, 'preload.js'),
+        preload: path.resolve(process.env.basePath, 'preload.js'),
         plugins: true
       },
       protocol: 'file:',
