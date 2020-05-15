@@ -9,10 +9,10 @@
         </div>
         <div class="left-sidebar-tab">
             <div v-bind:class="{'active' : tab === 'my-books' }" @click="toggleTab('my-books')" class="tab-item">
-                MY BOOKS
+                {{$t('MY_BOOKS').toUpperCase()}}
             </div>
             <div v-bind:class="{'active' : tab === 'books-i-read' }" @click="toggleTab('books-i-read')" class="tab-item">
-                BOOKS I READ
+                {{$t('BOOKS_I_READ').toUpperCase()}}
             </div>
         </div>
         <div class="es-tree-view">
