@@ -87,7 +87,7 @@ function createWindow () {
     mainWindow.center()
     mainWindow.maximize()
   })
-
+  exportPdf.initMainWindow(mainWindow)
   exportdocx.initMainWindow(mainWindow)
   autoUpdate.processUpdate(mainWindow)
 

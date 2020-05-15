@@ -27,9 +27,7 @@ exports.initMainWindow = (window) => {
           }
         })
       }
-    }).catch(() => {
-
-    })
+    }).catch(() => {})
   })
 
   ipcMain.on('EXPORT-DOCX-SHOW-BOOK-WINDOW', function (event, data) {
@@ -65,6 +63,7 @@ exports.initMainWindow = (window) => {
       }
       MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
     }).catch(err => {
+      if (ExportWindow != null) ExportWindow.close()
       log.error(err)
     })
   })
@@ -93,7 +92,7 @@ exports.initMainWindow = (window) => {
       let url = 'http://localhost:8080/'
       ExportWindow.loadURL(url + 'dev/' + '/#/export-book')
     } else {
-      ExportWindow.loadFile(`${__dirname}/dist/export.html`)
+      ExportWindow.loadFile(path.resolve(__dirname, '../../../dist/export.html'))
     }
 
     ExportWindow.on('closed', function () {

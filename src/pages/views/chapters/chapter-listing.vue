@@ -7,8 +7,12 @@
                 <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ book.title }}</small>
             </div>
             <div class="actions">
-                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
-                <button class="es-button-white" @click="exportScenes(book.uuid)">{{$t('EXPORT_SCENES_LIST').toUpperCase()}}</button>
+              <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
+              <button v-if="exportOnProgress === false" class="es-button-white" @click="exportScenes(book.uuid)">{{$t('EXPORT_SCENES_LIST').toUpperCase()}}</button>
+                <b-button  v-if="exportOnProgress === true" disabled class="es-button-white">
+                    <b-spinner small type="grow"></b-spinner>
+                    <span>{{exportLoading}}</span>
+                </b-button>
             </div>
         </div>
     </div>
@@ -57,6 +61,9 @@ export default {
       page: {
         is_ready: false
       },
+      exportOnProgress: false,
+      exportDefaultName: this.$tc('EXPORT', 1).toUpperCase() + ' ' + this.$tc('SCENE', 2).toUpperCase() + ' ' + this.$tc('LIST', 1).toUpperCase(),
+      exportLoading: this.$t('Loading'),
       bookUUID: ''
     }
   },
@@ -127,13 +134,16 @@ export default {
     },
     exportScenes: function () {
       const scope = this
+      scope.exportOnProgress = true
       ipcRenderer.send('EXPORT_PDF_SHOW_SCENE', {bookUUID: scope.bookUUID, title: scope.properties.title})
     }
   },
   mounted () {
     var scope = this
     scope.bookUUID = scope.properties.uuid
-
+    ipcRenderer.on('EXPORT_PDF_ENABLE_BUTTON', function () {
+      scope.exportOnProgress = false
+    })
     setTimeout(function () {
       scope.page.is_ready = true
     }, 100)

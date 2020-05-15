@@ -1,5 +1,5 @@
 <template>
-  <div v-if="page.is_ready == true && chapters" class="es-page-content" style="height: auto">
+  <div v-if="page.is_ready == true && book" class="es-page-content" style="height: auto">
 
         <div class="inner">
           <div class="book-title">
@@ -164,6 +164,7 @@ const electron = window.require('electron')
 const {ipcRenderer} = electron
 
 export default {
+  name: 'ExportBook',
   data: function () {
     return {
       book: null,

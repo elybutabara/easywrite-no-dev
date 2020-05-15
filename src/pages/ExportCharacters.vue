@@ -6,9 +6,9 @@
                 <h4>{{$t('CHARACTERS')}}</h4>
                 <small>{{$t('BELOW_ARE_THE_LIST_OF_CHARACTERS_UNDER')}} {{ bookTitle }}</small>
             </div>
-            <div class="actions">
-                <button id="printCharacterButton" class="es-button-white" @click="exportCharacter()">{{$t('EXPORT')}}</button>
-            </div>
+<!--            <div class="actions">-->
+<!--                <button id="printCharacterButton" class="es-button-white" @click="exportCharacter()">{{$t('EXPORT')}}</button>-->
+<!--            </div>-->
         </div>
     </div>
     <div>
@@ -127,14 +127,15 @@ export default {
   },
   computed: {},
   methods: {
-    exportCharacter: function () {
-      const scope = this
-      window.$('#printCharacterButton').hide()
-      let pdf = {
-        name: scope.bookTitle + ' - ' + this.$t('CHARACTERS')
-      }
-      ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
-    },
+    // exportCharacter: function () {
+    //   const scope = this
+    //   window.$('#printCharacterButton').hide()
+    //   let pdf = {
+    //     name: scope.bookTitle + ' - ' + this.$tc('CHARACTER', 2)
+    //   }
+    //   ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
+    // },
+
     viewCharacters: function () {
       const scope = this
       let characters = scope.$store.getters.getCharactersByBook(scope.bookUUID)
@@ -170,11 +171,18 @@ export default {
       setTimeout(function () {
         scope.viewCharacters()
       }, 550)
+
+      setTimeout(function () {
+        let pdf = {
+          name: scope.bookTitle + ' - ' + scope.$tc('CHARACTER', 2)
+        }
+        ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
+      })
     })
 
-    ipcRenderer.on('EXPORT_PDF_SHOW_BUTTON', function (event, data) {
-      window.$('#printCharacterButton').show()
-    })
+    // ipcRenderer.on('EXPORT_PDF_SHOW_BUTTON', function (event, data) {
+    //   window.$('#printCharacterButton').show()
+    // })
   }
 }
 </script>
