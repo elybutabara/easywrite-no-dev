@@ -6,53 +6,55 @@
             <center><h2>{{ book.title }}</h2></center>
           </div>
         </div>
-          <div class="es-panel" >{{$t('GENRE')}}: <span v-for="(genre, index) in book.genre" :key="genre.uuid"><span v-if="index != 0">, </span>{{genre.name}}</span></div>
-          <div class="es-panel" v-html="$t('ABOUT') + ': ' + book.about"></div>
-
+          <div class="es-panel" ><label><b>{{$t('GENRE')}}:</b></label> <label><span v-for="(genre, index) in book.genre" :key="genre.uuid"><span v-if="index != 0">, </span>{{genre.name}}</span></label></div>
+          <div class="es-panel"><label><b>{{$t('ABOUT')}}:</b></label>
+             <div v-html="book.about"></div>
+          </div>
         <div>
           <div v-if="chapters" class="rows-print-as-pages">
 
             <div v-bind:key="chapter.id" v-for="chapter in chapters">
                 <div class="es-panel">
-                  <div><label>{{$t('CHAPTER')}} : {{chapter.title}}</label></div>
-                  <div><label>{{$t('SHORT_DESCRIPTION')}} : {{chapter.short_description}}</label></div>
-                  <div>{{ $t('CONTENT') + ': '}}</div>
+                  <div><label><b>{{$t('CHAPTER')}}:</b></label> <label>{{chapter.title}}</label></div>
+                  <div><label><b>{{$t('SHORT_DESCRIPTION')}}:</b></label> <label>{{chapter.short_description}}</label></div>
+                  <div><label><b>{{ $t('CONTENT') + ': '}}</b></label></div>
                   <div v-html="chapter.chapter_version[chapter.chapter_version.length-1].content"></div>
                 </div>
 
               <div v-bind:key="scene.id" v-for="scene in chapter.scene">
                 <div class="es-panel">
-                    <div><label>{{$t('SCENE')}} : {{scene.title}}</label></div>
-                    <div><label>{{$t('SHORT_DESCRIPTION')}} : {{scene.short_description}}</label></div>
-                    <div><label>{{$t('IMPORTANCE')}} : {{scene.importance}}</label></div>
-                    <div><label>{{$t('TAGS')}} : {{scene.tags}}</label></div>
-                    <div><label>{{$t('STATUS')}} : {{scene.status}}</label></div>
-                    <div><label>{{$t('TYPE_OF_SCENE')}} : {{scene.typeofscene}}</label></div>
-                    <div><label>{{$t('DATE_START')}} : {{scene.date_starts}}</label></div>
-                    <div><label>{{$t('DATE_END')}} : {{scene.date_ends}}</label></div>
-                    <div><label>{{$t('WEATHER')}} : {{scene.weather}}</label></div>
+                    <div><label><b>{{$t('SCENE')}}:</b></label> <label>{{scene.title}}</label></div>
+                    <div><label><b>{{$t('SHORT_DESCRIPTION')}}:</b></label> <label>{{scene.short_description}}</label></div>
+                    <div><label><b>{{$t('IMPORTANCE')}}:</b></label> <label>{{scene.importance}}</label></div>
+                    <div><label><b>{{$t('TAGS')}}:</b></label> <label>{{scene.tags}}</label></div>
+                    <div><label><b>{{$t('STATUS')}}:</b></label> <label>{{scene.status}}</label></div>
+                    <div><label><b>{{$t('TYPE_OF_SCENE')}}:</b></label> <label>{{scene.typeofscene}}</label></div>
+                    <div><label><b>{{$t('DATE_START')}}:</b></label> <label>{{scene.date_starts}}</label></div>
+                    <div><label><b>{{$t('DATE_END')}}:</b></label> <label>{{scene.date_ends}}</label></div>
+                    <div><label><b>{{$t('WEATHER')}}:</b></label> <label>{{scene.weather}}</label></div>
                     <br/>
-                    <div><label>{{$t('CONTENT')}} :</label><br/></div>
+                    <div><label><b>{{$t('CONTENT')}}:</b></label><br/></div>
                     <div v-html="scene.scene_version[scene.scene_version.length-1].content"></div>
                     <br/>
-                      <div><label>{{$t('NOTES')}} :</label></div>
+                      <div><label><b>{{$t('NOTES')}}:</b></label></div>
                     <div v-html="scene.notes"></div>
                     <br/>
-                    <div><label>{{$t('VIEWPOINT')}} :</label></div>
+                    <div><label><b>{{$t('POINT_OF_VIEW')}}:</b></label> <label>{{getViewPointCharacter(scene)}}</label></div>
+                    <div><label><b>{{$t('VIEWPOINT')}}:</b></label></div>
                     <div v-html="scene.viewpoint_description"></div>
                     <br/>
 
-                    <div><label>{{$t('CHARACTERS_IN_THIS_SCENE')}} : </label></div>
+                    <div><label><b>{{$t('CHARACTERS_IN_THIS_SCENE')}}:</b> </label></div>
                     <div>
                       <b-table striped hover :items="scene.characters" :fields="characterFields"></b-table>
                     </div>
 
-                    <div><label>{{$t('LOCATIONS_IN_THIS_SCENE')}} :</label></div>
+                    <div><label><b>{{$t('LOCATIONS_IN_THIS_SCENE')}}:</b></label></div>
                     <div>
                       <b-table striped hover :items="scene.locations" :fields="locationFields"></b-table>
                     </div>
 
-                    <div><label>{{$t('ITEMS_IN_THIS_SCENE')}} :</label></div>
+                    <div><label><b>{{$t('ITEMS_IN_THIS_SCENE')}}:</b></label></div>
                     <div>
                       <b-table striped hover :items="scene.items" :fields="itemFields"></b-table>
                     </div>
@@ -62,42 +64,43 @@
           </div>
         </div>
 
-      <div><center><h2>{{$t('OTHER_SCENES')}}</h2></center></div>
+      <div><center><h2><b>{{$t('OTHER_SCENES')}}</b></h2></center></div>
 
       <div v-if="scenes" class="rows-print-as-pages">
         <div v-bind:key="scene.id" v-for="scene in scenes">
-          <div class="es-panel">
-            <div><label>{{$t('SCENE')}} : {{scene.title}}</label></div>
-            <div><label>{{$t('SHORT_DESCRIPTION')}} : {{scene.short_description}}</label></div>
-            <div><label>{{$t('IMPORTANCE')}} : {{scene.importance}}</label></div>
-            <div><label>{{$t('TAGS')}} : {{scene.tags}}</label></div>
-            <div><label>{{$t('STATUS')}} : {{scene.status}}</label></div>
-            <div><label>{{$t('TYPE_OF_SCENE')}} : {{scene.typeofscene}}</label></div>
-            <div><label>{{$t('DATE_START')}} : {{scene.date_starts}}</label></div>
-            <div><label>{{$t('DATE_END')}} : {{scene.date_ends}}</label></div>
-            <div><label>{{$t('WEATHER')}} : {{scene.weather}}</label></div>
+          <div class="es-panel2">
+            <div><label><b>{{$t('SCENE')}}:</b></label> <label>{{scene.title}}</label></div>
+            <div><label><b>{{$t('SHORT_DESCRIPTION')}}:</b></label> <label>{{scene.short_description}}</label></div>
+            <div><label><b>{{$t('IMPORTANCE')}}:</b></label> <label>{{scene.importance}}</label></div>
+            <div><label><b>{{$t('TAGS')}}:</b></label> <label>{{scene.tags}}</label></div>
+            <div><label><b>{{$t('STATUS')}}:</b></label> <label>{{scene.status}}</label></div>
+            <div><label><b>{{$t('TYPE_OF_SCENE')}}:</b></label> <label>{{scene.typeofscene}}</label></div>
+            <div><label><b>{{$t('DATE_START')}}:</b></label> <label>{{scene.date_starts}}</label></div>
+            <div><label><b>{{$t('DATE_END')}}:</b></label> <label>{{scene.date_ends}}</label></div>
+            <div><label><b>{{$t('WEATHER')}}:</b></label> <label>{{scene.weather}}</label></div>
             <br/>
-            <div><label>{{$t('CONTENT')}} :</label><br/></div>
+            <div><label><b>{{$t('CONTENT')}}:</b></label><br/></div>
             <div v-html="scene.scene_version[scene.scene_version.length-1].content"></div>
             <br/>
-              <div><label>{{$t('NOTES')}} :</label></div>
+              <div><label><b>{{$t('NOTES')}}:</b></label></div>
             <div v-html="scene.notes"></div>
             <br/>
-            <div><label>{{$t('VIEWPOINT')}} :</label></div>
+            <div><label><b>{{$t('POINT_OF_VIEW')}}:</b></label> <label>{{getViewPointCharacter(scene)}}</label></div>
+            <div><label><b>{{$t('VIEWPOINT')}}:</b></label></div>
             <div v-html="scene.viewpoint_description"></div>
             <br/>
 
-            <div><label>{{$t('CHARACTERS_IN_THIS_SCENE')}} : </label></div>
+            <div><label><b>{{$t('CHARACTERS_IN_THIS_SCENE')}}:</b></label></div>
             <div>
               <b-table striped hover :items="scene.characters" :fields="characterFields"></b-table>
             </div>
 
-            <div><label>{{$t('LOCATIONS_IN_THIS_SCENE')}} :</label></div>
+            <div><label><b>{{$t('LOCATIONS_IN_THIS_SCENE')}}:</b></label></div>
             <div>
               <b-table striped hover :items="scene.locations" :fields="locationFields"></b-table>
             </div>
 
-            <div><label>{{$t('ITEMS_IN_THIS_SCENE')}} :</label></div>
+            <div><label><b>{{$t('ITEMS_IN_THIS_SCENE')}}:</b></label></div>
             <div>
               <b-table striped hover :items="scene.items" :fields="itemFields"></b-table>
             </div>
@@ -105,49 +108,49 @@
         </div>
       </div>
 
-      <div><center><h2>{{$t('LOCATIONS')}}</h2></center></div>
+      <div><center><h2><b>{{$t('LOCATIONS')}}</b></h2></center></div>
 
       <div v-if="locations" class="rows-print-as-pages">
         <div v-bind:key="location.id" v-for="location in locations">
           <div class="es-panel">
-            <div><label>{{$t('LOCATION')}} : {{location.location}}</label></div>
-            <div><label>{{$t('AKA')}} : {{location.AKA}}</label></div>
-            <div><label>{{$t('DESCRIPTION')}} :</label></div>
+            <div><label><b>{{$t('LOCATION')}}:</b></label> <label>{{location.location}}</label></div>
+            <div><label><b>{{$t('AKA')}}:</b></label> <label>{{location.AKA}}</label></div>
+            <div><label><b>{{$t('DESCRIPTION')}}:</b></label></div>
             <div v-html="location.description"></div>
           </div>
         </div>
       </div>
 
-      <div><center><h2>{{$t('ITEMS')}}</h2></center></div>
+      <div><center><h2><b>{{$t('ITEMS')}}</b></h2></center></div>
 
       <div v-if="items" class="rows-print-as-pages">
         <div v-bind:key="item.id" v-for="item in items">
           <div class="es-panel">
-            <div><label>{{$t('ITEM')}} : {{item.itemname}}</label></div>
-            <div><label>{{$t('AKA')}} : {{item.AKA}}</label></div>
-            <div><label>{{$t('DESCRIPTION')}} :</label></div>
+            <div><label><b>{{$t('ITEM')}}:</b></label> <label>{{item.itemname}}</label></div>
+            <div><label><b>{{$t('AKA')}}:</b></label> <label>{{item.AKA}}</label></div>
+            <div><label><b>{{$t('DESCRIPTION')}}:</b></label></div>
             <div v-html="item.description"></div>
           </div>
         </div>
       </div>
 
-      <div><center><h2>{{$t('CHARACTERS')}}</h2></center></div>
+      <div><center><h2><b>{{$t('CHARACTERS')}}</b></h2></center></div>
 
       <div v-if="characters" class="rows-print-as-pages">
         <div v-bind:key="character.id" v-for="character in characters">
           <div class="es-panel">
-            <div><label>{{$t('FULLNAME')}} : {{character.fullname}}</label></div>
-            <div><label>{{$t('SHORTNAME')}} : {{character.shortname}}</label></div>
-            <div><label>{{$t('NICKNAME')}} : {{character.nickname}}</label></div>
-            <div><label>{{$t('OCCUPATION')}} : {{character.occupation}}</label></div>
-            <div><label>{{$t('BIRTHDATE')}} : {{character.birthdate}}</label></div>
-            <div><label>{{$t('DESCRIPTION')}} :</label></div>
+            <div><label><b>{{$t('FULLNAME')}}:</b></label> <label>{{character.fullname}}</label></div>
+            <div><label><b>{{$t('SHORTNAME')}}:</b></label> <label>{{character.shortname}}</label></div>
+            <div><label><b>{{$t('NICKNAME')}}:</b></label> <label>{{character.nickname}}</label></div>
+            <div><label><b>{{$t('OCCUPATION')}}:</b></label> <label>{{character.occupation}}</label></div>
+            <div><label><b>{{$t('BIRTHDATE')}}:</b></label> <label>{{character.birthdate}}</label></div>
+            <div><label><b>{{$t('DESCRIPTION')}}:</b></label></div>
             <div v-html="character.description"></div>
             <br/>
-            <div><label>{{$t('BIO')}} :</label></div>
+            <div><label><b>{{$t('BIO')}}:</b></label></div>
             <div v-html="character.bio"></div>
             <br/>
-            <div><label>{{$t('GOALS')}} :</label></div>
+            <div><label><b>{{$t('GOALS')}}:</b></label></div>
             <div v-html="character.goals"></div>
           </div>
         </div>
@@ -217,8 +220,21 @@ export default {
     exportBook: function () {
       var scope = this
       var outerhtml = document.documentElement.outerHTML
-      console.log(outerhtml)
+      // console.log(outerhtml)
       ipcRenderer.send('EXPORT-WORD-BOOK', {html: outerhtml, book: scope.book})
+    },
+    getViewPointCharacter: function (scene) {
+      var scope = this
+
+      if (scene.character_id_vp === -1) {
+        return this.$t('AUTHOR')
+      }
+      for (const key in scope.characters) {
+        let character = scope.characters[key]
+        if (character.uuid === scene.character_id_vp) {
+          return character.fullname
+        }
+      }
     }
   },
   beforeMount () {},
@@ -252,6 +268,8 @@ export default {
 </script>
 
 <style scoped>
+/* .es-panel2 { margin:0px auto; margin-bottom:20px; padding:20px 20px; background:#e7e7e7; border:1px solid #e0e5ee; width:calc(100% - 40px); max-width:1320px;  }
+.data-label {background-color:#e7e7e7; color: black;} */
 .inner .book-title { text-align:center; width:100%; }
 
 </style>
