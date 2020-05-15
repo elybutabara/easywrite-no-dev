@@ -68,7 +68,7 @@
 
       <div v-if="scenes" class="rows-print-as-pages">
         <div v-bind:key="scene.id" v-for="scene in scenes">
-          <div class="es-panel2">
+          <div class="es-panel">
             <div><label><b>{{$t('SCENE')}}:</b></label> <label>{{scene.title}}</label></div>
             <div><label><b>{{$t('SHORT_DESCRIPTION')}}:</b></label> <label>{{scene.short_description}}</label></div>
             <div><label><b>{{$t('IMPORTANCE')}}:</b></label> <label>{{scene.importance}}</label></div>

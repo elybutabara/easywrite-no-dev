@@ -61,6 +61,7 @@ exports.initMainWindow = (mainWindow) => {
     }).then(result => {
       if (result.canceled) {
         mainWindow.webContents.send('EXPORT_PDF_SHOW_BUTTON')
+        if (exportWindow != null) exportWindow.close()
       } else {
         exportWindow.webContents.printToPDF({}, (success, errorType) => {
           log.error(errorType)
@@ -72,13 +73,14 @@ exports.initMainWindow = (mainWindow) => {
             }
             electron.shell.openExternal('file://' + pdfPath)
             mainWindow.webContents.send('SHOW-SWAL-SUCCESS-EXPORTING', pdfPath)
+            if (exportWindow != null) exportWindow.close()
           })
         }).catch(function (err) {
           log.error(err)
+          if (exportWindow != null) exportWindow.close()
         })
       }
       mainWindow.webContents.send('EXPORT_PDF_ENABLE_BUTTON')
-      if (exportWindow != null) exportWindow.close()
     }).catch(err => {
       if (exportWindow != null) exportWindow.close()
       log.error(err)

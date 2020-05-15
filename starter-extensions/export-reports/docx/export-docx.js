@@ -47,6 +47,7 @@ exports.initMainWindow = (window) => {
       ]
     }).then(result => {
       if (result.canceled) {
+        if (ExportWindow != null) ExportWindow.close()
       } else {
         var HtmlDocx = require('html-docx-js')
         var fs = require('fs')
@@ -56,8 +57,10 @@ exports.initMainWindow = (window) => {
         fs.writeFile(outputFile, docx, function (err) {
           if (err) {
             MainWindow.webContents.send('SHOW-SWAL-ERROR-EXPORTING', result.filePath)
+            if (ExportWindow != null) ExportWindow.close()
           } else {
             MainWindow.webContents.send('SHOW-SWAL-SUCCESS-EXPORTING', result.filePath)
+            if (ExportWindow != null) ExportWindow.close()
           }
         })
       }
