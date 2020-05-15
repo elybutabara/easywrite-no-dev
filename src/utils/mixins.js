@@ -57,6 +57,22 @@ export default {
         scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + data.uuid, tabComponent: 'scene-listing', tabData: data, tabTitle: this.$t('OTHER_SCENES') + ' - ' + data.title})
       }
     },
+    TOGGLE_BOOK_I_READ: function (data, model) {
+      var scope = this
+      // we use this to get the books id read of the current user
+      var authorUUID = this.$store.getters.getAuthorID
+      scope.$store.dispatch('toggleBookIRead', { model: model, data: data, author_id: authorUUID })
+
+      if (model === 'book') {
+        scope.CHANGE_COMPONENT({tabKey: 'book-details-' + data.uuid, tabComponent: 'books-i-read-book-details', tabData: data, tabTitle: data.title})
+      } else if (model === 'chapters') {
+        scope.$store.dispatch('loadChaptersByBook', data.uuid)
+        scope.CHANGE_COMPONENT({tabKey: 'chapter-listing-' + data.uuid, tabComponent: 'books-i-read-chapter-listing', tabData: data, tabTitle: this.$tc('CHAPTER', 2) + ' - ' + data.title})
+      } else if (model === 'scenes') {
+        scope.$store.dispatch('loadScenesByBook', data.uuid)
+        scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + data.uuid, tabComponent: 'books-i-read-scene-listing', tabData: data, tabTitle: this.$tc('OTHER_SCENES', 2) + ' - ' + data.title})
+      }
+    },
     TOGGLE_TREE: function (model, index, isOpen, data) {
       var scope = this
       scope.$store.dispatch('toggleTree', { model: model, index: index })

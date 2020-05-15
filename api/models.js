@@ -17,6 +17,7 @@ const { Scene } = require(path.join(__dirname, 'models/Scene'))
 const { Character } = require(path.join(__dirname, 'models/Character'))
 const { Item } = require(path.join(__dirname, 'models/Item'))
 const { Location } = require(path.join(__dirname, 'models/Location'))
+const { Reader } = require(path.join(__dirname, 'models/Reader'))
 const { BookGenreCollection } = require(path.join(__dirname, 'models/BookGenreCollection'))
 const { ChapterVersion } = require(path.join(__dirname, 'models/ChapterVersion'))
 const { SceneVersion } = require(path.join(__dirname, 'models/SceneVersion'))
@@ -39,6 +40,7 @@ module.exports = {
   Book,
   Item,
   Location,
+  Reader,
   BookGenreCollection,
   Chapter,
   ChapterVersion,

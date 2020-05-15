@@ -3,12 +3,20 @@
         <div class="header">
             <img src="@/assets/img/EasyWrite Logo White.png">
         </div>
-        <div class="search-box">
+        <div style="display:none;"  class="search-box">
             <input type="text" :placeholder = " $t('SEARCH_KEYWORD')">
             <i class="las la-search icon"></i>
         </div>
+        <div class="left-sidebar-tab">
+            <div v-bind:class="{'active' : tab === 'my-books' }" @click="toggleTab('my-books')" class="tab-item">
+                MY BOOKS
+            </div>
+            <div v-bind:class="{'active' : tab === 'books-i-read' }" @click="toggleTab('books-i-read')" class="tab-item">
+                BOOKS I READ
+            </div>
+        </div>
         <div class="es-tree-view">
-            <ul class="level-1">
+            <ul v-bind:class="{'active' : tab === 'my-books' }"  class="left-sidebar-tab-content level-1">
                 <li v-bind:class="{ 'open' : book.is_open }" v-bind:key="book.id" v-for="(book)  in books">
                     <div class="label" @click="TOGGLE_BOOK(book,'book')"><span><img src="@/assets/img/icons/book.svg"> {{ book.title || 'Untitled' }}</span></div>
                     <ul v-if="book.is_open" class="level-2">
@@ -17,6 +25,15 @@
                         <book-characters-folder :key="'tree-characters-' + book.uuid" :properties="book"></book-characters-folder>
                         <book-locations-folder :key="'tree-locations-' + book.uuid" :properties="book"></book-locations-folder>
                         <book-scenes-folder :key="'tree-scenes-' + book.uuid" :properties="book"></book-scenes-folder>
+                    </ul>
+                </li>
+            </ul>
+            <ul v-bind:class="{'active' : tab === 'books-i-read' }"  class="left-sidebar-tab-content level-1">
+                <li v-bind:class="{ 'open' : book.is_open }" v-bind:key="book.id" v-for="(book)  in books_i_read">
+                    <div class="label" @click="TOGGLE_BOOK_I_READ(book,'book')"><span><img src="@/assets/img/icons/book.svg"> {{ book.title || 'Untitled' }}</span></div>
+                    <ul v-if="book.is_open" class="level-2">
+                        <book-i-read-chapters-folder :key="'tree-chapters-' + book.uuid" :properties="book"></book-i-read-chapters-folder>
+                        <!-- <book-i-read-scenes-folder :key="'tree-scenes-' + book.uuid" :properties="book"></book-i-read-scenes-folder> -->
                     </ul>
                 </li>
             </ul>
@@ -42,6 +59,9 @@ import BookCharactersFolder from '@/components/tree/BookCharactersFolder'
 import BookLocationsFolder from '@/components/tree/BookLocationsFolder'
 import BookScenesFolder from '@/components/tree/BookScenesFolder'
 
+import BookIReadChaptersFolder from '@/components/tree/BookIReadChaptersFolder'
+import BookIReadScenesFolder from '@/components/tree/BookIReadScenesFolder'
+
 const electron = window.require('electron')
 const log = window.require('electron-log')
 const { ipcRenderer } = electron
@@ -56,6 +76,7 @@ export default {
       items: [],
       locations: [],
       other_scenes: [],
+      tab: 'my-books',
       auto_update: {
         version: '',
         downloaded_version: '',
@@ -70,12 +91,18 @@ export default {
     BookItemsFolder,
     BookCharactersFolder,
     BookLocationsFolder,
-    BookScenesFolder
+    BookScenesFolder,
+    BookIReadChaptersFolder,
+    BookIReadScenesFolder
   },
   computed: {
     books: function () {
       var authorUUID = this.$store.getters.getAuthorID
       return this.$store.getters.getBooksByAuthor(authorUUID)
+    },
+    books_i_read: function () {
+      var authorUUID = this.$store.getters.getAuthorID
+      return this.$store.getters.getBooksIReadByAuthor(authorUUID)
     }
   },
   methods: {
@@ -92,6 +119,10 @@ export default {
       var scope = this
       var isOpen = !((typeof data.is_open !== 'undefined' && data.is_open))
       scope.$set(data, 'is_open', isOpen)
+    },
+    toggleTab: function (tab) {
+      var scope = this
+      scope.tab = tab
     },
     installNewVersion: function () {
       window.swal.fire({

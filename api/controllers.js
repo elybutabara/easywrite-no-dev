@@ -7,6 +7,7 @@ const { ChapterController } = require(path.join(__dirname, 'controller/ChapterCo
 const { ChapterVersionController } = require(path.join(__dirname, 'controller/ChapterVersionController'))
 const { CharacterController } = require(path.join(__dirname, 'controller/CharacterController'))
 const { LocationController } = require(path.join(__dirname, 'controller/LocationController'))
+const { ReaderController } = require(path.join(__dirname, 'controller/ReaderController'))
 const { SceneController } = require(path.join(__dirname, 'controller/SceneController'))
 const { SceneVersionController } = require(path.join(__dirname, 'controller/SceneVersionController'))
 const { SceneItemController } = require(path.join(__dirname, 'controller/SceneItemController'))
@@ -27,6 +28,7 @@ module.exports = {
   BookController,
   ItemController,
   LocationController,
+  ReaderController,
   ChapterController,
   ChapterVersionController,
   CharacterController,

@@ -88,7 +88,7 @@ ul { margin-left:0px; list-style:none;  }
 
 .left-side-bar { position:fixed; top: 30px; left:0px; background:#293742; width:320px; height:100vh; overflow-y:auto; }
 
-.left-side-bar .header { text-align:center; height:70px; line-height:70px; border-bottom:1px solid #3c505f; padding:0px 10px; }
+.left-side-bar .header { text-align:center; height:70px; line-height:70px; padding:0px 10px; }
 .left-side-bar .header img { height:60px; }
 
 .left-side-bar .search-box { height:40px; line-height:40px; border-bottom:1px solid #3c505f; padding:0px 5px; position:relative; }
@@ -97,6 +97,12 @@ ul { margin-left:0px; list-style:none;  }
 .left-side-bar .search-box input:focus, .search-box input:active{ background:#324553; }
 .left-side-bar .search-box input::placeholder { color: #506d84; }
 
+.left-side-bar .left-sidebar-tab { cursor:pointer; height:40px; line-height:40px; display:flex; border-top: 1px solid #324451; border-bottom: 1px solid #324451; }
+.left-side-bar .left-sidebar-tab .tab-item { padding:0px 10px; text-align:center; width:50%; color: #c0d7e9; color: #618199; border-right:1px solid #324451;}
+.left-side-bar .left-sidebar-tab .tab-item.active { color: #c0d7e9; }
+
+.left-side-bar .left-sidebar-tab-content { display:none; }
+.left-side-bar .left-sidebar-tab-content.active { display:block; }
 /*
 .es-tree-view { padding:10px 5px; }
 
