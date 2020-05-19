@@ -6,7 +6,7 @@
   "author": "EayWriteDeveloper",
   "private": true,
   "scripts": {
-    "code-sign-mac": "codesign --deep --force --verbose --sign - electron.app",
+    "code-sign-mac": "codesign --deep --force --verbose --sign - node_modules/electron/dist/electron.app",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "cross-env NODE_ENV=development electron .",
     "unit": "jest --config test/unit/jest.conf.js --coverage",

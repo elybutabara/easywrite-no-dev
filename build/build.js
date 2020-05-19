@@ -15,9 +15,9 @@ const Platform = builder.Platform
 const spinner = ora('building for production...')
 const moment = require('moment')
 spinner.start()
-const certificate = require("./certificate/certificate.env")
-process.env.CSS_NAME = certificate.CSS_NAME
-process.env.CSS_KEY_PASSWORD = certificate.CSS_KEY_PASSWORD
+// const certificate = require("./certificate/certificate.env")
+// process.env.CSS_NAME = certificate.CSS_NAME
+// process.env.CSS_KEY_PASSWORD = certificate.CSS_KEY_PASSWORD
 let buildOptions = {
   "appId": "com.forfatterskolen.easywrite",
   "productName": app.name,
