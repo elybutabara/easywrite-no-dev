@@ -19,7 +19,7 @@ spinner.start()
 // process.env.CSS_NAME = certificate.CSS_NAME
 // process.env.CSS_KEY_PASSWORD = certificate.CSS_KEY_PASSWORD
 let buildOptions = {
-  "appId": "com.forfatterskolen.easywrite",
+  "appId": "es.easywrite.easywrite",
   "productName": app.name,
   "directories": {
     "output": "output/" + app.version +'-'+ moment().format('YYYY-MM-DD-hhmmss').toString()
@@ -89,6 +89,9 @@ let buildOptions = {
     "uninstallerIcon": path.resolve('build/icons/win/installer.ico'),
     "allowToChangeInstallationDirectory": false,//for release update
     "oneClick": true //for release update
+  },
+  "dmg": {
+    "title": app.name + ' ' + app.version + ' Setup',
   }
 }
 
