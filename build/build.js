@@ -15,9 +15,9 @@ const Platform = builder.Platform
 const spinner = ora('building for production...')
 const moment = require('moment')
 spinner.start()
-// const certificate = require("./certificate/certificate.env")
+const certificate = require("./certificate/certificate.env")
 // process.env.CSS_NAME = certificate.CSS_NAME
-// process.env.CSS_KEY_PASSWORD = certificate.CSS_KEY_PASSWORD
+process.env.CSC_KEY_PASSWORD = certificate.CSC_KEY_PASSWORD
 let buildOptions = {
   "appId": "es.easywrite.easywrite",
   "productName": app.name,
@@ -82,9 +82,10 @@ let buildOptions = {
       //"repo": "easywrite-v2-updater"
       "repo": "easywrite"
     }],
-    "certificateFile" : "private/easywrite-v2.pfx",
-    "verifyUpdateCodeSignature" : false,
-    "publisherName" : "easywrite-v2"
+    "certificateFile" : "build/certificate/easywrite.pfx",
+    "verifyUpdateCodeSignature" : true,
+    "certificatePassword": process.env.CSC_KEY_PASSWORD,
+    "publisherName" : "EasyWrite"
   },
   "nsis": {
     // "oneClick": false
@@ -100,7 +101,7 @@ let buildOptions = {
   },
   "afterSign": "build/scripts/notarize.js"
 }
-
+console.log(buildOptions.win)
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
   if (err) throw err
   webpack(webpackConfig, (err, stats) => {
