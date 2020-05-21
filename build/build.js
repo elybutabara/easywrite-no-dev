@@ -57,7 +57,11 @@ let buildOptions = {
       "owner": "rancorfloydz",
       "repo": "easywrite-mac"
     }],
-    "provisioningProfile": path.resolve('build/certificate/EasyWrite.provisionprofile')
+    "provisioningProfile": path.resolve('build/certificate/EasyWrite.provisionprofile'),
+    "hardenedRuntime" : true,
+    "gatekeeperAssess": false,
+    "entitlements": "build/entitlements.mac.plist",
+    "entitlementsInherit": "build/entitlements.mac.plist"
   },
   "win": {
     "target": [
@@ -92,7 +96,9 @@ let buildOptions = {
   },
   "dmg": {
     "title": app.name + ' ' + app.version + ' Setup',
-  }
+    "sign": false
+  },
+  "afterSign": "build/scripts/notarize.js"
 }
 
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
