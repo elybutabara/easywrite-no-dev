@@ -1,6 +1,7 @@
 const certificate = require("./../certificate/certificate.env")
-process.env.APPLEID = certificate.APPLEID
-process.env.APPLEIDPASS = certificate.APPLEIDPASS
+process.env.APPLE_ID = certificate.APPLE_ID
+process.env.APPLE_PASSOWRD = certificate.APPLE_PASSOWRD
+process.env.APPLE_TEAMSHORTNAME = certificate.APPLE_TEAMSHORTNAME
 const { notarize } = require('electron-notarize')
 const log = require('electron-log')
 exports.default = async function notarizing(context) {
@@ -13,11 +14,10 @@ exports.default = async function notarizing(context) {
   const options = {
     appBundleId: 'es.easywrite.easywrite',
     appPath: `${appOutDir}/${appName}.app`,
-    appleId: process.env.APPLEID,
-    appleIdPassword: process.env.APPLEIDPASS,
+    appleId: process.env.APPLE_ID,
+    appleIdPassword: process.env.APPLE_PASSOWRD,
+    ascProvider: process.env.APPLE_TEAMSHORTNAME
   }
-
-  log.info(options)
 
   return await notarize(options).catch(function (err) {
     log.error(err)

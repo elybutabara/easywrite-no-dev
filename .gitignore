@@ -28,3 +28,4 @@ private/
 *.diff
 !*api/base.db
 desktop.ini
+build/certificate/certificate.env
