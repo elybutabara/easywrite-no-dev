@@ -102,7 +102,7 @@ Vue.directive('commentbased', {
       document.getElementById(binding.commentbased_sidebar_id).remove()
     }
   },
-  inserted: function (el, binding) {
+  bind: function (el, binding) {
     console.log('binding: ', binding)
     binding.commentbased_sidebar_id = ('commentbased-sidebar-' + Math.random()).replace('.', '')
     document.body.insertAdjacentHTML('beforeend', `
@@ -113,30 +113,28 @@ Vue.directive('commentbased', {
         <a href="#" v-on:click.prevent="selected_comments_id=null"><i class="fa fa-times"></i></a>
       </div>
       <div style="height: calc(100% - 175px); background: #fff; overflow-y: scroll;">
-      <div v-for="(c, k) in comments[selected_comments_id]" class="commentbased-comment" style="border: 1px solid #f1f1f1; padding: 15px; margin-bottom: 15px;">
-        <div style="line-height: 0.8; position: relative;">
-
-          <div class="c-pop-menu-btn" style="position: absolute; top: 0; right: 5px; border: 0 solid #c0c0c0;" v-on:click.prevent="showCommentActions=showCommentActions==k?null:k">
-              <div style="text-align: right; padding: 0; font-weight: bold; cursor: pointer;">
-                  <i class="fa fa-ellipsis-h"></i>
-                  <div class="c-pop-menu" v-show="showCommentActions==k" style="display: block; background: #fff; border: 1px solid #f1f1f1; padding: 3px; border-radius: 3px; margin-top: -1px; line-height: 1.2; font-size: 12px;">
-                      <!--<div data-c-pop-menu-action="edit" style="text-align: center; color: #c0c0c0; font-weight: normal; cursor: pointer;">Edit</div>-->
-                      <div v-on:click="deleteComment(k, $event)" style="text-align: center; color: #c0c0c0; font-weight: normal; cursor: pointer;">Delete</div>
-                  </div>
-              </div>
+        <div v-for="(c, k) in comments[selected_comments_id]" v-bind:style="{'border': editingComment==k?'1px solid orange':'1px solid #f1f1f1'}" class="commentbased-comment" style="border: 1px solid #f1f1f1; padding: 15px; margin-bottom: 15px;">
+          <div style="line-height: 0.8; position: relative;">
+            <div class="c-pop-menu-btn" style="position: absolute; top: 0; right: 5px; border: 0 solid #c0c0c0;" v-on:click.prevent="showCommentActions=showCommentActions==k?null:k">
+                <div style="text-align: right; padding: 0; font-weight: bold; cursor: pointer;">
+                    <i class="fa fa-ellipsis-h"></i>
+                    <div class="c-pop-menu" v-show="showCommentActions==k" style="display: block; background: #fff; border: 1px solid #f1f1f1; padding: 3px; border-radius: 3px; margin-top: -1px; line-height: 1.2; font-size: 12px;">
+                        <div v-on:click="editComment(k, $event)" data-c-pop-menu-action="edit" style="text-align: center; color: #c0c0c0; font-weight: normal; cursor: pointer;">Edit</div>
+                        <div v-on:click="deleteComment(k, $event)" style="text-align: center; color: #c0c0c0; font-weight: normal; cursor: pointer;">Delete</div>
+                    </div>
+                </div>
+            </div>
+            <span style="font-size: 11px; font-weight: bold;"> {{ c.user_name }}</span>
+            <br/>
+            <span style="font-size: 11px;"> {{ displayTime(c.created_at) }}</span>
           </div>
-
-          <span style="font-size: 11px; font-weight: bold;"> {{ c.user_name }}</span>
-          <br/>
-          <span style="font-size: 11px;"> {{ displayTime(c.created_at) }}</span>
+          <div style="margin-top: 8px; color: #c0c0c0;">
+            {{ c.message }}
+          </div>
         </div>
-        <div style="margin-top: 8px; color: #c0c0c0;">
-          {{ c.message }}
-        </div>
-      </div>
       </div>
       <div class="commentbased-comments-form" style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px;">
-        <textarea v-model="comment_message_new" style="width: 100%; border: 1px solid #f1f1f1;"></textarea>
+        <textarea v-model="comment_message_new" class="commentbased-comment-new" style="width: 100%; border: 1px solid #f1f1f1;"></textarea>
         <div style="text-align: right;">
           <button v-on:click="pushComment($event)">Submit</button>
         </div>
@@ -151,7 +149,8 @@ Vue.directive('commentbased', {
           comments: {},
           comment_message_new: '',
           author: {},
-          showCommentActions: null
+          showCommentActions: null,
+          editingComment: null
         }
         return data
       },
@@ -160,11 +159,33 @@ Vue.directive('commentbased', {
           return this.comments[this.selected_comments_id]
         }
       },
+      watch: {
+        selected_comments_id: function () {
+          var scope = this
+          this.comment_message_new = ''
+          this.editingComment = null
+          setTimeout(function () {
+            scope.focusMessage()
+          }, 10)
+        }
+      },
       methods: {
         displayTime: function (t) {
           var txt = moment(t).fromNow()
           txt = txt.replace('a few seconds ago', 'just now')
           return txt
+        },
+        focusMessage: function () {
+          var elm = document.querySelector('.commentbased-comment-new')
+          if (elm) {
+            elm.focus()
+          }
+        },
+        editComment: function (k, e) {
+          e.preventDefault()
+          this.editingComment = k
+          this.comment_message_new = this.selected_comments[k].message
+          Vue.nextTick(this.focusMessage)
         },
         deleteComment: function (k, e) {
           e.preventDefault()
@@ -200,20 +221,26 @@ Vue.directive('commentbased', {
             scope.comments[scope.selected_comments_id] = {}
           }
 
-          // push comment object
-          var k = 'c-' + new Date().getTime() + '-' + (Math.random() + '').replace('0.', '')
-
-          scope.comments[scope.selected_comments_id][k] = {
-            user_id: scope.author.id,
-            user_name: scope.author.first_name,
-            created_at: new Date().getTime(),
-            message: message
+          if (scope.editingComment) {
+            var k = scope.editingComment
+            scope.comments[scope.selected_comments_id][k].message = message
+            scope.comments[scope.selected_comments_id][k].updated_at = new Date().getTime()
+          } else {
+            // push comment object
+            var k = 'c-' + new Date().getTime() + '-' + (Math.random() + '').replace('0.', '')
+            scope.comments[scope.selected_comments_id][k] = {
+              user_id: scope.author.id,
+              user_name: scope.author.first_name,
+              created_at: new Date().getTime(),
+              message: message
+            }
           }
 
-          console.log('scope.comments', scope.comments)
+          // console.log('scope.comments', scope.comments)
 
           //
           scope.comment_message_new = ''
+          this.editingComment = null
 
           if (binding.value.onAddComment) {
             binding.value.onAddComment()
@@ -242,6 +269,7 @@ Vue.directive('commentbased', {
               if (range.toString().trim() === '') {
                 return
               }
+
               binding.vm.selected_comments_id = id
 
               var html = '<span class="commentbase-comment-highlight" style="font-weight: inherit; background: orange; color: #fff;" data-comments-id="' + id + '">' + range + '</span>'
@@ -385,6 +413,16 @@ export default {
       scope.chapter_version.change_description = scope.tempVersionDesc
       scope.chapter_version.content = this.commentbased_vm.getContent()
       scope.chapter_version.comments = this.commentbased_vm.getCommentsJSON()
+
+      /*
+      var data = Object.assign({}, scope.chapter_version, {
+        chapter_id: chapterID,
+        uuid: this.$store.getters.getChapterVersionUUID(chapterID),
+        change_description: scope.tempVersionDesc,
+        content: this.commentbased_vm.getContent(),
+        comments: this.commentbased_vm.getCommentsJSON()
+      })
+      */
 
       scope.axios
         .post('http://localhost:3000/chapter-versions/comment', scope.chapter_version)
