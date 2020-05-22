@@ -132,6 +132,22 @@ export default {
       scope.tab = tab
     },
     installNewVersion: function () {
+      const scope = this
+      let modified = scope.$store.getters.getModifiedTabs
+      if (modified.length > 0) {
+        var text = ''
+        for (let i = 0; i < modified.length; i++) {
+          let current = modified[i]
+          text += '<p style="margin:0px;">' + current.title + '</p>'
+        }
+        window.swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Unable to install new update, you have unsave changes:',
+          html: text + '<br/>'
+        })
+        return false
+      }
       window.swal.fire({
         title: 'Are you sure you want to install update?',
         text: "Please save all your work before you install. You won't be able to revert this!",
