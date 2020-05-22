@@ -30,4 +30,12 @@ router.post('/sync', async function (req, res) {
     .json(row)
 })
 
+router.post('/comment', async function (req, res) {
+  const row = await ChapterVersionController.comment(req.body)
+
+  res
+    .status(200)
+    .json(row)
+})
+
 module.exports = router

@@ -43,6 +43,22 @@ export default {
         return ''
       }
     },
+    getChapterComments: state => (chapterUUID) => {
+      if (state.chapter_versions[chapterUUID] && state.chapter_versions[chapterUUID].rows.length > 0) {
+        var index = state.chapter_versions[chapterUUID].rows.length - 1
+        return state.chapter_versions[chapterUUID].rows[index].comments
+      } else {
+        return ''
+      }
+    },
+    getChapterVersionUUID: state => (chapterUUID) => {
+      if (state.chapter_versions[chapterUUID] && state.chapter_versions[chapterUUID].rows.length > 0) {
+        var index = state.chapter_versions[chapterUUID].rows.length - 1
+        return state.chapter_versions[chapterUUID].rows[index].uuid
+      } else {
+        return ''
+      }
+    },
     getChapterVersionContent: state => (chapterVersionUUID) => {
       if (state.chapter_versions[chapterVersionUUID] !== undefined && state.chapter_versions[chapterVersionUUID].rows.length > 0) {
         var index = state.chapter_versions[chapterVersionUUID].rows.length - 1
