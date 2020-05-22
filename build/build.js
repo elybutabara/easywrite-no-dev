@@ -84,8 +84,7 @@ let buildOptions = {
     }],
     "certificateFile" : "build/certificate/easywrite.pfx",
     "verifyUpdateCodeSignature" : true,
-    "certificatePassword": process.env.CSC_KEY_PASSWORD,
-    "publisherName" : "EasyWrite"
+    "certificatePassword": process.env.CSC_KEY_PASSWORD
   },
   "nsis": {
     // "oneClick": false
