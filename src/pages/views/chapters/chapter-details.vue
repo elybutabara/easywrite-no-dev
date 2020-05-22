@@ -220,14 +220,14 @@ Vue.directive('commentbased', {
           if (!scope.comments[scope.selected_comments_id]) {
             scope.comments[scope.selected_comments_id] = {}
           }
-
+          let k
           if (scope.editingComment) {
-            var k = scope.editingComment
+            k = scope.editingComment
             scope.comments[scope.selected_comments_id][k].message = message
             scope.comments[scope.selected_comments_id][k].updated_at = new Date().getTime()
           } else {
             // push comment object
-            var k = 'c-' + new Date().getTime() + '-' + (Math.random() + '').replace('0.', '')
+            k = 'c-' + new Date().getTime() + '-' + (Math.random() + '').replace('0.', '')
             scope.comments[scope.selected_comments_id][k] = {
               user_id: scope.author.id,
               user_name: scope.author.first_name,

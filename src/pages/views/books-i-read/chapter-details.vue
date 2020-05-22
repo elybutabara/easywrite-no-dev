@@ -31,7 +31,7 @@
 </div>
 </template>
 
-<<script>
+<script>
 import TinyMCE from '../../../components/TinyMCE'
 import ChapterScenes from '@/pages/views/chapters/chapter-scenes'
 import ChapterVersions from '@/pages/views/chapters/chapter-versions'
@@ -39,7 +39,7 @@ import ChapterCompareVersions from '@/pages/views/chapters/chapter-compare-versi
 import moment from 'moment'
 import Vue from 'vue'
 
-const {ipcRenderer} = window.require('electron')
+// const {ipcRenderer} = window.require('electron')
 
 Vue.directive('commentbased', {
   unbind: function (el, binding) {
@@ -170,13 +170,14 @@ Vue.directive('commentbased', {
             scope.comments[scope.selected_comments_id] = {}
           }
 
+          let k
           if (scope.editingComment) {
-            var k = scope.editingComment
+            k = scope.editingComment
             scope.comments[scope.selected_comments_id][k].message = message
             scope.comments[scope.selected_comments_id][k].updated_at = new Date().getTime()
           } else {
             // push comment object
-            var k = 'c-' + new Date().getTime() + '-' + (Math.random() + '').replace('0.', '')
+            k = 'c-' + new Date().getTime() + '-' + (Math.random() + '').replace('0.', '')
             scope.comments[scope.selected_comments_id][k] = {
               user_id: scope.author.id,
               user_name: scope.author.first_name,
