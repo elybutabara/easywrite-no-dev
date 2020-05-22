@@ -32,6 +32,9 @@ export default {
     getAuthorName: state => {
       return state.user.author.first_name
     },
+    getAuthor: state => {
+      return state.user.author
+    },
     getUserSyncedDate: state => {
       return state.user.data.synced_at
     },
