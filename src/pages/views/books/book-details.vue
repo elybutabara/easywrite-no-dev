@@ -7,7 +7,14 @@
                 <small>{{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
             </div>
             <div class="actions">
-                <button class="es-button-white" @click="exportBook()">{{export_book}}</button>
+<!--                <button class="es-button-white" id="export-book" @click="exportBook()" :disabled="exportBookDisable">{{export_book}}</button>-->
+                <b-button class="es-button-white" :disabled="exportOnProgress"  @click="exportBook()">
+                  <div v-if="exportOnProgress === false"><span>{{export_book}}</span></div>
+                  <div v-else>
+                    <b-spinner small type="grow"></b-spinner>
+                    <span>{{exportLoading}}</span>
+                  </div>
+                </b-button>
                 <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'storyboard-' + page.data.uuid, tabComponent: 'storyboard',  tabData: page.data, tabTitle: 'Story Board - ' + properties.title, newTab: true})">Story Board</button>
                 <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: $t('EDIT') + ' - ' + properties.title, newTab: true})">{{ $t('EDIT') }}</button>
                 <button class="es-button-red" @click="deleteBook()">{{ $t('DELETE') }}</button>
@@ -36,7 +43,9 @@ export default {
         title: '',
         data: null
       },
-      export_book: this.$t('EXPORT_BOOK').toUpperCase()
+      export_book: this.$t('EXPORT_BOOK').toUpperCase(),
+      exportOnProgress: false,
+      exportLoading: this.$t('Loading')
     }
   },
   computed: {
@@ -86,6 +95,7 @@ export default {
 
     exportBook: function () {
       const scope = this
+      scope.exportOnProgress = true
       scope.export_book = scope.$t('LOADING').toUpperCase() + '....'
 
       let book = scope.properties
@@ -93,6 +103,7 @@ export default {
       ipcRenderer.send('EXPORT-DOCX-SHOW-BOOK-WINDOW', book)
 
       ipcRenderer.on('CHANGE-EXPORT-BOOK-BUTTON-NAME', function (event, data) {
+        scope.exportOnProgress = false
         scope.export_book = scope.$t('EXPORT_BOOK').toUpperCase()
       })
     }

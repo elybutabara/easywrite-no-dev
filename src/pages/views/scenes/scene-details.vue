@@ -44,7 +44,16 @@
             <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-scene-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
         </div>
         <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">
-            <div class="export-content"><button class="es-button-white" @click="exportContent()">{{$t('EXPORT_CONTENT')}}</button></div>
+            <div class="export-content">
+<!--              <button class="es-button-white" @click="exportContent()">{{$t('EXPORT_CONTENT')}}</button>-->
+              <b-button class="es-button-white" :disabled="exportOnProgress"  @click="exportContent()">
+                <div v-if="exportOnProgress === false"><span>{{$t('EXPORT_CONTENT')}}</span></div>
+                <div v-else>
+                  <b-spinner small type="grow"></b-spinner>
+                  <span>{{exportLoading}}</span>
+                </div>
+              </b-button>
+            </div>
             <div v-html="getSceneContent" class="description" ></div>
         </div>
         <div v-if="tab.active === 'locations'"  class="es-scene-details-tab-content no-padding">
@@ -132,7 +141,9 @@ export default {
         active: 'content'
       },
       busy: false,
-      tempVersionDesc: ''
+      tempVersionDesc: '',
+      exportOnProgress: false,
+      exportLoading: this.$t('Loading')
     }
   },
   components: {
@@ -260,12 +271,16 @@ export default {
     },
     exportContent: function () {
       var scope = this
+      scope.exportOnProgress = true
       ipcRenderer.send('EXPORT-CONTENT-DOCX', {content: scope.getSceneContent, defaultfilename: scope.properties.scene.title + ' - ' + this.$t('CONTENT')})
     }
   },
   mounted () {
     var scope = this
     scope.initializeData()
+    ipcRenderer.on('EXPORT_DOCX_ENABLE_BUTTON', function () {
+      scope.exportOnProgress = false
+    })
   }
 }
 </script>

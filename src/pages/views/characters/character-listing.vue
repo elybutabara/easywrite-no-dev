@@ -9,11 +9,13 @@
                 </div>
                 <div class="actions">
                   <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form', tabData: { list_index: -1, book: book, character: null }, tabTitle: $t('NEW_CHARACTER'), newTab: true})">{{$t('NEW_CHARACTER').toUpperCase()}}</button>
-                  <button v-if="exportOnProgress === false"  class="es-button-white" @click="exportCharacter()">{{$t('EXPORT_CHARACTERS_LIST').toUpperCase()}}</button>
-                    <b-button  v-if="exportOnProgress === true" disabled class="es-button-white">
+                  <b-button :disabled="exportOnProgress" class="es-button-white" @click="exportCharacter()">
+                    <div v-if="exportOnProgress===false"><span>{{$t('EXPORT_CHARACTERS_LIST').toUpperCase()}}</span></div>
+                    <div v-else>
                       <b-spinner small type="grow"></b-spinner>
                       <span>{{exportLoading}}</span>
-                    </b-button>
+                    </div>
+                  </b-button>
                 </div>
             </div>
         </div>
