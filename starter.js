@@ -113,6 +113,11 @@ function createWindow () {
   ipcMain.on('SET_TITLE', function (e, title) {
     mainWindow.webContents.send('SET_MAIN_MENU_TITLE', title + ' - ' + app.name)
   })
+
+  ipcMain.on('FORCE_QUIT', function (event, args) {
+    mainWindow.webContents.send('ENABLE_FORCE_QUIT')
+    mainWindow.close()
+  })
 }
 
 // This method will be called when Electron has finished
