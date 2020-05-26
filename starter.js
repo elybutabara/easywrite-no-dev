@@ -25,10 +25,13 @@ const menu = require('./menu')
 const exportdocx = require('./starter-extensions/export-reports/docx/export-docx')
 const exportPdf = require('./starter-extensions/export-reports/pdf/export-pdf')
 
-//disable unwanted Emoji and Dictation in Menu before calling app event
 if(process.platform == "darwin"){
+  //disable unwanted Emoji and Dictation in Menu before calling app event
   systemPreferences.setUserDefault('NSDisabledDictationMenuItem', 'boolean', true)
   systemPreferences.setUserDefault('NSDisabledCharacterPaletteMenuItem', 'boolean', true)
+
+  // disable some electron-vue flickers : e.g electron-vue button loading
+  app.disableHardwareAcceleration()
 }
 
 // Keep a global reference of the window object, if you don't, the window will
