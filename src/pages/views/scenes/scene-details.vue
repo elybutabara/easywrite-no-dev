@@ -54,7 +54,7 @@
                 </div>
               </b-button>
             </div>
-            <div v-html="getSceneContent" class="description" ></div>
+            <div v-html="getSceneContent" v-commentbase="commentbase_params" class="description" ></div>
         </div>
         <div v-if="tab.active === 'locations'"  class="es-scene-details-tab-content no-padding">
             <scene-locations :properties="{ book: book, scene: page.data.scene }"></scene-locations>
@@ -120,12 +120,18 @@ import SceneCharacters from '@/pages/views/scenes/scene-characters'
 import SceneVersions from '@/pages/views/scenes/scene-versions'
 import SceneCompareVersions from '@/pages/views/scenes/scene-compare-versions'
 
+import CommentBase from '../../../components/CommentBase'
+
 const {ipcRenderer} = window.require('electron')
 
 export default {
   name: 'scene-details',
   props: ['properties'],
+  directives: {
+    commentbase: CommentBase
+  },
   data: function () {
+    var scope = this
     return {
       scene_version: {
         book_scene_id: null,
@@ -142,6 +148,16 @@ export default {
       },
       busy: false,
       tempVersionDesc: '',
+      commentbase_params: {
+        onMounted: (vm) => {
+          scope.commentbase_vm = vm
+          vm.setAuthor(this.getAuthor)
+          vm.setCommentsJSON(this.comments)
+        },
+        onAddComment: function () {
+          scope.saveComments()
+        }
+      },
       exportOnProgress: false,
       exportLoading: this.$t('Loading')
     }
@@ -168,6 +184,16 @@ export default {
       var scope = this
       var sceneID = scope.page.data.scene.uuid
       return this.$store.getters.getSceneContent(sceneID)
+    },
+    comments: function () {
+      // return '{}'
+      var scope = this
+      var sceneID = scope.page.data.scene.uuid
+      return this.$store.getters.getSceneComments(sceneID)
+    },
+    getAuthor: function () {
+      var scope = this
+      return scope.$store.getters.getAuthor
     }
   },
   methods: {
@@ -218,6 +244,30 @@ export default {
           }
         })
     },
+
+    // todo
+    saveComments () {
+      var scope = this
+
+      var sceneID = scope.page.data.scene.uuid
+      scope.scene_version.uuid = this.$store.getters.getSceneVersionUUID(sceneID)
+      scope.scene_version.change_description = scope.tempVersionDesc
+      scope.scene_version.content = this.commentbase_vm.getContent()
+      scope.scene_version.comments = this.commentbase_vm.getCommentsJSON()
+      scope.scene_version.book_scene_id = sceneID
+
+      scope.axios
+        .post('http://localhost:3000/scene-versions/comment', scope.scene_version)
+        .then(response => {
+          if (response.data) {
+            // TODO: Insert vuex code that will refresh the chapter version
+            scope.tab.active = 'content'
+            this.busy = false
+            // scope.$store.dispatch('updateSceneVersionList', { uuid: response.data.book_scene_id })
+          }
+        })
+    },
+
     initializeData: function () {
       var scope = this
       scope.page.data = scope.properties

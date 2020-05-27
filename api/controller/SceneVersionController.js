@@ -22,6 +22,13 @@ class SceneVersionController {
     return sceneVersion
   }
 
+  static async comment (data) {
+    const sceneVersion = await SceneVersion.query().upsertGraphAndFetch([data]).first()
+    console.log(data)
+
+    return sceneVersion
+  }
+
   static async getSyncable (userId) {
     const user = await User.query()
       .findById(userId)
