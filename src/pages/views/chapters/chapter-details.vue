@@ -30,7 +30,7 @@
         </div>
         <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
             <div class="export-content"><button class="es-button-white" @click="exportContent()">{{$t('EXPORT_CONTENT')}}</button></div>
-            <div v-html="getChapterContent" class="description" v-commentbased="commentbased_params"></div>
+            <div v-html="getChapterContent" class="description" v-commentbase="commentbase_params"></div>
         </div>
         <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
             <chapter-scenes :properties="{ book: book, chapter: chapter }"></chapter-scenes>
@@ -90,210 +90,16 @@ import ChapterCompareVersions from '@/pages/views/chapters/chapter-compare-versi
 import moment from 'moment'
 import Vue from 'vue'
 
+import CommentBase from '../../../components/CommentBase'
+
 const {ipcRenderer} = window.require('electron')
-
-Vue.directive('commentbased', {
-  unbind: function (el, binding) {
-    console.log('binding: ', binding)
-    if (binding.vm && binding.vm.$destroy) {
-      binding.vm.$destroy()
-    }
-    if (document.getElementById(binding.commentbased_sidebar_id)) {
-      document.getElementById(binding.commentbased_sidebar_id).remove()
-    }
-  },
-  bind: function (el, binding) {
-    console.log('binding: ', binding)
-    binding.commentbased_sidebar_id = ('commentbased-sidebar-' + Math.random()).replace('.', '')
-    document.body.insertAdjacentHTML('beforeend', `
-    <div v-if="selected_comments_id !== null" id="` + binding.commentbased_sidebar_id + `" class="commentbased-comments" style="position: fixed; top: 0; right: 0; width: 300px; height: 100%; background: #fff; border-left: 1px solid #f1f1f1; padding: 5px 15px; margin: 0;">
-      <br/>
-      <br/>
-      <div class="commentbased-comments-header" style="text-align: right;">
-        <a href="#" v-on:click.prevent="selected_comments_id=null"><i class="fa fa-times"></i></a>
-      </div>
-      <div style="height: calc(100% - 175px); background: #fff; overflow-y: scroll;">
-        <div v-for="(c, k) in comments[selected_comments_id]" v-bind:style="{'border': editingComment==k?'1px solid orange':'1px solid #f1f1f1'}" class="commentbased-comment" style="border: 1px solid #f1f1f1; padding: 15px; margin-bottom: 15px;">
-          <div style="line-height: 0.8; position: relative;">
-            <div class="c-pop-menu-btn" style="position: absolute; top: 0; right: 5px; border: 0 solid #c0c0c0;" v-on:click.prevent="showCommentActions=showCommentActions==k?null:k">
-                <div style="text-align: right; padding: 0; font-weight: bold; cursor: pointer;">
-                    <i class="fa fa-ellipsis-h"></i>
-                    <div class="c-pop-menu" v-show="showCommentActions==k" style="display: block; background: #fff; border: 1px solid #f1f1f1; padding: 3px; border-radius: 3px; margin-top: -1px; line-height: 1.2; font-size: 12px;">
-                        <div v-on:click="editComment(k, $event)" data-c-pop-menu-action="edit" style="text-align: center; color: #c0c0c0; font-weight: normal; cursor: pointer;">Edit</div>
-                        <div v-on:click="deleteComment(k, $event)" style="text-align: center; color: #c0c0c0; font-weight: normal; cursor: pointer;">Delete</div>
-                    </div>
-                </div>
-            </div>
-            <span style="font-size: 11px; font-weight: bold;"> {{ c.user_name }}</span>
-            <br/>
-            <span style="font-size: 11px;"> {{ displayTime(c.created_at) }}</span>
-          </div>
-          <div style="margin-top: 8px; color: #c0c0c0;">
-            {{ c.message }}
-          </div>
-        </div>
-      </div>
-      <div class="commentbased-comments-form" style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px;">
-        <textarea v-model="comment_message_new" class="commentbased-comment-new" style="width: 100%; border: 1px solid #f1f1f1;"></textarea>
-        <div style="text-align: right;">
-          <button v-on:click="pushComment($event)">Submit</button>
-        </div>
-      </div>
-    </div>`)
-
-    binding.vm = new Vue({
-      el: '#' + binding.commentbased_sidebar_id,
-      data: function () {
-        var data = {
-          selected_comments_id: null,
-          comments: {},
-          comment_message_new: '',
-          author: {},
-          showCommentActions: null,
-          editingComment: null
-        }
-        return data
-      },
-      computed: {
-        selected_comments: function () {
-          return this.comments[this.selected_comments_id]
-        }
-      },
-      watch: {
-        selected_comments_id: function () {
-          var scope = this
-          this.comment_message_new = ''
-          this.editingComment = null
-          setTimeout(function () {
-            scope.focusMessage()
-          }, 10)
-        }
-      },
-      methods: {
-        displayTime: function (t) {
-          var txt = moment(t).fromNow()
-          txt = txt.replace('a few seconds ago', 'just now')
-          return txt
-        },
-        focusMessage: function () {
-          var elm = document.querySelector('.commentbased-comment-new')
-          if (elm) {
-            elm.focus()
-          }
-        },
-        editComment: function (k, e) {
-          e.preventDefault()
-          this.editingComment = k
-          this.comment_message_new = this.selected_comments[k].message
-          Vue.nextTick(this.focusMessage)
-        },
-        deleteComment: function (k, e) {
-          e.preventDefault()
-          delete this.comments[this.selected_comments_id][k]
-          binding.value.onAddComment()
-        },
-        setAuthor: function (author) {
-          this.author = author
-        },
-        setCommentsJSON: function (commentsJson) {
-          var c = JSON.parse(commentsJson || '{}')
-          this.comments = c
-        },
-        getCommentsJSON: function () {
-          return JSON.stringify(this.comments)
-        },
-        getContent: function () {
-          return el.innerHTML
-        },
-        pushComment: function (e) {
-          e.preventDefault()
-          var scope = this
-
-          var message = scope.comment_message_new
-
-          //
-          if (message === '') {
-            return
-          }
-
-          // initialize comment array
-          if (!scope.comments[scope.selected_comments_id]) {
-            scope.comments[scope.selected_comments_id] = {}
-          }
-
-          if (scope.editingComment) {
-            var k = scope.editingComment
-            scope.comments[scope.selected_comments_id][k].message = message
-            scope.comments[scope.selected_comments_id][k].updated_at = new Date().getTime()
-          } else {
-            // push comment object
-            var k = 'c-' + new Date().getTime() + '-' + (Math.random() + '').replace('0.', '')
-            scope.comments[scope.selected_comments_id][k] = {
-              user_id: scope.author.id,
-              user_name: scope.author.first_name,
-              created_at: new Date().getTime(),
-              message: message
-            }
-          }
-
-          // console.log('scope.comments', scope.comments)
-
-          //
-          scope.comment_message_new = ''
-          this.editingComment = null
-
-          if (binding.value.onAddComment) {
-            binding.value.onAddComment()
-          }
-        }
-      },
-      mounted: function () {
-        if (binding.value && binding.value.onMounted) {
-          binding.value.onMounted(this)
-        }
-
-        el.addEventListener('mouseup', function (e) {
-          binding.vm.selected_comments_id = null
-          if (e.target && e.target.matches('.commentbase-comment-highlight')) {
-            binding.vm.selected_comments_id = e.target.dataset.commentsId
-            return
-          }
-          var sel, range
-          var id = ('comments-' + Math.random()).replace('.', '')
-
-          if (window.getSelection) {
-            sel = window.getSelection()
-            if (sel.getRangeAt && sel.rangeCount) {
-              range = window.getSelection().getRangeAt(0)
-
-              if (range.toString().trim() === '') {
-                return
-              }
-
-              binding.vm.selected_comments_id = id
-
-              var html = '<span class="commentbase-comment-highlight" style="font-weight: inherit; background: orange; color: #fff;" data-comments-id="' + id + '">' + range + '</span>'
-              range.deleteContents()
-
-              var el = document.createElement('div')
-              el.innerHTML = html
-              var frag = document.createDocumentFragment()
-              var node
-              while ((node = el.firstChild)) {
-                frag.appendChild(node)
-              }
-              range.insertNode(frag)
-            }
-          }
-        })
-      }
-    })
-  }
-})
 
 export default {
   name: 'chapter-details',
   props: ['properties'],
+  directives: {
+    commentbase: CommentBase
+  },
   data: function () {
     var scope = this
     return {
@@ -312,9 +118,9 @@ export default {
       },
       busy: false,
       tempVersionDesc: '',
-      commentbased_params: {
+      commentbase_params: {
         onMounted: (vm) => {
-          scope.commentbased_vm = vm
+          scope.commentbase_vm = vm
           vm.setAuthor(this.getAuthor)
           vm.setCommentsJSON(this.comments)
         },
@@ -411,18 +217,8 @@ export default {
       scope.chapter_version.chapter_id = chapterID
       scope.chapter_version.uuid = this.$store.getters.getChapterVersionUUID(chapterID)
       scope.chapter_version.change_description = scope.tempVersionDesc
-      scope.chapter_version.content = this.commentbased_vm.getContent()
-      scope.chapter_version.comments = this.commentbased_vm.getCommentsJSON()
-
-      /*
-      var data = Object.assign({}, scope.chapter_version, {
-        chapter_id: chapterID,
-        uuid: this.$store.getters.getChapterVersionUUID(chapterID),
-        change_description: scope.tempVersionDesc,
-        content: this.commentbased_vm.getContent(),
-        comments: this.commentbased_vm.getCommentsJSON()
-      })
-      */
+      scope.chapter_version.content = this.commentbase_vm.getContent()
+      scope.chapter_version.comments = this.commentbase_vm.getCommentsJSON()
 
       scope.axios
         .post('http://localhost:3000/chapter-versions/comment', scope.chapter_version)
@@ -430,19 +226,8 @@ export default {
           if (response.data) {
             // TODO: Insert vuex code that will refresh the chapter version
             scope.tab.active = 'content'
-            scope.$store.dispatch('loadVersionsByChapter', scope.page.data.chapter.uuid)
+            // scope.$store.dispatch('loadVersionsByChapter', scope.page.data.chapter.uuid)
             this.busy = false
-            /*
-            window.swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: this.$t('CHAPTER') + ' ' + this.$t('VERSION') + ' ' + this.$t('SUCCESSFULY_SAVED'),
-              showConfirmButton: false,
-              timer: 1500
-            }).then(() => {
-              scope.tab.active = 'content'
-            })
-            */
           }
         })
     },

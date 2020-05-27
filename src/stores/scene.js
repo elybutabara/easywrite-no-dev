@@ -56,9 +56,25 @@ export default {
       return []
     },
     getSceneContent: state => (sceneUUID) => {
-      if (state.scene_versions[sceneUUID] !== 'undefined' && state.scene_versions[sceneUUID].rows.length > 0) {
+      if (state.scene_versions[sceneUUID] && state.scene_versions[sceneUUID].rows.length > 0) {
         var index = state.scene_versions[sceneUUID].rows.length - 1
         return state.scene_versions[sceneUUID].rows[index].content
+      } else {
+        return ''
+      }
+    },
+    getSceneComments: state => (sceneUUID) => {
+      if (state.scene_versions[sceneUUID] && state.scene_versions[sceneUUID].rows.length > 0) {
+        var index = state.scene_versions[sceneUUID].rows.length - 1
+        return state.scene_versions[sceneUUID].rows[index].comments
+      } else {
+        return ''
+      }
+    },
+    getSceneVersionUUID: state => (sceneUUID) => {
+      if (state.scene_versions[sceneUUID] !== 'undefined' && state.scene_versions[sceneUUID].rows.length > 0) {
+        var index = state.scene_versions[sceneUUID].rows.length - 1
+        return state.scene_versions[sceneUUID].rows[index].uuid
       } else {
         return ''
       }

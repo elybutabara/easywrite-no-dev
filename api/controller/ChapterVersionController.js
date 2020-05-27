@@ -18,11 +18,11 @@ class ChapterVersionController {
 
     return chapterVersion
   }
-  
+
   static async comment (data) {
     const chapterVersion = await ChapterVersion.query().upsertGraphAndFetch([data]).first()
     console.log(data)
-        
+
     return chapterVersion
   }
 
