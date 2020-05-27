@@ -111,7 +111,7 @@
                                                     <em class="float-right"><span>{{ history.created_at }}</span></em>
                                                 </div>
                                                 <div class="clearfix"></div>
-                                                <div v-html="history.content" class="ellipsis-2"></div>
+                                                <div v-html="REMOVE_HTML(history.content)" class="ellipsis-2"></div>
                                             </div>
                                         </div>
                                     </div>
