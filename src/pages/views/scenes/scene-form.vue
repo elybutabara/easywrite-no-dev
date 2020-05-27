@@ -782,6 +782,7 @@ export default {
         scope.data.scene_version.id = version.id
         scope.data.scene_version.uuid = version.uuid
         scope.data.scene_version.content = version.content
+        scope.data.scene_version.change_description = version.change_description
 
         scope.tempSceneVersionContent = version.content
         scope.tempSceneNotes = scene.notes

@@ -409,6 +409,7 @@ export default {
         scope.data.chapter_version.id = version.id
         scope.data.chapter_version.uuid = version.uuid
         scope.data.chapter_version.content = version.content
+        scope.data.chapter_version.change_description = version.change_description
         scope.tempChapterVersionCont = version.content
 
         scope.baseContentCount = scope.WORD_COUNT(scope.tempChapterVersionCont)
