@@ -254,14 +254,13 @@ export default {
       setTimeout(function () {
         scope.allCharacterFromBook = scope.$store.getters.getCharactersByBook(scope.bookUUID)
         scope.chapters = scope.$store.getters.getChaptersByBook(scope.bookUUID)
-        scope.page.is_ready = true
-      }, 500)
-
-      setTimeout(function () {
-        let pdf = {
-          name: scope.bookTitle + ' - ' + scope.$tc('SCENE', 2)
-        }
-        ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
+        setTimeout(function () {
+          scope.page.is_ready = true
+          let pdf = {
+            name: scope.bookTitle + ' - ' + scope.$tc('SCENE', 2)
+          }
+          ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
+        }, 500)
       }, 500)
     })
 

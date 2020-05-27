@@ -156,6 +156,10 @@ export default {
           character.relations = relation
           scope.characters.push(character)
           scope.page.is_ready = true
+          let pdf = {
+            name: scope.bookTitle + ' - ' + scope.$tc('CHARACTER', 2)
+          }
+          ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
         }, 550)
       })
     }
@@ -171,13 +175,6 @@ export default {
       setTimeout(function () {
         scope.viewCharacters()
       }, 550)
-
-      setTimeout(function () {
-        let pdf = {
-          name: scope.bookTitle + ' - ' + scope.$tc('CHARACTER', 2)
-        }
-        ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
-      })
     })
 
     // ipcRenderer.on('EXPORT_PDF_SHOW_BUTTON', function (event, data) {

@@ -100,7 +100,7 @@ let buildOptions = {
   },
   "afterSign": "build/scripts/notarize.js"
 }
-console.log(buildOptions.win)
+
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
   if (err) throw err
   webpack(webpackConfig, (err, stats) => {
