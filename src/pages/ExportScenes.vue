@@ -261,7 +261,7 @@ export default {
           }
           ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
         }, 500)
-      }, 500)
+      }, 1000)
     })
 
     // ipcRenderer.on('EXPORT_PDF_SHOW_BUTTON', function (event, data) {
