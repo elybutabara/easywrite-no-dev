@@ -15,6 +15,21 @@ class ChapterController {
     return chapters
   }
 
+  static getAllByBookIdLatestChapterVersion (param) {
+    var chapters = Chapter.query()
+      .where('book_id', param.bookId)
+      .where('title', 'like', '%' + param.search + '%')
+      .withGraphJoined('chapter_version', {maxBatchSize: 1})
+      .modifyGraph('chapter_version', builder => {
+        builder.whereNull('deleted_at')
+        builder.orderBy('id')
+      })
+      .whereNull('book_chapters.deleted_at')
+      .orderBy('order')
+
+    return chapters
+  }
+
   static getChapterById (chapterId) {
     const chapter = Chapter.query().findById(chapterId)
       .withGraphJoined('chapter_version', {maxBatchSize: 1})

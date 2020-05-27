@@ -132,14 +132,30 @@ export default {
       scope.tab = tab
     },
     installNewVersion: function () {
+      const scope = this
+      let modified = scope.$store.getters.getModifiedTabs
+      if (modified.length > 0) {
+        var text = ''
+        for (let i = 0; i < modified.length; i++) {
+          let current = modified[i]
+          text += '<p style="margin:0px;">' + current.title + '</p>'
+        }
+        window.swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: this.$tc('Unable to install new update, you have unsaved changes'),
+          html: text + '<br/>'
+        })
+        return false
+      }
       window.swal.fire({
-        title: 'Are you sure you want to install update?',
-        text: "Please save all your work before you install. You won't be able to revert this!",
+        title: this.$tc('Are you sure you want to install update?'),
+        text: this.$tc('Please save all your work before you install') + this.$tc("You won't be able to revert this!"),
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Restart and Install'
+        confirmButtonText: this.$tc('Restart and Install')
       }).then((result) => {
         if (result.value) {
           log.info('Quit and install update triggered')

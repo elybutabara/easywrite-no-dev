@@ -8,11 +8,13 @@
             </div>
             <div class="actions">
               <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
-              <button v-if="exportOnProgress === false" class="es-button-white" @click="exportScenes(book.uuid)">{{$t('EXPORT_SCENES_LIST').toUpperCase()}}</button>
-                <b-button  v-if="exportOnProgress === true" disabled class="es-button-white">
+              <b-button class="es-button-white" :disabled="exportOnProgress"  @click="exportScenes(book.uuid)">
+                  <div v-if="exportOnProgress === false"><span>{{$t('EXPORT_SCENES_LIST').toUpperCase()}}</span></div>
+                  <div v-else>
                     <b-spinner small type="grow"></b-spinner>
                     <span>{{exportLoading}}</span>
-                </b-button>
+                  </div>
+              </b-button>
             </div>
         </div>
     </div>

@@ -29,7 +29,16 @@
             <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-chapter-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
         </div>
         <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
-            <div class="export-content"><button class="es-button-white" @click="exportContent()">{{$t('EXPORT_CONTENT')}}</button></div>
+<!--            <div class="export-content"><button class="es-button-white" @click="exportContent()">{{$t('EXPORT_CONTENT')}}</button></div>-->
+            <div class="export-content">
+              <b-button class="es-button-white" :disabled="exportOnProgress"  @click="exportContent()">
+                <div v-if="exportOnProgress === false"><span>{{$t('EXPORT_CONTENT')}}</span></div>
+                <div v-else>
+                  <b-spinner small type="grow"></b-spinner>
+                  <span>{{exportLoading}}</span>
+                </div>
+              </b-button>
+            </div>
             <div v-html="getChapterContent" class="description" v-commentbase="commentbase_params"></div>
         </div>
         <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
@@ -127,7 +136,9 @@ export default {
         onAddComment: function () {
           scope.saveComments()
         }
-      }
+      },
+      exportOnProgress: false,
+      exportLoading: this.$t('Loading')
     }
   },
   components: {
@@ -265,6 +276,7 @@ export default {
     },
     exportContent: function () {
       var scope = this
+      scope.exportOnProgress = true
       ipcRenderer.send('EXPORT-CONTENT-DOCX', {content: scope.getChapterContent, defaultfilename: scope.page.title + ' - ' + this.$t('CONTENT')})
     }
   },
@@ -287,6 +299,10 @@ export default {
         scope.changeTab('content')
       })
     }, 300)
+
+    ipcRenderer.on('EXPORT_DOCX_ENABLE_BUTTON', function () {
+      scope.exportOnProgress = false
+    })
   }
 }
 

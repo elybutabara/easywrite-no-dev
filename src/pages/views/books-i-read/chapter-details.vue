@@ -22,7 +22,7 @@
             <div v-bind:class="{ 'active' : tab.active == 'scenes' }" @click="changeTab('scenes')" class="es-chapter-details-tab-item">{{$tc('SCENE', 2).toUpperCase()}}</div>
         </div>
         <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
-            <div v-html="getChapterContent" class="description"></div>
+            <div v-html="getChapterContent" class="description" v-commentbase="commentbase_params"></div>
         </div>
         <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
             <books-i-read-chapter-scenes :properties="{ book: book, chapter: chapter }"></books-i-read-chapter-scenes>
@@ -33,16 +33,24 @@
 
 <script>
 import TinyMCE from '../../../components/TinyMCE'
-import BooksIReadChapterScenes from '@/pages/views/books-i-read/chapter-scenes'
-
+import ChapterScenes from '@/pages/views/chapters/chapter-scenes'
+import ChapterVersions from '@/pages/views/chapters/chapter-versions'
+import ChapterCompareVersions from '@/pages/views/chapters/chapter-compare-versions'
 import moment from 'moment'
+import Vue from 'vue'
 
-const {ipcRenderer} = window.require('electron')
+import CommentBase from '../../../components/CommentBase'
+
+// const {ipcRenderer} = window.require('electron')
 
 export default {
-  name: 'books-i-read-chapter-details',
+  name: 'chapter-details',
   props: ['properties'],
+  directives: {
+    commentbase: CommentBase
+  },
   data: function () {
+    var scope = this
     return {
       chapter_version: {
         chapter_id: null,
@@ -58,18 +66,35 @@ export default {
         active: 'content'
       },
       busy: false,
-      tempVersionDesc: ''
+      tempVersionDesc: '',
+      commentbase_params: {
+        onMounted: (vm) => {
+          scope.commentbase_vm = vm
+          vm.setAuthor(this.getAuthor)
+          vm.setCommentsJSON(this.comments)
+        },
+        onAddComment: function () {
+          scope.saveComments()
+        }
+      }
     }
   },
   components: {
     TinyMCE,
-    BooksIReadChapterScenes
+    ChapterScenes,
+    ChapterVersions,
+    ChapterCompareVersions
   },
   computed: {
     getChapterContent: function () {
       var scope = this
       var chapterID = scope.page.data.chapter.uuid
       return this.$store.getters.getChapterContent(chapterID)
+    },
+    comments: function () {
+      var scope = this
+      var chapterID = scope.page.data.chapter.uuid
+      return this.$store.getters.getChapterComments(chapterID)
     },
     book: function () {
       return this.properties.book
@@ -81,6 +106,10 @@ export default {
       var stillUtc = moment.utc('2020-04-09 13:51:40').toDate()
       var date = moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss')
       return moment('2020-04-09 21:51:40').utc().format('YYYY-MM-DD HH:mm:ss').toString() + ' ---> ' + date
+    },
+    getAuthor: function () {
+      var scope = this
+      return scope.$store.getters.getAuthor
     }
   },
   methods: {
@@ -93,78 +122,47 @@ export default {
       var scope = this
       scope.tab.active = active
     },
-    newVersion: function () {
+    saveComments () {
       var scope = this
-      this.busy = true
+      var chapterID = scope.page.data.chapter.uuid
 
-      scope.chapter_version.change_description = ''
-      if (scope.chapter_version.id) {
-        delete (scope.chapter_version.id)
-        delete (scope.chapter_version.uuid)
-      }
-    },
-    saveNewVersion () {
-      var scope = this
-
+      scope.chapter_version.chapter_id = chapterID
+      scope.chapter_version.uuid = this.$store.getters.getChapterVersionUUID(chapterID)
       scope.chapter_version.change_description = scope.tempVersionDesc
-      scope.chapter_version.content = scope.getChapterContent
-      scope.chapter_version.chapter_id = scope.page.data.chapter.uuid
+      scope.chapter_version.content = this.commentbase_vm.getContent()
+      scope.chapter_version.comments = this.commentbase_vm.getCommentsJSON()
+
+      /*
+      var data = Object.assign({}, scope.chapter_version, {
+        chapter_id: chapterID,
+        uuid: this.$store.getters.getChapterVersionUUID(chapterID),
+        change_description: scope.tempVersionDesc,
+        content: this.commentbase_vm.getContent(),
+        comments: this.commentbase_vm.getCommentsJSON()
+      })
+      */
 
       scope.axios
-        .post('http://localhost:3000/chapter-versions', scope.chapter_version)
+        .post('http://localhost:3000/chapter-versions/comment', scope.chapter_version)
         .then(response => {
           if (response.data) {
             // TODO: Insert vuex code that will refresh the chapter version
             scope.tab.active = 'content'
             scope.$store.dispatch('loadVersionsByChapter', scope.page.data.chapter.uuid)
             this.busy = false
+            /*
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$tc('CHAPTER', 1) + ' ' + this.$tc('VERSION', 1) + ' ' + this.$t('SUCCESSFULY_SAVED'),
+              title: this.$t('CHAPTER') + ' ' + this.$t('VERSION') + ' ' + this.$t('SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              scope.tab.active = 'versions'
+              scope.tab.active = 'content'
             })
+            */
           }
         })
-    },
-    deleteChapter: function (chapter) {
-      var scope = this
-      window.swal.fire({
-        title: this.$t('ARE_YOU_SURE'),
-        text: this.$t('YOU_WONT_BE_ABLE_TO_REVERT_THIS'),
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: this.$t('YES_DELETE_IT'),
-        cancelButtonText: this.$t('CANCEL')
-      }).then((result) => {
-        if (result.value) {
-          scope.axios
-            .delete('http://localhost:3000/chapters/' + chapter.uuid)
-            .then(response => {
-              if (response.data) {
-                window.swal.fire({
-                  position: 'center',
-                  icon: 'success',
-                  title: this.$t('RECORD_SUCCESSFULY_DELETED'),
-                  showConfirmButton: false,
-                  timer: 1500
-                }).then(() => {
-                  scope.$store.dispatch('removeChapterFromList', chapter)
-                  scope.CHANGE_COMPONENT({tabKey: 'chapter-listing-' + chapter.book_id, tabComponent: 'chapter-listing', tabData: { uuid: chapter.book_id }, tabTitle: this.$tc('CHAPTER', 2) + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
-                })
-              }
-            })
-        }
-      })
-    },
-    exportContent: function () {
-      var scope = this
-      ipcRenderer.send('EXPORT-CONTENT-DOCX', {content: scope.getChapterContent, defaultfilename: scope.page.title + ' - ' + this.$t('CONTENT')})
     }
   },
   beforeUpdate () {
@@ -172,15 +170,19 @@ export default {
   },
   mounted () {
     var scope = this
+
     scope.page.data = scope.properties
     scope.page.title = scope.properties.chapter.title
-    console.log('PROPERTIES')
-    console.log(scope.properties)
+    // console.log('PROPERTIES')
+    // console.log(scope.properties)
     scope.$store.dispatch('loadScenesByChapter', scope.properties.chapter.uuid)
     scope.$store.dispatch('loadVersionsByChapter', scope.properties.chapter.uuid)
 
     setTimeout(function () {
-      scope.page.is_ready = true
+      Vue.nextTick(function () {
+        scope.page.is_ready = true
+        scope.changeTab('content')
+      })
     }, 300)
   }
 }

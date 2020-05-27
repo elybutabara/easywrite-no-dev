@@ -220,9 +220,33 @@ export default {
   methods: {
     exportBook: function () {
       var scope = this
+      scope.injectCSSBeforeExport()
       var outerhtml = document.documentElement.outerHTML
       // console.log(outerhtml)
       ipcRenderer.send('EXPORT-WORD-BOOK', {html: outerhtml, book: scope.book})
+    },
+    injectCSSBeforeExport: function () {
+      // this will get the external from this window and inject it as internal css before exporting
+      let css = []
+      let head = document.head || document.getElementsByTagName('head')[0]
+      let style = document.createElement('style')
+      for (let sheeti = 0; sheeti < document.styleSheets.length; sheeti++) {
+        let sheet = document.styleSheets[sheeti]
+        let rules = ('cssRules' in sheet) ? sheet.cssRules : sheet.rules
+        for (let rulei = 0; rulei < rules.length; rulei++) {
+          let rule = rules[rulei]
+          if ('cssText' in rule) { css.push(rule.cssText) } else { css.push(rule.selectorText + ' {\n' + rule.style.cssText + '\n}\n') }
+        }
+      }
+      head.appendChild(style)
+      style.type = 'text/css'
+      if (style.styleSheet) {
+        // This is required for IE8 and below.
+        style.styleSheet.cssText = css.join('\n')
+      } else {
+        style.appendChild(document.createTextNode(css.join('\n')))
+      }
+      return css.join('\n')
     },
     getViewPointCharacter: function (scene) {
       var scope = this

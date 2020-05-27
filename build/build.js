@@ -16,10 +16,10 @@ const spinner = ora('building for production...')
 const moment = require('moment')
 spinner.start()
 const certificate = require("./certificate/certificate.env")
-process.env.CSS_NAME = certificate.CSS_NAME
-process.env.CSS_KEY_PASSWORD = certificate.CSS_KEY_PASSWORD
+// process.env.CSS_NAME = certificate.CSS_NAME
+process.env.CSC_KEY_PASSWORD = certificate.CSC_KEY_PASSWORD
 let buildOptions = {
-  "appId": "com.forfatterskolen.easywrite",
+  "appId": "es.easywrite.easywrite",
   "productName": app.name,
   "directories": {
     "output": "output/" + app.version +'-'+ moment().format('YYYY-MM-DD-hhmmss').toString()
@@ -57,7 +57,11 @@ let buildOptions = {
       "owner": "rancorfloydz",
       "repo": "easywrite-mac"
     }],
-    "provisioningProfile": path.resolve('build/certificate/EasyWrite.provisionprofile')
+    "provisioningProfile": path.resolve('build/certificate/EasyWrite.provisionprofile'),
+    "hardenedRuntime" : true,
+    "gatekeeperAssess": false,
+    "entitlements": "build/entitlements.mac.plist",
+    "entitlementsInherit": "build/entitlements.mac.plist"
   },
   "win": {
     "target": [
@@ -78,9 +82,9 @@ let buildOptions = {
       //"repo": "easywrite-v2-updater"
       "repo": "easywrite"
     }],
-    "certificateFile" : "private/easywrite-v2.pfx",
-    "verifyUpdateCodeSignature" : false,
-    "publisherName" : "easywrite-v2"
+    "certificateFile" : "build/certificate/easywrite.pfx",
+    "verifyUpdateCodeSignature" : true,
+    "certificatePassword": process.env.CSC_KEY_PASSWORD
   },
   "nsis": {
     // "oneClick": false
@@ -89,9 +93,14 @@ let buildOptions = {
     "uninstallerIcon": path.resolve('build/icons/win/installer.ico'),
     "allowToChangeInstallationDirectory": false,//for release update
     "oneClick": true //for release update
-  }
+  },
+  "dmg": {
+    "title": app.name + ' ' + app.version + ' Setup',
+    "sign": false
+  },
+  "afterSign": "build/scripts/notarize.js"
 }
-
+console.log(buildOptions.win)
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
   if (err) throw err
   webpack(webpackConfig, (err, stats) => {

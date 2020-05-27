@@ -27,6 +27,7 @@ exports.initMainWindow = (window) => {
           }
         })
       }
+      MainWindow.webContents.send('EXPORT_DOCX_ENABLE_BUTTON')
     }).catch(() => {})
   })
 
@@ -66,6 +67,7 @@ exports.initMainWindow = (window) => {
       }
       MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
     }).catch(err => {
+      MainWindow.webContents.send('SHOW-SWAL-ERROR-EXPORTING', 'FAILED TO SAVE')
       if (ExportWindow != null) ExportWindow.close()
       log.error(err)
     })

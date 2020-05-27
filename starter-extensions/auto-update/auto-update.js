@@ -12,7 +12,8 @@ const path = require('path')
 autoUpdater.logger = null
 autoUpdater.autoInstallOnAppQuit = true
 autoUpdater.autoDownload = false
-// console.log = log.log
+let inProgress = false
+
 exports.checkAppUpdates = () => {
   global.updateInfo = {
     hasUpdate: false,
@@ -25,14 +26,22 @@ exports.checkAppUpdates = () => {
   process.env.GH_TOKEN = 'dfd1c61fcb090ecba24909875e177c5326ad449d'
 
   autoUpdater.checkForUpdates().then(() => {})
+
+  // checking update every minute
+  setInterval(function () {
+    if (!inProgress) {
+      if (process.env.NODE_ENV != 'production') return false
+      autoUpdater.checkForUpdates().then(() => {})
+    }
+  }, 1 * 60 * 1000)
 }
 
 exports.processUpdate = (window) => {
   let version
-  let inProgress = false
   let downloadedVersion
 
-  if (process.env.NODE_ENV != 'production') return false
+  if (process.env.NODE_ENV != 'production' || window.closed) return false
+
   autoUpdater.on('update-downloaded', function (data) {
     inProgress = false
     downloadedVersion = data.version
@@ -83,16 +92,8 @@ exports.processUpdate = (window) => {
   })
 
   ipcMain.on('install-update', function (e, cat) {
-    const {autoUpdater} = require('electron-updater')
     autoUpdater.quitAndInstall()
   })
-  // checking update every minute
-  setInterval(function () {
-    if (!inProgress) {
-      if (process.env.NODE_ENV != 'production') return false
-      autoUpdater.checkForUpdates().then(() => {})
-    }
-  }, 1 * 60 * 1000)
 
   function isNetworkError (errorObject) {
     return errorObject.message === 'net::ERR_INTERNET_DISCONNECTED' ||

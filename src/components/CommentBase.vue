@@ -29,7 +29,7 @@ export default {
                 <div style="text-align: right; padding: 0; font-weight: bold; cursor: pointer;">
                     <i class="fa fa-ellipsis-h"></i>
                     <div class="c-pop-menu" v-show="showCommentActions==k" style="display: block; background: #293742; border: 1px solid #293742; padding: 3px; border-radius: 3px; margin-top: -1px; line-height: 1.2; font-size: 12px;">
-                        <div v-on:click="editComment(k, $event)" data-c-pop-menu-action="edit" style="text-align: center; color: #fff; font-weight: normal; cursor: pointer;">Edit</div>
+                        <div v-on:click="editComment(k, $event)" style="text-align: center; color: #fff; font-weight: normal; cursor: pointer;">Edit</div>
                         <div v-on:click="deleteComment(k, $event)" style="text-align: center; color: #fff; font-weight: normal; cursor: pointer;">Delete</div>
                     </div>
                 </div>

@@ -93,6 +93,7 @@ import BooksIReadSceneDetails from '@/pages/views/books-i-read/scene-details'
 // const remote = electron.remote
 // const loginInfo = remote.getGlobal('loginInfo')
 const electron = window.require('electron')
+const log = window.require('electron-log')
 const {ipcRenderer} = electron
 
 export default {
@@ -108,7 +109,8 @@ export default {
         id: 0,
         data: null,
         component: 'book-listing'
-      }
+      },
+      forceQuit: false
     }
   },
   components: {
@@ -152,6 +154,39 @@ export default {
     toggleSyncer: function () {
       var scope = this
       scope.syncer.is_open = !scope.syncer.is_open
+    },
+    checkHasUnsavedTabs: function () {
+      let scope = this
+      window.onbeforeunload = (e) => {
+        let modified = scope.$store.getters.getModifiedTabs
+
+        ipcRenderer.on('ENABLE_FORCE_QUIT', function () {
+          scope.forceQuit = true
+        })
+
+        if (modified.length > 0 && scope.forceQuit === false) {
+          e.returnValue = true
+          var text = ''
+          for (let i = 0; i < modified.length; i++) {
+            let current = modified[i]
+            text += '<p style="margin:0px;">' + current.title + '</p>'
+          }
+          window.swal.fire({
+            title: this.$tc('Are you sure you want to Close EasyWrite with unsaved changes?') + '<br>' + this.$tc("You won't be able to revert this!"),
+            html: text + '<br/>',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: this.$tc('Force Quit')
+          }).then((result) => {
+            if (result.value) {
+              log.info('FORCE QUIT')
+              ipcRenderer.send('FORCE_QUIT')
+            }
+          })
+        }
+      }
     }
   },
   beforeMount () {
@@ -219,6 +254,8 @@ export default {
         text: data
       })
     })
+
+    scope.checkHasUnsavedTabs()
   }
 }
 
