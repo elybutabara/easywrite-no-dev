@@ -26,7 +26,7 @@ exports.initMainWindow = (mainWindow) => {
       let url = 'http://localhost:8080/'
       exportWindow.loadURL(url + 'dev/' + '/#/' + data.exportBy)
     } else {
-      exportWindow.loadFile(path.resolve(__dirname, '../../../dist/export.html'))
+      exportWindow.loadURL('file://' + path.resolve(__dirname, '../../../dist/export.html#' + data.exportBy))
     }
 
     exportWindow.on('closed', function () {

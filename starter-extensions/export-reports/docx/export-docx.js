@@ -32,7 +32,7 @@ exports.initMainWindow = (window) => {
   })
 
   ipcMain.on('EXPORT-DOCX-SHOW-BOOK-WINDOW', function (event, data) {
-    createExportWindowBook()
+    createExportWindowBook({exportBy: 'export-book'})
     ExportWindow.on('ready-to-show', function () {
       // ExportWindow.show()
       ExportWindow.webContents.send('EXPORT-DOCX-GET-BOOK', data)
@@ -73,7 +73,7 @@ exports.initMainWindow = (window) => {
     })
   })
 
-  function createExportWindowBook () {
+  function createExportWindowBook (data) {
     ExportWindow = new BrowserWindow({
       title: app.name + ' v' + app.getVersion(),
       icon: path.resolve('src/assets/img/easywrite-new.ico'),
@@ -97,7 +97,7 @@ exports.initMainWindow = (window) => {
       let url = 'http://localhost:8080/'
       ExportWindow.loadURL(url + 'dev/' + '/#/export-book')
     } else {
-      ExportWindow.loadFile(path.resolve(__dirname, '../../../dist/export.html'))
+      ExportWindow.loadURL('file://' + path.resolve(__dirname, '../../../dist/export.html#' + data.exportBy))
     }
 
     ExportWindow.on('closed', function () {

@@ -46,21 +46,18 @@ export default new Router({
     {
       path: '/export-characters',
       name: 'ExportCharacters',
-      beforeEnter: checkAuth,
       component: ExportCharacters,
       meta: { protected: false }
     },
     {
       path: '/export-book',
       name: 'ExportBook',
-      beforeEnter: checkAuth,
       component: ExportBook,
       meta: { protected: false }
     },
     {
       path: '/export-scenes',
       name: 'ExportScenes',
-      beforeEnter: checkAuth,
       component: ExportScenes,
       meta: { protected: false }
     }
