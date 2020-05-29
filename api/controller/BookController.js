@@ -14,7 +14,7 @@ class BookController {
       .withGraphJoined('genre')
       .where('author_id', user.author.uuid)
       .whereNull('books.deleted_at')
-      .whereNull('book_genre_collection.deleted_at')
+      // .whereNull('book_genre_collection.deleted_at')
 
     return books
   }

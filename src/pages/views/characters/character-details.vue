@@ -62,7 +62,7 @@
             </div>
         </div>
         <div class="es-panel-footer">
-            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form',  tabData: { book: book, character: properties.character }, tabTitle: $t('EDIT')+ ' - ' + properties.character.fullname, newTab: true })">{{$t('EDIT').toUpperCase()}}</div>
+            <div class="cta" @click="CHANGE_COMPONENT({tabKey: 'character-form-' + properties.character.uuid, tabComponent: 'character-form',  tabData: { book: book, character: properties.character }, tabTitle: $t('EDIT')+ ' - ' + properties.character.fullname, newTab: true })">{{$t('EDIT').toUpperCase()}}</div>
             <div class="cta" @click="deleteCharacter(properties.character)">{{$t('DELETE').toUpperCase()}}</div>
         </div>
     </div>

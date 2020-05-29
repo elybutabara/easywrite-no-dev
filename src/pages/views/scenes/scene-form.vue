@@ -316,6 +316,7 @@ export default {
         viewpoint_description: ''
       },
       // Selected nultiselect
+      current_chapter_id: null, // chapter before updating
       selected_chapter: null,
       selected_typeofscene: null,
       selected_importance: null,
@@ -653,6 +654,19 @@ export default {
                 scope.$store.dispatch('loadSceneHistory', response.data.uuid)
                 scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', response.data.uuid)
               }
+              
+              // update listing for treeviews
+              if (scope.current_chapter_id === null && scope.current_chapter_id !== response.data.chapter_id) {
+                scope.$store.dispatch('loadScenesByBook', response.data.book_id)
+                scope.$store.dispatch('loadScenesByChapter', response.data.chapter_id)
+              } else if (scope.current_chapter_id !== null && response.data.chapter_id === null ) {
+                scope.$store.dispatch('loadScenesByBook', response.data.book_id)
+                scope.$store.dispatch('loadScenesByChapter', scope.current_chapter_id)
+              } else if (scope.current_chapter_id !== null && scope.current_chapter_id !== response.data.chapter_id ) {
+                scope.$store.dispatch('loadScenesByChapter', scope.current_chapter_id)
+                scope.$store.dispatch('loadScenesByChapter', response.data.chapter_id)
+              }
+              scope.current_chapter_id = response.data.chapter_id
 
               scope.loadScene(response.data)
             })
@@ -799,7 +813,7 @@ export default {
 
         // scene history
         scope.scene_history = scope.GET_SCENE_HISTORY(scene.uuid)
-      }, 500)
+      }, 1500)
     }
   },
   beforeMount () {
@@ -812,11 +826,13 @@ export default {
 
       if (scope.properties.scene.chapter_id) {
         scope.$set(scope.data, 'chapter_id', scope.properties.scene.chapter_id)
+        scope.current_chapter_id = scope.properties.scene.chapter_id
       }
     } else if (scope.properties.chapter) {
       scope.$set(scope.data, 'book_id', scope.properties.chapter.book_id)
       scope.$set(scope.data, 'chapter_id', scope.properties.chapter.uuid)
       scope.selected_chapter = scope.properties.chapter
+      scope.current_chapter_id = scope.properties.chapter.uuid
     } else {
       scope.$set(scope.data, 'book_id', scope.properties.book.uuid)
     }
