@@ -97,7 +97,15 @@ exports.initMainWindow = (window) => {
       let url = 'http://localhost:8080/'
       ExportWindow.loadURL(url + 'dev/' + '/#/export-book')
     } else {
-      ExportWindow.loadURL('file://' + path.resolve(__dirname, '../../../dist/export.html#' + data.exportBy))
+      if (process.platform === 'darwin') {
+        /*
+        * Apply this on MAC since mac didn't get any route
+        * If you apply this on Window , it will load the route twice since it read the route and you add a export.html#route
+        * */
+        ExportWindow.loadURL('file://' + path.resolve(__dirname, '../../../dist/export.html#' + data.exportBy))
+      } else {
+        ExportWindow.loadURL('file://' + path.resolve(__dirname, '../../../dist/export.html'))
+      }
     }
 
     ExportWindow.on('closed', function () {
