@@ -33,13 +33,13 @@ exports.initMainWindow = (window) => {
   ipcMain.on('EXPORT-DOCX-SHOW-BOOK-WINDOW', function (event, data) {
     createExportWindowBook()
     ExportWindow.on('ready-to-show', function () {
-      // ExportWindow.show()
+      ExportWindow.show()
       ExportWindow.webContents.send('EXPORT-DOCX-GET-BOOK', data)
     })
   })
 
   ipcMain.on('EXPORT-WORD-BOOK', function (event, data) {
-    dialog.showSaveDialog(MainWindow, {
+    dialog.showSaveDialog(ExportWindow, {
       defaultPath: data.book.title,
       properties: ['openFile', 'openDirectory', 'showOverwriteConfirmation'],
       filters: [
@@ -47,7 +47,8 @@ exports.initMainWindow = (window) => {
       ]
     }).then(result => {
       if (result.canceled) {
-        if (ExportWindow != null) ExportWindow.close()
+        ExportWindow.webContents.send('SHOW-EXPORT-SETTINGS')
+        // if (ExportWindow != null) ExportWindow.close()
       } else {
         var HtmlDocx = require('html-docx-js')
         var fs = require('fs')
@@ -57,10 +58,12 @@ exports.initMainWindow = (window) => {
         fs.writeFile(outputFile, docx, function (err) {
           if (err) {
             MainWindow.webContents.send('SHOW-SWAL-ERROR-EXPORTING', result.filePath)
-            if (ExportWindow != null) ExportWindow.close()
+            ExportWindow.webContents.send('SHOW-EXPORT-SETTINGS')
+            // if (ExportWindow != null) ExportWindow.close()
           } else {
+            ExportWindow.close()
             MainWindow.webContents.send('SHOW-SWAL-SUCCESS-EXPORTING', result.filePath)
-            if (ExportWindow != null) ExportWindow.close()
+            // if (ExportWindow != null) ExportWindow.close()
           }
         })
       }

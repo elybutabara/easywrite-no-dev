@@ -7,7 +7,7 @@
                 <small>{{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
             </div>
             <div class="actions">
-                <button class="es-button-white" @click="exportBook()">{{export_book}}</button>
+                <button class="es-button-white" @click="exportBook()">{{ export_book }}</button>
                 <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'storyboard-' + page.data.uuid, tabComponent: 'storyboard',  tabData: page.data, tabTitle: 'Story Board - ' + properties.title, newTab: true})">Story Board</button>
                 <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: $t('EDIT') + ' - ' + properties.title, newTab: true})">{{ $t('EDIT') }}</button>
                 <button class="es-button-red" @click="deleteBook()">{{ $t('DELETE') }}</button>
@@ -86,7 +86,7 @@ export default {
 
     exportBook: function () {
       const scope = this
-      scope.export_book = scope.$t('LOADING').toUpperCase() + '....'
+      scope.export_book = scope.$t('LOADING') + '....'
 
       let book = scope.properties
 
