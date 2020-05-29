@@ -7,7 +7,6 @@
                 <small>{{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
             </div>
             <div class="actions">
-                <button class="es-button-white" id="export-book" @click="exportBook()" :disabled="exportBookDisable">{{export_book}}</button>-->
                 <b-button class="es-button-white" :disabled="exportOnProgress"  @click="exportBook()">
                   <div v-if="exportOnProgress === false"><span>{{export_book}}</span></div>
                   <div v-else>
