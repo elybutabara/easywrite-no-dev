@@ -79,7 +79,7 @@ exports.initMainWindow = (mainWindow) => {
             if (error) {
               log.error(error)
             }
-            electron.shell.openExternal('file://' + pdfPath)
+            // electron.shell.openExternal('file://' + pdfPath)
             mainWindow.webContents.send('SHOW-SWAL-SUCCESS-EXPORTING', pdfPath)
             if (exportWindow != null) exportWindow.close()
           })
