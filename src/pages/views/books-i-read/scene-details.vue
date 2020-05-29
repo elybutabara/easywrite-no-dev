@@ -34,17 +34,23 @@
             <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-scene-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
         </div>
         <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">
-            <div v-html="getSceneContent" class="description" ></div>
+            <div v-html="getSceneContent" class="description" v-commentbase="commentbase_params"></div>
         </div>
     </div>
 </div>
 </template>
 
 <script>
+import CommentBase from '../../../components/CommentBase'
+
 export default {
   name: 'books-i-read-scene-details',
   props: ['properties'],
+  directives: {
+    commentbase: CommentBase
+  },
   data: function () {
+    var scope = this
     return {
       scene_version: {
         book_scene_id: null,
@@ -60,7 +66,17 @@ export default {
         active: 'content'
       },
       busy: false,
-      tempVersionDesc: ''
+      tempVersionDesc: '',
+      commentbase_params: {
+        onMounted: (vm) => {
+          scope.commentbase_vm = vm
+          vm.setAuthor(this.getAuthor)
+          vm.setCommentsJSON(this.comments)
+        },
+        onAddComment: function () {
+          scope.saveComments()
+        }
+      }
     }
   },
   components: {
@@ -79,6 +95,16 @@ export default {
       var scope = this
       var sceneID = scope.page.data.scene.uuid
       return this.$store.getters.getSceneContent(sceneID)
+    },
+    comments: function () {
+      // return '{}'
+      var scope = this
+      var sceneID = scope.page.data.scene.uuid
+      return this.$store.getters.getSceneComments(sceneID)
+    },
+    getAuthor: function () {
+      var scope = this
+      return scope.$store.getters.getAuthor
     }
   },
   methods: {
@@ -89,6 +115,28 @@ export default {
     changeTab: function (tab) {
       var scope = this
       scope.tab.active = tab
+    },
+    // todo
+    saveComments () {
+      var scope = this
+
+      var sceneID = scope.page.data.scene.uuid
+      scope.scene_version.uuid = this.$store.getters.getSceneVersionUUID(sceneID)
+      scope.scene_version.change_description = scope.tempVersionDesc
+      scope.scene_version.content = this.commentbase_vm.getContent()
+      scope.scene_version.comments = this.commentbase_vm.getCommentsJSON()
+      scope.scene_version.book_scene_id = sceneID
+
+      scope.axios
+        .post('http://localhost:3000/scene-versions/comment', scope.scene_version)
+        .then(response => {
+          if (response.data) {
+            // TODO: Insert vuex code that will refresh the chapter version
+            scope.tab.active = 'content'
+            this.busy = false
+            // scope.$store.dispatch('updateSceneVersionList', { uuid: response.data.book_scene_id })
+          }
+        })
     },
     initializeData: function () {
       var scope = this

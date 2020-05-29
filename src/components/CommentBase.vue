@@ -18,7 +18,7 @@ export default {
     document.body.insertAdjacentHTML('beforeend', `
     <div v-if="selected_comments_id !== null" id="` + binding.commentbase_sidebar_id + `" class="commentbase-comments" style="position: fixed; bottom: 0; right: 37px; width: 300px; height: calc(100% - 337px); background: #324553; border-left: 1px solid #f1f1f1; padding: 5px 15px; margin: 0;">
       <div class="commentbase-comments-header" style="text-align: right;">
-        <a href="#" v-on:click.prevent="selected_comments_id=null"><i class="fa fa-times"></i></a>
+        <a href="#" v-on:click.prevent="close($event)"><i class="fa fa-times"></i></a>
       </div>
       <div style="height: calc(100% - 127px); background: #fff; overflow-y: auto;">
         <div v-for="(c, k) in comments[selected_comments_id]" v-bind:style="{'border': editingComment==k?'1px solid orange':'1px solid #f1f1f1'}" class="commentbase-comment" style="border: 0; border: 1px solid #f1f1f1; padding: 15px; margin-bottom: 0;">
@@ -80,6 +80,10 @@ export default {
         }
       },
       methods: {
+        close: function (e) {
+          this.checkSelectedComments(true)
+          this.selected_comments_id = null
+        },
         displayTime: function (t) {
           var txt = moment(t).fromNow()
           txt = txt.replace('a few seconds ago', 'just now')
@@ -91,20 +95,31 @@ export default {
             elm.focus()
           }
         },
-        checkSelectedComments: function () {
-          var c = 0
-          // eslint-disable-next-line no-unused-vars
-          for (var x in this.selected_comments) {
-            c++
-          }
-          console.log('this.selected_comments_target ', this.selected_comments_target)
-          if (c > 0) {
-            this.selected_comments_target.style.color = '#fff'
-            this.selected_comments_target.style.background = 'orange'
-          } else {
-            this.selected_comments_target.style.color = '#000'
-            this.selected_comments_target.style.background = 'yellow'
-          }
+        checkSelectedComments: function (removeIfEmpty) {
+          var scope = this
+          var highlightedItems = document.querySelectorAll('[data-comments-id]')
+          highlightedItems.forEach(function (item) {
+            var id = item.dataset.commentsId
+            var selectedComments = scope.comments[id]
+            var c = 0
+            // eslint-disable-next-line no-unused-vars
+            for (var x in selectedComments) {
+              c++
+            }
+            console.log('item ', item)
+            if (c > 0) {
+              item.style.color = '#fff'
+              item.style.background = 'orange'
+            } else {
+              if (removeIfEmpty === true) {
+                item.style.color = null
+                item.style.background = null
+              } else {
+                item.style.color = '#000'
+                item.style.background = 'yellow'
+              }
+            }
+          })
         },
         cancelCommentEdit: function () {
           this.editingComment = null
@@ -121,8 +136,8 @@ export default {
           delete this.comments[this.selected_comments_id][k]
           this.editingComment = null
           this.comment_message_new = ''
-          binding.value.onAddComment()
           this.checkSelectedComments()
+          binding.value.onAddComment()
         },
         setAuthor: function (author) {
           this.author = author
@@ -170,7 +185,7 @@ export default {
           }
 
           //
-          this.checkSelectedComments()
+          this.checkSelectedComments(true)
 
           //
           scope.comment_message_new = ''
@@ -193,6 +208,7 @@ export default {
           if (e.target && e.target.matches('.commentbase-comment-highlight')) {
             binding.vm.selected_comments_id = e.target.dataset.commentsId
             binding.vm.selected_comments_target = e.target
+            binding.vm.checkSelectedComments()
             return
           }
           var sel, range
@@ -221,7 +237,7 @@ export default {
               }
               range.insertNode(frag)
 
-              binding.vm.selected_comments_target = document.getElementById(id)
+              binding.vm.selected_comments_target = document.querySelector('[data-comments-id="' + id + '"]')[0]
             }
           }
         })
