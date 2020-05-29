@@ -33,7 +33,7 @@
 
 <script>
 import TinyMCE from '../../../components/TinyMCE'
-import ChapterScenes from '@/pages/views/chapters/chapter-scenes'
+import ChapterScenes from '@/pages/views/books-i-read/chapter-scenes'
 import ChapterVersions from '@/pages/views/chapters/chapter-versions'
 import ChapterCompareVersions from '@/pages/views/chapters/chapter-compare-versions'
 import moment from 'moment'
@@ -44,7 +44,7 @@ import CommentBase from '../../../components/CommentBase'
 // const {ipcRenderer} = window.require('electron')
 
 export default {
-  name: 'chapter-details',
+  name: 'books-i-read-chapter-details',
   props: ['properties'],
   directives: {
     commentbase: CommentBase
@@ -81,7 +81,7 @@ export default {
   },
   components: {
     TinyMCE,
-    ChapterScenes,
+    'books-i-read-chapter-scenes': ChapterScenes,
     ChapterVersions,
     ChapterCompareVersions
   },
