@@ -26,7 +26,15 @@ exports.initMainWindow = (mainWindow) => {
       let url = 'http://localhost:8080/'
       exportWindow.loadURL(url + 'dev/' + '/#/' + data.exportBy)
     } else {
-      exportWindow.loadFile(path.resolve(__dirname, '../../../dist/export.html'))
+      if (process.platform === 'darwin') {
+        /*
+        * Apply this on MAC since mac didn't get any route
+        * If you apply this on Window , it will load the route twice since it read the route and you add a export.html#route
+        * */
+        exportWindow.loadURL('file://' + path.resolve(__dirname, '../../../dist/export.html#' + data.exportBy))
+      } else {
+        exportWindow.loadURL('file://' + path.resolve(__dirname, '../../../dist/export.html'))
+      }
     }
 
     exportWindow.on('closed', function () {
@@ -52,7 +60,7 @@ exports.initMainWindow = (mainWindow) => {
 
   ipcMain.on('EXPORT_PDF_CONFIRM_GENERATE', function (event, data) {
     let pdf = data.pdf
-    dialog.showSaveDialog(exportWindow, {
+    dialog.showSaveDialog(mainWindow, {
       defaultPath: pdf.name,
       properties: ['openFile', 'openDirectory', 'showOverwriteConfirmation'],
       filters: [
