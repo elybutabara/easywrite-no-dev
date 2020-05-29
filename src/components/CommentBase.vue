@@ -93,6 +93,7 @@ export default {
         },
         checkSelectedComments: function () {
           var c = 0
+          // eslint-disable-next-line no-unused-vars
           for (var x in this.selected_comments) {
             c++
           }
