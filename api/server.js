@@ -12,6 +12,8 @@ const fs = require('fs-extra')
 
 const path = require('path')
 
+const uuid = require('uuid')
+
 // reference: http://expressjs.com/en/5x/api.html#req.body
 const bodyParser = require('body-parser')
 const multer = require('multer') // v1.0.5
@@ -85,13 +87,16 @@ express.post(
     const allowed_ext = ['.png', '.jpg', '.jpeg']
 
     if (allowed_ext.includes(file_ext)) {
-      const newPath = path.join(targetPath, req.file.filename)
+      // eslint-disable-next-line camelcase
+      var new_file_name = uuid.v4() + file_ext
+
+      const newPath = path.join(targetPath, new_file_name)
       fs.rename(tempPath, newPath, err => {
         if (err) return handleError(err, res)
 
         res
           .status(200)
-          .send({status: 200, message: 'File uploaded!', file: {name: req.file.filename, ext: file_ext}})
+          .send({status: 200, message: 'File uploaded!', file: {name: new_file_name, ext: file_ext}})
       })
     } else {
       fs.unlink(tempPath, err => {

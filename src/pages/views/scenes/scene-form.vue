@@ -654,15 +654,15 @@ export default {
                 scope.$store.dispatch('loadSceneHistory', response.data.uuid)
                 scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', response.data.uuid)
               }
-              
+
               // update listing for treeviews
               if (scope.current_chapter_id === null && scope.current_chapter_id !== response.data.chapter_id) {
                 scope.$store.dispatch('loadScenesByBook', response.data.book_id)
                 scope.$store.dispatch('loadScenesByChapter', response.data.chapter_id)
-              } else if (scope.current_chapter_id !== null && response.data.chapter_id === null ) {
+              } else if (scope.current_chapter_id !== null && response.data.chapter_id === null) {
                 scope.$store.dispatch('loadScenesByBook', response.data.book_id)
                 scope.$store.dispatch('loadScenesByChapter', scope.current_chapter_id)
-              } else if (scope.current_chapter_id !== null && scope.current_chapter_id !== response.data.chapter_id ) {
+              } else if (scope.current_chapter_id !== null && scope.current_chapter_id !== response.data.chapter_id) {
                 scope.$store.dispatch('loadScenesByChapter', scope.current_chapter_id)
                 scope.$store.dispatch('loadScenesByChapter', response.data.chapter_id)
               }

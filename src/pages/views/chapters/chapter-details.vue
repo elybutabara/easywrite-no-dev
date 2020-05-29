@@ -324,7 +324,7 @@ export default {
     .es-chapter-details-tab .es-chapter-details-tab-item:after { content:''; position:absolute; bottom:0px; left:0px; height:3px;  width:100%; background:transparent;}
     .es-chapter-details-tab .es-chapter-details-tab-item.active:after { background:#922c39;  }
 
-    .es-chapter-details-tab-content { position:relative; padding:30px; background:#fff; height:calc(100vh - 247px); overflow-y:auto; display:block; }
+    .es-chapter-details-tab-content { position:relative; padding:30px; background:#fff; height:calc(100vh - 317px); overflow-y:auto; display:block; }
     .es-chapter-details-tab-content.no-padding { padding:0px; }
     .es-chapter-details-tab-content.active { display:block; }
 </style>

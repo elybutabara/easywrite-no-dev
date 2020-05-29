@@ -116,6 +116,12 @@
 <script>
 import moment from 'moment'
 
+var electronFs = window.require('fs')
+
+const path = window.require('path')
+
+// const FormData = window.require('form-data')
+
 export default {
   name: 'syncing',
   props: ['properties'],
@@ -309,14 +315,46 @@ export default {
       data.created_at = scope.timeConvertToUTC(data.created_at)
       data.updated_at = scope.timeConvertToUTC(data.updated_at)
 
-      scope.axios
-        .post(window.API_URL + '/' + endpoint.api + '', data,
-          {
-            'headers': {
-              'X-Requested-With': 'XMLHttpRequest',
-              'Authorization': 'Bearer ' + scope.api_token
+      var finalData = data
+      var headers = {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Authorization': 'Bearer ' + scope.api_token
+      }
+
+      if (['Items', 'Characters', 'Locations'].indexOf(endpoint.title) > -1) {
+        console.log('data <--------------------------> ', JSON.stringify(data))
+
+        var src = path.resolve('C:\\Dev\\Repos\\easywrite-v2\\resources', 'resources', 'images', endpoint.title.toLowerCase(), (data.picture || data.pictures) + '')
+        console.log('src = ', src)
+
+        if (!electronFs.existsSync(src)) {
+          console.log('local file not found: ', src)
+        } else {
+          headers['Content-Type'] = 'multipart/form-data'
+
+          var data_ = new FormData()
+
+          for (var x in data) {
+            if (data[x]) {
+              data_.append(x, data[x])
             }
+          }
+
+          data_.append('file', new Blob([electronFs.readFileSync(src)]), {
+            name: data.picture + ''
           })
+
+          finalData = data_
+
+          console.log('finalData <--------------------------> ', finalData)
+        }
+      }
+
+      scope.axios.post(window.API_URL + '/' + endpoint.api + '',
+        finalData,
+        {
+          'headers': headers
+        })
         .then(function (response) {
           // eslint-disable-next-line valid-typeof
           scope.upload.index++

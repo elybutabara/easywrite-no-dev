@@ -6,7 +6,7 @@
                 <h4>{{ properties.title }}</h4>
                 <small>{{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
             </div>
-            <div class="actions">         
+            <div class="actions">
                 <button class="es-button-white" id="export-book" @click="exportBook()" :disabled="exportBookDisable">{{export_book}}</button>-->
                 <b-button class="es-button-white" :disabled="exportOnProgress"  @click="exportBook()">
                   <div v-if="exportOnProgress === false"><span>{{export_book}}</span></div>
@@ -43,13 +43,9 @@ export default {
         title: '',
         data: null
       },
-<<<<<<< HEAD
       export_book: this.$t('EXPORT_BOOK').toUpperCase(),
       exportOnProgress: false,
       exportLoading: this.$t('Loading')
-=======
-      export_book: this.$t('EXPORT_BOOK')
->>>>>>> Export-Book-Revision
     }
   },
   computed: {
@@ -99,12 +95,8 @@ export default {
 
     exportBook: function () {
       const scope = this
-<<<<<<< HEAD
       scope.exportOnProgress = true
       scope.export_book = scope.$t('LOADING').toUpperCase() + '....'
-=======
-      scope.export_book = scope.$t('LOADING') + '....'
->>>>>>> Export-Book-Revision
 
       let book = scope.properties
 

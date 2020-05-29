@@ -296,7 +296,6 @@ export default {
         // console.log(outerhtml)
         ipcRenderer.send('EXPORT-WORD-BOOK', {html: outerhtml, book: scope.book})
       }, 200)
-
     },
     injectCSSBeforeExport: function () {
       // this will get the external from this window and inject it as internal css before exporting
