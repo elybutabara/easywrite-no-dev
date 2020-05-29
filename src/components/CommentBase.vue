@@ -16,14 +16,12 @@ export default {
     // console.log('binding: ', binding)
     binding.commentbase_sidebar_id = ('commentbase-sidebar-' + Math.random()).replace('.', '')
     document.body.insertAdjacentHTML('beforeend', `
-    <div v-if="selected_comments_id !== null" id="` + binding.commentbase_sidebar_id + `" class="commentbase-comments" style="position: fixed; top: 0; right: 0; width: 300px; height: 100%; background: #fff; border-left: 1px solid #f1f1f1; padding: 5px 15px; margin: 0;">
-      <br/>
-      <br/>
+    <div v-if="selected_comments_id !== null" id="` + binding.commentbase_sidebar_id + `" class="commentbase-comments" style="position: fixed; bottom: 0; right: 37px; width: 300px; height: calc(100% - 337px); background: #324553; border-left: 1px solid #f1f1f1; padding: 5px 15px; margin: 0;">
       <div class="commentbase-comments-header" style="text-align: right;">
         <a href="#" v-on:click.prevent="selected_comments_id=null"><i class="fa fa-times"></i></a>
       </div>
-      <div style="height: calc(100% - 175px); background: #fff; overflow-y: scroll;">
-        <div v-for="(c, k) in comments[selected_comments_id]" v-bind:style="{'border': editingComment==k?'1px solid orange':'1px solid #f1f1f1'}" class="commentbase-comment" style="border: 1px solid #f1f1f1; padding: 15px; margin-bottom: 15px;">
+      <div style="height: calc(100% - 127px); background: #fff; overflow-y: auto;">
+        <div v-for="(c, k) in comments[selected_comments_id]" v-bind:style="{'border': editingComment==k?'1px solid orange':'1px solid #f1f1f1'}" class="commentbase-comment" style="border: 0; border: 1px solid #f1f1f1; padding: 15px; margin-bottom: 0;">
           <div style="line-height: 0.8; position: relative;">
             <div v-if="c.user_id==author.id" class="c-pop-menu-btn" style="position: absolute; top: 0; right: 5px; border: 0 solid #c0c0c0;" v-on:click.prevent="showCommentActions=showCommentActions==k?null:k">
                 <div style="text-align: right; padding: 0; font-weight: bold; cursor: pointer;">
@@ -93,6 +91,20 @@ export default {
             elm.focus()
           }
         },
+        checkSelectedComments: function () {
+          var c = 0
+          for (var x in this.selected_comments) {
+            c++
+          }
+          console.log('this.selected_comments_target ', this.selected_comments_target)
+          if (c > 0) {
+            this.selected_comments_target.style.color = '#fff'
+            this.selected_comments_target.style.background = 'orange'
+          } else {
+            this.selected_comments_target.style.color = '#000'
+            this.selected_comments_target.style.background = 'yellow'
+          }
+        },
         cancelCommentEdit: function () {
           this.editingComment = null
           this.comment_message_new = ''
@@ -109,6 +121,7 @@ export default {
           this.editingComment = null
           this.comment_message_new = ''
           binding.value.onAddComment()
+          this.checkSelectedComments()
         },
         setAuthor: function (author) {
           this.author = author
@@ -156,6 +169,9 @@ export default {
           }
 
           //
+          this.checkSelectedComments()
+
+          //
           scope.comment_message_new = ''
           this.editingComment = null
 
@@ -175,6 +191,7 @@ export default {
           binding.vm.selected_comments_id = null
           if (e.target && e.target.matches('.commentbase-comment-highlight')) {
             binding.vm.selected_comments_id = e.target.dataset.commentsId
+            binding.vm.selected_comments_target = e.target
             return
           }
           var sel, range
@@ -191,7 +208,7 @@ export default {
 
               binding.vm.selected_comments_id = id
 
-              var html = '<span class="commentbase-comment-highlight" style="font-weight: inherit; background: orange; color: #fff;" data-comments-id="' + id + '">' + range + '</span>'
+              var html = '<span class="commentbase-comment-highlight" style="font-weight: inherit; background: yellow; color: #000;" id="' + id + '" data-comments-id="' + id + '">' + range + '</span>'
               range.deleteContents()
 
               var el = document.createElement('div')
@@ -202,6 +219,8 @@ export default {
                 frag.appendChild(node)
               }
               range.insertNode(frag)
+
+              binding.vm.selected_comments_target = document.getElementById(id)
             }
           }
         })
