@@ -59,15 +59,16 @@ exports.initMainWindow = (window) => {
           if (err) {
             MainWindow.webContents.send('SHOW-SWAL-ERROR-EXPORTING', result.filePath)
             ExportWindow.webContents.send('SHOW-EXPORT-SETTINGS')
+            MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
             // if (ExportWindow != null) ExportWindow.close()
           } else {
             ExportWindow.close()
             MainWindow.webContents.send('SHOW-SWAL-SUCCESS-EXPORTING', result.filePath)
+            MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
             // if (ExportWindow != null) ExportWindow.close()
           }
         })
       }
-      MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
     }).catch(err => {
       if (ExportWindow != null) ExportWindow.close()
       log.error(err)
@@ -103,6 +104,7 @@ exports.initMainWindow = (window) => {
 
     ExportWindow.on('closed', function () {
       ExportWindow = null
+      MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
     })
   }
 }

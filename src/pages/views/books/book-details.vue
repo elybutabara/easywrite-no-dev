@@ -36,7 +36,7 @@ export default {
         title: '',
         data: null
       },
-      export_book: this.$t('EXPORT_BOOK').toUpperCase()
+      export_book: this.$t('EXPORT_BOOK')
     }
   },
   computed: {

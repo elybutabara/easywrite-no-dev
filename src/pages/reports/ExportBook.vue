@@ -2,7 +2,6 @@
   <div v-if="page.is_ready == true && book" class="es-page-content" style="height: auto">
 
         <div v-if="show_export_settings" class = "es-export-settings">
-          <!-- <div class = "es-export-settings"> -->
               <span class="btn-option" v-bind:class="{'active' : details.show_scene_details}" @click="toggleData('scene_details')">
                   <i v-if="details.show_scene_details" class="las la-check"></i>
                   {{$t('SCENE_DETAILS')}}
@@ -39,10 +38,7 @@
                   <i v-if="details.show_other_scenes" class="las la-check"></i>
                   {{$t('OTHER_SCENES')}}
               </span>
-            <!-- </div> -->
-            <!-- <div class = "es-export-button-container"> -->
-             <button class="export-button" @click="toggleData('export')">{{$t('EXPORT_BOOK')}}</button>
-            <!-- </div> -->
+              <span class="export-button" @click="toggleData('export')">{{$t('EXPORT_BOOK')}}</span>
         </div>
 
         <br>
@@ -375,13 +371,9 @@ export default {
 .inner .book-title { text-align:center; width:100%; }
 .genre {padding:20px 20px;}
 
-/* .es-export-settings-container { position: relative; background:#fff; border-bottom:1px solid #ccc; height:40px; line-height:40px; padding:0px 10px;} */
-
 .es-export-settings { text-align:left; background:#fff; border-bottom:1px solid #ccc; height:40px; line-height:40px; padding:0px 10px; }
 .es-export-settings .btn-option { background:#dfe5ea; margin-right:5px; padding:5px 12px; color:#293742; font-size:12px; cursor:pointer; }
 .es-export-settings .btn-option.active { padding-left:8px;  background:#293742; color:#fff; }
 
-/* .es-export-button-container { position:absolute; left: 640px; right:0px; top:0px;}
-.es-export-button-container .export-button { height:30px; font-size:12px; text-align:center;} */
-.export-button { height:25px; font-size:12px; vertical-align:middle;}
+.export-button { border-radius:10px; background:#a6d2f5; margin-right:5px; padding:5px 12px; color:#293742; font-size:12px; cursor:pointer;}
 </style>
