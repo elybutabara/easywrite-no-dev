@@ -379,7 +379,7 @@ export default {
         scope.items = scope.$store.getters.getItemsByBook(scope.book.uuid)
         scope.characters = scope.$store.getters.getCharactersByBook(scope.book.uuid)
         scope.page.is_ready = true
-      }, 1500)
+      }, 2000)
 
       ipcRenderer.on('SHOW-EXPORT-SETTINGS', function (event, data) {
         scope.show_export_settings = true

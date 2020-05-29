@@ -155,13 +155,13 @@ export default {
           })
           character.relations = relation
           scope.characters.push(character)
-          scope.page.is_ready = true
-          let pdf = {
-            name: scope.bookTitle + ' - ' + scope.$tc('CHARACTER', 2)
-          }
-          ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
         }, 550)
+        scope.page.is_ready = true
       })
+      let pdf = {
+        name: scope.bookTitle + ' - ' + scope.$tc('CHARACTER', 2)
+      }
+      ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
     }
   },
   beforeMount () {},
