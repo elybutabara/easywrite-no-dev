@@ -95,7 +95,7 @@ export default {
     exportBook: function () {
       const scope = this
       scope.exportOnProgress = true
-      scope.export_book = scope.$t('LOADING').toUpperCase() + '....'
+      scope.export_book = scope.$t('LOADING') + '....'
 
       let book = scope.properties
 
@@ -103,7 +103,7 @@ export default {
 
       ipcRenderer.on('CHANGE-EXPORT-BOOK-BUTTON-NAME', function (event, data) {
         scope.exportOnProgress = false
-        scope.export_book = scope.$t('EXPORT_BOOK').toUpperCase()
+        scope.export_book = scope.$t('EXPORT_BOOK')
       })
     }
 
