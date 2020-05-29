@@ -34,13 +34,13 @@ exports.initMainWindow = (window) => {
   ipcMain.on('EXPORT-DOCX-SHOW-BOOK-WINDOW', function (event, data) {
     createExportWindowBook({exportBy: 'export-book'})
     ExportWindow.on('ready-to-show', function () {
-      // ExportWindow.show()
+      ExportWindow.show()
       ExportWindow.webContents.send('EXPORT-DOCX-GET-BOOK', data)
     })
   })
 
   ipcMain.on('EXPORT-WORD-BOOK', function (event, data) {
-    dialog.showSaveDialog(MainWindow, {
+    dialog.showSaveDialog(ExportWindow, {
       defaultPath: data.book.title,
       properties: ['openFile', 'openDirectory', 'showOverwriteConfirmation'],
       filters: [
@@ -48,7 +48,8 @@ exports.initMainWindow = (window) => {
       ]
     }).then(result => {
       if (result.canceled) {
-        if (ExportWindow != null) ExportWindow.close()
+        ExportWindow.webContents.send('SHOW-EXPORT-SETTINGS')
+        // if (ExportWindow != null) ExportWindow.close()
       } else {
         var HtmlDocx = require('html-docx-js')
         var fs = require('fs')
@@ -58,14 +59,17 @@ exports.initMainWindow = (window) => {
         fs.writeFile(outputFile, docx, function (err) {
           if (err) {
             MainWindow.webContents.send('SHOW-SWAL-ERROR-EXPORTING', result.filePath)
-            if (ExportWindow != null) ExportWindow.close()
+            ExportWindow.webContents.send('SHOW-EXPORT-SETTINGS')
+            MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
+            // if (ExportWindow != null) ExportWindow.close()
           } else {
+            ExportWindow.close()
             MainWindow.webContents.send('SHOW-SWAL-SUCCESS-EXPORTING', result.filePath)
-            if (ExportWindow != null) ExportWindow.close()
+            MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
+            // if (ExportWindow != null) ExportWindow.close()
           }
         })
       }
-      MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
     }).catch(err => {
       MainWindow.webContents.send('SHOW-SWAL-ERROR-EXPORTING', 'FAILED TO SAVE')
       if (ExportWindow != null) ExportWindow.close()
@@ -110,6 +114,7 @@ exports.initMainWindow = (window) => {
 
     ExportWindow.on('closed', function () {
       ExportWindow = null
+      MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
     })
   }
 }
