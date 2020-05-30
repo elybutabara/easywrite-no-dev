@@ -203,7 +203,8 @@ export default {
       var relationDetail = {
         relation_id: scope.selected_relation.uuid,
         character_id: scope.character.uuid,
-        character_relation_id: scope.selected_character.uuid
+        character_relation_id: scope.selected_character.uuid,
+        is_opposite: 0
       }
 
       if (scope.relation_detail.find(x => (x.relation_id === relationDetail.relation_id && x.character_relation_id === relationDetail.character_relation_id)) !== undefined) {
