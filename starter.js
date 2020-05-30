@@ -114,7 +114,7 @@ function createWindow () {
 
   // This method will be called every time you want to change the menu title
   ipcMain.on('SET_TITLE', function (e, title) {
-    mainWindow.webContents.send('SET_MAIN_MENU_TITLE', title + ' - ' + app.name)
+    mainWindow.webContents.send('SET_MAIN_MENU_TITLE', title + ' - ' + app.name + ' v' + app.getVersion())
   })
 
   ipcMain.on('FORCE_QUIT', function (event, args) {
