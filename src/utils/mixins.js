@@ -174,6 +174,13 @@ export default {
     GET_SCENE_CHARACTERS_BY_SCENE: function (uuid = '') {
       return this.$store.getters.getSceneCharacters(uuid)
     },
+    REMOVE_HTML: function (content = '') {
+      // eslint-disable-next-line no-useless-escape
+      var stripedHtml = content.replace(/<br\s*[\/]?>/gi, '\n')
+      stripedHtml = stripedHtml.replace(/<[^>]+>/g, '') // Remove html tags
+
+      return stripedHtml
+    },
     WORD_COUNT: function (content = '') {
       if (!content) {
         return 0

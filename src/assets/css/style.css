@@ -262,6 +262,14 @@ ul { margin-left:0px; list-style:none;  }
   display: none;
 }
 
+.text-italic {
+  font-style: italic;
+}
+
+.display-webkit-box {
+  display: -webkit-box!important;
+}
+
 @media screen and (max-width: 1300px) {
 	.es-content { padding-right:10px;  }
 	.es-content .header .cta-container { display:none;  }

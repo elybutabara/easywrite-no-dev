@@ -104,7 +104,7 @@
                                                     <em class="float-right"><span>{{ history.created_at }}</span></em>
                                                 </div>
                                                 <div class="clearfix"></div>
-                                                <div v-html="history.content" class="ellipsis-2"></div>
+                                                <div v-html="REMOVE_HTML(history.content)" class="ellipsis-2"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -747,10 +747,6 @@ export default {
         let version = scope.$store.getters.findLatestSceneVersionByScene(sceneProp)
         let progress = scope.$store.getters.getTodayAuthorPersonalProgressForScene(sceneProp)
 
-        console.log('scene')
-        // console.log(scene)
-        // console.log(scope.data)
-
         // scene
         scope.data.title = scene.title
         scope.data.short_description = scene.short_description
@@ -796,6 +792,7 @@ export default {
         scope.data.scene_version.id = version.id
         scope.data.scene_version.uuid = version.uuid
         scope.data.scene_version.content = version.content
+        scope.data.scene_version.change_description = version.change_description
 
         scope.tempSceneVersionContent = version.content
         scope.tempSceneNotes = scene.notes

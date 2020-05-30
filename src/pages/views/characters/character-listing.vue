@@ -30,8 +30,8 @@
                     <div class="es-card">
                         <div class="es-card-content">
                             <p class="title ellipsis-2">{{ character.fullname || 'Untitled' }}</p>
-                            <i class="description ellipsis-2" v-if="character.description !== '' && character.description !== null" v-html="character.description"></i>
-                            <i class="description" v-else>{{$t('NO_DESCRIPTION')}}...</i>
+                            <div class="description ellipsis-2 text-italic display-webkit-box" v-if="character.description !== '' && character.description !== null" v-html="character.description"></div>
+                            <div class="description text-italic display-webkit-box" v-else>{{$t('NO_DESCRIPTION')}}...</div>
                         </div>
                         <div class="es-card-footer">
                             <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'character-details-' + character.uuid, tabComponent: 'character-details',  tabData: { book: book, character: character }, tabTitle: $t('VIEW')+ ' - ' + character.fullname})"><i class="lar la-eye"></i> {{$t('VIEW')}}</button>
