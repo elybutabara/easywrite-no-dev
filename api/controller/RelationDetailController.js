@@ -22,12 +22,33 @@ class RelationDetailController {
       .withGraphFetched('relation')
       .first()
 
+    let oppositeData = {
+      relation_id: data.relation_id,
+      character_id: data.character_relation_id,
+      character_relation_id: data.character_id,
+      is_opposite: 1
+    }
+    await RelationDetail.query().upsertGraph([oppositeData])
+      .withGraphFetched('character_relation')
+      .withGraphFetched('relation')
+      .first()
+
     return save
   }
 
   static async delete (relationDetailId) {
     // const relationDetail = await RelationDetail.query().softDeleteById(relationDetailId)
-    var data = await RelationDetail.query()
+    let relationDetail = await RelationDetail.query().findById(relationDetailId)
+
+    await RelationDetail.query()
+      .patch({ deleted_at: moment().format('YYYY-MM-DD HH:mm:ss').toString() })
+      .where('relation_id', relationDetail.relation_id)
+      .where('character_id', relationDetail.character_relation_id)
+      .where('character_relation_id', relationDetail.character_id)
+      .where('is_opposite', 1)
+      .whereNull('deleted_at')
+
+    let data = await RelationDetail.query()
       .patch({ deleted_at: moment().format('YYYY-MM-DD HH:mm:ss').toString() })
       .where('uuid', '=', relationDetailId)
 
