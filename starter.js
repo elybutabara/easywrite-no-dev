@@ -87,7 +87,7 @@ function createWindow () {
   // resize after authentication
   ipcMain.on('RESIZE_MAIN_WINDOW', function (e, args) {
     mainWindow.webContents.send('SET_MAIN_MENU', { page: 'dashboard', lang: args.lang, locale: args.locale })
-    mainWindow.setSize(1280, 920)
+    // mainWindow.setSize(1280, 920) // remove setSize since it will maximize anyway
     mainWindow.center()
     mainWindow.maximize()
   })
@@ -129,7 +129,7 @@ function createWindow () {
       mainWindow.minimize()
     } else if (doubleClickAction === 'Maximize') {
       if (!mainWindow.isMaximized()) {
-        mainWindow.setSize(1280, 920)
+        mainWindow.maximize()
       } else {
         mainWindow.unmaximize()
       }
