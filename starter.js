@@ -121,6 +121,20 @@ function createWindow () {
     mainWindow.webContents.send('ENABLE_FORCE_QUIT')
     mainWindow.close()
   })
+
+  ipcMain.on('MAC_MENU_BEHAVIOR', function () {
+    const doubleClickAction = systemPreferences.getUserDefault('AppleActionOnDoubleClick', 'string');
+    console.log(doubleClickAction)
+    if (doubleClickAction === 'Minimize') {
+      mainWindow.minimize()
+    } else if (doubleClickAction === 'Maximize') {
+      if (!mainWindow.isMaximized()) {
+        mainWindow.setSize(1280, 920)
+      } else {
+        mainWindow.unmaximize()
+      }
+    }
+  })
 }
 
 // This method will be called when Electron has finished
