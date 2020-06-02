@@ -13,6 +13,7 @@ class ReaderController {
     const read = await Reader.query()
       .select('book_readers.book_id')
       .where('book_readers.author_id', user.author.uuid)
+      .where('book_readers.status', false)
       .whereNull('book_readers.deleted_at')
       // .where('books.updated_at', '>', user.synced_at)
 
@@ -22,7 +23,7 @@ class ReaderController {
       bookUUIDs.push(read[i].book_id)
     }
 
-    console.log('bookUUIDs')
+    // console.log('bookUUIDs')
     // console.log(bookUUIDs)
 
     const books = Book.query()
