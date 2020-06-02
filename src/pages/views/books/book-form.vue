@@ -39,7 +39,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label>{{$t('DESCRIPTION')}}: </label>
+                            <label>{{$t('ABOUT')}}: </label>
+                            <!-- <div class='import-doc-container'><button @click="getImport()">Import Docx</button></div> -->
+                            <button @click="getImport()">Import Docx</button>
                             <tiny-editor :initValue="data.about" v-on:getEditorContent="setAboutValue" class="form-control" />
                         </div>
                     </div>
@@ -53,6 +55,7 @@
 <script>
 import Multiselect from 'vue-multiselect'
 import TinyMCE from '@/components/TinyMCE'
+const {ipcRenderer} = window.require('electron')
 
 export default {
   name: 'book-form',
@@ -96,6 +99,14 @@ export default {
       if (scope.data.book_genre_collection.find(x => (x.genre_id === uuid && x.deleted_at !== undefined)) !== undefined) {
         delete scope.data.book_genre_collection.find(x => x.genre_id === uuid).deleted_at
       }
+    },
+    getImport: function () {
+      var scope = this
+      ipcRenderer.send('IMPORT-DOCX', 'book')
+
+      ipcRenderer.on('GET-DOCX-CONTENT-BOOK', function (event, data) {
+        scope.data.about = data
+      })
     },
     getGenre: function () {
       var scope = this
@@ -207,4 +218,5 @@ export default {
 
   .page-title { font-family: 'Crimson Roman Bold'; position:relative; padding-top:20px; }
   .page-title h3 { font-size:35px; }
+  .import-doc-container {text-align:right;}
 </style>

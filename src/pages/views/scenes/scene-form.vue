@@ -80,6 +80,7 @@
                         </div>
                     </div>
                     <div class="content ">
+                      <button @click="getImport()">Import Docx</button>
                         <b-row class="margin-bottom-1rem">
                             <b-col>
                                 <div v-if="scene_history.length" class="text-right">
@@ -284,6 +285,7 @@
 
 <script>
 import TinyMCE from '../../../components/TinyMCE'
+const {ipcRenderer} = window.require('electron')
 
 export default {
   name: 'book-form',
@@ -419,6 +421,14 @@ export default {
     }
   },
   methods: {
+    getImport: function () {
+      var scope = this
+      ipcRenderer.send('IMPORT-DOCX', 'scene')
+
+      ipcRenderer.on('GET-DOCX-CONTENT-SCENE', function (event, data) {
+        scope.data.scene_version.content = data
+      })
+    },
     toggleAccordion: function (key) {
       var scope = this
       if (scope.accordion[key] === 'active') {
