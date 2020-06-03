@@ -77,6 +77,10 @@ export default {
       get () {
         let scope = this
         let chapters = scope.$store.getters.getChaptersByBook(scope.bookUUID)
+        for (let chaptersKey in chapters) {
+          scope.$store.dispatch('loadScenesByChapter', chapters[chaptersKey].uuid)
+          scope.$store.dispatch('loadVersionsByChapter', chapters[chaptersKey].uuid)
+        }
         return chapters
       },
       set (value) {
