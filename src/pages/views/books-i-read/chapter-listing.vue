@@ -61,11 +61,18 @@ export default {
       get () {
         let scope = this
         let chapters = scope.$store.getters.getChaptersByBook(scope.bookUUID)
+        /*
+         * Only show in Book-I-Read Chapters that are hidden=0
+         * */
+        let chapterList = []
         for (let chaptersKey in chapters) {
-          scope.$store.dispatch('loadScenesByChapter', chapters[chaptersKey].uuid)
-          scope.$store.dispatch('loadVersionsByChapter', chapters[chaptersKey].uuid)
+          if (chapters[chaptersKey].hidden === 0) {
+            scope.$store.dispatch('loadScenesByChapter', chapters[chaptersKey].uuid)
+            scope.$store.dispatch('loadVersionsByChapter', chapters[chaptersKey].uuid)
+            chapterList.push(chapters[chaptersKey])
+          }
         }
-        return chapters
+        return chapterList
       },
       set (value) {
         let scope = this
