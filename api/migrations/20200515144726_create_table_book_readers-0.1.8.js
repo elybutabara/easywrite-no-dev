@@ -19,6 +19,8 @@ exports.up = async function (knex) {
       }).catch(function (err) {
         log.error('Migrate to latest : error:' + err)
       })
+    } else {
+      log.info('book reader exist')
     }
   })
 }
