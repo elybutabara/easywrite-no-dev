@@ -32,6 +32,9 @@ export default {
     getAuthorName: state => {
       return state.user.author.first_name
     },
+    getAuthorFullName: state => {
+      return state.user.author.first_name + ' ' + state.user.author.last_name
+    },
     getAuthor: state => {
       return state.user.author
     },
