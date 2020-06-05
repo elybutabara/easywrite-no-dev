@@ -120,7 +120,11 @@ var electronFs = window.require('fs')
 
 const path = window.require('path')
 
+const app = window.require('electron').remote.app
+
 // const FormData = window.require('form-data')
+
+const uploadsBaseURL = 'https://www.pilotleser.no/uploads' // to do: use a production upload_base_url if the app is in production mode
 
 export default {
   name: 'syncing',
@@ -325,10 +329,7 @@ export default {
       }
 
       if (['Items', 'Characters', 'Locations'].indexOf(endpoint.title) > -1) {
-        console.log('data <--------------------------> ', JSON.stringify(data))
-
-        var src = path.resolve('C:\\Dev\\Repos\\easywrite-v2\\resources', 'resources', 'images', endpoint.title.toLowerCase(), (data.picture || data.pictures) + '')
-        console.log('src = ', src)
+        var src = path.resolve(app.getAppPath() + '\\resources', 'resources', 'images', endpoint.title.toLowerCase(), (data.picture || data.pictures) + '')
 
         if (!electronFs.existsSync(src)) {
           console.log('local file not found: ', src)
@@ -343,13 +344,9 @@ export default {
             }
           }
 
-          data_.append('file', new Blob([electronFs.readFileSync(src)]), {
-            name: data.picture + ''
-          })
+          data_.append('file', new Blob([electronFs.readFileSync(src)]), data.picture || data.pictures)
 
           finalData = data_
-
-          console.log('finalData <--------------------------> ', finalData)
         }
       }
 
@@ -409,6 +406,8 @@ export default {
       let endpoint = scope.endpoints[scope.download.pointer]
       scope.progress_message = scope.$t('DOWNLOADING') + ' ' + endpoint.title + '...'
 
+      //
+
       var lastSyncedDate = scope.timeConvertToUTC(scope.$store.getters.getUserSyncedDate)
       scope.axios.get(window.API_URL + '/' + endpoint.api,
         {
@@ -423,6 +422,32 @@ export default {
         .then(function (response) {
           // eslint-disable-next-line valid-typeof
           var data = response.data.rows
+
+          if (['Items', 'Characters', 'Locations'].indexOf(endpoint.title) > -1) {
+            console.log(endpoint.title + ' response.data.rows ---->\n', response.data.rows)
+
+            if (response.data && response.data.rows && response.data.rows.length > 0) {
+              for (var i = 0; i < response.data.rows.length; i++) {
+                var row = response.data.rows[i]
+                var src = uploadsBaseURL + '/book-' + endpoint.title.toLowerCase() + '/' + (row.picture || row.pictures)
+                var dst = path.resolve(app.getAppPath() + '\\resources', 'resources', 'images', endpoint.title.toLowerCase(), (row.picture || row.pictures) + '')
+                console.log('src = ', src)
+                console.log('dst = ', dst)
+                fetch(src, {
+                  method: 'GET'
+                })
+                  .then(response => response.blob())
+                  .then(blob => {
+                    var fileReader = new FileReader()
+                    fileReader.onload = function () {
+                      electronFs.writeFileSync(dst, Buffer.from(new Uint8Array(this.result)))
+                    }
+                    fileReader.readAsArrayBuffer(blob)
+                  })
+              }
+            }
+          }
+
           scope.endpoints[scope.download.pointer].downloaded = data
           scope.download.pointer++
           scope.download.total += response.data.count
