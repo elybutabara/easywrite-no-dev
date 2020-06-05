@@ -80,4 +80,18 @@ ipcRenderer.on('SET_MAIN_MENU', function (event, data) {
   })
 
   Menu.setApplicationMenu(menu)
+
+  /*
+  * Custom-title-bar is not using the MAC behavior as it should be
+  * this will fix the issue for menu behavior
+  * */
+  if( process.platform == 'darwin') {
+    const menuRegion = document.getElementsByClassName('titlebar')
+    console.log(menuRegion)
+    for (let i = 0; i < menuRegion.length; i++) {
+      menuRegion[i].addEventListener('dblclick', function () {
+        ipcRenderer.send('MAC_MENU_BEHAVIOR')
+      })
+    }
+  }
 })

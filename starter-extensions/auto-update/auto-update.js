@@ -150,7 +150,7 @@ exports.checkForVersionUpdates = () => {
 
 exports.initializeDatabase = () => {
   const fs = require('fs')
-  const fsj = require('fs-jetpack')
+  // const fsj = require('fs-jetpack')
   let src, dist
   if (process.env.NODE_ENV === 'development') {
     src = path.resolve(process.env.basePath, 'api', 'base.db')
@@ -167,12 +167,15 @@ exports.initializeDatabase = () => {
     fs.statSync(src).isFile() &&
     !fs.existsSync(dist)
   ) {
-    fsj.copy(src, dist)
-    log.info('fresh install')
-    fs.chmod(dist, '0700', function (err) {
-      if (err) {
-        log.error(err)
-        throw err
+    fs.copyFile(src, dist, (err) => {
+      if (err) log.error(err)
+      else {
+        fs.chmod(dist, '0700', function (err) {
+          if (err) {
+            log.error(err)
+          }
+        })
+        log.info('success initializeDatabase')
       }
     })
   }

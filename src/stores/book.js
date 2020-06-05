@@ -162,6 +162,25 @@ export default {
           }
         })
     },
+    reloadBooksIReadByAuthor (state, payload) {
+      var userUUID = payload.userUUID // this is for requesting purposes
+      var authorUUID = payload.authorUUID
+      let oldRows = state.books_i_read[authorUUID].rows
+      Vue.set(state.books_i_read, authorUUID, { rows: [] })
+      axios
+        .get('http://localhost:3000/users/' + userUUID + '/books-i-read')
+        .then(response => {
+          state.books_i_read[authorUUID].rows = response.data
+          for (let i = 0; i < state.books_i_read[authorUUID].rows.length; i++) {
+            // check the _open base on the beforeSync rows vs afterSync rows
+            for (let oldRowsKey in oldRows) {
+              if (oldRows[oldRowsKey].uuid === state.books_i_read[authorUUID].rows[i].uuid) {
+                Vue.set(state.books_i_read[authorUUID].rows[i], 'is_open', oldRows[oldRowsKey].is_open)
+              }
+            }
+          }
+        })
+    },
     toggleBook (state, payload) {
       let book = payload.data
       let model = payload.model
@@ -315,6 +334,9 @@ export default {
     },
     loadBooksIReadByAuthor ({ commit, state }, payload) {
       commit('loadBooksIReadByAuthor', payload)
+    },
+    reloadBooksIReadByAuthor ({ commit, state }, payload) {
+      commit('reloadBooksIReadByAuthor', payload)
     },
     updateBookList ({ commit, state }, payload) {
       commit('updateBookList', payload)

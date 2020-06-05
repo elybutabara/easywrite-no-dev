@@ -526,6 +526,12 @@ export default {
       var scope = this
       scope.stage = 'logs'
 
+      /* reload Book-i-Read tree list after sync : JPM
+      *  TODO: how to reload Tree List Book without collapse open
+      * */
+      const userUUID = this.$store.getters.getUserID
+      const authorUUID = this.$store.getters.getAuthorID
+      scope.$store.dispatch('reloadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
       // var userID = this.$store.getters.getUserID
       // scope.$store.dispatch('getBooksByAuthorID', userID)
     },
