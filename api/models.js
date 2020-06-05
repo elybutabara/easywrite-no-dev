@@ -12,7 +12,10 @@ const { User } = require(path.join(__dirname, 'models/User'))
 const { BookGenre } = require(path.join(__dirname, 'models/BookGenre'))
 const { Relation } = require(path.join(__dirname, 'models/Relation'))
 const { Book } = require(path.join(__dirname, 'models/Book'))
+const { BookFeedback } = require(path.join(__dirname, 'models/BookFeedback'))
 const { Chapter } = require(path.join(__dirname, 'models/Chapter'))
+const { ChapterFeedback } = require(path.join(__dirname, 'models/ChapterFeedback'))
+const { ChapterFeedbackResponse } = require(path.join(__dirname, 'models/ChapterFeedbackResponse'))
 const { Scene } = require(path.join(__dirname, 'models/Scene'))
 const { Character } = require(path.join(__dirname, 'models/Character'))
 const { Item } = require(path.join(__dirname, 'models/Item'))
@@ -38,12 +41,15 @@ module.exports = {
   BookGenre,
   Relation,
   Book,
+  BookFeedback,
   Item,
   Location,
   Reader,
   BookGenreCollection,
   Chapter,
   ChapterVersion,
+  ChapterFeedback,
+  ChapterFeedbackResponse,
   Scene,
   Character,
   SceneVersion,

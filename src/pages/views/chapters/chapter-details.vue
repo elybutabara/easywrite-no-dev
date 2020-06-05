@@ -13,6 +13,7 @@
                     <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + chapter.uuid, tabComponent: 'scene-form',  tabData: { book: book, chapter: chapter, scene: null }, tabTitle: 'New Scene', newTab: true})">{{$t('ADD_NEW_SCENE').toUpperCase()}}</button>
                     <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
                     <button class="es-button-white" @click="CHANGE_COMPONENT({ tabKey: 'chapter-form-' + chapter.uuid, tabComponent: 'chapter-form',  tabData: { book: book, chapter:  chapter }, tabTitle: $t('EDIT')+ ' - ' +  chapter.title, newTab: true })">{{$t('EDIT').toUpperCase()}}</button>
+                    <button class="es-button-white" @click="showFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
                     <button class="es-button-white" @click="deleteChapter(chapter)">{{$t('DELETE').toUpperCase()}}</button>
                 </div>
             </div>
@@ -30,27 +31,30 @@
             <div v-bind:class="{ 'active' : tab.active == 'versions' }" @click="changeTab('versions')" class="es-chapter-details-tab-item">{{$t('VERSIONS').toUpperCase()}}</div>
             <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-chapter-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
         </div>
-        <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
-<!--            <div class="export-content"><button class="es-button-white" @click="exportContent()">{{$t('EXPORT_CONTENT')}}</button></div>-->
-            <div class="export-content">
-              <b-button class="es-button-white" :disabled="exportOnProgress"  @click="exportContent()">
-                <div v-if="exportOnProgress === false"><span>{{$t('EXPORT_CONTENT')}}</span></div>
-                <div v-else>
-                  <b-spinner small type="grow"></b-spinner>
-                  <span>{{exportLoading}}</span>
+        <div style="position:relative;">
+          <ChapterFeedback v-if="show_feedbacks" :properties="{ book: book, chapter: chapter }"></ChapterFeedback>
+
+          <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
+                <div class="export-content">
+                <b-button class="es-button-white" :disabled="exportOnProgress"  @click="exportContent()">
+                  <div v-if="exportOnProgress === false"><span>{{$t('EXPORT_CONTENT')}}</span></div>
+                  <div v-else>
+                    <b-spinner small type="grow"></b-spinner>
+                    <span>{{exportLoading}}</span>
+                  </div>
+                </b-button>
                 </div>
-              </b-button>
-            </div>
-            <div v-html="getChapterContent" class="description" v-commentbase="commentbase_params"></div>
-        </div>
-        <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
-            <chapter-scenes :properties="{ book: book, chapter: chapter }"></chapter-scenes>
-        </div>
-        <div v-if="tab.active === 'versions'"  class="es-chapter-details-tab-content">
-            <chapter-versions :properties="{ chapter: chapter }"></chapter-versions>
-        </div>
-        <div v-if="tab.active === 'compare-versions'"  class="es-chapter-details-tab-content">
-            <chapter-compare-versions :properties="{ chapter: chapter }"></chapter-compare-versions>
+              <div v-html="getChapterContent" class="description" v-commentbase="commentbase_params"></div>
+          </div>
+          <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
+              <chapter-scenes :properties="{ book: book, chapter: chapter }"></chapter-scenes>
+          </div>
+          <div v-if="tab.active === 'versions'"  class="es-chapter-details-tab-content">
+              <chapter-versions :properties="{ chapter: chapter }"></chapter-versions>
+          </div>
+          <div v-if="tab.active === 'compare-versions'"  class="es-chapter-details-tab-content">
+              <chapter-compare-versions :properties="{ chapter: chapter }"></chapter-compare-versions>
+          </div>
         </div>
     </div>
 
@@ -95,6 +99,7 @@
 
 <script>
 import TinyMCE from '../../../components/TinyMCE'
+import ChapterFeedback from '../../../components/ChapterFeedback'
 import ChapterScenes from '@/pages/views/chapters/chapter-scenes'
 import ChapterVersions from '@/pages/views/chapters/chapter-versions'
 import ChapterCompareVersions from '@/pages/views/chapters/chapter-compare-versions'
@@ -114,6 +119,7 @@ export default {
   data: function () {
     var scope = this
     return {
+      show_feedbacks: false,
       chapter_version: {
         chapter_id: null,
         content: '',
@@ -145,6 +151,7 @@ export default {
   },
   components: {
     TinyMCE,
+    ChapterFeedback,
     ChapterScenes,
     ChapterVersions,
     ChapterCompareVersions
@@ -280,6 +287,10 @@ export default {
       var scope = this
       scope.exportOnProgress = true
       ipcRenderer.send('EXPORT-CONTENT-DOCX', {content: scope.getChapterContent, defaultfilename: scope.page.title + ' - ' + this.$t('CONTENT')})
+    },
+    showFeedbacks: function () {
+      let scope = this
+      scope.show_feedbacks = !scope.show_feedbacks
     }
   },
   beforeUpdate () {

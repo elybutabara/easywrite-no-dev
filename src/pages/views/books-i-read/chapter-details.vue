@@ -8,6 +8,9 @@
                       <h4><strong>{{ chapter.title }}</strong></h4>
                     </div>
                 </div>
+                <div class="actions">
+                  <button class="es-button-white" @click="showFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
+                </div>
             </div>
         </div>
         <div class="es-page-breadcrumbs">
@@ -21,17 +24,21 @@
             <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-chapter-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
             <div v-bind:class="{ 'active' : tab.active == 'scenes' }" @click="changeTab('scenes')" class="es-chapter-details-tab-item">{{$tc('SCENE', 2).toUpperCase()}}</div>
         </div>
-        <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
-            <div v-html="getChapterContent" class="description" v-commentbase="commentbase_params"></div>
-        </div>
-        <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
-            <books-i-read-chapter-scenes :properties="{ book: book, chapter: chapter }"></books-i-read-chapter-scenes>
+        <div style="position:relative;">
+          <ChapterFeedback v-if="show_feedbacks" :properties="{ book: book, chapter: chapter }"></ChapterFeedback>
+          <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
+              <div v-html="getChapterContent" class="description" v-commentbase="commentbase_params"></div>
+          </div>
+          <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
+              <books-i-read-chapter-scenes :properties="{ book: book, chapter: chapter }"></books-i-read-chapter-scenes>
+          </div>
         </div>
     </div>
 </div>
 </template>
 
 <script>
+import ChapterFeedback from '../../../components/ChapterFeedback'
 import TinyMCE from '../../../components/TinyMCE'
 import ChapterScenes from '@/pages/views/books-i-read/chapter-scenes'
 import ChapterVersions from '@/pages/views/chapters/chapter-versions'
@@ -52,6 +59,7 @@ export default {
   data: function () {
     var scope = this
     return {
+      show_feedbacks: false,
       chapter_version: {
         chapter_id: null,
         content: '',
@@ -81,6 +89,7 @@ export default {
   },
   components: {
     TinyMCE,
+    ChapterFeedback,
     'books-i-read-chapter-scenes': ChapterScenes,
     ChapterVersions,
     ChapterCompareVersions
@@ -163,6 +172,10 @@ export default {
             */
           }
         })
+    },
+    showFeedbacks: function () {
+      let scope = this
+      scope.show_feedbacks = !scope.show_feedbacks
     }
   },
   beforeUpdate () {
@@ -203,7 +216,7 @@ export default {
     .es-chapter-details-tab .es-chapter-details-tab-item:after { content:''; position:absolute; bottom:0px; left:0px; height:3px;  width:100%; background:transparent;}
     .es-chapter-details-tab .es-chapter-details-tab-item.active:after { background:#922c39;  }
 
-    .es-chapter-details-tab-content { position:relative; padding:30px; background:#fff; height:calc(100vh - 247px); overflow-y:auto; display:block; }
+    .es-chapter-details-tab-content { position:relative; padding:30px; background:#fff; height:calc(100vh - 317px); overflow-y:auto; display:block; }
     .es-chapter-details-tab-content.no-padding { padding:0px; }
     .es-chapter-details-tab-content.active { display:block; }
 </style>
