@@ -24,6 +24,7 @@ const listener = require('./api/listener.js')
 const menu = require('./menu')
 const exportdocx = require('./starter-extensions/export-reports/docx/export-docx')
 const exportPdf = require('./starter-extensions/export-reports/pdf/export-pdf')
+const importdocx = require('./starter-extensions/imports/docx/import-docx')
 
 if(process.platform == "darwin"){
   //disable unwanted Emoji and Dictation in Menu before calling app event
@@ -94,6 +95,7 @@ function createWindow () {
 
   exportPdf.initMainWindow(mainWindow)
   exportdocx.initMainWindow(mainWindow)
+  importdocx.initMainWindow(mainWindow)
   autoUpdate.processUpdate(mainWindow)
 
   ipcMain.on('GET_PROCESS_PLATFORM', function (e, args) {
@@ -165,3 +167,5 @@ app.on('activate', function () {
 ipcMain.on('SHOW_SWAL_TIMESUP_STARTER', function (event, data) {
   mainWindow.webContents.send('SHOW_SWAL_TIMESUP')
 })
+
+
