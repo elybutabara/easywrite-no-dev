@@ -19,6 +19,8 @@ exports.up = async function (knex) {
         t.text('general_comment')
         t.text('book_chapter_comment')
         t.text('message')
+        t.dateTime('created_at')
+        t.dateTime('updated_at')
         t.dateTime('deleted_at')
       }).then(function () {
         log.info('Migrate to latest book_feedbacks: success')
@@ -36,6 +38,8 @@ exports.up = async function (knex) {
         t.integer('from')
         t.integer('chapter_feedback_id')
         t.integer('message')
+        t.dateTime('created_at')
+        t.dateTime('updated_at')
         t.dateTime('deleted_at')
       }).then(function () {
         log.info('Migrate to latest book_feedbacks: success')
