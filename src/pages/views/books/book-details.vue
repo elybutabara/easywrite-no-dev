@@ -14,6 +14,7 @@
                     <span>{{exportLoading}}</span>
                   </div>
                 </b-button>
+                <button class="es-button-white" @click="getImport()">Import Multiple Chapters Docx</button>
                 <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'storyboard-' + page.data.uuid, tabComponent: 'storyboard',  tabData: page.data, tabTitle: 'Story Board - ' + properties.title, newTab: true})">Story Board</button>
                 <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: $t('EDIT') + ' - ' + properties.title, newTab: true})">{{ $t('EDIT') }}</button>
                 <button class="es-button-red" @click="deleteBook()">{{ $t('DELETE') }}</button>
@@ -44,13 +45,72 @@ export default {
       },
       export_book: this.$t('EXPORT_BOOK'),
       exportOnProgress: false,
-      exportLoading: this.$t('Loading')
+      exportLoading: this.$t('Loading'),
+      data: {
+        id: null,
+        uuid: null,
+        book_id: null,
+        title: '',
+        short_description: '',
+        chapter_version: {
+          change_description: '',
+          content: ''
+        }
+      }
     }
   },
   computed: {
 
   },
   methods: {
+    getImport: function () {
+      var scope = this
+      ipcRenderer.send('IMPORT-DOCX-MULTI-CHAPTERS')
+
+      ipcRenderer.on('GET-DOCX-CONTENT-MULTI-CHAPTERS', function (event, data) {
+        let chapters = []
+
+        const contents = window.$.parseHTML(data)
+
+        window.$.each(contents, function (i, node) {
+          const outerHtml = window.$(node).get(0).outerHTML
+          if (window.$.inArray(node.nodeName.toLowerCase(), ['h1']) > -1) {
+            chapters.push({title: window.$(node).get(0).innerHTML, fileContent: ''})
+            return true
+          }
+
+          if (chapters[chapters.length - 1] !== undefined) {
+            // exclude element with &nbsp; content
+            if (window.$(node).html() === '&nbsp;' || window.$(node).is(':empty') || window.$(node).html() === '<br>') {
+              return true
+            }
+            // concat all element outerHtml/text after h1
+            chapters[chapters.length - 1]['fileContent'] += outerHtml
+          }
+        })
+
+        // chapters.forEach(function (item, i) {
+        //   // scope.data.title = item.title
+        //   // console.log(item)
+        //   scope.$set(scope.data, 'title', item.title)
+        //   console.log(scope.data.title)
+        //   console.log(scope.data)
+        // })
+        for (var i = 0, l = chapters.length; i < l; i++) {
+          scope.data.title = chapters[i].title
+          console.log(scope.data.title)
+          console.log(scope.data)
+        }
+
+        window.swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: scope.$t('CHAPTERS') + ' ' + scope.$t('SUCCESSFULY_IMPORTED'),
+          showConfirmButton: false,
+          timer: 1500
+        })
+      })
+    },
     updateBook () {
       var scope = this
       // scope.$parent.getBooks()
