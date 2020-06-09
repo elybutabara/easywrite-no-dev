@@ -45,7 +45,7 @@ exports.processUpdate = (window) => {
   autoUpdater.on('update-downloaded', function (data) {
     inProgress = false
     downloadedVersion = data.version
-    window.webContents.send('AUTO_UPDATE:downloaded', data)
+    if (window) window.webContents.send('AUTO_UPDATE:downloaded', data)
     ipcMain.on('AUTO_UPDATE:checkUpdateDownloaded', (event) => {
       event.reply('AUTO_UPDATE:downloaded', data)
     })
