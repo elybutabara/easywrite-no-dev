@@ -11,6 +11,9 @@ class BookController {
 
     const books = Book.query()
       .withGraphJoined('book_genre_collection')
+      .modifyGraph('book_genre_collection', builder => {
+        builder.whereNull('deleted_at')
+      })
       .withGraphJoined('genre')
       .where('author_id', user.author.uuid)
       .whereNull('books.deleted_at')
@@ -43,11 +46,30 @@ class BookController {
   static async save (data) {
     const saveBook = await Book.query().upsertGraph([data]).first()
 
-    const book = Book.query()
-      .withGraphJoined('genre')
-      .findById(saveBook.uuid)
+    /*
+    * Using .withGraphJoined('genre') will show all the genre with deleted_at of book_genre_collection
+    * */
+    // TODO : enhance withGraphJoined using modifyGraph through book_genre_collection deleted_at null
+    // const book = Book.query()
+    //   .withGraphJoined('genre')
+    //   .findById(saveBook.uuid)
 
-    return book
+    const bookModel = await this.getBookById(saveBook.uuid)
+    const genre = []
+    const genres = await BookController.getAllBookGenres()
+
+    // TODO : duplicate implementation in api/routes/users.js:59
+    bookModel.book_genre_collection.forEach(function (collection, indx) {
+      if (genres.find(x => (x.uuid === collection.genre_id)) !== undefined) {
+        var selectedGenre = genres.find(x => (x.uuid === collection.genre_id))
+        genre.push({
+          uuid: selectedGenre.uuid,
+          name: selectedGenre.name
+        })
+      }
+    })
+    bookModel.genre = genre
+    return bookModel
   }
 
   static async delete (bookId) {
