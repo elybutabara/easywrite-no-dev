@@ -230,6 +230,8 @@ export default {
 
       ipcRenderer.on('GET-DOCX-CONTENT-CHAPTER', function (event, data) {
         scope.data.chapter_version.content = data
+        scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+        scope.tempChapterVersionCont = data
       })
     },
     toggleAccordion: function (key) {

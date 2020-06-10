@@ -427,6 +427,8 @@ export default {
 
       ipcRenderer.on('GET-DOCX-CONTENT-SCENE', function (event, data) {
         scope.data.scene_version.content = data
+        scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+        scope.tempSceneVersionContent = data
       })
     },
     toggleAccordion: function (key) {
