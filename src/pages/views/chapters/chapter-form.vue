@@ -340,7 +340,7 @@ export default {
                 scope.CHANGE_COMPONENT({
                   tabKey: 'chapter-details-' + response.data.uuid,
                   tabComponent: 'chapter-details',
-                  tabData: {book_id: response.data.book_id, chapter: response.data},
+                  tabData: {book_id: response.data.book_id, chapter: response.data, book: scope.book},
                   tabTitle: this.$t('VIEW') + ' - ' + response.data.title,
                   tabIndex: scope.$store.getters.getActiveTab
                 })
