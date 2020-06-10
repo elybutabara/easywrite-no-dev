@@ -26,9 +26,16 @@ class BookController {
   }
 
   static getBookById (bookId) {
+    /*
+    * User modifyGraph to add condition for the related table
+    * using whereNull directly to query pointing to relatedColumn will return NULL if related table return is NULL
+    * */
     const book = Book.query().findById(bookId)
       .withGraphJoined('book_genre_collection')
-      .whereNull('book_genre_collection.deleted_at')
+      // .whereNull('book_genre_collection.deleted_at')
+      .modifyGraph('book_genre_collection', builder => {
+        builder.whereNull('deleted_at')
+      })
 
     return book
   }
