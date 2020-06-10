@@ -17,6 +17,17 @@
             </div>
         </div>
     </div>
+  <div v-if="chapter !== null" class="es-page-breadcrumbs">
+    <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+    /
+    <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})">{{ $t('CHAPTERS') }}</button>
+    /
+    <button @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + book.uuid, tabComponent: 'chapter-details', tabData: { book: book, chapter: chapter }, tabTitle: 'VIEW - ' + chapter.title})">{{ chapter.title || 'Untitled' }}</button>
+    /
+    <button class="current">
+      <span>{{ (data.id) ? data.title || $tc('Untitled') : $t('NEW_SCENE')}}</span>
+    </button>
+  </div>
     <div class="es-page-content">
         <div class="container">
             <div class="es-accordion">
