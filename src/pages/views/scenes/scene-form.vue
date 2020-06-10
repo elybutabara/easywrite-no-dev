@@ -1,5 +1,5 @@
 <template>
-<div class="page-scene-form">
+<div class="page-scene-form" v-if="page.is_ready" >
     <div class="es-page-head">
         <div class="inner">
             <div class="details">
