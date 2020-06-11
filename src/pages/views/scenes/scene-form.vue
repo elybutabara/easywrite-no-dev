@@ -483,14 +483,14 @@ export default {
     },
     onSceneStartContext: function (ctx) {
       var scope = this
-      if (scope.tempSceneStart !== ctx.selectedYMD) {
+      if (ctx.selectedYMD && scope.tempSceneStart !== ctx.selectedYMD) {
         scope.tempSceneStart = ctx.selectedYMD
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       }
     },
     onSceneEndContext: function (ctx) {
       var scope = this
-      if (scope.tempSceneEnd !== ctx.selectedYMD) {
+      if (ctx.selectedYMD && scope.tempSceneEnd !== ctx.selectedYMD) {
         scope.tempSceneEnd = ctx.selectedYMD
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       }
