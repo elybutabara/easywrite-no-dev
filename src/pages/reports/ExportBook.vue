@@ -78,7 +78,7 @@ export default {
           if ('cssText' in rule) { css.push(rule.cssText) } else { css.push(rule.selectorText + ' {\n' + rule.style.cssText + '\n}\n') }
         }
       }
-      // head.appendChild(style)
+      head.appendChild(style)
       style.type = 'text/css'
       if (style.styleSheet) {
         // This is required for IE8 and below.
