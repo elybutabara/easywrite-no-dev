@@ -17,7 +17,7 @@
             </div>
         </div>
     </div>
-  <div v-if="chapter !== null" class="es-page-breadcrumbs">
+  <div v-if="chapter" class="es-page-breadcrumbs">
     <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
     /
     <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})">{{ $t('CHAPTERS') }}</button>
