@@ -106,6 +106,8 @@ export default {
 
       ipcRenderer.on('GET-DOCX-CONTENT-BOOK', function (event, data) {
         scope.data.about = data
+        scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+        scope.tempAbout = data
       })
     },
     getGenre: function () {

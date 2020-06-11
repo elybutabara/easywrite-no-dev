@@ -1,4 +1,6 @@
 export default {
+  IMPORT_MULTIPLE_CHAPTERS: 'Import Av Flere Kapitler',
+  SUCCESSFULY_IMPORTED: 'Lagring Importere',
   A_LIST_OF_SCENES_THAT_DOES_NOT_BELONG_TO_ANY_CHAPTERS: 'En oversikt over scener som ikke tilhører et spesielt kapittel',
   ABOUT: 'Om',
   ADD_IT_INTO_SCENE: 'for å legge den inn i scenen',

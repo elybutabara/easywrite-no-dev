@@ -14,6 +14,7 @@
                     <span>{{exportLoading}}</span>
                   </div>
                 </b-button>
+                <button class="es-button-white" @click="getImport()">{{ $t('IMPORT_MULTIPLE_CHAPTERS') }}</button>
                 <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'storyboard-' + page.data.uuid, tabComponent: 'storyboard',  tabData: page.data, tabTitle: 'Story Board - ' + properties.title, newTab: true})">Story Board</button>
                 <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: $t('EDIT') + ' - ' + properties.title, newTab: true})">{{ $t('EDIT') }}</button>
                 <button class="es-button-red" @click="deleteBook()">{{ $t('DELETE') }}</button>
@@ -31,6 +32,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 const {ipcRenderer} = window.require('electron')
 export default {
   name: 'book-details',
@@ -44,13 +47,19 @@ export default {
       },
       export_book: this.$t('EXPORT_BOOK'),
       exportOnProgress: false,
-      exportLoading: this.$t('Loading')
+      exportLoading: this.$t('Loading'),
+      data: [],
+      selected_book_id: null
     }
   },
   computed: {
 
   },
   methods: {
+    getImport: function () {
+      var scope = this
+      ipcRenderer.send('IMPORT-DOCX-MULTI-CHAPTERS', scope.properties)
+    },
     updateBook () {
       var scope = this
       // scope.$parent.getBooks()
@@ -116,6 +125,49 @@ export default {
   }
 }
 
+ipcRenderer.on('GET-DOCX-CONTENT-MULTI-CHAPTERS-2', function (event, data) {
+  let chapters = []
+  let wholeChapter = []
+
+  const contents = window.$.parseHTML(data.html)
+
+  window.$.each(contents, function (i, node) {
+    const outerHtml = window.$(node).get(0).outerHTML
+    if (window.$.inArray(node.nodeName.toLowerCase(), ['h1']) > -1) {
+      chapters.push({title: window.$(node).get(0).innerHTML, fileContent: ''})
+      return true
+    }
+
+    if (chapters[chapters.length - 1] !== undefined) {
+      // exclude element with &nbsp; content
+      if (window.$(node).html() === '&nbsp;' || window.$(node).is(':empty') || window.$(node).html() === '<br>') {
+        return true
+      }
+      // concat all element outerHtml/text after h1
+      chapters[chapters.length - 1]['fileContent'] += outerHtml
+    }
+  })
+
+  for (var i = 0; i < chapters.length; i++) {
+    wholeChapter.push({book_id: data.book.uuid, title: chapters[i].title, chapter_version: {content: chapters[i].fileContent}})
+    axios
+      .post('http://localhost:3000/chapters', wholeChapter[i])
+      .then(response => {
+        if (response.data) {
+        }
+      })
+  }
+
+  wholeChapter = []
+
+  window.swal.fire({
+    position: 'center',
+    icon: 'success',
+    title: window.vm.$t('CHAPTERS') + ' ' + window.vm.$t('SUCCESSFULY_IMPORTED'),
+    showConfirmButton: false,
+    timer: 1500
+  })
+})
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>

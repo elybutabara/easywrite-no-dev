@@ -137,7 +137,7 @@ Vue.mixin(mixins)
 Vue.mixin(cookie)
 
 // eslint-disable-next-line no-new
-new Vue({
+window.vm = new Vue({
   el: '#app',
   router,
   store,

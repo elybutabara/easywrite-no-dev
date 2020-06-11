@@ -1,4 +1,6 @@
 export default {
+  IMPORT_MULTIPLE_CHAPTERS: 'Importera Flera Olika Kapitel',
+  SUCCESSFULY_IMPORTED: 'Framgångsrikt Importerad',
   A_LIST_OF_SCENES_THAT_DOES_NOT_BELONG_TO_ANY_CHAPTERS: 'En lista över scener som inte tillhör någon speciella kapitel',
   ABOUT: 'Om',
   ADD_IT_INTO_SCENE: 'Lägg till den till scenen',
