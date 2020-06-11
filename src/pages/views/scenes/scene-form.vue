@@ -899,7 +899,7 @@ export default {
 
     setTimeout(function () {
       scope.page.is_ready = true
-    }, 540)
+    }, 1000)
   }
 }
 </script>
