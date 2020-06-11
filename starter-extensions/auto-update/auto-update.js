@@ -54,7 +54,7 @@ exports.processUpdate = (window) => {
   autoUpdater.on('download-progress', function (d) {
     inProgress = true
     try {
-      window.webContents.send('AUTO_UPDATE:downloadProgress', {progress: d.percent})
+      if (window) window.webContents.send('AUTO_UPDATE:downloadProgress', {progress: d.percent})
     } catch (err) {
       log.error(err.message)
     }
@@ -64,7 +64,7 @@ exports.processUpdate = (window) => {
     inProgress = false
 
     if (isNetworkError(err)) {
-      window.webContents.send('AUTO_UPDATE:error', {error: err.message})
+      if (window) window.webContents.send('AUTO_UPDATE:error', {error: err.message})
     } else {
       if (err.code != 'ERR_UPDATER_LATEST_VERSION_NOT_FOUND') {
         log.error(err)
@@ -81,7 +81,7 @@ exports.processUpdate = (window) => {
       }
     })
 
-    if (downloadedVersion != version) {
+    if (downloadedVersion != version && window) {
       window.webContents.send('AUTO_UPDATE:updateAvailable', {version: data.version})
     }
   })
@@ -101,7 +101,10 @@ exports.processUpdate = (window) => {
       errorObject.message === 'net::ERR_CONNECTION_RESET' ||
       errorObject.message === 'net::ERR_CONNECTION_CLOSE' ||
       errorObject.message === 'net::ERR_NAME_NOT_RESOLVED' ||
-      errorObject.message === 'net::ERR_CONNECTION_TIMED_OUT'
+      errorObject.message === 'net::ERR_CONNECTION_TIMED_OUT' ||
+      errorObject.message === 'net::ERR_NETWORK_CHANGED' ||
+      errorObject.message === 'net::ERR_TIMED_OUT' ||
+      errorObject.message === 'No valid update available, can\'t quit and install'
   }
 }
 
