@@ -6,32 +6,27 @@
             <center><h2 style="page-break-before: always;">{{ book.title }}</h2></center>
           </div>
         </div>
+        <div class="break"></div>
         <!-- <pre><br clear=all style='mso-special-character:line-break;page-break-before:always'></pre> -->
-        <br clear=all style='mso-special-character:line-break;page-break-before:always' />
           <div class ="title">© Papermoon AS 2019</div>
           <div class ="title">www.papermoon.no</div>
           <div class ="title">Trykk og innbinding: Livonia Print</div>
           <div class ="title">Sats: Type-it AS, Trondheim 2019</div>
+          <div class="break"></div>
           <div class ="title">Coverdesign: Marius Renberg</div>
           <div class ="title">ISBN 978-82-690530-6-7</div>
           <div class ="title">1. opplag</div>
-          <div class ="title">Det er ikke tillatt å kopiere, videreformidle eller mangfoldiggjøre
-sider eller utdrag fra boken uten etter skriftlig avtale med forlaget.</div>
-        <br>
-        <br>
-        <br>
-        <br>
-
+          <div class ="title">Det er ikke tillatt å kopiere, videreformidle eller mangfoldiggjøresider eller utdrag fra boken uten etter skriftlig avtale med forlaget.</div>
           <!-- <div v-if="chapters" class="rows-print-as-pages">
             <div v-bind:key="chapter.id" v-for="chapter in chapters">
 
-                <div class ="title">{{chapter.title}}</div>
+                <div class ="title break-page">{{chapter.title}}</div>
                 <br>
                 <br>
                 <div v-html="chapter.chapter_version[chapter.chapter_version.length-1].content"></div>
 
               <div v-bind:key="scene.id" v-for="scene in chapter.scene">
-                    <div class ="title">{{scene.title}}</div>
+                    <div class ="title break-page">{{scene.title}}</div>
                     <br>
                     <br>
                     <div v-html="scene.scene_version[scene.scene_version.length-1].content"></div>
@@ -45,6 +40,7 @@ sider eller utdrag fra boken uten etter skriftlig avtale med forlaget.</div>
 
 <script>
 const electron = window.require('electron')
+const log = window.require('electron-log')
 const {ipcRenderer} = electron
 
 export default {
@@ -64,7 +60,8 @@ export default {
       // scope.injectCSSBeforeExport()
       // setTimeout(function () {
       var outerhtml = document.documentElement.outerHTML
-      console.log(outerhtml)
+      outerhtml = outerhtml.toString().split('<div class="break"></div>').join('<br style="page-break-before: always; clear: both" />')
+      log.info(outerhtml)
       ipcRenderer.send('EXPORT-WORD-BOOK', {html: outerhtml, book: scope.book})
       // }, 200)
     },
@@ -81,7 +78,7 @@ export default {
           if ('cssText' in rule) { css.push(rule.cssText) } else { css.push(rule.selectorText + ' {\n' + rule.style.cssText + '\n}\n') }
         }
       }
-      head.appendChild(style)
+      // head.appendChild(style)
       style.type = 'text/css'
       if (style.styleSheet) {
         // This is required for IE8 and below.
@@ -113,7 +110,7 @@ export default {
 
 </script>
 
-<style scoped>
+<style>
 .title {text-align:center;}
 .inner .book-title { text-align:center; width:100%; page-break-before: always;}
 .genre {padding:20px 20px;}
@@ -123,4 +120,25 @@ export default {
 .es-export-settings .btn-option.active { padding-left:8px;  background:#293742; color:#fff; }
 
 .export-button { border-radius:10px; background:#a6d2f5; margin-right:5px; padding:5px 12px; color:#293742; font-size:12px; cursor:pointer;}
+@media{
+  .book-title{
+    page-break-after: always !important;
+  }
+  /* include this style if you want the first row to be on the same page as whatever precedes it */
+  .book-title:last-child {
+    page-break-after: avoid;
+  }
+}
+
+</style>
+<style type="text/css">
+  .book-title12{
+    page-break-after: always !important;
+    page-break-inside:avoid;
+    border: 1px solid red;
+  }
+  .test1 {
+    page-break-before: always;
+    clear: both
+  }
 </style>
