@@ -831,6 +831,9 @@ export default {
 
         // scene history
         scope.scene_history = scope.GET_SCENE_HISTORY(scene.uuid)
+        setTimeout(function () {
+          scope.page.is_ready = true
+        }, 500)
       }, 1500)
     }
   },
@@ -895,12 +898,12 @@ export default {
             scope.selected_character_id_vp = { text: character.fullname, value: character.uuid }
           }
         }
+        setTimeout(function () {
+          console.log(scope.chapter)
+          scope.page.is_ready = true
+        }, 500)
       }, 500)
     }
-
-    setTimeout(function () {
-      scope.page.is_ready = true
-    }, 1000)
   }
 }
 </script>
