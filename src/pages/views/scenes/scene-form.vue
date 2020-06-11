@@ -665,7 +665,7 @@ export default {
                 scope.$store.dispatch('loadVersionsByScene', response.data)
                 scope.$store.dispatch('loadSceneHistory', response.data.uuid)
                 scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', response.data.uuid)
-                scope.CHANGE_COMPONENT({tabKey: 'scene-form-' + response.data.uuid, tabComponent: 'scene-form', tabData: { book: scope.book, scene: response.data }, tabTitle: scope.$t('EDIT') + ' - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
+                scope.CHANGE_COMPONENT({tabKey: 'scene-form-' + response.data.uuid, tabComponent: 'scene-form', tabData: { book: scope.book, chapter: scope.chapter, scene: response.data }, tabTitle: scope.$t('EDIT') + ' - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 // refresh vuex to update all related records
                 scope.$store.dispatch('updateSceneList', response.data)
@@ -759,12 +759,12 @@ export default {
     },
     loadScene (sceneProp) {
       var scope = this
-
+      scope.properties.scene = sceneProp
       setTimeout(function () {
         let scene = scope.$store.getters.findScene(sceneProp)
         let chapters = scope.$store.getters.getChaptersByBook(sceneProp.book_id)
         let chapter = scope.$store.getters.findChapter({ book_id: sceneProp.book_id, uuid: sceneProp.chapter_id })
-        let characters = scope.$store.getters.getCharactersByBook(scope.properties.scene.book_id)
+        let characters = scope.$store.getters.getCharactersByBook(sceneProp.book_id)
         let version = scope.$store.getters.findLatestSceneVersionByScene(sceneProp)
         let progress = scope.$store.getters.getTodayAuthorPersonalProgressForScene(sceneProp)
 
