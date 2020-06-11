@@ -876,6 +876,7 @@ export default {
       scope.$store.dispatch('loadSceneHistory', scope.properties.scene.uuid)
 
       scope.loadScene(scope.properties.scene)
+      scope.selected_chapter = scope.properties.chapter
     } else {
       setTimeout(function () {
         let chapters = scope.$store.getters.getChaptersByBook(scope.properties.book.uuid)
