@@ -49,7 +49,6 @@ exports.initMainWindow = (window) => {
     }).then(result => {
       if (result.canceled) {
         ExportWindow.webContents.send('SHOW-EXPORT-SETTINGS')
-        // if (ExportWindow != null) ExportWindow.close()
       } else {
         var HtmlDocx = require('html-docx-js')
         var fs = require('fs')
@@ -61,12 +60,10 @@ exports.initMainWindow = (window) => {
             MainWindow.webContents.send('SHOW-SWAL-ERROR-EXPORTING', result.filePath)
             ExportWindow.webContents.send('SHOW-EXPORT-SETTINGS')
             MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
-            // if (ExportWindow != null) ExportWindow.close()
           } else {
             ExportWindow.close()
             MainWindow.webContents.send('SHOW-SWAL-SUCCESS-EXPORTING', result.filePath)
             MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
-            // if (ExportWindow != null) ExportWindow.close()
           }
         })
       }
