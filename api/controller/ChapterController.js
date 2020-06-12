@@ -117,8 +117,22 @@ class ChapterController {
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await Chapter.query().insert(row)
-
+      data = await Chapter.query().insert({
+		  
+		  uuid: row.uuid,
+		  book_id: row.book_id,
+		  title: row.title,
+		  chapter_guidance: row.chapter_guidance,
+		  hidden: row.hidden,
+		  order: row.order,
+		  type: row.type,
+		  short_description: row.short_description,
+		  created_at: row.created_at,
+		  updated_at: row.updated_at,
+		  deleted_at: row.deleted_at,
+		  from_local: row.from_local,
+		  
+	  })
       // update uuid to match web
       data = await Chapter.query()
         .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })

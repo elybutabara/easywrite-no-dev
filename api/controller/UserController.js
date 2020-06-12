@@ -3,7 +3,7 @@ const path = require('path')
 const moment = require('moment')
 
 // eslint-disable-next-line no-unused-vars
-const { Author, User, Book } = require(path.join(__dirname, '..', 'models'))
+const { Author, AuthorName, User, Book } = require(path.join(__dirname, '..', 'models'))
 
 class UserController {
   static authenticate (username, password) {
@@ -42,6 +42,23 @@ class UserController {
     user = await User.query().findById(row.uuid).withGraphJoined('author')
 
     return user
+  }
+
+  static async saveAuthorDetails (row) {
+    var data = await AuthorName.query()
+      .patch(row)
+      .where('uuid', '=', row.uuid)
+
+    if (!data || data === 0) {
+      data = await AuthorName.query().insert(row)
+
+      // update uuid to match web
+      data = await AuthorName.query()
+        .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
+        .where('uuid', '=', data.uuid)
+    }
+
+    return data
   }
 
   static async saveSyncedDate (params) {

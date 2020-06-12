@@ -5,12 +5,13 @@
             <div class="inner">
                 <div class="details">
                     <div>
-                        <h4><strong>{{ properties.scene.title }}</strong></h4>
+                        <h4><strong>{{ properties.scene.title  || $tc('Untitled')}}</strong></h4>
                     </div>
                 </div>
                 <div class="actions">
                     <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
                     <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.scene.uuid, tabComponent: 'scene-form', tabData: { book: book, scene: properties.scene, chapter: chapter }, tabTitle: $t('EDIT')+ ' - ' +  properties.scene.title, newTab: true})">{{$t('EDIT').toUpperCase()}}</button>
+                    <button class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
                     <button class="es-button-white" @click="deleteScene(properties.scene)">{{$t('DELETE').toUpperCase()}}</button>
                 </div>
             </div>
@@ -43,9 +44,10 @@
             <div v-bind:class="{ 'active' : tab.active == 'versions' }" @click="changeTab('versions')" class="es-scene-details-tab-item">{{$t('VERSIONS').toUpperCase()}}</div>
             <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-scene-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
         </div>
+        <div style="position:relative;">
+        <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: scene, parent_name: 'scene' }"></Feedback>
         <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">
             <div class="export-content">
-<!--              <button class="es-button-white" @click="exportContent()">{{$t('EXPORT_CONTENT')}}</button>-->
               <b-button class="es-button-white" :disabled="exportOnProgress"  @click="exportContent()">
                 <div v-if="exportOnProgress === false"><span>{{$t('EXPORT_CONTENT')}}</span></div>
                 <div v-else>
@@ -70,6 +72,7 @@
         </div>
         <div v-if="tab.active === 'compare-versions'"  class="es-scene-details-tab-content">
             <scene-compare-versions :properties="{ scene: page.data.scene }"></scene-compare-versions>
+        </div>
         </div>
         <b-overlay :show="busy" no-wrap fixed @shown="$refs.dialog.focus()" @hidden="$refs.button.focus()">
             <template v-slot:overlay>
@@ -113,6 +116,7 @@
 </template>
 
 <script>
+import Feedback from '../../../components/Feedback'
 import TinyMCE from '../../../components/TinyMCE'
 import SceneLocations from '@/pages/views/scenes/scene-locations'
 import SceneItems from '@/pages/views/scenes/scene-items'
@@ -159,10 +163,12 @@ export default {
         }
       },
       exportOnProgress: false,
-      exportLoading: this.$t('Loading')
+      exportLoading: this.$t('Loading'),
+      show_feedbacks: false
     }
   },
   components: {
+    Feedback,
     TinyMCE,
     SceneLocations,
     SceneItems,
@@ -323,6 +329,10 @@ export default {
       var scope = this
       scope.exportOnProgress = true
       ipcRenderer.send('EXPORT-CONTENT-DOCX', {content: scope.getSceneContent, defaultfilename: scope.properties.scene.title + ' - ' + this.$t('CONTENT')})
+    },
+    toggleFeedbacks: function () {
+      let scope = this
+      scope.show_feedbacks = !scope.show_feedbacks
     }
   },
   mounted () {
@@ -342,7 +352,7 @@ export default {
     .es-scene-details-tab .es-scene-details-tab-item:after { content:''; position:absolute; bottom:0px; left:0px; height:3px;  width:100%; background:transparent;}
     .es-scene-details-tab .es-scene-details-tab-item.active:after { background:#922c39;  }
 
-    .es-scene-details-tab-content { position:relative; padding:30px; background:#fff; height:calc(100vh - 247px); overflow-y:auto; display:block; }
+    .es-scene-details-tab-content { position:relative; padding:30px; background:#fff; height:calc(100vh - 317px); overflow-y:auto; display:block; }
     .es-scene-details-tab-content.no-padding { padding:0px; }
     .es-scene-details-tab-content.active { display:block; }
 </style>

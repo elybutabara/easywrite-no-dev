@@ -8,14 +8,14 @@ const knexConnection = Knex(connection)
 global.knexConnection = knexConnection // to be use in starter.js(main.js) for update versions
 
 const { Author } = require(path.join(__dirname, 'models/Author'))
+const { AuthorName } = require(path.join(__dirname, 'models/AuthorName'))
 const { User } = require(path.join(__dirname, 'models/User'))
 const { BookGenre } = require(path.join(__dirname, 'models/BookGenre'))
 const { Relation } = require(path.join(__dirname, 'models/Relation'))
 const { Book } = require(path.join(__dirname, 'models/Book'))
-const { BookFeedback } = require(path.join(__dirname, 'models/BookFeedback'))
 const { Chapter } = require(path.join(__dirname, 'models/Chapter'))
-const { ChapterFeedback } = require(path.join(__dirname, 'models/ChapterFeedback'))
-const { ChapterFeedbackResponse } = require(path.join(__dirname, 'models/ChapterFeedbackResponse'))
+const { Feedback } = require(path.join(__dirname, 'models/Feedback'))
+const { FeedbackResponse } = require(path.join(__dirname, 'models/FeedbackResponse'))
 const { Scene } = require(path.join(__dirname, 'models/Scene'))
 const { Character } = require(path.join(__dirname, 'models/Character'))
 const { Item } = require(path.join(__dirname, 'models/Item'))
@@ -37,19 +37,19 @@ Model.knex(knexConnection)
 
 module.exports = {
   Author,
+  AuthorName,
   User,
   BookGenre,
   Relation,
   Book,
-  BookFeedback,
   Item,
   Location,
   Reader,
   BookGenreCollection,
   Chapter,
   ChapterVersion,
-  ChapterFeedback,
-  ChapterFeedbackResponse,
+  Feedback,
+  FeedbackResponse,
   Scene,
   Character,
   SceneVersion,

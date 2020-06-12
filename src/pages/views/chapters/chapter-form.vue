@@ -12,6 +12,7 @@
                 </div>
             </div>
             <div class="actions">
+                <button v-if="data.id != null" class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
                 <button v-if="data.id != null" class="es-button-white" @click="saveChapter()">{{$t('SAVE_CHANGES')}}</button>
                 <button v-else class="es-button-white" @click="saveChapter()">{{$t('SAVE')}}</button>
             </div>
@@ -27,7 +28,12 @@
             <span v-else>{{$t('NEW_CHAPTER')}}</span>
         </button>
     </div>
-    <div class="es-page-content">
+    <div class="es-page-content" style="position:relative;">
+        <div style="position:fixed; width:480px; height:calc(100vh - 247px); bottom:0px; right:18px; z-index:4000;">
+          <div style="position:relative; height:100%;">
+           <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></Feedback>
+          </div>
+        </div>
         <div class="container">
             <div class="es-accordion">
                 <div class="item" v-bind:class="{'active': accordion['chapter-details'] === 'active'}">
@@ -159,6 +165,7 @@
 </template>
 
 <script>
+import Feedback from '../../../components/Feedback'
 import TinyMCE from '../../../components/TinyMCE'
 
 import CommentBase from '../../../components/CommentBase'
@@ -227,11 +234,13 @@ export default {
         onAddComment: function () {
           scope.saveChapter(true)
         }
-      }
+      },
+      show_feedbacks: false
     }
   },
   components: {
-    TinyMCE
+    TinyMCE,
+    Feedback
   },
   computed: {
     book: function () {
@@ -257,6 +266,8 @@ export default {
 
       ipcRenderer.on('GET-DOCX-CONTENT-CHAPTER', function (event, data) {
         scope.data.chapter_version.content = data
+        scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+        scope.tempChapterVersionCont = data
       })
     },
     toggleAccordion: function (key) {
@@ -350,6 +361,7 @@ export default {
         .then(response => {
           if (response.data) {
             scope.saveRelatedTables(response.data.uuid)
+
             if (!noAlert) {
               window.swal.fire({
                 position: 'center',
@@ -368,7 +380,7 @@ export default {
                   scope.CHANGE_COMPONENT({
                     tabKey: 'chapter-details-' + response.data.uuid,
                     tabComponent: 'chapter-details',
-                    tabData: {book_id: response.data.book_id, chapter: response.data},
+                    tabData: {book_id: response.data.book_id, chapter: response.data, book: scope.book},
                     tabTitle: this.$t('VIEW') + ' - ' + response.data.title,
                     tabIndex: scope.$store.getters.getActiveTab
                   })
@@ -461,6 +473,10 @@ export default {
         // chapter history
         scope.chapter_history = scope.GET_CHAPTER_HISTORY(chapter.uuid)
       }, 500)
+    },
+    toggleFeedbacks: function () {
+      let scope = this
+      scope.show_feedbacks = !scope.show_feedbacks
     }
   },
   beforeMount () {
@@ -489,6 +505,9 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    .es-page-content {
+        height: calc(100vh - 255px);
+    }
     .page-title { font-family: 'Crimson Roman Bold'; position:relative; padding-top:20px; }
     .page-title h3 { font-size:35px; }
 

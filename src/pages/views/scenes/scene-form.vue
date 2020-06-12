@@ -1,5 +1,5 @@
 <template>
-<div class="page-scene-form">
+<div class="page-scene-form" v-if="page.is_ready" >
     <div class="es-page-head">
         <div class="inner">
             <div class="details">
@@ -17,6 +17,17 @@
             </div>
         </div>
     </div>
+  <div v-if="chapter" class="es-page-breadcrumbs">
+    <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
+    /
+    <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})">{{ $t('CHAPTERS') }}</button>
+    /
+    <button @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + book.uuid, tabComponent: 'chapter-details', tabData: { book: book, chapter: chapter }, tabTitle: 'VIEW - ' + chapter.title})">{{ chapter.title || 'Untitled' }}</button>
+    /
+    <button class="current">
+      <span>{{ (data.id) ? data.title || $tc('Untitled') : $t('NEW_SCENE')}}</span>
+    </button>
+  </div>
     <div class="es-page-content">
         <div class="container">
             <div class="es-accordion">
@@ -456,6 +467,8 @@ export default {
 
       ipcRenderer.on('GET-DOCX-CONTENT-SCENE', function (event, data) {
         scope.data.scene_version.content = data
+        scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+        scope.tempSceneVersionContent = data
       })
     },
     toggleAccordion: function (key) {
@@ -501,14 +514,14 @@ export default {
     },
     onSceneStartContext: function (ctx) {
       var scope = this
-      if (scope.tempSceneStart !== ctx.selectedYMD) {
+      if (ctx.selectedYMD && scope.tempSceneStart !== ctx.selectedYMD) {
         scope.tempSceneStart = ctx.selectedYMD
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       }
     },
     onSceneEndContext: function (ctx) {
       var scope = this
-      if (scope.tempSceneEnd !== ctx.selectedYMD) {
+      if (ctx.selectedYMD && scope.tempSceneEnd !== ctx.selectedYMD) {
         scope.tempSceneEnd = ctx.selectedYMD
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       }
@@ -685,9 +698,9 @@ export default {
                   scope.$store.dispatch('loadVersionsByScene', response.data)
                   scope.$store.dispatch('loadSceneHistory', response.data.uuid)
                   scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', response.data.uuid)
-                  scope.CHANGE_COMPONENT({tabKey: 'scene-form-' + response.data.uuid, tabComponent: 'scene-form', tabData: { book: scope.book, scene: response.data }, tabTitle: scope.$t('EDIT') + ' - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
+                  scope.CHANGE_COMPONENT({tabKey: 'scene-form-' + response.data.uuid, tabComponent: 'scene-form', tabData: { book: scope.book, chapter: scope.chapter, scene: response.data }, tabTitle: scope.$t('EDIT') + ' - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
                 } else {
-                // refresh vuex to update all related records
+                  // refresh vuex to update all related records
                   scope.$store.dispatch('updateSceneList', response.data)
                   scope.$store.dispatch('loadVersionsByScene', response.data)
                   scope.$store.dispatch('changeTabTitle', {key: 'scene-form-' + response.data.uuid, title: scope.$t('EDIT') + ' - ' + response.data.title})
@@ -780,12 +793,12 @@ export default {
     },
     loadScene (sceneProp) {
       var scope = this
-
+      scope.properties.scene = sceneProp
       setTimeout(function () {
         let scene = scope.$store.getters.findScene(sceneProp)
         let chapters = scope.$store.getters.getChaptersByBook(sceneProp.book_id)
         let chapter = scope.$store.getters.findChapter({ book_id: sceneProp.book_id, uuid: sceneProp.chapter_id })
-        let characters = scope.$store.getters.getCharactersByBook(scope.properties.scene.book_id)
+        let characters = scope.$store.getters.getCharactersByBook(sceneProp.book_id)
         let version = scope.$store.getters.findLatestSceneVersionByScene(sceneProp)
         let progress = scope.$store.getters.getTodayAuthorPersonalProgressForScene(sceneProp)
 
@@ -852,6 +865,9 @@ export default {
 
         // scene history
         scope.scene_history = scope.GET_SCENE_HISTORY(scene.uuid)
+        setTimeout(function () {
+          scope.page.is_ready = true
+        }, 500)
       }, 1500)
     }
   },
@@ -897,30 +913,28 @@ export default {
       scope.$store.dispatch('loadSceneHistory', scope.properties.scene.uuid)
 
       scope.loadScene(scope.properties.scene)
+      scope.selected_chapter = scope.properties.chapter
     } else {
       setTimeout(function () {
         let chapters = scope.$store.getters.getChaptersByBook(scope.properties.book.uuid)
-        chapters.forEach(function (row, index) {
-          scope.options_chapters.push(row)
-        })
-        // scope.options_chapters
-
         var bookCharacters = scope.$store.getters.getCharactersByBook(scope.properties.book.uuid)
-        // console.log(bookCharacters)
-        for (let i = 0; i < bookCharacters.length; i++) {
-          let character = bookCharacters[i]
-          scope.options_character_id_vp.push({ text: character.fullname, value: character.uuid })
+        // give time to load data before processing since other time dispatch take time
+        setTimeout(function () {
+          chapters.forEach(function (row, index) {
+            scope.options_chapters.push(row)
+          })
 
-          if (scope.properties.scene !== null && scope.properties.scene.character_id_vp === character.uuid) {
-            scope.selected_character_id_vp = { text: character.fullname, value: character.uuid }
+          for (let i = 0; i < bookCharacters.length; i++) {
+            let character = bookCharacters[i]
+            scope.options_character_id_vp.push({ text: character.fullname, value: character.uuid })
+            if (scope.properties.scene !== null && scope.properties.scene.character_id_vp === character.uuid) {
+              scope.selected_character_id_vp = { text: character.fullname, value: character.uuid }
+            }
           }
-        }
-      }, 500)
+          scope.page.is_ready = true
+        }, 500)
+      }, 1000)
     }
-
-    setTimeout(function () {
-      scope.page.is_ready = true
-    }, 540)
   }
 }
 </script>

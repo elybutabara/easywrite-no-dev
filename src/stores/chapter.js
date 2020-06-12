@@ -95,6 +95,77 @@ export default {
         }
       }
       return null
+    },
+    getChapterIndex: state => (chapter) => {
+      if (state.chapters.hasOwnProperty(chapter.book_id)) {
+        let rows = state.chapters[chapter.book_id].rows
+        for (let i = 0; i < rows.length; i++) {
+          let row = rows[i]
+          if (row.uuid === chapter.uuid) {
+            return i
+          }
+        }
+      }
+      return null
+    },
+    getPrevChapter: state => (chapter, isHiddenIncluded = true) => {
+      if (state.chapters.hasOwnProperty(chapter.book_id)) {
+        let rows = state.chapters[chapter.book_id].rows
+        var index = 0
+        for (var i = 0; i < rows.length; i++) {
+          let row = rows[i]
+          if (row.uuid === chapter.uuid) {
+            index = i
+            break
+          }
+        }
+        console.log('HERE ' + isHiddenIncluded)
+
+        if (index > 0) {
+          for (let x = (index - 1); x >= 0; x--) {
+            let row = rows[x]
+            if (isHiddenIncluded) {
+              return row
+            } else if (!isHiddenIncluded && !row.hidden) {
+              return row
+            } else if (x <= 0) {
+              return null
+            }
+          }
+        } else {
+          return null
+        }
+      }
+      return null
+    },
+    getNextChapter: state => (chapter, isHiddenIncluded = true) => {
+      if (state.chapters.hasOwnProperty(chapter.book_id)) {
+        let rows = state.chapters[chapter.book_id].rows
+        var index = 0
+        for (var i = 0; i < rows.length; i++) {
+          let row = rows[i]
+          if (row.uuid === chapter.uuid) {
+            index = i
+            break
+          }
+        }
+        console.log('HERE ' + isHiddenIncluded)
+        if (index < rows.length) {
+          for (let x = (index + 1); x < rows.length; x++) {
+            let row = rows[x]
+            if (isHiddenIncluded) {
+              return row
+            } else if (!isHiddenIncluded && !row.hidden) {
+              return row
+            } else if (x <= 0) {
+              return null
+            }
+          }
+        } else {
+          return null
+        }
+      }
+      return null
     }
   },
   mutations: {

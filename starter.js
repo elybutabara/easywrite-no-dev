@@ -24,7 +24,8 @@ const listener = require('./api/listener.js')
 const menu = require('./menu')
 const exportdocx = require('./starter-extensions/export-reports/docx/export-docx')
 const exportPdf = require('./starter-extensions/export-reports/pdf/export-pdf')
-const importdocx = require('./starter-extensions/imports/docx/import-docx')
+const import_docx_per_content = require('./starter-extensions/imports/docx/import-docx-per-content')
+const import_docx_multi_chapters = require('./starter-extensions/imports/docx/import-docx-multi-chapters')
 
 if(process.platform == "darwin"){
   //disable unwanted Emoji and Dictation in Menu before calling app event
@@ -95,7 +96,8 @@ function createWindow () {
 
   exportPdf.initMainWindow(mainWindow)
   exportdocx.initMainWindow(mainWindow)
-  importdocx.initMainWindow(mainWindow)
+  import_docx_per_content.initMainWindow(mainWindow)
+  import_docx_multi_chapters.initMainWindow(mainWindow)
   autoUpdate.processUpdate(mainWindow)
 
   ipcMain.on('GET_PROCESS_PLATFORM', function (e, args) {

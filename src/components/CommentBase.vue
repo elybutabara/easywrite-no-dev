@@ -6,7 +6,7 @@ import Vue from 'vue'
 window.commentBaseFn = function (el, binding) {
   binding.commentbase_sidebar_id = ('commentbase-sidebar-' + Math.random()).replace('.', '')
   document.body.insertAdjacentHTML('beforeend', `
-  <div v-if="selected_comments_id !== null" id="` + binding.commentbase_sidebar_id + `" class="commentbase-comments" style="position: fixed; z-index: 1000; bottom: 0; right: 37px; width: 300px; height: calc(100% - 337px); background: #324553; border-left: 1px solid #f1f1f1; padding: 5px 15px; margin: 0;">
+  <div v-if="selected_comments_id !== null" id="` + binding.commentbase_sidebar_id + `" class="commentbase-comments" style="position: fixed; z-index: 5000; bottom: 0; right: 37px; width: 300px; height: calc(100% - 337px); background: #324553; border-left: 1px solid #f1f1f1; padding: 5px 15px; margin: 0;">
     <div class="commentbase-comments-header" style="text-align: right;">
       <a href="#" v-on:click.prevent="close($event)"><i class="fa fa-times"></i></a>
     </div>
