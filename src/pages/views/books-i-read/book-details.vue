@@ -6,10 +6,14 @@
                 <h4>{{ properties.title }}</h4>
                 <small>{{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
             </div>
+            <div class="actions">
+              <button class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
+            </div>
         </div>
         <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>
     </div>
-    <div class="es-page-content">
+    <div class="es-page-content" style="position:relative;">
+        <Feedback v-if="show_feedbacks" :properties="{ book: properties, parent: properties, parent_name: 'book' }"></Feedback>
         <div class="es-panel">
             <h4>{{ $t('ABOUT') }}</h4>
             <div v-html="properties.about"></div>
@@ -19,7 +23,9 @@
 </template>
 
 <script>
+import Feedback from '../../../components/Feedback'
 const {ipcRenderer} = window.require('electron')
+
 export default {
   name: 'books-i-read-book-details',
   props: ['properties'],
@@ -30,11 +36,15 @@ export default {
         title: '',
         data: null
       },
+      show_feedbacks: false,
       export_book: this.$t('EXPORT').toUpperCase() + ' ' + this.$tc('BOOK', 1).toUpperCase()
     }
   },
   computed: {
 
+  },
+  components: {
+    Feedback
   },
   methods: {
     updateBook () {
@@ -89,8 +99,11 @@ export default {
       ipcRenderer.on('CHANGE-EXPORT-BOOK-BUTTON-NAME', function (event, data) {
         scope.export_book = scope.$t('EXPORT').toUpperCase() + ' ' + scope.$tc('BOOK', 1).toUpperCase()
       })
+    },
+    toggleFeedbacks: function () {
+      let scope = this
+      scope.show_feedbacks = !scope.show_feedbacks
     }
-
   },
   mounted () {
     var scope = this

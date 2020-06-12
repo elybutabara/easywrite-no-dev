@@ -244,6 +244,15 @@ ul { margin-left:0px; list-style:none;  }
     text-overflow: ellipsis;
 }
 
+.ellipsis-4 {
+  word-wrap: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .b-overlay .position-absolute {
   width: 75%;
 }

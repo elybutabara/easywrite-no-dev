@@ -17,12 +17,14 @@
                 <button class="es-button-white" @click="getImport()">{{ $t('IMPORT_MULTIPLE_CHAPTERS') }}</button>
                 <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'storyboard-' + page.data.uuid, tabComponent: 'storyboard',  tabData: page.data, tabTitle: 'Story Board - ' + properties.title, newTab: true})">Story Board</button>
                 <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: $t('EDIT') + ' - ' + properties.title, newTab: true})">{{ $t('EDIT') }}</button>
+                <button class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
                 <button class="es-button-red" @click="deleteBook()">{{ $t('DELETE') }}</button>
             </div>
         </div>
         <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>
     </div>
-    <div class="es-page-content">
+    <div class="es-page-content" style="position:relative;">
+      <Feedback v-if="show_feedbacks" :properties="{ book: properties, parent: properties, parent_name: 'book' }"></Feedback>
         <div class="es-panel">
             <h4>{{ $t('ABOUT') }}</h4>
             <div v-html="properties.about"></div>
@@ -33,8 +35,9 @@
 
 <script>
 import axios from 'axios'
-
+import Feedback from '../../../components/Feedback'
 const {ipcRenderer} = window.require('electron')
+
 export default {
   name: 'book-details',
   props: ['properties'],
@@ -49,11 +52,15 @@ export default {
       exportOnProgress: false,
       exportLoading: this.$t('Loading'),
       data: [],
-      selected_book_id: null
+      selected_book_id: null,
+      show_feedbacks: false
     }
   },
   computed: {
-
+    Feedback
+  },
+  components: {
+    Feedback
   },
   methods: {
     getImport: function () {
@@ -114,6 +121,10 @@ export default {
         scope.exportOnProgress = false
         scope.export_book = scope.$t('EXPORT_BOOK')
       })
+    },
+    toggleFeedbacks: function () {
+      let scope = this
+      scope.show_feedbacks = !scope.show_feedbacks
     }
 
   },

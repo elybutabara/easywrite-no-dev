@@ -126,7 +126,30 @@ class SceneController {
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await Scene.query().insert(row)
+      data = await Scene.query().insert({
+		  
+		  uuid: row.uuid,
+		  book_id: row.book_id,
+		  chapter_id: row.chapter_id,
+		  title: row.title,
+		  short_description: row.short_description,
+		  typeofscene: row.typeofscene,
+		  importance: row.importance,
+		  tags: row.tags,
+		  status: row.status,
+		  notes: row.notes,
+		  weather_type: row.weather_type,
+		  order: row.order,
+		  date_starts: row.date_starts,
+		  date_ends: row.date_ends,
+		  character_id_vp: row.character_id_vp,
+		  viewpoint_description: row.viewpoint_description,
+		  created_at: row.created_at,
+		  updated_at: row.updated_at,
+		  deleted_at: row.deleted_at,
+		  from_local: row.from_local,
+		  
+	  })
 
       // update uuid to match web
       data = await Scene.query()

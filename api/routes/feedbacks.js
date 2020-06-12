@@ -4,18 +4,26 @@ const path = require('path')
 const express = require('express')
 const router = express.Router()
 
-const { BookFeedbackController } = require(path.join(__dirname, '..', 'controllers'))
+const { FeedbackController } = require(path.join(__dirname, '..', 'controllers'))
 
-router.post('/', async function (req, res) {
-  const character = await BookFeedbackController.save(req.body)
+router.post('/update-status', async function (req, res) {
+  const feedback = await FeedbackController.updateStatus(req.body)
 
   res
     .status(200)
-    .json(character)
+    .json(feedback)
+})
+
+router.post('/', async function (req, res) {
+  const feedback = await FeedbackController.save(req.body)
+
+  res
+    .status(200)
+    .json(feedback)
 })
 
 router.delete('/:ID', async function (req, res) {
-  const character = await BookFeedbackController.delete(req.params.ID)
+  const character = await FeedbackController.delete(req.params.ID)
 
   res
     .status(200)
@@ -23,7 +31,31 @@ router.delete('/:ID', async function (req, res) {
 })
 
 router.get('/syncable', async function (req, res) {
-  const rows = await BookFeedbackController.getSyncable(req.query.userID)
+  const rows = await FeedbackController.getSyncable(req.query.userID)
+
+  res
+    .status(200)
+    .json(rows)
+})
+
+router.get('/book/:chapterId', async function (req, res) {
+  const rows = await FeedbackController.getAllFeedbacksByBookId(req.params.chapterId)
+
+  res
+    .status(200)
+    .json(rows)
+})
+
+router.get('/chapter/:chapterId', async function (req, res) {
+  const rows = await FeedbackController.getAllFeedbacksByChapterId(req.params.chapterId)
+
+  res
+    .status(200)
+    .json(rows)
+})
+
+router.get('/scene/:chapterId', async function (req, res) {
+  const rows = await FeedbackController.getAllFeedbacksBySceneId(req.params.chapterId)
 
   res
     .status(200)
@@ -31,7 +63,7 @@ router.get('/syncable', async function (req, res) {
 })
 
 router.post('/sync', async function (req, res) {
-  const row = await BookFeedbackController.sync(req.body)
+  const row = await FeedbackController.sync(req.body)
 
   res
     .status(200)

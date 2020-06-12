@@ -76,7 +76,25 @@ class CharacterController {
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await Character.query().insert(row)
+      data = await Character.query().insert({
+		  
+		  uuid: row.uuid,
+		  book_id: row.book_id,
+		  shortname: row.shortname,
+		  fullname: row.fullname,
+		  nickname: row.nickname,
+		  birthdate: row.birthdate,
+		  occupation: row.occupation,
+		  description: row.description,
+		  bio: row.bio,
+		  goals: row.goals,
+		  picture: row.picture,
+		  created_at: row.created_at,
+		  updated_at: row.updated_at,
+		  deleted_at: row.deleted_at,
+		  from_local: row.from_local,
+		  
+	  })
 
       // update uuid to match web
       data = await Character.query()

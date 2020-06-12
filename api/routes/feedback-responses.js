@@ -4,10 +4,10 @@ const path = require('path')
 const express = require('express')
 const router = express.Router()
 
-const { ChapterFeedbackResponseController } = require(path.join(__dirname, '..', 'controllers'))
+const { FeedbackResponseController } = require(path.join(__dirname, '..', 'controllers'))
 
 router.post('/', async function (req, res) {
-  const character = await ChapterFeedbackResponseController.save(req.body)
+  const character = await FeedbackResponseController.save(req.body)
 
   res
     .status(200)
@@ -15,7 +15,7 @@ router.post('/', async function (req, res) {
 })
 
 router.delete('/:ID', async function (req, res) {
-  const character = await ChapterFeedbackResponseController.delete(req.params.ID)
+  const character = await FeedbackResponseController.delete(req.params.ID)
 
   res
     .status(200)
@@ -23,7 +23,7 @@ router.delete('/:ID', async function (req, res) {
 })
 
 router.get('/syncable', async function (req, res) {
-  const rows = await ChapterFeedbackResponseController.getSyncable(req.query.userID)
+  const rows = await FeedbackResponseController.getSyncable(req.query.userID)
 
   res
     .status(200)
@@ -31,7 +31,7 @@ router.get('/syncable', async function (req, res) {
 })
 
 router.post('/sync', async function (req, res) {
-  const row = await ChapterFeedbackResponseController.sync(req.body)
+  const row = await FeedbackResponseController.sync(req.body)
 
   res
     .status(200)
