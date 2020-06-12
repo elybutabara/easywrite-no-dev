@@ -1,46 +1,65 @@
 <template>
   <div v-if="page.is_ready == true && book" class="es-page-content" style="height: auto">
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
 
         <div class="inner">
           <div class="book-title">
-            <center><h2 style="page-break-before: always;">{{ book.title }}</h2></center>
+            <center><h1>{{ book.title }}</h1></center>
           </div>
         </div>
+
         <div class="break"></div>
-        <!-- <pre><br clear=all style='mso-special-character:line-break;page-break-before:always'></pre> -->
-          <div class ="title">© Papermoon AS 2019</div>
+
+          <div class ="title">© Papermoon AS 2020</div>
           <div class ="title">www.papermoon.no</div>
+          <br/>
           <div class ="title">Trykk og innbinding: Livonia Print</div>
-          <div class ="title">Sats: Type-it AS, Trondheim 2019</div>
-          <div class="break"></div>
+          <div class ="title">Sats: Type-it AS, Trondheim 2020</div>
           <div class ="title">Coverdesign: Marius Renberg</div>
+          <br/>
           <div class ="title">ISBN 978-82-690530-6-7</div>
           <div class ="title">1. opplag</div>
+          <br/>
           <div class ="title">Det er ikke tillatt å kopiere, videreformidle eller mangfoldiggjøresider eller utdrag fra boken uten etter skriftlig avtale med forlaget.</div>
-          <!-- <div v-if="chapters" class="rows-print-as-pages">
+
+          <div class="break"></div>
+
+          <div v-if="chapters" class="rows-print-as-pages">
             <div v-bind:key="chapter.id" v-for="chapter in chapters">
 
-                <div class ="title break-page">{{chapter.title}}</div>
+                <div class ="title">{{chapter.title}}</div>
                 <br>
                 <br>
                 <div v-html="chapter.chapter_version[chapter.chapter_version.length-1].content"></div>
 
               <div v-bind:key="scene.id" v-for="scene in chapter.scene">
-                    <div class ="title break-page">{{scene.title}}</div>
+                    <div class ="title">{{scene.title}}</div>
                     <br>
                     <br>
                     <div v-html="scene.scene_version[scene.scene_version.length-1].content"></div>
               </div>
 
             </div>
-          </div> -->
+          </div>
 
   </div>
 </template>
 
 <script>
 const electron = window.require('electron')
-const log = window.require('electron-log')
+// const log = window.require('electron-log')
 const {ipcRenderer} = electron
 
 export default {
@@ -61,7 +80,7 @@ export default {
       // setTimeout(function () {
       var outerhtml = document.documentElement.outerHTML
       outerhtml = outerhtml.toString().split('<div class="break"></div>').join('<br style="page-break-before: always; clear: both" />')
-      log.info(outerhtml)
+      // log.info(outerhtml)
       ipcRenderer.send('EXPORT-WORD-BOOK', {html: outerhtml, book: scope.book})
       // }, 200)
     },
@@ -94,16 +113,16 @@ export default {
     ipcRenderer.on('EXPORT-DOCX-GET-BOOK', function (event, data) {
       scope.book = data
 
-      // scope.$store.dispatch('loadChaptersWithScenesByBook', scope.book.uuid)
+      scope.$store.dispatch('loadChaptersWithScenesByBook', scope.book.uuid)
 
-      // setTimeout(function () {
-      //   scope.chapters = scope.$store.getters.getChaptersByBook(scope.book.uuid)
-      scope.page.is_ready = true
-      // }, 2000)
+      setTimeout(function () {
+        scope.chapters = scope.$store.getters.getChaptersByBook(scope.book.uuid)
+        scope.page.is_ready = true
+      }, 2000)
 
       setTimeout(function () {
         scope.exportBook()
-      }, 500)
+      }, 1000)
     })
   }
 }
@@ -112,7 +131,7 @@ export default {
 
 <style>
 .title {text-align:center;}
-.inner .book-title { text-align:center; width:100%; page-break-before: always;}
+.inner .book-title { text-align:center; width:100%; font-size:80px;}
 .genre {padding:20px 20px;}
 
 .es-export-settings { text-align:left; background:#fff; border-bottom:1px solid #ccc; height:40px; line-height:40px; padding:0px 10px; }
@@ -120,15 +139,15 @@ export default {
 .es-export-settings .btn-option.active { padding-left:8px;  background:#293742; color:#fff; }
 
 .export-button { border-radius:10px; background:#a6d2f5; margin-right:5px; padding:5px 12px; color:#293742; font-size:12px; cursor:pointer;}
-@media{
+
+/* @media {
   .book-title{
     page-break-after: always !important;
   }
-  /* include this style if you want the first row to be on the same page as whatever precedes it */
   .book-title:last-child {
     page-break-after: avoid;
   }
-}
+} */
 
 </style>
 <style type="text/css">
