@@ -98,6 +98,7 @@
                                 </div>
                                 <div class="form-group">
                                     <tiny-editor :initValue="data.chapter_version.content" v-on:getEditorContent="setContent" class="form-control" />
+                                    <div v-commentbase="commentbase_params"></div>
                                 </div>
                                 <div v-if="show_history" class="chapter-history-items slideInRight animated">
                                     <div class="note">
@@ -159,12 +160,18 @@
 
 <script>
 import TinyMCE from '../../../components/TinyMCE'
+
+import CommentBase from '../../../components/CommentBase'
 const {ipcRenderer} = window.require('electron')
 
 export default {
   name: 'chapter-form',
   props: ['properties'],
+  directives: {
+    commentbase: CommentBase
+  },
   data: function () {
+    var scope = this
     return {
       page: {
         is_ready: false,
@@ -209,7 +216,18 @@ export default {
       chapter_history: {},
       show_history: false,
       view_history: false,
-      historyContent: ''
+      historyContent: '',
+      commentbase_params: {
+        tinymce: true,
+        onMounted: (vm) => {
+          scope.commentbase_vm = vm
+          vm.setAuthor(this.getAuthor)
+          vm.setCommentsJSON(this.comments)
+        },
+        onAddComment: function () {
+          scope.saveChapter(true)
+        }
+      }
     }
   },
   components: {
@@ -221,6 +239,15 @@ export default {
     },
     chapter: function () {
       return this.properties.chapter
+    },
+    comments: function () {
+      var scope = this
+      var chapterID = scope.chapter.uuid
+      return this.$store.getters.getChapterComments(chapterID)
+    },
+    getAuthor: function () {
+      var scope = this
+      return scope.$store.getters.getAuthor
     }
   },
   methods: {
@@ -308,9 +335,10 @@ export default {
 
       return isValid
     },
-    saveChapter () {
+    saveChapter (noAlert) {
       var scope = this
       scope.data.chapter_version.content = scope.tempChapterVersionCont
+      scope.data.chapter_version.comments = scope.commentbase_vm.getCommentsJSON()
 
       // If upon validation it return error do not save character and display errors
       if (!scope.validate()) {
@@ -322,47 +350,48 @@ export default {
         .then(response => {
           if (response.data) {
             scope.saveRelatedTables(response.data.uuid)
+            if (!noAlert) {
+              window.swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: this.$t('CHAPTER') + ' ' + this.$t('SUCCESSFULY_SAVED'),
+                showConfirmButton: false,
+                timer: 1500
+              }).then(() => {
+                scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+                if (scope.data.uuid === null) {
+                  scope.$store.dispatch('updateChapterList', response.data)
+                  scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
+                  scope.$store.dispatch('loadChapterHistory', response.data.uuid)
+                  scope.$store.dispatch('loadTodayAuthorPersonalProgressForChapter', response.data.uuid)
+                  // scope.$store.dispatch('updateChapterVersionList', scope.data.chapter_version)
+                  scope.CHANGE_COMPONENT({
+                    tabKey: 'chapter-details-' + response.data.uuid,
+                    tabComponent: 'chapter-details',
+                    tabData: {book_id: response.data.book_id, chapter: response.data},
+                    tabTitle: this.$t('VIEW') + ' - ' + response.data.title,
+                    tabIndex: scope.$store.getters.getActiveTab
+                  })
+                } else {
+                  scope.$store.dispatch('updateChapterList', response.data)
+                  scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
+                  scope.$store.dispatch('loadChapterHistory', response.data.uuid)
+                  scope.$store.dispatch('loadTodayAuthorPersonalProgressForChapter', response.data.uuid)
+                  // scope.$store.dispatch('updateChapterVersionList', scope.data.chapter_version)
+                  // scope.CHANGE_COMPONENT({tabKey: 'chapter-details-' + response.data.uuid, tabComponent: 'chapter-details', tabData: { book_id: response.data.book_id, chapter: response.data }, tabTitle: 'View - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
+                  scope.$store.dispatch('changeTabTitle', {
+                    key: 'chapter-form-' + response.data.uuid,
+                    title: this.$t('EDIT') + ' - ' + response.data.title
+                  })
+                  scope.$store.dispatch('changeTabTitle', {
+                    key: 'chapter-details-' + response.data.uuid,
+                    title: this.$t('VIEW') + ' - ' + response.data.title
+                  })
+                }
 
-            window.swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: this.$t('CHAPTER') + ' ' + this.$t('SUCCESSFULY_SAVED'),
-              showConfirmButton: false,
-              timer: 1500
-            }).then(() => {
-              scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
-              if (scope.data.uuid === null) {
-                scope.$store.dispatch('updateChapterList', response.data)
-                scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
-                scope.$store.dispatch('loadChapterHistory', response.data.uuid)
-                scope.$store.dispatch('loadTodayAuthorPersonalProgressForChapter', response.data.uuid)
-                // scope.$store.dispatch('updateChapterVersionList', scope.data.chapter_version)
-                scope.CHANGE_COMPONENT({
-                  tabKey: 'chapter-details-' + response.data.uuid,
-                  tabComponent: 'chapter-details',
-                  tabData: {book_id: response.data.book_id, chapter: response.data},
-                  tabTitle: this.$t('VIEW') + ' - ' + response.data.title,
-                  tabIndex: scope.$store.getters.getActiveTab
-                })
-              } else {
-                scope.$store.dispatch('updateChapterList', response.data)
-                scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
-                scope.$store.dispatch('loadChapterHistory', response.data.uuid)
-                scope.$store.dispatch('loadTodayAuthorPersonalProgressForChapter', response.data.uuid)
-                // scope.$store.dispatch('updateChapterVersionList', scope.data.chapter_version)
-                // scope.CHANGE_COMPONENT({tabKey: 'chapter-details-' + response.data.uuid, tabComponent: 'chapter-details', tabData: { book_id: response.data.book_id, chapter: response.data }, tabTitle: 'View - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
-                scope.$store.dispatch('changeTabTitle', {
-                  key: 'chapter-form-' + response.data.uuid,
-                  title: this.$t('EDIT') + ' - ' + response.data.title
-                })
-                scope.$store.dispatch('changeTabTitle', {
-                  key: 'chapter-details-' + response.data.uuid,
-                  title: this.$t('VIEW') + ' - ' + response.data.title
-                })
-              }
-
-              scope.loadChapter(response.data)
-            })
+                scope.loadChapter(response.data)
+              })
+            }
           }
         })
     },

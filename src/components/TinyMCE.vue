@@ -4,7 +4,7 @@
 
 <script>
 import tinymce from 'tinymce'
-
+const path = window.require('path')
 export default {
   name: 'TinyMCE',
   data: function () {
@@ -20,8 +20,11 @@ export default {
           'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime nonbreaking',
           'table contextmenu directionality template paste textcolor print'// remove autoresize
         ],
+        external_plugins: {
+          'wordcomment': 'file:///' + path.resolve('src/assets/js/tinymce/plugins/wordcomment/plugin.js')
+        },
         toolbar: [
-          'undo | redo | fontselect | fontsizeselect | copy | cut | paste | bold | italic | underline | strikethrough | forecolor | backcolor | leftChev | rightChev | enDash | numlist | bullist | alignleft | aligncenter | alignright | alignjustify | removeformat | print'
+          'undo | redo | fontselect | fontsizeselect | copy | cut | paste | bold | italic | underline | strikethrough | forecolor | backcolor | leftChev | rightChev | enDash | numlist | bullist | alignleft | aligncenter | alignright | alignjustify | removeformat | wordcomment | print'
         ],
 
         browser_spellcheck: true,
@@ -44,6 +47,7 @@ export default {
         },
 
         setup: function (editor) {
+          console.log('editor setup ::::::::::::::::::: ', editor)
           editor.editorManager.addI18n('custom_lang', {
             'Copy': 'Kopier (ctrl+c)',
             'Cut': 'Klipp ut (ctrl+x)',

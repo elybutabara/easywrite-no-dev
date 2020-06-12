@@ -158,6 +158,7 @@
                                       v-on:getEditorContent="setNotes"
                                       class="form-control"
                         />
+                        <div v-commentbase="commentbase_params"></div>
                     </div>
                 </div>
                 <div class="item" v-bind:class="{'active': accordion['viewpoint'] === 'active'}">
@@ -285,12 +286,18 @@
 
 <script>
 import TinyMCE from '../../../components/TinyMCE'
+
+import CommentBase from '../../../components/CommentBase'
 const {ipcRenderer} = window.require('electron')
 
 export default {
   name: 'book-form',
   props: ['properties'],
+  directives: {
+    commentbase: CommentBase
+  },
   data: function () {
+    var scope = this
     return {
       page: {
         title: '',
@@ -394,7 +401,19 @@ export default {
       scene_history: {},
       show_history: false,
       view_history: false,
-      historyContent: ''
+      historyContent: '',
+      commentbase_params: {
+        tinymce: true,
+        onMounted: (vm) => {
+          scope.commentbase_vm = vm
+          vm.setAuthor(this.getAuthor)
+          vm.setCommentsJSON(this.comments)
+          console.log('this.comments ==== ', this.comments)
+        },
+        onAddComment: function () {
+          scope.saveScene(true)
+        }
+      }
     }
   },
   components: {
@@ -418,6 +437,16 @@ export default {
     },
     characters: function () {
       return this.$store.getters.getCharactersByBook(this.properties.book.uuid)
+    },
+    comments: function () {
+      // return '{}'
+      var scope = this
+      var sceneID = scope.scene.uuid
+      return this.$store.getters.getSceneComments(sceneID)
+    },
+    getAuthor: function () {
+      var scope = this
+      return scope.$store.getters.getAuthor
     }
   },
   methods: {
@@ -616,10 +645,11 @@ export default {
 
       return isValid
     },
-    saveScene () {
+    saveScene (noAlert) {
       var scope = this
 
       scope.data.scene_version.content = scope.tempSceneVersionContent
+      scope.data.scene_version.comments = scope.commentbase_vm.getCommentsJSON()
       scope.data.notes = scope.tempSceneNotes
       scope.data.viewpoint_description = scope.tempViewpointDescription
       scope.data.chapter_id = (scope.selected_chapter !== 'undefined' && scope.selected_chapter !== null && scope.selected_chapter.uuid !== '-1') ? scope.selected_chapter.uuid : null
@@ -639,47 +669,49 @@ export default {
           if (response.data) {
             scope.saveRelatedTables(response.data.uuid)
 
-            window.swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: this.$t('SCENE') + ' ' + this.$t('SUCCESSFULY_SAVED'),
-              showConfirmButton: false,
-              timer: 1500
-            }).then(() => {
-              scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
-              // scope.$parent.changeComponent('scene-details', { scene: response.data })
-              if (scope.data.uuid === null) {
-                scope.$store.dispatch('updateSceneList', response.data)
+            if (!noAlert) {
+              window.swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: this.$t('SCENE') + ' ' + this.$t('SUCCESSFULY_SAVED'),
+                showConfirmButton: false,
+                timer: 1500
+              }).then(() => {
+                scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+                // scope.$parent.changeComponent('scene-details', { scene: response.data })
+                if (scope.data.uuid === null) {
+                  scope.$store.dispatch('updateSceneList', response.data)
+                  // refresh vuex to update all related records
+                  scope.$store.dispatch('loadVersionsByScene', response.data)
+                  scope.$store.dispatch('loadSceneHistory', response.data.uuid)
+                  scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', response.data.uuid)
+                  scope.CHANGE_COMPONENT({tabKey: 'scene-form-' + response.data.uuid, tabComponent: 'scene-form', tabData: { book: scope.book, scene: response.data }, tabTitle: scope.$t('EDIT') + ' - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
+                } else {
                 // refresh vuex to update all related records
-                scope.$store.dispatch('loadVersionsByScene', response.data)
-                scope.$store.dispatch('loadSceneHistory', response.data.uuid)
-                scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', response.data.uuid)
-                scope.CHANGE_COMPONENT({tabKey: 'scene-form-' + response.data.uuid, tabComponent: 'scene-form', tabData: { book: scope.book, scene: response.data }, tabTitle: scope.$t('EDIT') + ' - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
-              } else {
-                // refresh vuex to update all related records
-                scope.$store.dispatch('updateSceneList', response.data)
-                scope.$store.dispatch('loadVersionsByScene', response.data)
-                scope.$store.dispatch('changeTabTitle', {key: 'scene-form-' + response.data.uuid, title: scope.$t('EDIT') + ' - ' + response.data.title})
-                scope.$store.dispatch('changeTabTitle', {key: 'scene-details-' + response.data.uuid, title: scope.$t('VIEW') + ' - ' + response.data.title})
-                scope.$store.dispatch('loadSceneHistory', response.data.uuid)
-                scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', response.data.uuid)
-              }
+                  scope.$store.dispatch('updateSceneList', response.data)
+                  scope.$store.dispatch('loadVersionsByScene', response.data)
+                  scope.$store.dispatch('changeTabTitle', {key: 'scene-form-' + response.data.uuid, title: scope.$t('EDIT') + ' - ' + response.data.title})
+                  scope.$store.dispatch('changeTabTitle', {key: 'scene-details-' + response.data.uuid, title: scope.$t('VIEW') + ' - ' + response.data.title})
+                  scope.$store.dispatch('loadSceneHistory', response.data.uuid)
+                  scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', response.data.uuid)
+                }
 
-              // update listing for treeviews
-              if (scope.current_chapter_id === null && scope.current_chapter_id !== response.data.chapter_id) {
-                scope.$store.dispatch('loadScenesByBook', response.data.book_id)
-                scope.$store.dispatch('loadScenesByChapter', response.data.chapter_id)
-              } else if (scope.current_chapter_id !== null && response.data.chapter_id === null) {
-                scope.$store.dispatch('loadScenesByBook', response.data.book_id)
-                scope.$store.dispatch('loadScenesByChapter', scope.current_chapter_id)
-              } else if (scope.current_chapter_id !== null && scope.current_chapter_id !== response.data.chapter_id) {
-                scope.$store.dispatch('loadScenesByChapter', scope.current_chapter_id)
-                scope.$store.dispatch('loadScenesByChapter', response.data.chapter_id)
-              }
-              scope.current_chapter_id = response.data.chapter_id
+                // update listing for treeviews
+                if (scope.current_chapter_id === null && scope.current_chapter_id !== response.data.chapter_id) {
+                  scope.$store.dispatch('loadScenesByBook', response.data.book_id)
+                  scope.$store.dispatch('loadScenesByChapter', response.data.chapter_id)
+                } else if (scope.current_chapter_id !== null && response.data.chapter_id === null) {
+                  scope.$store.dispatch('loadScenesByBook', response.data.book_id)
+                  scope.$store.dispatch('loadScenesByChapter', scope.current_chapter_id)
+                } else if (scope.current_chapter_id !== null && scope.current_chapter_id !== response.data.chapter_id) {
+                  scope.$store.dispatch('loadScenesByChapter', scope.current_chapter_id)
+                  scope.$store.dispatch('loadScenesByChapter', response.data.chapter_id)
+                }
+                scope.current_chapter_id = response.data.chapter_id
 
-              scope.loadScene(response.data)
-            })
+                scope.loadScene(response.data)
+              })
+            }
           }
         })
     },
