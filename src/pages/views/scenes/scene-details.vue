@@ -37,7 +37,7 @@
             </button>
         </div>
         <div class="es-scene-details-tab">
-            <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-scene-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
+            <div v-bind:class="{ 'active' : tab.active == 'content' }" v-on:click="changeTab('content')" class="es-scene-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
             <div v-bind:class="{ 'active' : tab.active == 'locations' }" @click="changeTab('locations')" class="es-scene-details-tab-item">{{$t('LOCATIONS').toUpperCase()}}</div>
             <div v-bind:class="{ 'active' : tab.active == 'items' }" @click="changeTab('items')" class="es-scene-details-tab-item">{{$t('ITEMS').toUpperCase()}}</div>
             <div v-bind:class="{ 'active' : tab.active == 'characters' }" @click="changeTab('characters')" class="es-scene-details-tab-item">{{$t('CHARACTERS').toUpperCase()}}</div>
@@ -56,7 +56,8 @@
                 </div>
               </b-button>
             </div>
-            <div v-html="getSceneContent" v-commentbase="commentbase_params" class="description" ></div>
+            <div v-html="getSceneContent" class="description" v-bind:id="commentbase_id"></div>
+            <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params"></CommentBasePanel>
         </div>
         <div v-if="tab.active === 'locations'"  class="es-scene-details-tab-content no-padding">
             <scene-locations :properties="{ book: book, scene: page.data.scene }"></scene-locations>
@@ -123,17 +124,15 @@ import SceneItems from '@/pages/views/scenes/scene-items'
 import SceneCharacters from '@/pages/views/scenes/scene-characters'
 import SceneVersions from '@/pages/views/scenes/scene-versions'
 import SceneCompareVersions from '@/pages/views/scenes/scene-compare-versions'
+import Vue from 'vue'
 
-import CommentBase from '../../../components/CommentBase'
+import CommentBasePanel from '../../../components/CommentBasePanel'
 
 const {ipcRenderer} = window.require('electron')
 
 export default {
   name: 'scene-details',
   props: ['properties'],
-  directives: {
-    commentbase: CommentBase
-  },
   data: function () {
     var scope = this
     return {
@@ -152,6 +151,8 @@ export default {
       },
       busy: false,
       tempVersionDesc: '',
+      commentbase_id: ('cm-' + Math.random()).replace('.', ''),
+      commentbase_dom: null,
       commentbase_params: {
         onMounted: (vm) => {
           scope.commentbase_vm = vm
@@ -174,7 +175,8 @@ export default {
     SceneItems,
     SceneCharacters,
     SceneVersions,
-    SceneCompareVersions
+    SceneCompareVersions,
+    CommentBasePanel
   },
   computed: {
     book: function () {
@@ -220,6 +222,14 @@ export default {
     changeTab: function (tab) {
       var scope = this
       scope.tab.active = tab
+
+      Vue.nextTick(function () {
+        if (tab === 'content') {
+          scope.commentbase_dom = document.getElementById(scope.commentbase_id)
+        } else {
+          scope.commentbase_dom = null
+        }
+      })
     },
     saveNewVersion () {
       var scope = this
@@ -258,7 +268,7 @@ export default {
       var sceneID = scope.page.data.scene.uuid
       scope.scene_version.uuid = this.$store.getters.getSceneVersionUUID(sceneID)
       scope.scene_version.change_description = scope.tempVersionDesc
-      scope.scene_version.content = this.commentbase_vm.getContent()
+      scope.scene_version.content = this.commentbase_vm.dom.innerHTML
       scope.scene_version.comments = this.commentbase_vm.getCommentsJSON()
       scope.scene_version.book_scene_id = sceneID
 
@@ -291,6 +301,7 @@ export default {
 
       setTimeout(function () {
         scope.page.is_ready = true
+        scope.changeTab('content')
       }, 500)
     },
     deleteScene: function (scene) {

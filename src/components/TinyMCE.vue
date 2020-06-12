@@ -7,7 +7,10 @@ import tinymce from 'tinymce'
 const path = window.require('path')
 export default {
   name: 'TinyMCE',
+  props: ['initValue', 'disabled', 'params'],
   data: function () {
+    var scope = this
+    console.log('params........', scope.params)
     return {
       initConfig: {
         selector: 'input.tiny-area',
@@ -47,7 +50,16 @@ export default {
         },
 
         setup: function (editor) {
-          console.log('editor setup ::::::::::::::::::: ', editor)
+          if (scope.params && scope.params.onEditorSetup) {
+            scope.params.onEditorSetup(editor)
+          }
+
+          editor.on('init', function (e) {
+            if (scope.params && scope.params.onEditorInit) {
+              scope.params.onEditorInit(editor)
+            }
+          })
+
           editor.editorManager.addI18n('custom_lang', {
             'Copy': 'Kopier (ctrl+c)',
             'Cut': 'Klipp ut (ctrl+x)',
@@ -104,7 +116,6 @@ export default {
       }
     }
   },
-  props: ['initValue', 'disabled'],
   methods: {
     initEditor: function () {
       var vm = this

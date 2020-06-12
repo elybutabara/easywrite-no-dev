@@ -98,10 +98,8 @@
                                     <button class="es-button-white margin-bottom-1rem" @click="show_history = !show_history">{{$t('SHOW_HISTORY')}}</button>
                                 </div>
                                 <div class="form-group">
-                                    <tiny-editor :initValue="data.scene_version.content"
-                                                v-on:getEditorContent="setContent"
-                                                class="form-control"
-                                    />
+                                    <tiny-editor :params="tiny_editor_params" :initValue="data.scene_version.content" v-on:getEditorContent="setContent" class="form-control" />
+                                    <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params()"></CommentBasePanel>
                                 </div>
                                 <div v-if="show_history" class="scene-history-items slideInRight animated">
                                     <div class="note">
@@ -165,11 +163,7 @@
                         </div>
                     </div>
                     <div class="content">
-                        <tiny-editor :initValue="data.notes"
-                                      v-on:getEditorContent="setNotes"
-                                      class="form-control"
-                        />
-                        <div v-commentbase="commentbase_params"></div>
+                        <tiny-editor :initValue="data.notes" v-on:getEditorContent="setNotes" class="form-control" />
                     </div>
                 </div>
                 <div class="item" v-bind:class="{'active': accordion['viewpoint'] === 'active'}">
@@ -298,15 +292,12 @@
 <script>
 import TinyMCE from '../../../components/TinyMCE'
 
-import CommentBase from '../../../components/CommentBase'
+import CommentBasePanel from '../../../components/CommentBasePanel'
 const {ipcRenderer} = window.require('electron')
 
 export default {
   name: 'book-form',
   props: ['properties'],
-  directives: {
-    commentbase: CommentBase
-  },
   data: function () {
     var scope = this
     return {
@@ -413,22 +404,35 @@ export default {
       show_history: false,
       view_history: false,
       historyContent: '',
-      commentbase_params: {
-        tinymce: true,
-        onMounted: (vm) => {
-          scope.commentbase_vm = vm
-          vm.setAuthor(this.getAuthor)
-          vm.setCommentsJSON(this.comments)
-          console.log('this.comments ==== ', this.comments)
+      tiny_editor_params: {
+        onEditorSetup: function (ed) {
+          // console.log('ed setup----->', ed, ed.contentDocument)
         },
-        onAddComment: function () {
-          scope.saveScene(true)
+        onEditorInit: function (ed) {
+          // console.log('ed init----->', ed, ed.contentDocument, ed.getDoc())
+          scope.commentbase_editor = ed
+          scope.commentbase_dom = ed.getDoc()
+        }
+      },
+      commentbase_dom: null,
+      commentbase_params: function () {
+        return {
+          tinymce: scope.commentbase_editor,
+          onMounted: (vm) => {
+            scope.commentbase_vm = vm
+            vm.setAuthor(this.getAuthor)
+            vm.setCommentsJSON(this.comments)
+          },
+          onAddComment: function () {
+            scope.saveScene(true)
+          }
         }
       }
     }
   },
   components: {
-    TinyMCE
+    TinyMCE,
+    CommentBasePanel
   },
   computed: {
     book: function () {

@@ -29,9 +29,9 @@
         </button>
     </div>
     <div class="es-page-content" style="position:relative;">
-        <div style="position:fixed; width:480px; height:calc(100vh - 247px); bottom:0px; right:18px; z-index:4000;">
+        <div v-if="show_feedbacks" style="position:fixed; width:480px; height:calc(100vh - 247px); bottom:0px; right:18px; z-index:4000;">
           <div style="position:relative; height:100%;">
-           <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></Feedback>
+           <Feedback :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></Feedback>
           </div>
         </div>
         <div class="container">
@@ -103,8 +103,8 @@
                                     <button class="es-button-white margin-bottom-1rem" @click="show_history = !show_history">{{$t('SHOW_HISTORY')}}</button>
                                 </div>
                                 <div class="form-group">
-                                    <tiny-editor :initValue="data.chapter_version.content" v-on:getEditorContent="setContent" class="form-control" />
-                                    <div v-commentbase="commentbase_params"></div>
+                                    <tiny-editor :params="tiny_editor_params" :initValue="data.chapter_version.content" v-on:getEditorContent="setContent" class="form-control" />
+                                    <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params()"></CommentBasePanel>
                                 </div>
                                 <div v-if="show_history" class="chapter-history-items slideInRight animated">
                                     <div class="note">
@@ -168,15 +168,12 @@
 import Feedback from '../../../components/Feedback'
 import TinyMCE from '../../../components/TinyMCE'
 
-import CommentBase from '../../../components/CommentBase'
+import CommentBasePanel from '../../../components/CommentBasePanel'
 const {ipcRenderer} = window.require('electron')
 
 export default {
   name: 'chapter-form',
   props: ['properties'],
-  directives: {
-    commentbase: CommentBase
-  },
   data: function () {
     var scope = this
     return {
@@ -224,15 +221,28 @@ export default {
       show_history: false,
       view_history: false,
       historyContent: '',
-      commentbase_params: {
-        tinymce: true,
-        onMounted: (vm) => {
-          scope.commentbase_vm = vm
-          vm.setAuthor(this.getAuthor)
-          vm.setCommentsJSON(this.comments)
+      tiny_editor_params: {
+        onEditorSetup: function (ed) {
+          // console.log('ed setup----->', ed, ed.contentDocument)
         },
-        onAddComment: function () {
-          scope.saveChapter(true)
+        onEditorInit: function (ed) {
+          // console.log('ed init----->', ed, ed.contentDocument, ed.getDoc())
+          scope.commentbase_editor = ed
+          scope.commentbase_dom = ed.getDoc()
+        }
+      },
+      commentbase_dom: null,
+      commentbase_params: function () {
+        return {
+          tinymce: scope.commentbase_editor,
+          onMounted: (vm) => {
+            scope.commentbase_vm = vm
+            vm.setAuthor(this.getAuthor)
+            vm.setCommentsJSON(this.comments)
+          },
+          onAddComment: function () {
+            scope.saveChapter(true)
+          }
         }
       },
       show_feedbacks: false
@@ -240,7 +250,8 @@ export default {
   },
   components: {
     TinyMCE,
-    Feedback
+    Feedback,
+    CommentBasePanel
   },
   computed: {
     book: function () {
