@@ -885,26 +885,23 @@ export default {
     } else {
       setTimeout(function () {
         let chapters = scope.$store.getters.getChaptersByBook(scope.properties.book.uuid)
-        chapters.forEach(function (row, index) {
-          scope.options_chapters.push(row)
-        })
-        // scope.options_chapters
-
         var bookCharacters = scope.$store.getters.getCharactersByBook(scope.properties.book.uuid)
-        // console.log(bookCharacters)
-        for (let i = 0; i < bookCharacters.length; i++) {
-          let character = bookCharacters[i]
-          scope.options_character_id_vp.push({ text: character.fullname, value: character.uuid })
-
-          if (scope.properties.scene !== null && scope.properties.scene.character_id_vp === character.uuid) {
-            scope.selected_character_id_vp = { text: character.fullname, value: character.uuid }
-          }
-        }
+        // give time to load data before processing since other time dispatch take time
         setTimeout(function () {
-          console.log(scope.chapter)
+          chapters.forEach(function (row, index) {
+            scope.options_chapters.push(row)
+          })
+
+          for (let i = 0; i < bookCharacters.length; i++) {
+            let character = bookCharacters[i]
+            scope.options_character_id_vp.push({ text: character.fullname, value: character.uuid })
+            if (scope.properties.scene !== null && scope.properties.scene.character_id_vp === character.uuid) {
+              scope.selected_character_id_vp = { text: character.fullname, value: character.uuid }
+            }
+          }
           scope.page.is_ready = true
         }, 500)
-      }, 500)
+      }, 1000)
     }
   }
 }
