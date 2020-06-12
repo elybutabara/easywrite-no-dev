@@ -12,6 +12,7 @@
                 </div>
             </div>
             <div class="actions">
+                <button v-if="data.id != null" class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
                 <button v-if="data.id != null" class="es-button-white" @click="saveChapter()">{{$t('SAVE_CHANGES')}}</button>
                 <button v-else class="es-button-white" @click="saveChapter()">{{$t('SAVE')}}</button>
             </div>
@@ -27,7 +28,12 @@
             <span v-else>{{$t('NEW_CHAPTER')}}</span>
         </button>
     </div>
-    <div class="es-page-content">
+    <div class="es-page-content" style="position:relative;">
+        <div style="position:fixed; width:480px; height:calc(100vh - 247px); bottom:0px; right:18px; z-index:4000;">
+          <div style="position:relative; height:100%;">
+           <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></Feedback>
+          </div>
+        </div>
         <div class="container">
             <div class="es-accordion">
                 <div class="item" v-bind:class="{'active': accordion['chapter-details'] === 'active'}">
@@ -158,6 +164,7 @@
 </template>
 
 <script>
+import Feedback from '../../../components/Feedback'
 import TinyMCE from '../../../components/TinyMCE'
 const {ipcRenderer} = window.require('electron')
 
@@ -209,11 +216,13 @@ export default {
       chapter_history: {},
       show_history: false,
       view_history: false,
-      historyContent: ''
+      historyContent: '',
+      show_feedbacks: false
     }
   },
   components: {
-    TinyMCE
+    TinyMCE,
+    Feedback
   },
   computed: {
     book: function () {
@@ -432,6 +441,10 @@ export default {
         // chapter history
         scope.chapter_history = scope.GET_CHAPTER_HISTORY(chapter.uuid)
       }, 500)
+    },
+    toggleFeedbacks: function () {
+      let scope = this
+      scope.show_feedbacks = !scope.show_feedbacks
     }
   },
   beforeMount () {
@@ -460,6 +473,9 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    .es-page-content {
+        height: calc(100vh - 255px);
+    }
     .page-title { font-family: 'Crimson Roman Bold'; position:relative; padding-top:20px; }
     .page-title h3 { font-size:35px; }
 

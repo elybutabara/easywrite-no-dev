@@ -8,6 +8,9 @@
                         <h4><strong>{{ properties.scene.title }}</strong></h4>
                     </div>
                 </div>
+                <div class="actions">
+                  <button class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
+                </div>
             </div>
         </div>
         <div v-if="chapter !== null" class="es-page-breadcrumbs">
@@ -33,7 +36,8 @@
         <div class="es-scene-details-tab">
             <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-scene-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
         </div>
-        <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">
+        <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content" style="position:relative;">
+            <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: scene, parent_name: 'scene' }"></Feedback>
             <div v-html="getSceneContent" class="description" v-commentbase="commentbase_params"></div>
         </div>
     </div>
@@ -41,6 +45,7 @@
 </template>
 
 <script>
+import Feedback from '../../../components/Feedback'
 import CommentBase from '../../../components/CommentBase'
 
 export default {
@@ -67,6 +72,7 @@ export default {
       },
       busy: false,
       tempVersionDesc: '',
+      show_feedbacks: false,
       commentbase_params: {
         onMounted: (vm) => {
           scope.commentbase_vm = vm
@@ -80,6 +86,7 @@ export default {
     }
   },
   components: {
+    Feedback
   },
   computed: {
     book: function () {
@@ -156,6 +163,10 @@ export default {
       setTimeout(function () {
         scope.page.is_ready = true
       }, 500)
+    },
+    toggleFeedbacks: function () {
+      let scope = this
+      scope.show_feedbacks = !scope.show_feedbacks
     }
   },
   mounted () {
@@ -172,7 +183,7 @@ export default {
     .es-scene-details-tab .es-scene-details-tab-item:after { content:''; position:absolute; bottom:0px; left:0px; height:3px;  width:100%; background:transparent;}
     .es-scene-details-tab .es-scene-details-tab-item.active:after { background:#922c39;  }
 
-    .es-scene-details-tab-content { position:relative; padding:30px; background:#fff; height:calc(100vh - 247px); overflow-y:auto; display:block; }
+    .es-scene-details-tab-content { position:relative; padding:30px; background:#fff; height:calc(100vh - 317px); overflow-y:auto; display:block; }
     .es-scene-details-tab-content.no-padding { padding:0px; }
     .es-scene-details-tab-content.active { display:block; }
 </style>

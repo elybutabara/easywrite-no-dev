@@ -13,7 +13,7 @@
                     <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + chapter.uuid, tabComponent: 'scene-form',  tabData: { book: book, chapter: chapter, scene: null }, tabTitle: 'New Scene', newTab: true})">{{$t('ADD_NEW_SCENE').toUpperCase()}}</button>
                     <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
                     <button class="es-button-white" @click="CHANGE_COMPONENT({ tabKey: 'chapter-form-' + chapter.uuid, tabComponent: 'chapter-form',  tabData: { book: book, chapter:  chapter }, tabTitle: $t('EDIT')+ ' - ' +  chapter.title, newTab: true })">{{$t('EDIT').toUpperCase()}}</button>
-                    <button class="es-button-white" @click="showFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
+                    <button class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
                     <button class="es-button-white" @click="deleteChapter(chapter)">{{$t('DELETE').toUpperCase()}}</button>
                 </div>
             </div>
@@ -31,9 +31,16 @@
             <div v-bind:class="{ 'active' : tab.active == 'versions' }" @click="changeTab('versions')" class="es-chapter-details-tab-item">{{$t('VERSIONS').toUpperCase()}}</div>
             <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-chapter-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
         </div>
-        <div style="position:relative;">
-          <ChapterFeedback v-if="show_feedbacks" :properties="{ book: book, chapter: chapter }"></ChapterFeedback>
-
+        <div style="position:relative; padding-bottom:40px;">
+          <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></Feedback>
+          <div style="border-top:1px solid #ccc; z-index:2000; background:#fff; height:50px; padding:0px 20px; line-height:50px; width:100%; position:absolute; bottom:0px; left:0px;">
+            <button v-if="prevChapter !== null" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + prevChapter.uuid, tabComponent: 'chapter-details',  tabData: { book: book, chapter: prevChapter }, tabTitle: $t('VIEW')+ ' - ' + prevChapter.title})" style="float:left; background:transparent; border:none;">
+              <i class="las la-angle-double-left"></i> {{ $t('PREV').toUpperCase() }}
+            </button>
+            <button v-if="nextChapter !== null" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + nextChapter.uuid, tabComponent: 'chapter-details',  tabData: { book: book, chapter: nextChapter }, tabTitle: $t('VIEW')+ ' - ' + nextChapter.title})" style="float:right; background:transparent; border:none;">
+              {{ $t('NEXT').toUpperCase() }} <i class="las la-angle-double-right"></i>
+            </button>
+          </div>
           <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
                 <div class="export-content">
                 <b-button class="es-button-white" :disabled="exportOnProgress"  @click="exportContent()">
@@ -99,7 +106,7 @@
 
 <script>
 import TinyMCE from '../../../components/TinyMCE'
-import ChapterFeedback from '../../../components/ChapterFeedback'
+import Feedback from '../../../components/Feedback'
 import ChapterScenes from '@/pages/views/chapters/chapter-scenes'
 import ChapterVersions from '@/pages/views/chapters/chapter-versions'
 import ChapterCompareVersions from '@/pages/views/chapters/chapter-compare-versions'
@@ -119,7 +126,6 @@ export default {
   data: function () {
     var scope = this
     return {
-      show_feedbacks: false,
       chapter_version: {
         chapter_id: null,
         content: '',
@@ -146,12 +152,13 @@ export default {
         }
       },
       exportOnProgress: false,
-      exportLoading: this.$t('Loading')
+      exportLoading: this.$t('Loading'),
+      show_feedbacks: false
     }
   },
   components: {
     TinyMCE,
-    ChapterFeedback,
+    Feedback,
     ChapterScenes,
     ChapterVersions,
     ChapterCompareVersions
@@ -181,6 +188,14 @@ export default {
     getAuthor: function () {
       var scope = this
       return scope.$store.getters.getAuthor
+    },
+    prevChapter: function () {
+      let chapter = this.chapter
+      return this.$store.getters.getPrevChapter(chapter)
+    },
+    nextChapter: function () {
+      let chapter = this.chapter
+      return this.$store.getters.getNextChapter(chapter)
     }
   },
   methods: {
@@ -288,7 +303,7 @@ export default {
       scope.exportOnProgress = true
       ipcRenderer.send('EXPORT-CONTENT-DOCX', {content: scope.getChapterContent, defaultfilename: scope.page.title + ' - ' + this.$t('CONTENT')})
     },
-    showFeedbacks: function () {
+    toggleFeedbacks: function () {
       let scope = this
       scope.show_feedbacks = !scope.show_feedbacks
     }
@@ -335,7 +350,7 @@ export default {
     .es-chapter-details-tab .es-chapter-details-tab-item:after { content:''; position:absolute; bottom:0px; left:0px; height:3px;  width:100%; background:transparent;}
     .es-chapter-details-tab .es-chapter-details-tab-item.active:after { background:#922c39;  }
 
-    .es-chapter-details-tab-content { position:relative; padding:30px; background:#fff; height:calc(100vh - 317px); overflow-y:auto; display:block; }
+    .es-chapter-details-tab-content { position:relative; padding:30px; background:#fff; height:calc(100vh - 360px); overflow-y:auto; display:block; }
     .es-chapter-details-tab-content.no-padding { padding:0px; }
     .es-chapter-details-tab-content.active { display:block; }
 </style>

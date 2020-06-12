@@ -69,7 +69,17 @@ class AuthorPersonalProgressController {
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await AuthorPersonalProgress.query().insert(row)
+      data = await AuthorPersonalProgress.query().insert(
+	  {
+		uuid: row.uuid,
+		author_id: row.author_id,
+		relation_id: row.relation_id,
+		total_words: row.total_words,
+		is_for: row.is_for,
+		created_at: row.created_at,
+		updated_at: row.updated_at,
+		deleted_at: row.deleted_at,
+	  })
 
       // update uuid to match web
       data = await AuthorPersonalProgress.query()
