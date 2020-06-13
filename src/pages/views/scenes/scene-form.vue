@@ -293,6 +293,8 @@
 import TinyMCE from '../../../components/TinyMCE'
 
 import CommentBasePanel from '../../../components/CommentBasePanel'
+
+const moment = require('moment')
 const {ipcRenderer} = window.require('electron')
 
 export default {
@@ -798,6 +800,7 @@ export default {
     loadScene (sceneProp) {
       var scope = this
       scope.properties.scene = sceneProp
+
       setTimeout(function () {
         let scene = scope.$store.getters.findScene(sceneProp)
         let chapters = scope.$store.getters.getChaptersByBook(sceneProp.book_id)
@@ -814,8 +817,9 @@ export default {
         scope.data.status = scene.status
         scope.data.weather_type = scene.weather_type
         scope.data.character_id_vp = scene.character_id_vp
-        scope.data.date_starts = scene.date_starts
-        scope.data.date_ends = scene.date_ends
+        scope.data.date_starts = moment(scene.date_starts).format('YYYY-MM-DD').toString()
+        scope.data.date_ends = moment(scene.date_ends).format('YYYY-MM-DD').toString()
+        scope.data.tags = scene.tags
         scope.data.notes = scene.notes
         scope.data.viewpoint_description = scene.viewpoint_description
 
@@ -823,11 +827,13 @@ export default {
         scope.tempSceneEnd = scene.date_ends
 
         // chapters
+        scope.options_chapters = [{title: scope.$t('OTHER_SCENE'), uuid: '-1'}]
         chapters.forEach(function (row, index) {
           scope.options_chapters.push(row)
         })
 
         // characters
+        scope.options_character_id_vp = [{text: 'Author', value: '-1'}]
         for (let i = 0; i < characters.length; i++) {
           let character = characters[i]
           scope.options_character_id_vp.push({ text: character.fullname, value: character.uuid })
