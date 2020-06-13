@@ -26,41 +26,48 @@ function checkAuth (to, from, next) {
   }
   // }
 }
+let routeList = [
+  {
+    path: '/',
+    name: 'Main',
+    beforeEnter: checkAuth,
+    component: Main,
+    meta: { protected: true }
+  },
+  {
+    path: '/auth',
+    name: 'Auth',
+    beforeEnter: checkAuth,
+    component: Auth,
+    meta: { protected: false }
+  }
+]
 
+const MWAlist = [
+  {
+    path: '/export-characters',
+    name: 'ExportCharacters',
+    component: ExportCharacters,
+    meta: { protected: false }
+  },
+  {
+    path: '/export-book',
+    name: 'ExportBook',
+    component: ExportBook,
+    meta: { protected: false }
+  },
+  {
+    path: '/export-scenes',
+    name: 'ExportScenes',
+    component: ExportScenes,
+    meta: { protected: false }
+  }
+]
+console.log(process.env.NODE_ENV)
+if (process.env.NODE_ENV !== 'production') {
+  routeList = routeList.concat(MWAlist)
+}
+console.log(routeList)
 export default new Router({
-  routes: [
-    {
-      path: '/',
-      name: 'Main',
-      beforeEnter: checkAuth,
-      component: Main,
-      meta: { protected: true }
-    },
-    {
-      path: '/auth',
-      name: 'Auth',
-      beforeEnter: checkAuth,
-      component: Auth,
-      meta: { protected: false }
-    },
-    {
-      path: '/export-characters',
-      name: 'ExportCharacters',
-      component: ExportCharacters,
-      meta: { protected: false }
-    },
-    {
-      path: '/export-book',
-      name: 'ExportBook',
-      component: ExportBook,
-      meta: { protected: false }
-    },
-    {
-      path: '/export-scenes',
-      name: 'ExportScenes',
-      component: ExportScenes,
-      meta: { protected: false }
-    }
-
-  ]
+  routes: routeList
 })
