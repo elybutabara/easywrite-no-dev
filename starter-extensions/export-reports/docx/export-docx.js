@@ -34,7 +34,7 @@ exports.initMainWindow = (window) => {
   ipcMain.on('EXPORT-DOCX-SHOW-BOOK-WINDOW', function (event, data) {
     createExportWindowBook({exportBy: 'export-book'})
     ExportWindow.on('ready-to-show', function () {
-      ExportWindow.show()
+      // ExportWindow.show()
       ExportWindow.webContents.send('EXPORT-DOCX-GET-BOOK', data)
     })
   })
