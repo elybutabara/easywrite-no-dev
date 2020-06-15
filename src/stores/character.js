@@ -47,13 +47,10 @@ export default {
         })
     },
     loadCharactersByBook (state, payload) {
-      let bookID = payload
+      let bookID = payload.book_id
+      let characters = payload.characters
       Vue.set(state.characters, bookID, { rows: [] })
-      axios
-        .get('http://localhost:3000/books/' + bookID + '/characters')
-        .then(response => {
-          state.characters[bookID] = { is_open: false, rows: response.data }
-        })
+      state.characters[bookID] = { is_open: false, rows: characters.data }
     },
     addCharacterToList (state, payload) {
       let bookID = payload.book_id
@@ -103,8 +100,10 @@ export default {
     }
   },
   actions: {
-    loadCharactersByBook ({ commit, state }, payload) {
-      commit('loadCharactersByBook', payload)
+    async loadCharactersByBook ({ commit, state }, payload) {
+      let bookID = payload
+      let characters = await axios.get('http://localhost:3000/books/' + bookID + '/characters')
+      commit('loadCharactersByBook', { book_id: payload, characters: characters })
     },
     loadRelationsByCharacter ({ commit, state }, payload) {
       commit('loadRelationsByCharacter', payload)
