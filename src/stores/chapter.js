@@ -181,56 +181,38 @@ export default {
       }
     },
     loadChaptersByBook (state, payload) {
-      let bookID = payload
+      let bookID = payload.book_id
+      let chapters = payload.chapters
+
       Vue.set(state.chapters, bookID, { rows: [] })
-      axios
-        .get('http://localhost:3000/books/' + bookID + '/chapters')
-        .then(response => {
-          state.chapters[bookID] = { is_open: false, rows: response.data }
-          for (let i = 0; i < state.chapters[bookID].rows.length; i++) {
-            Vue.set(state.chapters[bookID].rows[i], 'is_open', false)
-          }
-        })
+      state.chapters[bookID] = { is_open: false, rows: chapters.data }
+      for (let i = 0; i < state.chapters[bookID].rows.length; i++) {
+        Vue.set(state.chapters[bookID].rows[i], 'is_open', false)
+      }
     },
     loadChaptersWithScenesByBook (state, payload) {
-      let bookUUID = payload
+      let bookUUID = payload.book_id
+      let chaptersRelations = payload.chapters_relations
       Vue.set(state.chapters, bookUUID, { rows: [] })
-      axios
-        .get('http://localhost:3000/chapters/' + bookUUID + '/chapters-with-scenes-with-relations')
-        .then(response => {
-          state.chapters[bookUUID] = { is_open: false, rows: response.data }
-          for (let i = 0; i < state.chapters[bookUUID].rows.length; i++) {
-            Vue.set(state.chapters[bookUUID].rows[i], 'is_open', false)
-          }
-        })
+      state.chapters[bookUUID] = { is_open: false, rows: chaptersRelations.data }
+      for (let i = 0; i < state.chapters[bookUUID].rows.length; i++) {
+        Vue.set(state.chapters[bookUUID].rows[i], 'is_open', false)
+      }
     },
     loadChapterHistory (state, payload) {
-      let chapterID = payload
+      let chapterID = payload.chapter_id
       Vue.set(state.chapter_history, chapterID, { rows: [] })
-      axios
-        .get('http://localhost:3000/chapters/' + chapterID + '/history')
-        .then(response => {
-          state.chapter_history[chapterID] = { rows: response.data }
-        })
+      state.chapter_history[chapterID] = { rows: payload.chapter_history }
     },
     loadVersionsByChapter (state, payload) {
-      let chapterID = payload
+      let chapterID = payload.chapter_id
       Vue.set(state.chapter_versions, chapterID, { rows: [] })
-      axios
-        .get('http://localhost:3000/chapters/' + chapterID + '/versions')
-        .then(response => {
-          state.chapter_versions[chapterID] = { rows: response.data }
-        })
+      state.chapter_versions[chapterID] = { rows: payload.chapter_versions }
     },
     loadTodayAuthorPersonalProgressForChapter (state, payload) {
       let chapterID = payload.chapter_id
-      let authorID = payload.author_id
       Vue.set(state.chapter_author_personal_progress, chapterID, {})
-      axios
-        .get('http://localhost:3000/authors/' + authorID + '/chapter/' + chapterID + '/personal-progress/today')
-        .then(response => {
-          state.chapter_author_personal_progress[chapterID] = response.data
-        })
+      state.chapter_author_personal_progress[chapterID] = payload.chapter_author_personal_progress
     },
     addChapterToList (state, payload) {
       let bookID = payload.book_id
@@ -317,20 +299,30 @@ export default {
     toggleChapter ({ commit, state }, payload) {
       commit('toggleChapter', payload)
     },
-    loadChaptersByBook ({ commit, state }, payload) {
-      commit('loadChaptersByBook', payload)
+    async loadChaptersByBook ({ commit, state }, payload) {
+      let bookID = payload
+      let chapters = await axios.get('http://localhost:3000/books/' + bookID + '/chapters')
+      commit('loadChaptersByBook', { book_id: payload, chapters: chapters })
     },
-    loadChaptersWithScenesByBook ({ commit, state }, payload) {
-      commit('loadChaptersWithScenesByBook', payload)
+    async loadChaptersWithScenesByBook ({ commit, state }, payload) {
+      let bookUUID = payload
+      let chaptersRelations = await axios.get('http://localhost:3000/chapters/' + bookUUID + '/chapters-with-scenes-with-relations')
+      commit('loadChaptersWithScenesByBook', { book_id: payload, chapters_relations: chaptersRelations })
     },
-    loadChapterHistory ({ commit, state }, payload) {
-      commit('loadChapterHistory', payload)
+    async loadChapterHistory ({ commit, state }, payload) {
+      let chapterID = payload
+      let chapterHistory = await axios.get('http://localhost:3000/chapters/' + chapterID + '/history')
+      commit('loadChapterHistory', { chapter_id: chapterID, chapter_history: chapterHistory.data })
     },
-    loadVersionsByChapter ({ commit, state }, payload) {
-      commit('loadVersionsByChapter', payload)
+    async loadVersionsByChapter ({ commit, state }, payload) {
+      let chapterID = payload
+      let chapterVersions = await axios.get('http://localhost:3000/chapters/' + chapterID + '/versions')
+      commit('loadVersionsByChapter', { chapter_id: chapterID, chapter_versions: chapterVersions.data })
     },
-    loadTodayAuthorPersonalProgressForChapter ({ commit, state, rootGetters }, payload) {
-      commit('loadTodayAuthorPersonalProgressForChapter', { chapter_id: payload, author_id: rootGetters.getAuthorID })
+    async loadTodayAuthorPersonalProgressForChapter ({ commit, state, rootGetters }, payload) {
+      let chapterID = payload
+      let todayAuthorPersonalProgress = await axios.get('http://localhost:3000/authors/' + rootGetters.getAuthorID + '/chapter/' + chapterID + '/personal-progress/today')
+      commit('loadTodayAuthorPersonalProgressForChapter', { chapter_id: payload, chapter_author_personal_progress: todayAuthorPersonalProgress.data })
     },
     addChapterToList ({ commit, state }, payload) {
       commit('addChapterToList', payload)

@@ -185,7 +185,7 @@ export default {
               timer: 1500
             }).then(() => {
               scope.tab.active = 'content'
-            })
+            })s
             */
           }
         })
@@ -198,22 +198,25 @@ export default {
   beforeUpdate () {
     // var scope = this
   },
-  mounted () {
+  async mounted () {
     var scope = this
 
     scope.page.data = scope.properties
     scope.page.title = scope.properties.chapter.title
     // console.log('PROPERTIES')
     // console.log(scope.properties)
-    scope.$store.dispatch('loadScenesByChapter', scope.properties.chapter.uuid)
-    scope.$store.dispatch('loadVersionsByChapter', scope.properties.chapter.uuid)
 
-    setTimeout(function () {
+    try {
+      await scope.$store.dispatch('loadScenesByChapter', scope.properties.chapter.uuid)
+      await scope.$store.dispatch('loadVersionsByChapter', scope.properties.chapter.uuid)
+    } catch (ex) {
+      console.log('Failed to load data')
+    } finally {
       Vue.nextTick(function () {
         scope.page.is_ready = true
         scope.changeTab('content')
       })
-    }, 300)
+    }
   }
 }
 

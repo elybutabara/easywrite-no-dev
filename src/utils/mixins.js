@@ -1,4 +1,6 @@
 // Mixins are a flexible way to distribute reusable functionalities for Vue components.
+import {isNull} from 'bootstrap-vue/esm/utils/inspect'
+
 const electron = window.require('electron')
 const {ipcRenderer} = electron
 
@@ -175,6 +177,10 @@ export default {
       return this.$store.getters.getSceneCharacters(uuid)
     },
     REMOVE_HTML: function (content = '') {
+      if (isNull(content)) {
+        // TODO: John needs to add this string to be translated
+        return '<em>No content</em>'
+      }
       // eslint-disable-next-line no-useless-escape
       var stripedHtml = content.replace(/<br\s*[\/]?>/gi, '\n')
       stripedHtml = stripedHtml.replace(/<[^>]+>/g, '') // Remove html tags

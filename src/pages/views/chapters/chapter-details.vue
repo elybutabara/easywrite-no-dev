@@ -235,21 +235,26 @@ export default {
 
       scope.axios
         .post('http://localhost:3000/chapter-versions', scope.chapter_version)
-        .then(response => {
+        .then(async function (response) {
           if (response.data) {
-            // TODO: Insert vuex code that will refresh the chapter version
-            scope.tab.active = 'content'
-            scope.$store.dispatch('loadVersionsByChapter', scope.page.data.chapter.uuid)
-            this.busy = false
-            window.swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: this.$t('CHAPTER') + ' ' + this.$t('VERSION') + ' ' + this.$t('SUCCESSFULY_SAVED'),
-              showConfirmButton: false,
-              timer: 1500
-            }).then(() => {
-              scope.tab.active = 'versions'
-            })
+            try {
+              await scope.$store.dispatch('loadVersionsByChapter', scope.page.data.chapter.uuid)
+            } catch (ex) {
+              console.log('Failed to load data')
+            } finally {
+              scope.tab.active = 'content'
+
+              scope.busy = false
+              window.swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: scope.$t('CHAPTER') + ' ' + scope.$t('VERSION') + ' ' + scope.$t('SUCCESSFULY_SAVED'),
+                showConfirmButton: false,
+                timer: 1500
+              }).then(() => {
+                scope.tab.active = 'versions'
+              })
+            }
           }
         })
     },
@@ -319,22 +324,25 @@ export default {
   beforeUpdate () {
     // var scope = this
   },
-  mounted () {
+  async mounted () {
     var scope = this
 
     scope.page.data = scope.properties
     scope.page.title = scope.properties.chapter.title
     // console.log('PROPERTIES')
     // console.log(scope.properties)
-    scope.$store.dispatch('loadScenesByChapter', scope.properties.chapter.uuid)
-    scope.$store.dispatch('loadVersionsByChapter', scope.properties.chapter.uuid)
 
-    setTimeout(function () {
+    try {
+      await scope.$store.dispatch('loadScenesByChapter', scope.properties.chapter.uuid)
+      await scope.$store.dispatch('loadVersionsByChapter', scope.properties.chapter.uuid)
+    } catch (ex) {
+      console.log('Failed to load data')
+    } finally {
       Vue.nextTick(function () {
         scope.page.is_ready = true
         scope.changeTab('content')
       })
-    }, 300)
+    }
 
     ipcRenderer.on('EXPORT_DOCX_ENABLE_BUTTON', function () {
       scope.exportOnProgress = false
