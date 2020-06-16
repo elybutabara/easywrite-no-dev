@@ -23,11 +23,12 @@ exports.up = async function (knex) {
         log.info('Migrate assignments to latest : success')
       }).catch(function (err) {
         console.log(err)
+        log.error(err)
         throw err // throw error so it won't add in knex_migrations table
       })
     } else {
       let err = 'assignments exist'
-      throw err
+      log.error(err)
     }
   })
 
@@ -55,11 +56,12 @@ exports.up = async function (knex) {
         log.info('Migrate assignment_manuscripts to latest : success')
       }).catch(function (err) {
         console.log(err)
+        log.error(err)
         throw err // throw error so it won't add in knex_migrations table
       })
     } else {
       let err = 'assignment_manuscripts exist'
-      throw err
+      log.error(err)
     }
   })
 }

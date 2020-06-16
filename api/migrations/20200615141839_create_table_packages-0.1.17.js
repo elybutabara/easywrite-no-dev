@@ -59,11 +59,12 @@ exports.up = async function (knex) {
         log.info('Migrate packages to latest : success')
       }).catch(function (err) {
         console.log(err)
+        log.error(err)
         throw err // throw error so it won't add in knex_migrations table
       })
     } else {
       let err = 'packages exist'
-      throw err
+      log.error(err)
     }
   })
 
@@ -79,11 +80,12 @@ exports.up = async function (knex) {
         log.info('Migrate package_courses to latest : success')
       }).catch(function (err) {
         console.log(err)
+        log.error(err)
         throw err // throw error so it won't add in knex_migrations table
       })
     } else {
       let err = 'package_courses exist'
-      throw err
+      log.error(err)
     }
   })
 }

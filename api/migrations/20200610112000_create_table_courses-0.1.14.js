@@ -35,7 +35,7 @@ exports.up = async function (knex) {
       })
     } else {
       let err = 'course exist'
-      throw err
+      log.error(err)
     }
   })
 }
