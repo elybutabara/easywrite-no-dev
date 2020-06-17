@@ -165,11 +165,7 @@ exports.initializeDatabase = () => {
 
   process.env.dblocation = dist
 
-  if (
-    fs.existsSync(src) &&
-    fs.statSync(src).isFile() &&
-    !fs.existsSync(dist)
-  ) {
+  if (fs.existsSync(src) && fs.statSync(src).isFile() && !fs.existsSync(dist)) {
     fsj.copy(src, dist)
     fs.chmod(dist, '0700', function (err) {
       if (err) {
@@ -177,5 +173,12 @@ exports.initializeDatabase = () => {
       }
     })
     log.info('success initializeDatabase')
+  } else if (fs.existsSync(dist)) {
+    // for those who install v14-17
+    fs.chmod(dist, '0700', function (err) {
+      if (err) {
+        log.error(err)
+      }
+    })
   }
 }
