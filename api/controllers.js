@@ -22,6 +22,7 @@ const { RelationDetailController } = require(path.join(__dirname, 'controller/Re
 const { AuthorPersonalProgressController } = require(path.join(__dirname, 'controller/AuthorPersonalProgressController'))
 const { BookChapterHistoryController } = require(path.join(__dirname, 'controller/BookChapterHistoryController'))
 const { BookSceneHistoryController } = require(path.join(__dirname, 'controller/BookSceneHistoryController'))
+const { CourseController } = require(path.join(__dirname, 'controller/CourseController'))
 
 module.exports = {
   UserController,
@@ -45,5 +46,6 @@ module.exports = {
   BookGenreCollectionController,
   AuthorPersonalProgressController,
   BookChapterHistoryController,
-  BookSceneHistoryController
+  BookSceneHistoryController,
+  CourseController
 }

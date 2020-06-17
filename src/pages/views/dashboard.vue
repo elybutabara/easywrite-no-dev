@@ -67,20 +67,9 @@
         </div>
         <br/>
         <div class="es-panel">
-            <h4>Your literary family</h4>
-            <p>
-                Do you want specific feedback on your text? Pilot Reader is a unique network where you can meet people who are interested in your project and experience with your genre. The service is free, secure and you can be completely anonymous.
-            </p>
-            <br/>
-            <h4>How does this work?</h4>
-            <p>
-               Pilot Reader is a unique system where you can share your own texts for review, read and review other people's texts, or both.
-            </p>
-            <br/>
-            <h4>About Pilot Reader</h4>
-            <p>
-               Pilot reader is under the umbrella of the Writers' School, and thus part of the literary family.
-            </p>
+          <h4>{{$tc('COURSES')}}</h4>
+          <hr/>
+          <course-listing />
         </div>
         <div class="es-panel">
             <h4>Your literary family</h4>
@@ -106,7 +95,7 @@
 import Syncing from '@/pages/views/syncing'
 import { mapGetters, mapActions } from 'vuex'
 import Report from '../../components/Report'
-
+import CourseListing from './course/course-listing'
 export default {
   name: 'dashboard',
   props: ['properties'],
@@ -144,7 +133,8 @@ export default {
   },
   components: {
     'report': Report,
-    'syncing': Syncing
+    'syncing': Syncing,
+    'course-listing': CourseListing
   },
   methods: {
     ...mapActions({ actionmutateStart: 'mutatePmdTimer' }),

@@ -33,6 +33,7 @@ import item from './stores/item'
 import location from './stores/location'
 import scene from './stores/scene'
 import book from './stores/book'
+import course from './stores/course'
 
 // import './assets/vendors/bootstrap/css/bootstrap.min.css'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -127,7 +128,8 @@ const store = new Vuex.Store({
     item: item,
     location: location,
     scene: scene,
-    book: book
+    book: book,
+    course: course
   }
 })
 // Vue.component('editor', tinymce)

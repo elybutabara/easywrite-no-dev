@@ -63,11 +63,11 @@ const MWAlist = [
     meta: { protected: false }
   }
 ]
-console.log(process.env.NODE_ENV)
+
 if (process.env.NODE_ENV !== 'production') {
   routeList = routeList.concat(MWAlist)
 }
-console.log(routeList)
+
 export default new Router({
   routes: routeList
 })
