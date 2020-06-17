@@ -5,7 +5,7 @@ exports.up = async function (knex) {
       await knex.schema.createTable('assignments', function (t) {
         t.increments(`id`) // int(10) unsigned NOT NULL AUTO_INCREMENT,
         t.string(`uuid`) // varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-        t.integer(`course_id`) // int(10) unsigned NOT NULL,
+        t.string(`course_id`) // int(10) unsigned NOT NULL,
         t.text(`title`) // varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
         t.text(`description`) // longtext COLLATE utf8mb4_unicode_ci NOT NULL,
         t.text(`submission_date`) // varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -37,8 +37,8 @@ exports.up = async function (knex) {
       await knex.schema.createTable('assignment_manuscripts', function (t) {
         t.increments(`id`) // // int(10) // unsigned NOT NULL AUTO_INCREMENT,
         t.string(`uuid`) // // varchar(255) // COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-        t.integer(`assignment_id`) // int(10) // unsigned NOT NULL,
-        t.integer(`user_id`) // int(10) // unsigned NOT NULL,
+        t.string(`assignment_id`) // int(10) // unsigned NOT NULL,
+        t.string(`user_id`) // int(10) // unsigned NOT NULL,
         t.text(`content`) // longtext COLLATE utf8mb4_unicode_ci NOT NULL,
         t.integer(`words`) // int(11) // NOT NULL DEFAULT 0,
         t.decimal(`grade`, 11, 2) // decimal(11,2) // DEFAULT NULL,
@@ -46,7 +46,7 @@ exports.up = async function (knex) {
         t.text(`where_in_script`) // tinyint(4) // DEFAULT NULL,
         t.integer(`locked`) // tinyint(4) // DEFAULT NULL,
         t.integer(`text_number`) // tinyint(4) // DEFAULT NULL,
-        t.integer(`editor_id`) // int(11) // NOT NULL DEFAULT 0,
+        t.text(`editor_id`) // int(11) // NOT NULL DEFAULT 0,
         t.integer(`has_feedback`) // tinyint(4) // NOT NULL DEFAULT 0,
         t.integer(`join_group`) // tinyint(4) // NOT NULL DEFAULT 0,
         t.integer(`is_file`) // tinyint(4) NOT NULL DEFAULT 0,

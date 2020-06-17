@@ -5,7 +5,7 @@ exports.up = async function (knex) {
       await knex.schema.createTable('packages', function (t) {
         t.increments(`id`) // int(10) unsigned NOT NULL AUTO_INCREMENT,
         t.string(`uuid`) // varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-        t.integer(`course_id`) // int(10) unsigned NOT NULL,
+        t.text(`course_id`) // int(10) unsigned NOT NULL,
         t.text(`variation`) // longtext COLLATE utf8mb4_unicode_ci NOT NULL,
         t.text(`description`) // longtext COLLATE utf8mb4_unicode_ci NOT NULL,
         t.integer(`has_coaching`) // tinyint(4) NOT NULL DEFAULT 0,
@@ -72,8 +72,8 @@ exports.up = async function (knex) {
     if (!exists) {
       await knex.schema.createTable('package_courses', function (t) {
         t.increments(`id`) // int(10) unsigned NOT NULL AUTO_INCREMENT,
-        t.integer(`package_id`) // int(10) unsigned NOT NULL,
-        t.integer(`included_package_id`) // int(10) unsigned NOT NULL,
+        t.string(`package_id`) // int(10) unsigned NOT NULL,
+        t.string(`included_package_id`) // int(10) unsigned NOT NULL,
         t.text(`created_at`) // timestamp NULL DEFAULT NULL,
         t.text(`updated_at`) // timestamp NULL DEFAULT NULL,
       }).then(function () {

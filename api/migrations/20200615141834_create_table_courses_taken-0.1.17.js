@@ -45,8 +45,8 @@ exports.up = async function (knex) {
       await knex.schema.createTable('courses_taken', function (t) {
         t.increments(`id`) // int(10) unsigned NOT NULL AUTO_INCREMENT,
         t.string(`uuid`) // varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-        t.integer(`user_id`).notNullable() // int(10) unsigned NOT NULL,
-        t.integer(`package_id`).notNullable() // int(10) unsigned NOT NULL,
+        t.string(`user_id`).notNullable() // int(10) unsigned NOT NULL,
+        t.string(`package_id`).notNullable() // int(10) unsigned NOT NULL,
         t.integer(`is_active`).notNullable().defaultTo(1) // tinyint(4) NOT NULL DEFAULT 1,
         t.dateTime(`started_at`) // datetime DEFAULT NULL,
         t.date(`start_date`) // date DEFAULT NULL,
