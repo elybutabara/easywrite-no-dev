@@ -171,5 +171,11 @@ exports.initializeDatabase = () => {
     !fs.existsSync(dist)
   ) {
     fsj.copy(src, dist)
+    fs.chmod(dist, '0700', function (err) {
+      if (err) {
+        log.error(err)
+      }
+    })
+    log.info('success initializeDatabase')
   }
 }
