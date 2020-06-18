@@ -48,6 +48,7 @@
 
                 <storyboard :key="tab.key" v-if="tab.component == 'storyboard'" :properties="tab.data"></storyboard>
                 <syncing :key="tab.key" v-if="tab.component == 'syncing'" :properties="tab.data"></syncing>
+                <course-details :key="tab.key" v-if="tab.component == 'course-details'" :properties="tab.data"></course-details>
             </div>
         </div>
     </div>
@@ -88,6 +89,7 @@ import BooksIReadChapterListing from '@/pages/views/books-i-read/chapter-listing
 import BooksIReadSceneListing from '@/pages/views/books-i-read/scene-listing'
 import BooksIReadChapterDetails from '@/pages/views/books-i-read/chapter-details'
 import BooksIReadSceneDetails from '@/pages/views/books-i-read/scene-details'
+import CourseDetails from '@/pages/views/course/course-details'
 
 // const electron = window.require('electron')
 // const remote = electron.remote
@@ -141,7 +143,8 @@ export default {
     'books-i-read-scene-listing': BooksIReadSceneListing,
     'books-i-read-chapter-details': BooksIReadChapterDetails,
     'books-i-read-scene-details': BooksIReadSceneDetails,
-    'pomodoro-timer': PomodoroTimer
+    'pomodoro-timer': PomodoroTimer,
+    'course-details': CourseDetails
   },
   methods: {
     changeComponent: function (component, data) {

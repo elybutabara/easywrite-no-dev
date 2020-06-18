@@ -1,14 +1,28 @@
 <template>
-  <div class="component-report">
-    <div class="row" v-for="course in courses" :key="course.uuid">
-      <div class="col-12 col-md-3" style="">
-          <div style="text-align:center; background:#f5f8fa;border:1px solid #cbd6e2;">
-            <div style="padding:40px 40px;">
-              <h4>{{ course.course.title }}</h4>
-              <span v-html="course.course.short_description"></span>
-            </div>
-            <b-button style="width:95%;margin-bottom: 1em" class="es-button-white">{{ (course.started_at) ? $tc('CONTINUE_WITH_COURSE') : $tc('START')}}</b-button>
+  <div class="component-course-listing" v-if="page.is_ready">
+    <div class="row">
+      <div class="col-md-6">
+        <h4 style="margin-bottom: 0">{{$tc('COURSES')}}</h4>
+      </div>
+      <div class="col-md-6 text-right">
+        <b-button style="" class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'course-list', tabComponent: 'course-details',  tabData: {}, tabTitle: $t('COURSE'), newTab: true})">{{ $tc('VIEW_ALL') }}</b-button>
+      </div>
+    </div>
+    <hr/>
+    <div class="row">
+      <div class="col-md-4" v-for="course in courses" :key="course.uuid">
+        <div class="col-md-12">
+          <div class="uploaded-file-preview" style="height: 150px;background: #d2d2d2">
+            <div class="default-preview"><i class="fa fa-image"></i></div>
           </div>
+          <div class="mt-3">
+            <h4>{{ course.course.title }}</h4>
+            <span class="ellipsis-2" v-html="course.course.short_description"></span>
+          </div>
+          <div class="mt-3 text-center">
+            <b-button @click="CHANGE_COMPONENT({tabKey: 'course-details-' + course.uuid , tabComponent: 'course-details',  tabData: {course:course}, tabTitle: $t('COURSE'), newTab: true})" class="es-button-white">{{ (course.started_at) ? $tc('CONTINUE_WITH_COURSE') : $tc('START')}}</b-button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -17,36 +31,30 @@
 <script>
 export default {
   name: 'course-listing',
-  methods: {
-    numberFormat: function (number) {
-      return number.toLocaleString()
-    }
-  },
-  computed: {
-    courses: {
-      get () {
-        let scope = this
-        let chapters = scope.$store.getters.getCoursesByUserId(this.$store.getters.getUserID)
-        return chapters
-      },
-      set (value) {
-        let scope = this
-        if (value) {
-          this.$store.commit('sortChapters', {bookUUID: scope.book.uuid, data: value})
-        }
+  data: function () {
+    return {
+      courses: [],
+      page: {
+        is_ready: false
       }
     }
   },
-  beforeMount () {
+  async mounted () {
     let scope = this
-    scope.$store.dispatch('loadCourseByUserId', this.$store.getters.getUserID)
-  },
-  mounted () {
-    // let scope = this
+    let response
+    try {
+      response = await scope.axios.get('http://localhost:3000/courses/' + this.$store.getters.getUserID + '/course-list-dashboard')
+    } finally {
+      scope.courses = response.data
+      scope.page.is_ready = true
+    }
   }
 }
 </script>
 
 <style scoped>
-
+  .uploaded-file-preview { width:100%; cursor: pointer; }
+  .uploaded-file-preview img { width:100%; }
+  .uploaded-file-preview .default-preview { min-height: 150px; background-color: #293742; color: #fff; text-align: center; }
+  .uploaded-file-preview .default-preview i { font-size: 105px; line-height: 100px; opacity: 0.8; }
 </style>

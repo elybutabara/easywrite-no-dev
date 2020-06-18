@@ -24,20 +24,7 @@
         </div>
         <div style="margin-top:10px; margin-bottom:20px; max-width: 1320px; display:flex; width:calc(100% - 40px); margin:0px auto; justify-content: space-between;">
             <div style="background:#fff; width:calc(100% - 320px); padding:20px 20px; border: 1px solid #e0e5ee;">
-                <h4>Your literary family</h4>
-                <p>
-                    Do you want specific feedback on your text? Pilot Reader is a unique network where you can meet people who are interested in your project and experience with your genre. The service is free, secure and you can be completely anonymous.
-                </p>
-                <br/>
-                <h4>How does this work?</h4>
-                <p>
-                Pilot Reader is a unique system where you can share your own texts for review, read and review other people's texts, or both.
-                </p>
-                <br/>
-                <h4>About Pilot Reader</h4>
-                <p>
-                Pilot reader is under the umbrella of the Writers' School, and thus part of the literary family.
-                </p>
+              <course-listing />
             </div>
             <div style="width:300px;">
                 <div style="padding:0px; text-align:center; background:#fff;  border: 1px solid #e0e5ee; margin-bottom:20px;">
@@ -67,9 +54,20 @@
         </div>
         <br/>
         <div class="es-panel">
-          <h4>{{$tc('COURSES')}}</h4>
-          <hr/>
-          <course-listing />
+          <h4>Your literary family</h4>
+          <p>
+            Do you want specific feedback on your text? Pilot Reader is a unique network where you can meet people who are interested in your project and experience with your genre. The service is free, secure and you can be completely anonymous.
+          </p>
+          <br/>
+          <h4>How does this work?</h4>
+          <p>
+            Pilot Reader is a unique system where you can share your own texts for review, read and review other people's texts, or both.
+          </p>
+          <br/>
+          <h4>About Pilot Reader</h4>
+          <p>
+            Pilot reader is under the umbrella of the Writers' School, and thus part of the literary family.
+          </p>
         </div>
         <div class="es-panel">
             <h4>Your literary family</h4>

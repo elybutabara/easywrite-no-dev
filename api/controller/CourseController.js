@@ -9,7 +9,9 @@ class CourseController {
       .where('user_id', param.userID)
       .withGraphJoined('package')
       .withGraphJoined('course')
-
+    if (param.limit) {
+      course.limit(3)
+    }
     return course
   }
 

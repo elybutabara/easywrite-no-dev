@@ -53,10 +53,11 @@ router.get('/:courseId', async function (req, res) {
     .json(course)
 })
 
-router.get('/:userID/course-list', async function (req, res) {
+router.get('/:userID/course-list-dashboard', async function (req, res) {
   const param = {
     userID: req.params.userID,
-    search: ''
+    search: '',
+    limit: 3
   }
 
   if (req.query.search) {
