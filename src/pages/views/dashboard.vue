@@ -67,9 +67,7 @@
         </div>
         <br/>
         <div class="es-panel">
-          <h4>{{$tc('COURSES')}}</h4>
-          <hr/>
-          <course-listing />
+            <assignment></assignment>
         </div>
         <div class="es-panel">
             <h4>Your literary family</h4>
@@ -93,6 +91,7 @@
 
 <script>
 import Syncing from '@/pages/views/syncing'
+import Assignment from '@/pages/views/assignment'
 import { mapGetters, mapActions } from 'vuex'
 import Report from '../../components/Report'
 import CourseListing from './course/course-listing'
@@ -134,7 +133,8 @@ export default {
   components: {
     'report': Report,
     'syncing': Syncing,
-    'course-listing': CourseListing
+    'course-listing': CourseListing,
+    'assignment': Assignment
   },
   methods: {
     ...mapActions({ actionmutateStart: 'mutatePmdTimer' }),

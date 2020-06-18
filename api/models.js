@@ -35,6 +35,7 @@ const { SoftDeleteQueryBuilder } = require(path.join(__dirname, 'models/SoftDele
 const { CoursesTaken } = require(path.join(__dirname, 'models/CoursesTaken'))
 const { Course } = require(path.join(__dirname, 'models/Course'))
 const { Package } = require(path.join(__dirname, 'models/Package'))
+const { Assignment } = require(path.join(__dirname, 'models/Assignment'))
 
 Model.knex(knexConnection)
 
@@ -66,5 +67,6 @@ module.exports = {
   SoftDeleteQueryBuilder,
   CoursesTaken,
   Course,
-  Package
+  Package,
+  Assignment
 }
