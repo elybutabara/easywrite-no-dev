@@ -22,7 +22,7 @@
                 <div class="es-card" v-bind:style="{ opacity: lesson.is_available ? '100%' : '50%' }">
                   <div class="es-card-content">
                     <div class="es-card-actions" v-if="lesson.is_available">
-                      <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'lesson-details-' + lesson.uuid, tabComponent: 'lesson-details',  tabData: { lesson: lesson, course_taken: course_taken }, tabTitle: $t('VIEW')+ ' - ' + lesson.title, newTab: true})"><i class="lar la-eye"></i></button>
+                      <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'lesson-details-' + lesson.uuid, tabComponent: 'books-i-read-chapter-details',  tabData: { lesson: lesson, course_taken: course_taken }, tabTitle: $t('VIEW')+ ' - ' + lesson.title, newTab: true})"><i class="lar la-eye"></i></button>
                     </div>
                     <h3 class="title ellipsis-2">{{ DISPLAY_TITLE(lesson.title) }}</h3>
                     <i class="description ellipsis-3"><span v-html="lesson.content"></span></i>
@@ -44,8 +44,8 @@
             </div>
             <div class="col-4">
               <h4>{{ $t('TITLE')}}: {{course_taken.course.title }}</h4>
-              <div>{{ $tc('DATE_STARTED')}} - {{ data.started_at  }}</div>
-              <div>{{ $tc('EXPIRES_ON')}} - {{ data.expired_at  }}</div>
+              <div>{{ $tc('DATE_STARTED')}} - {{ started_at  }}</div>
+              <div>{{ $tc('EXPIRES_ON')}} - {{ expired_at  }}</div>
             </div>
           </div>
           <div class="row mt-5">
@@ -61,16 +61,14 @@
 import moment from 'moment'
 
 export default {
-  name: 'course-details',
+  name: 'lesson-details',
   props: ['properties'],
   data: function () {
     return {
       course_taken: [],
       lessons: [],
-      data: {
-        started_at: '',
-        expired_at: ''
-      },
+      started_at: '',
+      expired_at: '',
       page: {
         is_ready: false
       },
@@ -92,29 +90,25 @@ export default {
   beforeMount () {},
   async mounted () {
     const scope = this
-    let response
+    console.log('aw')
+    // let response
     try {
       scope.course_taken = scope.properties.course_taken
-      scope.data.started_at = moment(scope.course_taken.started_at).format('MMM D YYYY, h:mm:ss a').toString()
-      scope.data.expired_at = moment(scope.course_taken.end_date).format('MMM D YYYY').toString() + moment(scope.course_taken.started_at).format('h:mm:ss a').toString()
-      response = await scope.axios.get('http://localhost:3000/lessons/' + scope.course_taken.course.uuid)
+      console.log(scope.course_taken)
     } finally {
-      console.clear()
-      if (response) {
-        scope.lessons = response.data
-        scope.lessons.forEach(function (lesson, index) {
-          let availabilityDate = moment(scope.data.started_at).add(lesson.delay, 'days').format('MMM D YYYY, h:mm:ss a')
-          console.log(availabilityDate)
-          console.log(moment().format('MMM D YYYY, h:mm:ss a'))
-          if (availabilityDate <= moment().format('MMM D YYYY, h:mm:ss a')) {
-            scope.lessons[index].is_available = true
-          } else {
-            scope.lessons[index].is_available = false
-            scope.lessons[index].availability_date = availabilityDate
-          }
-        })
-      }
-      scope.page.is_ready = true
+      // if (response) {
+        // scope.lessons = response.data
+        // scope.lessons.forEach(function (lesson, index) {
+        //   let availabilityDate = moment(scope.started_at).add(lesson.delay, 'days').format('MMM D YYYY, h:mm:ss a')
+        //   if (availabilityDate <= moment().format('MMM D YYYY, h:mm:ss a')) {
+        //     scope.lessons[index].is_available = true
+        //   } else {
+        //     scope.lessons[index].is_available = false
+        //     scope.lessons[index].availability_date = availabilityDate
+        //   }
+        // })
+      // }
+      // scope.page.is_ready = true
     }
   }
 }
