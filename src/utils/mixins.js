@@ -251,6 +251,18 @@ export default {
     },
     CHANGE_MENU_TITLE: function (title) {
       ipcRenderer.send('SET_TITLE', title)
+    },
+    DISPLAY_TITLE: function (title) {
+      if (title === null) {
+        return 'Untitled'
+      }
+      if (title.length > 70) {
+        return title.slice(0, 70) + '...'
+      } else if (title.length < 1) {
+        return 'Untitled'
+      } else {
+        return title.slice(0, 39)
+      }
     }
   }
 }

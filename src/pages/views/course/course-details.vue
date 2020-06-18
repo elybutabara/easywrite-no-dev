@@ -15,8 +15,25 @@
         <div v-bind:class="{ 'active' : tab.active == 'course_plan' }" @click="changeTab('course_plan')" class="es-chapter-details-tab-item">{{$tc('COURSE PLAN', 2).toUpperCase()}}</div>
       </div>
       <div style="position:relative; padding-bottom:40px;">
-        <div v-if="tab.active === 'lesson'"  class="es-chapter-details-tab-content">
-          Lesson here
+        <div v-if="tab.active === 'lesson'"  class="">
+          <div class="es-page-content">
+            <div class="es-row">
+              <div class="es-col fadeIn animated" v-for="lesson in lessons" v-bind:key="lesson.uuid">
+                <div class="es-card">
+                  <div class="es-card-content">
+                    <div class="es-card-actions">
+                      <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + lesson.uuid, tabComponent: 'books-i-read-chapter-details',  tabData: { lesson: lesson }, tabTitle: $t('VIEW')+ ' - ' + lesson.title})"><i class="lar la-eye"></i></button>
+                    </div>
+                    <h3 class="title ellipsis-2">{{ DISPLAY_TITLE(lesson.title) }}</h3>
+                    <i class="description ellipsis-3"><span v-html="lesson.content"></span></i>
+                  </div>
+                  <div class="es-card-footer">
+                    <small style="float:right;">{{$t('AVAILABLE')}}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div v-if="tab.active === 'course_plan'"  class="es-chapter-details-tab-content scene-listing">
           <div class="row">
@@ -49,6 +66,7 @@ export default {
   data: function () {
     return {
       course_taken: [],
+      lessons: [],
       started_at: '',
       expired_at: '',
       page: {
@@ -70,13 +88,18 @@ export default {
   },
   computed: {},
   beforeMount () {},
-  mounted () {
+  async mounted () {
     const scope = this
-    scope.course_taken = scope.properties.course_taken
-    scope.started_at = moment(scope.course_taken.started_at).format('MMM D YYYY, h:mm:ss a').toString()
-    scope.expired_at = moment(scope.course_taken.end_date).format('MMM D YYYY').toString() + moment(scope.course_taken.started_at).format('h:mm:ss a').toString()
-    scope.page.is_ready = true
-    console.log(scope.course_taken)
+    let response
+    try {
+      scope.course_taken = scope.properties.course_taken
+      scope.started_at = moment(scope.course_taken.started_at).format('MMM D YYYY, h:mm:ss a').toString()
+      scope.expired_at = moment(scope.course_taken.end_date).format('MMM D YYYY').toString() + moment(scope.course_taken.started_at).format('h:mm:ss a').toString()
+      response = await scope.axios.get('http://localhost:3000/lessons/' + scope.course_taken.course.uuid)
+    } finally {
+      if (response) scope.lessons = response.data
+      scope.page.is_ready = true
+    }
   }
 }
 </script>
@@ -95,4 +118,12 @@ export default {
   .uploaded-file-preview img { width:100%; }
   .uploaded-file-preview .default-preview { min-height: 150px; background-color: #293742; color: #fff; text-align: center; }
   .uploaded-file-preview .default-preview i { font-size: 105px; line-height: 100px; opacity: 0.8; }
+
+  .es-card { color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
+  .es-card .es-card-content { position:relative; padding:20px; min-height:150px; }
+  /*.es-card .es-card-content .title { font-size:18px; font-weight:900; margin:0px; padding-right:110px; }*/
+
+  .es-card .es-card-content .es-card-actions { position:absolute; top:20px; right:20px; text-align:right; }
+  .es-card .es-card-content .es-card-actions .btn-circle { background:transparent; border:1px solid #e0e5ee; border-radius:50%; width:30px; height:30px; line-height:22px; text-align:center; font-size:15px; }
+  .es-card .es-card-footer { background:#f5f8fa; height:40px; line-height:40px; padding:0px 20px; border-top:1px solid #e0e5ee; }
 </style>

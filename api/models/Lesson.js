@@ -4,19 +4,19 @@ const path = require('path')
 
 const { BaseModel } = require('./BaseModel')
 
-class Course extends BaseModel {
+class Lesson extends BaseModel {
   // Table name is the only required property.
   static get tableName () {
-    return 'courses'
+    return 'lessons'
   }
 
   static relationMappings = {
-    lessons: {
+    lesson_documents: {
       relation: BaseModel.HasManyRelation,
-      modelClass: path.join(__dirname, 'Lessons'),
+      modelClass: path.join(__dirname, 'LessonDocument'),
       join: {
-        from: 'courses.uuid',
-        to: 'lessons.course_id'
+        from: 'lessons.uuid',
+        to: 'lesson_documents.lesson_id'
       },
       softDelete: true
     }
@@ -24,5 +24,5 @@ class Course extends BaseModel {
 }
 
 module.exports = {
-  Course
+  Lesson
 }

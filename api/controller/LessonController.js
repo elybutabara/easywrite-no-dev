@@ -1,44 +1,43 @@
 'use strict'
 const path = require('path')
 
-const { CoursesTaken } = require(path.join(__dirname, '..', 'models'))
+const { Lesson } = require(path.join(__dirname, '..', 'models'))
 
-class CourseController {
-  static async getAllByUserId (param) {
-    let courseTaken = CoursesTaken.query()
-      .where('user_id', param.userID)
-      .withGraphJoined('package')
-      .withGraphJoined('course')
+class LessonController {
+  static async getAllByCourseId (param) {
+    let lessons = Lesson.query()
+      .where('course_id', param.courseID)
+      .withGraphJoined('lesson_documents')
     if (param.limit) {
-      courseTaken.limit(param.limit)
+      lessons.limit(param.limit)
     }
-    return courseTaken
+    return lessons
   }
-
-  // static getByItemId (itemId) {
-  //   var item = Item.query()
-  //     .withGraphJoined('book')
-  //     .findById(itemId)
   //
-  //   return item
+  // static getByLessonId (lessonId) {
+  //   var lesson = Lesson.query()
+  //     .withGraphJoined('lesson_documents')
+  //     .findById(lessonId)
+  //
+  //   return lesson
   // }
-  //
+
   // static async save (data) {
-  //   const saveItem = await Item.query().upsertGraph([data]).first()
+  //   const saveItem = await Lesson.query().upsertGraph([data]).first()
   //
-  //   const item = Item.query()
+  //   const lesson = Lesson.query()
   //     .withGraphJoined('book')
   //     .findById(saveItem.uuid)
   //
-  //   return item
+  //   return lesson
   // }
   //
-  // static async delete (itemId) {
-  //   const item = await Item.query().softDeleteById(itemId)
+  // static async delete (lessonId) {
+  //   const lesson = await Lesson.query().softDeleteById(lessonId)
   //
-  //   return item
+  //   return lesson
   // }
-  //
+
   // static async getSyncable (userId) {
   //   const user = await User.query()
   //     .findById(userId)
@@ -62,7 +61,7 @@ class CourseController {
   //
   //   return rows
   // }
-  //
+
   // static async sync (row) {
   //   var data = await Item.query()
   //     .patch(row)
@@ -93,5 +92,5 @@ class CourseController {
 }
 
 module.exports = {
-  CourseController
+  LessonController
 }
