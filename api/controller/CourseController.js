@@ -5,14 +5,14 @@ const { CoursesTaken, User, Book, Item } = require(path.join(__dirname, '..', 'm
 
 class CourseController {
   static async getAllByUserId (param) {
-    var course = CoursesTaken.query()
+    let courseTaken = CoursesTaken.query()
       .where('user_id', param.userID)
       .withGraphJoined('package')
       .withGraphJoined('course')
     if (param.limit) {
-      course.limit(3)
+      courseTaken.limit(3)
     }
-    return course
+    return courseTaken
   }
 
   static getByItemId (itemId) {

@@ -10,17 +10,17 @@
     </div>
     <hr/>
     <div class="row">
-      <div class="col-md-4" v-for="course in courses" :key="course.uuid">
+      <div class="col-md-4" v-for="course_taken in courses_taken" :key="course_taken.uuid">
         <div class="col-md-12">
           <div class="uploaded-file-preview" style="height: 150px;background: #d2d2d2">
             <div class="default-preview"><i class="fa fa-image"></i></div>
           </div>
           <div class="mt-3">
-            <h4>{{ course.course.title }}</h4>
-            <span class="ellipsis-2" v-html="course.course.short_description"></span>
+            <h4>{{ course_taken.course.title }}</h4>
+            <span class="ellipsis-2" v-html="course_taken.course.short_description"></span>
           </div>
           <div class="mt-3 text-center">
-            <b-button @click="CHANGE_COMPONENT({tabKey: 'course-details-' + course.uuid , tabComponent: 'course-details',  tabData: {course:course}, tabTitle: $t('COURSE'), newTab: true})" class="es-button-white">{{ (course.started_at) ? $tc('CONTINUE_WITH_COURSE') : $tc('START')}}</b-button>
+            <b-button @click="CHANGE_COMPONENT({tabKey: 'course-details-' + course_taken.uuid , tabComponent: 'course-details',  tabData: {course_taken:course_taken}, tabTitle: $t('COURSE'), newTab: true})" class="es-button-white">{{ (course_taken.started_at) ? $tc('CONTINUE_WITH_COURSE') : $tc('START')}}</b-button>
           </div>
         </div>
       </div>
@@ -33,7 +33,7 @@ export default {
   name: 'course-listing',
   data: function () {
     return {
-      courses: [],
+      courses_taken: [],
       page: {
         is_ready: false
       }
@@ -45,7 +45,7 @@ export default {
     try {
       response = await scope.axios.get('http://localhost:3000/courses/' + this.$store.getters.getUserID + '/course-list-dashboard')
     } finally {
-      scope.courses = response.data
+      scope.courses_taken = response.data
       scope.page.is_ready = true
     }
   }
