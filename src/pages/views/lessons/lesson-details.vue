@@ -5,51 +5,55 @@
         <div class="inner">
           <div class="details">
             <div>
-              <h4><strong>{{ course_taken.course.title }}</strong></h4>
+              <h4><strong>{{ lesson.title }}</strong></h4>
             </div>
           </div>
         </div>
       </div>
       <div class="es-chapter-details-tab">
-        <div v-bind:class="{ 'active' : tab.active == 'lesson' }" @click="changeTab('lesson')" class="es-chapter-details-tab-item">{{$tc('LESSON').toUpperCase()}}</div>
-        <div v-bind:class="{ 'active' : tab.active == 'course_plan' }" @click="changeTab('course_plan')" class="es-chapter-details-tab-item">{{$tc('COURSE PLAN', 2).toUpperCase()}}</div>
+        <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-chapter-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
+<!--        <div v-bind:class="{ 'active' : tab.active == 'document' }" @click="changeTab('document')" class="es-chapter-details-tab-item">{{$tc('DOCUMENT', 2).toUpperCase()}}</div>-->
       </div>
       <div style="position:relative; padding-bottom:40px;">
         <div v-if="tab.active === 'lesson'"  class="">
-          <div class="es-page-content">
-            <div class="es-row">
-              <div class="es-col fadeIn animated" v-for="lesson in lessons" v-bind:key="lesson.uuid">
-                <div class="es-card" v-bind:style="{ opacity: lesson.is_available ? '100%' : '50%' }">
-                  <div class="es-card-content">
-                    <div class="es-card-actions" v-if="lesson.is_available">
-                      <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'lesson-details-' + lesson.uuid, tabComponent: 'books-i-read-chapter-details',  tabData: { lesson: lesson, course_taken: course_taken }, tabTitle: $t('VIEW')+ ' - ' + lesson.title, newTab: true})"><i class="lar la-eye"></i></button>
-                    </div>
-                    <h3 class="title ellipsis-2">{{ DISPLAY_TITLE(lesson.title) }}</h3>
-                    <i class="description ellipsis-3"><span v-html="lesson.content"></span></i>
-                  </div>
-                  <div class="es-card-footer">
-                    <small style="float:right;">{{ lesson.is_available ? $tc('AVAILABLE') : $tc('AVAILABLE_AT') + ' : ' + lesson.availability_date}}</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+<!--          <div class="es-page-content">-->
+<!--            <div class="es-row">-->
+<!--              <div class="es-col fadeIn animated" v-for="lesson in lessons" v-bind:key="lesson.uuid">-->
+<!--                <div class="es-card" v-bind:style="{ opacity: lesson.is_available ? '100%' : '50%' }">-->
+<!--                  <div class="es-card-content">-->
+<!--                    <div class="es-card-actions" v-if="lesson.is_available">-->
+<!--                      <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'lesson-details-' + lesson.uuid, tabComponent: 'lesson-details',  tabData: { lesson: lesson, course_taken: course_taken ,data: data}, tabTitle: $t('VIEW')+ ' - ' + lesson.title, newTab: true})"><i class="lar la-eye"></i></button>-->
+<!--                    </div>-->
+<!--                    <h3 class="title ellipsis-2">{{ DISPLAY_TITLE(lesson.title) }}</h3>-->
+<!--                    <i class="description ellipsis-3"><span v-html="lesson.content"></span></i>-->
+<!--                  </div>-->
+<!--                  <div class="es-card-footer">-->
+<!--                    <small style="float:right;">{{ lesson.is_available ? $tc('AVAILABLE') : $tc('AVAILABLE_AT') + ' : ' + lesson.availability_date}}</small>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
         </div>
-        <div v-if="tab.active === 'course_plan'"  class="es-chapter-details-tab-content scene-listing">
-          <div class="row">
-            <div class="col-md-4">
-              <div class="uploaded-file-preview" style="height: 150px;background: #d2d2d2">
-                <div class="default-preview"><i class="fa fa-image"></i></div>
-              </div>
-            </div>
-            <div class="col-4">
-              <h4>{{ $t('TITLE')}}: {{course_taken.course.title }}</h4>
-              <div>{{ $tc('DATE_STARTED')}} - {{ started_at  }}</div>
-              <div>{{ $tc('EXPIRES_ON')}} - {{ expired_at  }}</div>
-            </div>
+        <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content scene-listing">
+<!--          <div class="row">-->
+<!--            <div class="col-md-4">-->
+<!--              <div class="uploaded-file-preview" style="height: 150px;background: #d2d2d2">-->
+<!--                <div class="default-preview"><i class="fa fa-image"></i></div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="col-4">-->
+<!--              <h4>{{ $t('TITLE')}}: {{course_taken.course.title }}</h4>-->
+<!--              <div>{{ $tc('DATE_STARTED')}} - {{ data.started_at  }}</div>-->
+<!--              <div>{{ $tc('EXPIRES_ON')}} - {{ data.expired_at  }}</div>-->
+<!--            </div>-->
+<!--          </div>-->
+          <div class="text-right">
+            <b-badge href="#" variant="dark" class="p-2">{{ $tc('DATE_STARTED') }}: <i class="fa fa-calendar-check" aria-hidden="true"></i> {{ data.started_at }}</b-badge>
+            <b-badge href="#" variant="dark" class="p-2">{{ $tc('EXPIRES_ON') }}: <i class="fa fa-calendar-times" aria-hidden="true"></i> {{ data.expired_at }}</b-badge>
           </div>
-          <div class="row mt-5">
-            <div class="col-md-12" v-html="course_taken.course.description"></div>
+          <div class="row mt-2">
+            <div class="col-md-12" v-html="lesson.content"></div>
           </div>
         </div>
       </div>
@@ -58,22 +62,22 @@
 </template>
 
 <script>
-import moment from 'moment'
-
 export default {
-  name: 'lesson-details',
+  name: 'course-details',
   props: ['properties'],
   data: function () {
     return {
       course_taken: [],
       lessons: [],
-      started_at: '',
-      expired_at: '',
+      data: {
+        started_at: '',
+        expired_at: ''
+      },
       page: {
         is_ready: false
       },
       tab: {
-        active: 'course_plan'
+        active: 'content'
       }
     }
   },
@@ -90,25 +94,12 @@ export default {
   beforeMount () {},
   async mounted () {
     const scope = this
-    console.log('aw')
-    // let response
     try {
       scope.course_taken = scope.properties.course_taken
-      console.log(scope.course_taken)
+      scope.lesson = scope.properties.lesson
+      scope.data = scope.properties.data
     } finally {
-      // if (response) {
-        // scope.lessons = response.data
-        // scope.lessons.forEach(function (lesson, index) {
-        //   let availabilityDate = moment(scope.started_at).add(lesson.delay, 'days').format('MMM D YYYY, h:mm:ss a')
-        //   if (availabilityDate <= moment().format('MMM D YYYY, h:mm:ss a')) {
-        //     scope.lessons[index].is_available = true
-        //   } else {
-        //     scope.lessons[index].is_available = false
-        //     scope.lessons[index].availability_date = availabilityDate
-        //   }
-        // })
-      // }
-      // scope.page.is_ready = true
+      scope.page.is_ready = true
     }
   }
 }
