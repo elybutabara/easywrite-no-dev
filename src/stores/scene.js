@@ -111,77 +111,52 @@ export default {
   },
   mutations: {
     loadScenesByBook (state, payload) {
-      let bookID = payload
+      let bookID = payload.book_id
+      let otherScenes = payload.other_scenes
       Vue.set(state.scenes, bookID, { rows: [] })
-      axios
-        .get('http://localhost:3000/books/' + bookID + '/scenes/other')
-        .then(response => {
-          state.scenes[bookID] = { is_open: false, rows: response.data }
-        })
+      state.scenes[bookID] = { is_open: false, rows: otherScenes.data }
     },
     loadScenesByChapter (state, payload) {
-      let chapterUUID = payload
+      let chapterUUID = payload.chapter_id
+      let scenes = payload.scenes
       Vue.set(state.scenes, chapterUUID, { rows: [] })
-      axios
-        .get('http://localhost:3000/chapters/' + chapterUUID + '/scenes')
-        .then(response => {
-          state.scenes[chapterUUID] = { is_open: false, rows: response.data }
-        })
+      state.scenes[chapterUUID] = { is_open: false, rows: scenes.data }
     },
     loadCharactersByScene (state, payload) {
-      let sceneID = payload.uuid
+      let sceneID = payload.scene.uuid
+      let characters = payload.characters
       Vue.set(state.scene_characters, sceneID, { rows: [] })
-      axios
-        .get('http://localhost:3000/scenes/' + sceneID + '/characters')
-        .then(response => {
-          state.scene_characters[sceneID] = { rows: response.data }
-        })
+      state.scene_characters[sceneID] = { rows: characters.data }
     },
     loadItemsByScene (state, payload) {
-      let sceneID = payload.uuid
+      let sceneID = payload.scene.uuid
+      let items = payload.items
       Vue.set(state.scene_items, sceneID, { rows: [] })
-      axios
-        .get('http://localhost:3000/scenes/' + sceneID + '/items')
-        .then(response => {
-          state.scene_items[sceneID] = { rows: response.data }
-        })
+      state.scene_items[sceneID] = { rows: items.data }
     },
     loadLocationsByScene (state, payload) {
-      let sceneID = payload.uuid
+      let sceneID = payload.scene.uuid
+      let locations = payload.locations
       Vue.set(state.scene_locations, sceneID, { rows: [] })
-      axios
-        .get('http://localhost:3000/scenes/' + sceneID + '/locations')
-        .then(response => {
-          state.scene_locations[sceneID] = { rows: response.data }
-        })
+      state.scene_locations[sceneID] = { rows: locations.data }
     },
     loadSceneHistory (state, payload) {
-      let sceneID = payload
+      let sceneID = payload.scene_id
+      let history = payload.history
       Vue.set(state.scene_history, sceneID, { rows: [] })
-      axios
-        .get('http://localhost:3000/scenes/' + sceneID + '/history')
-        .then(response => {
-          state.scene_history[sceneID] = { rows: response.data }
-        })
+      state.scene_history[sceneID] = { rows: history.data }
     },
     loadVersionsByScene (state, payload) {
-      let sceneID = payload.uuid
+      let sceneID = payload.scene.uuid
+      let versions = payload.versions
       Vue.set(state.scene_versions, sceneID, { rows: [] })
-      axios
-        .get('http://localhost:3000/scenes/' + sceneID + '/versions')
-        .then(response => {
-          state.scene_versions[sceneID] = { rows: response.data }
-        })
+      state.scene_versions[sceneID] = { rows: versions.data }
     },
     loadTodayAuthorPersonalProgressForScene (state, payload) {
       let sceneID = payload.scene_id
-      let authorID = payload.author_id
+      let authorPersonalProgress = payload.authorPersonalProgress
       Vue.set(state.scene_author_personal_progress, sceneID, {})
-      axios
-        .get('http://localhost:3000/authors/' + authorID + '/scene/' + sceneID + '/personal-progress/today')
-        .then(response => {
-          state.scene_author_personal_progress[sceneID] = response.data
-        })
+      state.scene_author_personal_progress[sceneID] = authorPersonalProgress.data
     },
     addSceneToList (state, payload) {
       let parentUUID = (payload.chapter_id !== null && payload.chapter_id !== '') ? payload.chapter_id : payload.book_id
@@ -320,29 +295,46 @@ export default {
     }
   },
   actions: {
-    loadScenesByBook ({ commit, state }, payload) {
-      commit('loadScenesByBook', payload)
+    async loadScenesByBook ({ commit, state }, payload) {
+      let bookID = payload
+      let otherScenes = await axios.get('http://localhost:3000/books/' + bookID + '/scenes/other')
+      commit('loadScenesByBook', { book_id: payload, other_scenes: otherScenes })
     },
-    loadScenesByChapter ({ commit, state }, payload) {
-      commit('loadScenesByChapter', payload)
+    async loadScenesByChapter ({ commit, state }, payload) {
+      let chapterUUID = payload
+      let scenes = await axios.get('http://localhost:3000/chapters/' + chapterUUID + '/scenes')
+      commit('loadScenesByChapter', { chapter_id: payload, scenes: scenes })
     },
-    loadCharactersByScene ({ commit, state }, payload) {
-      commit('loadCharactersByScene', payload)
+    async loadCharactersByScene ({ commit, state }, payload) {
+      let sceneID = payload.uuid
+      let characters = await axios.get('http://localhost:3000/scenes/' + sceneID + '/characters')
+      commit('loadCharactersByScene', { scene: payload, characters: characters })
     },
-    loadItemsByScene ({ commit, state }, payload) {
-      commit('loadItemsByScene', payload)
+    async loadItemsByScene ({ commit, state }, payload) {
+      let sceneID = payload.uuid
+      let items = await axios.get('http://localhost:3000/scenes/' + sceneID + '/items')
+      commit('loadItemsByScene', { scene: payload, items: items })
     },
-    loadLocationsByScene ({ commit, state }, payload) {
-      commit('loadLocationsByScene', payload)
+    async loadLocationsByScene ({ commit, state }, payload) {
+      let sceneID = payload.uuid
+      let locations = await axios.get('http://localhost:3000/scenes/' + sceneID + '/locations')
+      commit('loadLocationsByScene', { scene: payload, locations: locations })
     },
-    loadSceneHistory ({ commit, state }, payload) {
-      commit('loadSceneHistory', payload)
+    async loadSceneHistory ({ commit, state }, payload) {
+      let sceneID = payload
+      let history = await axios.get('http://localhost:3000/scenes/' + sceneID + '/history')
+      commit('loadSceneHistory', { scene_id: payload, history: history })
     },
-    loadVersionsByScene ({ commit, state }, payload) {
-      commit('loadVersionsByScene', payload)
+    async loadVersionsByScene ({ commit, state }, payload) {
+      let sceneID = payload.uuid
+      let versions = await axios.get('http://localhost:3000/scenes/' + sceneID + '/versions')
+      commit('loadVersionsByScene', { scene: payload, versions: versions })
     },
-    loadTodayAuthorPersonalProgressForScene ({ commit, state, rootGetters }, payload) {
-      commit('loadTodayAuthorPersonalProgressForScene', { scene_id: payload, author_id: rootGetters.getAuthorID })
+    async loadTodayAuthorPersonalProgressForScene ({ commit, state, rootGetters }, payload) {
+      let sceneID = payload.scene_id
+      let authorID = rootGetters.getAuthorID
+      let authorPersonalProgress = await axios.get('http://localhost:3000/authors/' + authorID + '/scene/' + sceneID + '/personal-progress/today')
+      commit('loadTodayAuthorPersonalProgressForScene', { scene_id: payload, authorPersonalProgress: authorPersonalProgress })
     },
     addSceneToList ({ commit, state }, payload) {
       commit('addSceneToList', payload)

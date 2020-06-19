@@ -17,7 +17,6 @@ export default {
       pmd_sec: 0,
       pmd_selected: '25'
     },
-
     togglePMD: {
       pmd_toggle: 'Start'
     }
@@ -29,6 +28,9 @@ export default {
     },
     getPmdTimer: state => {
       return state.pmdTimer
+    },
+    getTestObject: state => {
+      return state.pmdTest
     },
     getToggle: state => {
       return state.togglePMD

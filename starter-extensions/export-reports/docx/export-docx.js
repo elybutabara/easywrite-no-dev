@@ -34,7 +34,7 @@ exports.initMainWindow = (window) => {
   ipcMain.on('EXPORT-DOCX-SHOW-BOOK-WINDOW', function (event, data) {
     createExportWindowBook({exportBy: 'export-book'})
     ExportWindow.on('ready-to-show', function () {
-      ExportWindow.show()
+      // ExportWindow.show()
       ExportWindow.webContents.send('EXPORT-DOCX-GET-BOOK', data)
     })
   })
@@ -49,6 +49,7 @@ exports.initMainWindow = (window) => {
     }).then(result => {
       if (result.canceled) {
         ExportWindow.webContents.send('SHOW-EXPORT-SETTINGS')
+        if (ExportWindow != null) ExportWindow.close()
       } else {
         var HtmlDocx = require('html-docx-js')
         var fs = require('fs')
@@ -57,16 +58,18 @@ exports.initMainWindow = (window) => {
         var docx = HtmlDocx.asBlob(data.html)
         fs.writeFile(outputFile, docx, function (err) {
           if (err) {
+            if (ExportWindow != null) ExportWindow.close()
             MainWindow.webContents.send('SHOW-SWAL-ERROR-EXPORTING', result.filePath)
             ExportWindow.webContents.send('SHOW-EXPORT-SETTINGS')
             MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
           } else {
-            ExportWindow.close()
+            if (ExportWindow != null) ExportWindow.close()
             MainWindow.webContents.send('SHOW-SWAL-SUCCESS-EXPORTING', result.filePath)
             MainWindow.webContents.send('CHANGE-EXPORT-BOOK-BUTTON-NAME')
           }
         })
       }
+      MainWindow.webContents.send('SET-EXPORT-BOOK-BUTTON-ENABLE')
     }).catch(err => {
       MainWindow.webContents.send('SHOW-SWAL-ERROR-EXPORTING', 'FAILED TO SAVE')
       if (ExportWindow != null) ExportWindow.close()

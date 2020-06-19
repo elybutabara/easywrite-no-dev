@@ -28,13 +28,10 @@ export default {
   },
   mutations: {
     loadLocationsByBook (state, payload) {
-      let bookID = payload
+      let bookID = payload.book_id
+      let locations = payload.locations
       Vue.set(state.locations, bookID, { rows: [] })
-      axios
-        .get('http://localhost:3000/books/' + bookID + '/locations')
-        .then(response => {
-          state.locations[bookID] = { is_open: false, rows: response.data }
-        })
+      state.locations[bookID] = { is_open: false, rows: locations.data }
     },
     addLocationToList (state, payload) {
       let bookID = payload.book_id
@@ -84,8 +81,10 @@ export default {
     }
   },
   actions: {
-    loadLocationsByBook ({ commit, state }, payload) {
-      commit('loadLocationsByBook', payload)
+    async loadLocationsByBook ({ commit, state }, payload) {
+      let bookID = payload
+      let locations = await axios.get('http://localhost:3000/books/' + bookID + '/locations')
+      commit('loadLocationsByBook', { book_id: payload, locations: locations })
     },
     addLocationToList ({ commit, state }, payload) {
       commit('addLocationToList', payload)

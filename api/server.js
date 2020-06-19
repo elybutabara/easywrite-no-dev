@@ -58,6 +58,7 @@ express.use('/relations', require('./routes/relations'))
 express.use('/books', require('./routes/books'))
 express.use('/feedbacks', require('./routes/feedbacks'))
 express.use('/feedback-responses', require('./routes/feedback-responses'))
+express.use('/notes', require('./routes/notes'))
 express.use('/items', require('./routes/items'))
 express.use('/locations', require('./routes/locations'))
 express.use('/readers', require('./routes/readers'))
@@ -74,6 +75,8 @@ express.use('/scene-characters', require('./routes/scene-characters'))
 express.use('/author-personal-progress', require('./routes/author-personal-progress'))
 express.use('/book-chapter-history', require('./routes/book-chapter-history'))
 express.use('/book-scene-history', require('./routes/book-scene-history'))
+express.use('/courses', require('./routes/courses'))
+express.use('/lessons', require('./routes/lessons'))
 
 express.post(
   '/upload/:imgOf/image',

@@ -149,7 +149,7 @@
                                 <h4 class="mb-0">{{$t('CONTENT')}}</h4>
                             </template>
                             <div class="margin-bottom-1rem">
-                                <div v-html="historyContent" class="history-content" ></div>
+                                <div v-html="(!(historyContent)) ? '<em>No content</em>' : historyContent" class="history-content" ></div>
                             </div>
                             <div class="text-right">
                                 <button class="es-button-white" @click="useHistoryCont()">{{$t('APPLY_TO_CONTENT')}}</button>
@@ -292,7 +292,6 @@ export default {
     viewHistory (history) {
       var scope = this
       scope.view_history = true
-
       scope.historyContent = history.content
     },
     useHistoryCont () {
@@ -312,8 +311,10 @@ export default {
           scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
           scope.view_history = false
           scope.show_history = false
-          scope.data.chapter_version.content = scope.historyContent
-          scope.tempChapterVersionCont = scope.historyContent
+
+          let content = !(scope.historyContent) ? ' ' : scope.historyContent
+          scope.data.chapter_version.content = content
+          scope.tempChapterVersionCont = content
         }
       })
     },
@@ -321,7 +322,6 @@ export default {
     setContent (value) {
       var scope = this
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
-
       scope.tempChapterVersionCont = value
     },
     // Set all child object/array of an object to same value like null/empty string
@@ -384,9 +384,9 @@ export default {
                 scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
                 if (scope.data.uuid === null) {
                   scope.$store.dispatch('updateChapterList', response.data)
-                  scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
-                  scope.$store.dispatch('loadChapterHistory', response.data.uuid)
-                  scope.$store.dispatch('loadTodayAuthorPersonalProgressForChapter', response.data.uuid)
+                  // scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
+                  // scope.$store.dispatch('loadChapterHistory', response.data.uuid)
+                  // scope.$store.dispatch('loadTodayAuthorPersonalProgressForChapter', response.data.uuid)
                   // scope.$store.dispatch('updateChapterVersionList', scope.data.chapter_version)
                   scope.CHANGE_COMPONENT({
                     tabKey: 'chapter-details-' + response.data.uuid,
@@ -397,9 +397,9 @@ export default {
                   })
                 } else {
                   scope.$store.dispatch('updateChapterList', response.data)
-                  scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
-                  scope.$store.dispatch('loadChapterHistory', response.data.uuid)
-                  scope.$store.dispatch('loadTodayAuthorPersonalProgressForChapter', response.data.uuid)
+                  // scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
+                  // scope.$store.dispatch('loadChapterHistory', response.data.uuid)
+                  // scope.$store.dispatch('loadTodayAuthorPersonalProgressForChapter', response.data.uuid)
                   // scope.$store.dispatch('updateChapterVersionList', scope.data.chapter_version)
                   // scope.CHANGE_COMPONENT({tabKey: 'chapter-details-' + response.data.uuid, tabComponent: 'chapter-details', tabData: { book_id: response.data.book_id, chapter: response.data }, tabTitle: 'View - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
                   scope.$store.dispatch('changeTabTitle', {
@@ -455,10 +455,16 @@ export default {
           console.log('Chapter history saved!')
         })
     },
-    loadChapter (chapterProp) {
-      var scope = this
+    async loadChapter (chapterProp) {
+      let scope = this
 
-      setTimeout(function () {
+      try {
+        await scope.$store.dispatch('loadChapterHistory', chapterProp.uuid)
+        await scope.$store.dispatch('loadVersionsByChapter', chapterProp.uuid)
+        await scope.$store.dispatch('loadTodayAuthorPersonalProgressForChapter', chapterProp.uuid)
+      } catch (ex) {
+        console.log('Failed to load data')
+      } finally {
         let chapter = scope.$store.getters.findChapter(chapterProp)
         let version = scope.$store.getters.findLatestChapterVersionByChapter(chapterProp)
         let progress = scope.$store.getters.getTodayAuthorPersonalProgressForChapter(chapterProp)
@@ -483,7 +489,9 @@ export default {
 
         // chapter history
         scope.chapter_history = scope.GET_CHAPTER_HISTORY(chapter.uuid)
-      }, 500)
+
+        scope.page.is_ready = true
+      }
     },
     toggleFeedbacks: function () {
       let scope = this
@@ -497,20 +505,15 @@ export default {
     if (scope.properties.chapter) {
       scope.$set(scope.data, 'id', scope.properties.chapter.id)
       scope.$set(scope.data, 'uuid', scope.properties.chapter.uuid)
-      scope.$store.dispatch('loadChapterHistory', scope.properties.chapter.uuid)
-      scope.$store.dispatch('loadVersionsByChapter', scope.properties.chapter.uuid)
-      scope.$store.dispatch('loadTodayAuthorPersonalProgressForChapter', scope.properties.chapter.uuid)
     }
   },
   mounted () {
     var scope = this
     if (scope.data.uuid) {
       scope.loadChapter(scope.properties.chapter)
-    }
-
-    setTimeout(function () {
+    } else {
       scope.page.is_ready = true
-    }, 550)
+    }
   }
 }
 </script>

@@ -7,6 +7,7 @@ const { ChapterController } = require(path.join(__dirname, 'controller/ChapterCo
 const { ChapterVersionController } = require(path.join(__dirname, 'controller/ChapterVersionController'))
 const { FeedbackController } = require(path.join(__dirname, 'controller/FeedbackController'))
 const { FeedbackResponseController } = require(path.join(__dirname, 'controller/FeedbackResponseController'))
+const { NoteController } = require(path.join(__dirname, 'controller/NoteController'))
 const { CharacterController } = require(path.join(__dirname, 'controller/CharacterController'))
 const { LocationController } = require(path.join(__dirname, 'controller/LocationController'))
 const { ReaderController } = require(path.join(__dirname, 'controller/ReaderController'))
@@ -22,6 +23,8 @@ const { RelationDetailController } = require(path.join(__dirname, 'controller/Re
 const { AuthorPersonalProgressController } = require(path.join(__dirname, 'controller/AuthorPersonalProgressController'))
 const { BookChapterHistoryController } = require(path.join(__dirname, 'controller/BookChapterHistoryController'))
 const { BookSceneHistoryController } = require(path.join(__dirname, 'controller/BookSceneHistoryController'))
+const { CourseController } = require(path.join(__dirname, 'controller/CourseController'))
+const { LessonController } = require(path.join(__dirname, 'controller/LessonController'))
 
 module.exports = {
   UserController,
@@ -35,6 +38,7 @@ module.exports = {
   ChapterVersionController,
   FeedbackController,
   FeedbackResponseController,
+  NoteController,
   CharacterController,
   SceneController,
   SceneVersionController,
@@ -45,5 +49,7 @@ module.exports = {
   BookGenreCollectionController,
   AuthorPersonalProgressController,
   BookChapterHistoryController,
-  BookSceneHistoryController
+  BookSceneHistoryController,
+  CourseController,
+  LessonController
 }

@@ -16,6 +16,7 @@ const { Book } = require(path.join(__dirname, 'models/Book'))
 const { Chapter } = require(path.join(__dirname, 'models/Chapter'))
 const { Feedback } = require(path.join(__dirname, 'models/Feedback'))
 const { FeedbackResponse } = require(path.join(__dirname, 'models/FeedbackResponse'))
+const { Note } = require(path.join(__dirname, 'models/Note'))
 const { Scene } = require(path.join(__dirname, 'models/Scene'))
 const { Character } = require(path.join(__dirname, 'models/Character'))
 const { Item } = require(path.join(__dirname, 'models/Item'))
@@ -32,6 +33,11 @@ const { AuthorPersonalProgress } = require(path.join(__dirname, 'models/AuthorPe
 const { BookChapterHistory } = require(path.join(__dirname, 'models/BookChapterHistory'))
 const { BookSceneHistory } = require(path.join(__dirname, 'models/BookSceneHistory'))
 const { SoftDeleteQueryBuilder } = require(path.join(__dirname, 'models/SoftDeleteQueryBuilder'))
+const { CoursesTaken } = require(path.join(__dirname, 'models/CoursesTaken'))
+const { Course } = require(path.join(__dirname, 'models/Course'))
+const { Package } = require(path.join(__dirname, 'models/Package'))
+const { Lesson } = require(path.join(__dirname, 'models/Lesson'))
+const { LessonDocument } = require(path.join(__dirname, 'models/LessonDocument'))
 
 Model.knex(knexConnection)
 
@@ -50,6 +56,7 @@ module.exports = {
   ChapterVersion,
   Feedback,
   FeedbackResponse,
+  Note,
   Scene,
   Character,
   SceneVersion,
@@ -60,5 +67,10 @@ module.exports = {
   AuthorPersonalProgress,
   BookChapterHistory,
   BookSceneHistory,
-  SoftDeleteQueryBuilder
+  SoftDeleteQueryBuilder,
+  CoursesTaken,
+  Course,
+  Package,
+  Lesson,
+  LessonDocument
 }

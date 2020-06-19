@@ -293,6 +293,8 @@
 import TinyMCE from '../../../components/TinyMCE'
 
 import CommentBasePanel from '../../../components/CommentBasePanel'
+
+const moment = require('moment')
 const {ipcRenderer} = window.require('electron')
 
 export default {
@@ -547,8 +549,10 @@ export default {
           scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
           scope.view_history = false
           scope.show_history = false
-          scope.data.scene_version.content = scope.historyContent
-          scope.tempSceneVersionContent = scope.historyContent
+
+          let content = !(scope.historyContent) ? ' ' : scope.historyContent
+          scope.data.scene_version.content = content
+          scope.tempSceneVersionContent = content
         }
       })
     },
@@ -699,18 +703,18 @@ export default {
                 if (scope.data.uuid === null) {
                   scope.$store.dispatch('updateSceneList', response.data)
                   // refresh vuex to update all related records
-                  scope.$store.dispatch('loadVersionsByScene', response.data)
-                  scope.$store.dispatch('loadSceneHistory', response.data.uuid)
-                  scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', response.data.uuid)
+                  // scope.$store.dispatch('loadVersionsByScene', response.data)
+                  // scope.$store.dispatch('loadSceneHistory', response.data.uuid)
+                  // scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', response.data.uuid)
                   scope.CHANGE_COMPONENT({tabKey: 'scene-form-' + response.data.uuid, tabComponent: 'scene-form', tabData: { book: scope.book, chapter: scope.chapter, scene: response.data }, tabTitle: scope.$t('EDIT') + ' - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
                 } else {
                   // refresh vuex to update all related records
                   scope.$store.dispatch('updateSceneList', response.data)
-                  scope.$store.dispatch('loadVersionsByScene', response.data)
+                  // scope.$store.dispatch('loadVersionsByScene', response.data)
                   scope.$store.dispatch('changeTabTitle', {key: 'scene-form-' + response.data.uuid, title: scope.$t('EDIT') + ' - ' + response.data.title})
                   scope.$store.dispatch('changeTabTitle', {key: 'scene-details-' + response.data.uuid, title: scope.$t('VIEW') + ' - ' + response.data.title})
-                  scope.$store.dispatch('loadSceneHistory', response.data.uuid)
-                  scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', response.data.uuid)
+                  // scope.$store.dispatch('loadSceneHistory', response.data.uuid)
+                  // scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', response.data.uuid)
                 }
 
                 // update listing for treeviews
@@ -795,10 +799,21 @@ export default {
           console.log('Scene history saved!')
         })
     },
-    loadScene (sceneProp) {
+    async loadScene (sceneProp) {
       var scope = this
       scope.properties.scene = sceneProp
-      setTimeout(function () {
+
+      try {
+        // load scene children
+        await scope.$store.dispatch('loadCharactersByScene', scope.properties.scene)
+        await scope.$store.dispatch('loadItemsByScene', scope.properties.scene)
+        await scope.$store.dispatch('loadLocationsByScene', scope.properties.scene)
+        await scope.$store.dispatch('loadVersionsByScene', scope.properties.scene)
+        await scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', scope.properties.scene.uuid)
+        await scope.$store.dispatch('loadSceneHistory', scope.properties.scene.uuid)
+      } catch (ex) {
+        console.log('Failed to load data')
+      } finally {
         let scene = scope.$store.getters.findScene(sceneProp)
         let chapters = scope.$store.getters.getChaptersByBook(sceneProp.book_id)
         let chapter = scope.$store.getters.findChapter({ book_id: sceneProp.book_id, uuid: sceneProp.chapter_id })
@@ -814,8 +829,9 @@ export default {
         scope.data.status = scene.status
         scope.data.weather_type = scene.weather_type
         scope.data.character_id_vp = scene.character_id_vp
-        scope.data.date_starts = scene.date_starts
-        scope.data.date_ends = scene.date_ends
+        scope.data.date_starts = moment(scene.date_starts).format('YYYY-MM-DD').toString()
+        scope.data.date_ends = moment(scene.date_ends).format('YYYY-MM-DD').toString()
+        scope.data.tags = scene.tags
         scope.data.notes = scene.notes
         scope.data.viewpoint_description = scene.viewpoint_description
 
@@ -823,11 +839,13 @@ export default {
         scope.tempSceneEnd = scene.date_ends
 
         // chapters
+        scope.options_chapters = [{title: scope.$t('OTHER_SCENE'), uuid: '-1'}]
         chapters.forEach(function (row, index) {
           scope.options_chapters.push(row)
         })
 
         // characters
+        scope.options_character_id_vp = [{text: 'Author', value: '-1'}]
         for (let i = 0; i < characters.length; i++) {
           let character = characters[i]
           scope.options_character_id_vp.push({ text: character.fullname, value: character.uuid })
@@ -869,10 +887,9 @@ export default {
 
         // scene history
         scope.scene_history = scope.GET_SCENE_HISTORY(scene.uuid)
-        setTimeout(function () {
-          scope.page.is_ready = true
-        }, 500)
-      }, 1500)
+
+        scope.page.is_ready = true
+      }
     }
   },
   beforeMount () {
@@ -896,49 +913,79 @@ export default {
       scope.$set(scope.data, 'book_id', scope.properties.book.uuid)
     }
   },
-  mounted () {
+  async mounted () {
     var scope = this
 
-    // load book
-    scope.$store.dispatch('loadChaptersByBook', scope.properties.book.uuid)
-    scope.$store.dispatch('loadCharactersByBook', scope.properties.book.uuid)
-    scope.$store.dispatch('loadItemsByBook', scope.properties.book.uuid)
-    scope.$store.dispatch('loadLocationsByBook', scope.properties.book.uuid)
-
-    if (scope.data.uuid) {
-      window.$('.page-scene-form .page-title h3').html('Update ' + scope.properties.scene.title)
-
-      // load scene children
-      scope.$store.dispatch('loadCharactersByScene', scope.properties.scene)
-      scope.$store.dispatch('loadItemsByScene', scope.properties.scene)
-      scope.$store.dispatch('loadLocationsByScene', scope.properties.scene)
-      scope.$store.dispatch('loadVersionsByScene', scope.properties.scene)
-      scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', scope.properties.scene.uuid)
-      scope.$store.dispatch('loadSceneHistory', scope.properties.scene.uuid)
-
-      scope.loadScene(scope.properties.scene)
-      scope.selected_chapter = scope.properties.chapter
-    } else {
-      setTimeout(function () {
+    try {
+      await scope.$store.dispatch('loadChaptersByBook', scope.properties.book.uuid)
+      await scope.$store.dispatch('loadCharactersByBook', scope.properties.book.uuid)
+      await scope.$store.dispatch('loadItemsByBook', scope.properties.book.uuid)
+      await scope.$store.dispatch('loadLocationsByBook', scope.properties.book.uuid)
+    } catch (ex) {
+      console.log('Failed to load data')
+    } finally {
+      if (scope.data.uuid) {
+        scope.loadScene(scope.properties.scene)
+        scope.selected_chapter = scope.properties.chapter
+      } else {
         let chapters = scope.$store.getters.getChaptersByBook(scope.properties.book.uuid)
         var bookCharacters = scope.$store.getters.getCharactersByBook(scope.properties.book.uuid)
-        // give time to load data before processing since other time dispatch take time
-        setTimeout(function () {
-          chapters.forEach(function (row, index) {
-            scope.options_chapters.push(row)
-          })
 
-          for (let i = 0; i < bookCharacters.length; i++) {
-            let character = bookCharacters[i]
-            scope.options_character_id_vp.push({ text: character.fullname, value: character.uuid })
-            if (scope.properties.scene !== null && scope.properties.scene.character_id_vp === character.uuid) {
-              scope.selected_character_id_vp = { text: character.fullname, value: character.uuid }
-            }
+        chapters.forEach(function (row, index) {
+          scope.options_chapters.push(row)
+        })
+
+        for (let i = 0; i < bookCharacters.length; i++) {
+          let character = bookCharacters[i]
+          scope.options_character_id_vp.push({ text: character.fullname, value: character.uuid })
+          if (scope.properties.scene !== null && scope.properties.scene.character_id_vp === character.uuid) {
+            scope.selected_character_id_vp = { text: character.fullname, value: character.uuid }
           }
-          scope.page.is_ready = true
-        }, 500)
-      }, 1000)
+        }
+        scope.page.is_ready = true
+      }
     }
+
+    // // load book
+    // scope.$store.dispatch('loadChaptersByBook', scope.properties.book.uuid)
+    // scope.$store.dispatch('loadCharactersByBook', scope.properties.book.uuid)
+    // scope.$store.dispatch('loadItemsByBook', scope.properties.book.uuid)
+    // scope.$store.dispatch('loadLocationsByBook', scope.properties.book.uuid)
+    //
+    // if (scope.data.uuid) {
+    //   window.$('.page-scene-form .page-title h3').html('Update ' + scope.properties.scene.title)
+    //
+    //   // load scene children
+    //   scope.$store.dispatch('loadCharactersByScene', scope.properties.scene)
+    //   scope.$store.dispatch('loadItemsByScene', scope.properties.scene)
+    //   scope.$store.dispatch('loadLocationsByScene', scope.properties.scene)
+    //   scope.$store.dispatch('loadVersionsByScene', scope.properties.scene)
+    //   scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', scope.properties.scene.uuid)
+    //   scope.$store.dispatch('loadSceneHistory', scope.properties.scene.uuid)
+    //
+    //   scope.loadScene(scope.properties.scene)
+    //   scope.selected_chapter = scope.properties.chapter
+    // } else {
+    //   setTimeout(function () {
+    //     let chapters = scope.$store.getters.getChaptersByBook(scope.properties.book.uuid)
+    //     var bookCharacters = scope.$store.getters.getCharactersByBook(scope.properties.book.uuid)
+    //     // give time to load data before processing since other time dispatch take time
+    //     setTimeout(function () {
+    //       chapters.forEach(function (row, index) {
+    //         scope.options_chapters.push(row)
+    //       })
+    //
+    //       for (let i = 0; i < bookCharacters.length; i++) {
+    //         let character = bookCharacters[i]
+    //         scope.options_character_id_vp.push({ text: character.fullname, value: character.uuid })
+    //         if (scope.properties.scene !== null && scope.properties.scene.character_id_vp === character.uuid) {
+    //           scope.selected_character_id_vp = { text: character.fullname, value: character.uuid }
+    //         }
+    //       }
+    //       scope.page.is_ready = true
+    //     }, 500)
+    //   }, 1000)
+    // }
   }
 }
 </script>

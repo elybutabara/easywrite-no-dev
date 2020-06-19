@@ -34,21 +34,26 @@
           <br/>
           <div class ="title">Det er ikke tillatt å kopiere, videreformidle eller mangfoldiggjøresider eller utdrag fra boken uten etter skriftlig avtale med forlaget.</div>
 
-          <div class="break"></div>
+          <!-- <div class="break"></div> -->
 
           <div v-if="chapters" class="rows-print-as-pages">
             <div v-bind:key="chapter.id" v-for="chapter in chapters">
-
-                <div class ="title">{{chapter.title}}</div>
+                <div class="break"></div>
+                <div class ="title"><h2>{{chapter.title}}</h2></div>
                 <br>
                 <br>
-                <div v-html="chapter.chapter_version[chapter.chapter_version.length-1].content"></div>
+                <br>
+                <span>{{ removeCommentChapter(chapter.chapter_version[chapter.chapter_version.length-1].content) }}</span>
+                <div v-html="chapter_content"></div>
 
               <div v-bind:key="scene.id" v-for="scene in chapter.scene">
-                    <div class ="title">{{scene.title}}</div>
+                    <div class="break"></div>
+                    <div class ="title"><h2>{{scene.title}}</h2></div>
                     <br>
                     <br>
-                    <div v-html="scene.scene_version[scene.scene_version.length-1].content"></div>
+                    <br>
+                    <span>{{ removeCommentScene(scene.scene_version[scene.scene_version.length-1].content) }}</span>
+                    <div v-html="scene_content"></div>
               </div>
 
             </div>
@@ -70,19 +75,29 @@ export default {
       chapters: [],
       page: {
         is_ready: false
-      }
+      },
+      chapter_content: '',
+      scene_content: ''
     }
   },
   methods: {
     exportBook: function () {
       var scope = this
-      // scope.injectCSSBeforeExport()
-      // setTimeout(function () {
-      var outerhtml = document.documentElement.outerHTML
-      outerhtml = outerhtml.toString().split('<div class="break"></div>').join('<br style="page-break-before: always; clear: both" />')
-      // log.info(outerhtml)
-      ipcRenderer.send('EXPORT-WORD-BOOK', {html: outerhtml, book: scope.book})
-      // }, 200)
+      scope.injectCSSBeforeExport()
+      setTimeout(function () {
+        var outerhtml = document.documentElement.outerHTML
+        outerhtml = outerhtml.toString().split('<div class="break"></div>').join('<br style="page-break-before: always; clear: both" />')
+        // log.info(outerhtml)
+        ipcRenderer.send('EXPORT-WORD-BOOK', {html: outerhtml, book: scope.book})
+      }, 2000)
+    },
+    removeCommentChapter: function (content) {
+      var scope = this
+      scope.chapter_content = content.replace(/<\/?span class="commentbase-comment-highlight".[^>]*>/g, '')
+    },
+    removeCommentScene: function (content) {
+      var scope = this
+      scope.scene_content = content.replace(/<\/?span class="commentbase-comment-highlight".[^>]*>/g, '')
     },
     injectCSSBeforeExport: function () {
       // this will get the external from this window and inject it as internal css before exporting
@@ -118,11 +133,11 @@ export default {
       setTimeout(function () {
         scope.chapters = scope.$store.getters.getChaptersByBook(scope.book.uuid)
         scope.page.is_ready = true
-      }, 2000)
+      }, 6000)
 
       setTimeout(function () {
         scope.exportBook()
-      }, 1000)
+      }, 6000)
     })
   }
 }

@@ -8,12 +8,14 @@
             </div>
             <div class="actions">
               <button class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
+              <button class="es-button-white" @click="toggleNotes()">{{$t('MY NOTES').toUpperCase()}}</button>
             </div>
         </div>
         <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>
     </div>
     <div class="es-page-content" style="position:relative;">
         <Feedback v-if="show_feedbacks" :properties="{ book: properties, parent: properties, parent_name: 'book' }"></Feedback>
+        <Note v-if="show_notes" :properties="{ book: properties, parent: properties, parent_name: 'book' }"></Note>
         <div class="es-panel">
             <h4>{{ $t('ABOUT') }}</h4>
             <div v-html="properties.about"></div>
@@ -24,6 +26,7 @@
 
 <script>
 import Feedback from '../../../components/Feedback'
+import Note from '../../../components/Note'
 const {ipcRenderer} = window.require('electron')
 
 export default {
@@ -37,6 +40,7 @@ export default {
         data: null
       },
       show_feedbacks: false,
+      show_notes: false,
       export_book: this.$t('EXPORT').toUpperCase() + ' ' + this.$tc('BOOK', 1).toUpperCase()
     }
   },
@@ -44,7 +48,8 @@ export default {
 
   },
   components: {
-    Feedback
+    Feedback,
+    Note
   },
   methods: {
     updateBook () {
@@ -103,6 +108,10 @@ export default {
     toggleFeedbacks: function () {
       let scope = this
       scope.show_feedbacks = !scope.show_feedbacks
+    },
+    toggleNotes: function () {
+      let scope = this
+      scope.show_notes = !scope.show_notes
     }
   },
   mounted () {
