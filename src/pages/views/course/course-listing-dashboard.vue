@@ -4,7 +4,7 @@
       <div class="col-md-6">
         <h4 style="margin-bottom: 0">{{$tc('COURSES')}}</h4>
       </div>
-      <div class="col-md-6 text-right">
+      <div class="col-md-6 text-right" v-if="courses_taken.length">
         <b-button style="" class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'course-list', tabComponent: 'course-listing',  tabData: {}, tabTitle: $t('COURSES'), newTab: true})">{{ $tc('VIEW_ALL') }}</b-button>
       </div>
     </div>
