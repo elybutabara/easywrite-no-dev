@@ -109,8 +109,8 @@ export default {
           item.style.background = 'orange'
         } else {
           // if (removeIfEmpty === true) {
-          item.style.color = null
-          item.style.background = null
+          item.style.color = 'inherit'
+          item.style.background = 'transparent'
           // } else {
           //    item.style.color = '#000'
           //    item.style.background = 'yellow'
@@ -173,7 +173,7 @@ export default {
         var k = 'c-' + new Date().getTime() + '-' + (Math.random() + '').replace('0.', '')
         scope.comments[scope.selected_comments_id][k] = {
           user_id: scope.author.id,
-          user_name: scope.author.first_name,
+          user_name: scope.author.alias,
           created_at: new Date().getTime(),
           message: message
         }
@@ -194,17 +194,54 @@ export default {
     attachCommentor: function (el) {
       var scope = this
 
+      if (el.classList) {
+        el.classList.add('commentbase-container')
+      }
+
+      //
+      var selectionStarted = false
+      el.addEventListener('mousedown', function (e) {
+        selectionStarted = true
+      })
+
       // add highlight to the selected texts and/or open the comments sidebar
       el.addEventListener('mouseup', function (e) {
         scope.selected_comments_id = null
-        if (e.target && e.target.matches('.commentbase-comment-highlight')) {
-          scope.selected_comments_id = e.target.dataset.commentsId
-          scope.selected_comments_target = e.target
-          scope.checkSelectedComments()
+
+        console.log('e ----------------- ', e)
+
+        // cancel if not selected from within the container
+        if (!scope.params.tinymce && !selectionStarted) {
+          console.log('From outside select zone')
           return
         }
+        selectionStarted = false
+
+        // cancel if selected outside the container
+        if (!scope.params.tinymce && !e.target.closest('.commentbase-container')) {
+          console.log('To outside select zone')
+          return
+        }
+
+        if (e.target && e.target.matches('.commentbase-comment-highlight')) {
+          var selectedComments = scope.comments[e.target.dataset.commentsId]
+          var c = 0
+          // eslint-disable-next-line no-unused-vars
+          for (var x in selectedComments) {
+            c++
+          }
+          if (c > 0) {
+            scope.selected_comments_id = e.target.dataset.commentsId
+            scope.selected_comments_target = e.target
+            scope.checkSelectedComments()
+            return
+          }
+        }
+
         var sel, range
         var id = ('comments-' + Math.random()).replace('.', '')
+
+        scope.checkSelectedComments(true)
 
         if (!scope.params.tinymce && scope.window.getSelection) {
           sel = scope.window.getSelection()
@@ -237,18 +274,18 @@ export default {
   },
   mounted: function () {
     var scope = this
-    console.log('dom: ', scope.dom)
-    console.log('params: ', scope.params)
-    console.log('data ................... ', scope.window)
+
     //
     if (scope.params && scope.params.onMounted) {
       scope.params.onMounted(this)
     }
 
     scope.attachCommentor(scope.dom)
+
+    scope.checkSelectedComments(true)
   },
   beforeDestroy: function () {
-    console.log('before destroy......')
+
   }
 }
 </script>
