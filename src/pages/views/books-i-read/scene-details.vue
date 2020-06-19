@@ -10,6 +10,7 @@
                 </div>
                 <div class="actions">
                   <button class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
+                  <button class="es-button-white" @click="toggleNotes()">{{$t('MY NOTES').toUpperCase()}}</button>
                 </div>
             </div>
         </div>
@@ -38,6 +39,7 @@
         </div>
         <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content" style="position:relative;">
             <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: scene, parent_name: 'scene' }"></Feedback>
+            <Note v-if="show_notes" :properties="{ book: book, parent: scene, parent_name: 'scene' }"></Note>
             <div v-html="getSceneContent" class="description" v-commentbase="commentbase_params"></div>
         </div>
     </div>
@@ -46,6 +48,7 @@
 
 <script>
 import Feedback from '../../../components/Feedback'
+import Note from '../../../components/Note'
 import CommentBase from '../../../components/CommentBase'
 
 export default {
@@ -73,6 +76,7 @@ export default {
       busy: false,
       tempVersionDesc: '',
       show_feedbacks: false,
+      show_notes: false,
       commentbase_params: {
         onMounted: (vm) => {
           scope.commentbase_vm = vm
@@ -86,7 +90,8 @@ export default {
     }
   },
   components: {
-    Feedback
+    Feedback,
+    Note
   },
   computed: {
     book: function () {
@@ -167,6 +172,10 @@ export default {
     toggleFeedbacks: function () {
       let scope = this
       scope.show_feedbacks = !scope.show_feedbacks
+    },
+    toggleNotes: function () {
+      let scope = this
+      scope.show_notes = !scope.show_notes
     }
   },
   mounted () {

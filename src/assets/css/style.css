@@ -28,6 +28,8 @@ body { margin:0px !important; background:#f2f6fa; font-family:'EW Regular' !impo
 .pomodoro-expired-alert .swal2-popup  .swal2-html-container { font-size: 20px !important; color:#fff !important; }
 .pomodoro-expired-alert .swal2-popup  .swal2-confirm { border-radius:4px !important; border-radius: 2px !important; padding: 0px 10px; width: 120px; height: 35px; line-height: 35px;}
 
+.page-main.collapsed .es-right-side-content { padding-left: 0px; }
+.page-main.collapsed .left-side-bar { left: -320px; }
 
 .es-right-side-content { text-align:left; padding-left:320px; }
 
@@ -35,6 +37,7 @@ body { margin:0px !important; background:#f2f6fa; font-family:'EW Regular' !impo
 .es-left-content .logo { padding:10px 60px; text-align:center; border-bottom:1px solid #e8e7e7; }
 .es-left-content .logo img { width:100% }
 .es-left-content .header { padding:5px; background: #efefef; font-size:12px; }
+
 
 .es-left-content .search-wrapper { padding:5px; border-bottom:1px solid #e8e7e7; position:relative; padding-right:25px;}
 .es-left-content .search-wrapper .icon { position:absolute; top:12px; right:8px; }
@@ -90,6 +93,13 @@ ul { margin-left:0px; list-style:none;  }
 
 .left-side-bar .header { text-align:center; height:70px; line-height:70px; padding:0px 10px; }
 .left-side-bar .header img { height:60px; }
+
+.left-side-bar  .btn-sidebar-closer { color: #618199;  font-size: 20px; position: absolute; top: 8px; right: 5px; background: #24303a; z-index: 5000; padding: 5px; border: 1px solid #324451; cursor:pointer; }
+.left-side-bar  .btn-sidebar-closer:hover { opacity:0.4; }
+
+.btn-sidebar-opener { display:none; background: #24303a; border: 1px solid #324451; color: #618199; position:fixed; top: 245px;; left:0px; z-index:9000; font-size:20px; padding:5px 8px; cursor:pointer; }
+.page-main.collapsed .btn-sidebar-opener { display:inline-block; }
+.btn-sidebar-opener:hover { opacity:0.8; }
 
 .left-side-bar .search-box { height:40px; line-height:40px; border-bottom:1px solid #3c505f; padding:0px 5px; position:relative; }
 .left-side-bar .search-box .icon { position:absolute; top:8px; right:8px; color:#506d84; font-size:25px; }

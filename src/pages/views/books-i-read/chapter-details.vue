@@ -10,6 +10,7 @@
                 </div>
                 <div class="actions">
                   <button class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
+                  <button class="es-button-white" @click="toggleNotes()">{{$t('MY NOTES').toUpperCase()}}</button>
                 </div>
             </div>
         </div>
@@ -26,6 +27,7 @@
         </div>
         <div style="position:relative; padding-bottom:40px;">
           <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></Feedback>
+          <Note v-if="show_notes" :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></Note>
           <div style="border-top:1px solid #ccc; z-index:2000; background:#fff; height:50px; padding:0px 20px; line-height:50px; width:100%; position:absolute; bottom:0px; left:0px;">
             <button v-if="prevChapter !== null" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + prevChapter.uuid, tabComponent: 'books-i-read-chapter-details',  tabData: { book: book, chapter: prevChapter }, tabTitle: $t('VIEW')+ ' - ' + prevChapter.title})" style="float:left; background:transparent; border:none;">
               <i class="las la-angle-double-left"></i> {{ $t('PREV').toUpperCase() }}
@@ -48,6 +50,7 @@
 
 <script>
 import Feedback from '../../../components/Feedback'
+import Note from '../../../components/Note'
 import TinyMCE from '../../../components/TinyMCE'
 import ChapterScenes from '@/pages/views/books-i-read/chapter-scenes'
 import ChapterVersions from '@/pages/views/chapters/chapter-versions'
@@ -69,6 +72,7 @@ export default {
     var scope = this
     return {
       show_feedbacks: false,
+      show_notes: false,
       chapter_version: {
         chapter_id: null,
         content: '',
@@ -99,6 +103,7 @@ export default {
   components: {
     TinyMCE,
     Feedback,
+    Note,
     'books-i-read-chapter-scenes': ChapterScenes,
     ChapterVersions,
     ChapterCompareVersions
@@ -193,6 +198,10 @@ export default {
     toggleFeedbacks: function () {
       let scope = this
       scope.show_feedbacks = !scope.show_feedbacks
+    },
+    toggleNotes: function () {
+      let scope = this
+      scope.show_notes = !scope.show_notes
     }
   },
   beforeUpdate () {
