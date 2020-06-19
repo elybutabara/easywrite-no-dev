@@ -24,7 +24,7 @@
         </div>
         <div style="margin-top:10px; margin-bottom:20px; max-width: 1320px; display:flex; width:calc(100% - 40px); margin:0px auto; justify-content: space-between;">
             <div style="background:#fff; width:calc(100% - 320px); padding:20px 20px; border: 1px solid #e0e5ee;">
-              <course-listing />
+              <course-listing-dashboard />
             </div>
             <div style="width:300px;">
                 <div style="padding:0px; text-align:center; background:#fff;  border: 1px solid #e0e5ee; margin-bottom:20px;">
@@ -93,7 +93,7 @@
 import Syncing from '@/pages/views/syncing'
 import { mapGetters, mapActions } from 'vuex'
 import Report from '../../components/Report'
-import CourseListing from './course/course-listing'
+import CourseListingDashboard from './course/course-listing-dashboard'
 export default {
   name: 'dashboard',
   props: ['properties'],
@@ -132,7 +132,7 @@ export default {
   components: {
     'report': Report,
     'syncing': Syncing,
-    'course-listing': CourseListing
+    'course-listing-dashboard': CourseListingDashboard
   },
   methods: {
     ...mapActions({ actionmutateStart: 'mutatePmdTimer' }),

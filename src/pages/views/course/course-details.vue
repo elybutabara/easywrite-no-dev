@@ -97,7 +97,7 @@ export default {
     try {
       scope.course_taken = scope.properties.course_taken
       scope.data.started_at = moment(scope.course_taken.started_at).format('MMM D YYYY, h:mm:ss a').toString()
-      scope.data.expired_at = moment(scope.course_taken.end_date).format('MMM D YYYY').toString() + moment(scope.course_taken.started_at).format('h:mm:ss a').toString()
+      scope.data.expired_at = moment(scope.course_taken.end_date).format('MMM D YYYY, h:mm:ss a').toString()
       response = await scope.axios.get('http://localhost:3000/lessons/' + scope.course_taken.course.uuid)
     } finally {
       if (response) {

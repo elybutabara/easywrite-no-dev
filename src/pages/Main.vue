@@ -49,6 +49,7 @@
                 <storyboard :key="tab.key" v-if="tab.component == 'storyboard'" :properties="tab.data"></storyboard>
                 <syncing :key="tab.key" v-if="tab.component == 'syncing'" :properties="tab.data"></syncing>
                 <course-details :key="tab.key" v-if="tab.component == 'course-details'" :properties="tab.data"></course-details>
+                <course-listing :key="tab.key" v-if="tab.component == 'course-listing'" :properties="tab.data"></course-listing>
                 <lesson-details :key="tab.key" v-if="tab.component == 'lesson-details'" :properties="tab.data"></lesson-details>
             </div>
         </div>
@@ -92,7 +93,7 @@ import BooksIReadChapterDetails from '@/pages/views/books-i-read/chapter-details
 import BooksIReadSceneDetails from '@/pages/views/books-i-read/scene-details'
 import CourseDetails from '@/pages/views/course/course-details'
 import LessonDetails from '@/pages/views/lessons/lesson-details'
-
+import CourseListing from '@/pages/views/course/course-listing'
 // const electron = window.require('electron')
 // const remote = electron.remote
 // const loginInfo = remote.getGlobal('loginInfo')
@@ -147,6 +148,7 @@ export default {
     'books-i-read-scene-details': BooksIReadSceneDetails,
     'pomodoro-timer': PomodoroTimer,
     'course-details': CourseDetails,
+    'course-listing': CourseListing,
     'lesson-details': LessonDetails
   },
   methods: {

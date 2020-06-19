@@ -77,4 +77,27 @@ router.get('/:userID/course-list-dashboard', async function (req, res) {
     .json(courses)
 })
 
+router.get('/:userID/course-listing', async function (req, res) {
+  const param = {
+    userID: req.params.userID,
+    search: ''
+  }
+
+  if (req.query.search) {
+    param.search = req.query.search
+  }
+
+  const courses = await CourseController.getAllByUserId(param)
+  courses.forEach(function (course, index) {
+    courses[index].picture_src = ''
+    if (course.pictures) {
+      courses[index].picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'courses', course.pictures)
+    }
+  })
+
+  res
+    .status(200)
+    .json(courses)
+})
+
 module.exports = router
