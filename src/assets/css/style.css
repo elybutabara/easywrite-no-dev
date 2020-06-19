@@ -1,5 +1,7 @@
 *:focus { outline: none; }
 
+.tox .tox-toolbar {margin-top: 30px;}
+
 .no-select {
     user-select: none; /* standard syntax */
     -webkit-user-select: none; /* webkit (safari, chrome) browsers */
