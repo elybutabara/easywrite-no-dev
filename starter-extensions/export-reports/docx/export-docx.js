@@ -69,6 +69,7 @@ exports.initMainWindow = (window) => {
           }
         })
       }
+      MainWindow.webContents.send('SET-EXPORT-BOOK-BUTTON-ENABLE')
     }).catch(err => {
       MainWindow.webContents.send('SHOW-SWAL-ERROR-EXPORTING', 'FAILED TO SAVE')
       if (ExportWindow != null) ExportWindow.close()

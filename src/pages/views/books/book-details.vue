@@ -7,8 +7,8 @@
                 <small>{{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
             </div>
             <div class="actions">
-                <b-button class="es-button-white" :disabled="exportOnProgress"  @click="exportBook()">
-                  <div v-if="exportOnProgress === false"><span>{{export_book}}</span></div>
+                <b-button class="es-button-white" :disabled="getExportBookStatus.export_book_status"  @click="exportBook()">
+                  <div v-if="getExportBookStatus.export_book_status === false"><span>{{export_book}}</span></div>
                   <div v-else>
                     <b-spinner small type="grow"></b-spinner>
                     <span>{{exportLoading}}</span>
@@ -35,6 +35,7 @@
 
 <script>
 import axios from 'axios'
+import { mapGetters } from 'vuex'
 import Feedback from '../../../components/Feedback'
 const {ipcRenderer} = window.require('electron')
 
@@ -57,6 +58,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({ getExportBookStatus: 'getExportBookStatus' }),
     Feedback
   },
   components: {
@@ -110,8 +112,7 @@ export default {
 
     exportBook: function () {
       const scope = this
-      scope.exportOnProgress = true
-      scope.export_book = scope.$t('LOADING') + '....'
+      scope.$store.commit('exportBookStatusOpen')
 
       let book = scope.properties
 
@@ -133,6 +134,10 @@ export default {
     scope.page.title = scope.properties.title
     scope.page.data = scope.properties
     scope.page.is_ready = true
+
+    ipcRenderer.on('SET-EXPORT-BOOK-BUTTON-ENABLE', function (event, data) {
+      scope.$store.commit('exportBookStatusClose')
+    })
   }
 }
 
@@ -180,6 +185,7 @@ ipcRenderer.on('GET-DOCX-CONTENT-MULTI-CHAPTERS-2', function (event, data) {
   })
 })
 </script>
+
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .book-stats { padding-left:30px; }

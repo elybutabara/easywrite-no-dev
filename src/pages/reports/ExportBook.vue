@@ -43,7 +43,8 @@
                 <br>
                 <br>
                 <br>
-                <div v-html="chapter.chapter_version[chapter.chapter_version.length-1].content"></div>
+                <span>{{ removeCommentChapter(chapter.chapter_version[chapter.chapter_version.length-1].content) }}</span>
+                <div v-html="chapter_content"></div>
 
               <div v-bind:key="scene.id" v-for="scene in chapter.scene">
                     <div class="break"></div>
@@ -51,7 +52,8 @@
                     <br>
                     <br>
                     <br>
-                    <div v-html="scene.scene_version[scene.scene_version.length-1].content"></div>
+                    <span>{{ removeCommentScene(scene.scene_version[scene.scene_version.length-1].content) }}</span>
+                    <div v-html="scene_content"></div>
               </div>
 
             </div>
@@ -73,7 +75,9 @@ export default {
       chapters: [],
       page: {
         is_ready: false
-      }
+      },
+      chapter_content: '',
+      scene_content: ''
     }
   },
   methods: {
@@ -85,7 +89,15 @@ export default {
         outerhtml = outerhtml.toString().split('<div class="break"></div>').join('<br style="page-break-before: always; clear: both" />')
         // log.info(outerhtml)
         ipcRenderer.send('EXPORT-WORD-BOOK', {html: outerhtml, book: scope.book})
-      }, 1000)
+      }, 2000)
+    },
+    removeCommentChapter: function (content) {
+      var scope = this
+      scope.chapter_content = content.replace(/<\/?span class="commentbase-comment-highlight".[^>]*>/g, '')
+    },
+    removeCommentScene: function (content) {
+      var scope = this
+      scope.scene_content = content.replace(/<\/?span class="commentbase-comment-highlight".[^>]*>/g, '')
     },
     injectCSSBeforeExport: function () {
       // this will get the external from this window and inject it as internal css before exporting
@@ -121,11 +133,11 @@ export default {
       setTimeout(function () {
         scope.chapters = scope.$store.getters.getChaptersByBook(scope.book.uuid)
         scope.page.is_ready = true
-      }, 2000)
+      }, 6000)
 
       setTimeout(function () {
         scope.exportBook()
-      }, 1000)
+      }, 6000)
     })
   }
 }
