@@ -16,6 +16,7 @@ const { Book } = require(path.join(__dirname, 'models/Book'))
 const { Chapter } = require(path.join(__dirname, 'models/Chapter'))
 const { Feedback } = require(path.join(__dirname, 'models/Feedback'))
 const { FeedbackResponse } = require(path.join(__dirname, 'models/FeedbackResponse'))
+const { Note } = require(path.join(__dirname, 'models/Note'))
 const { Scene } = require(path.join(__dirname, 'models/Scene'))
 const { Character } = require(path.join(__dirname, 'models/Character'))
 const { Item } = require(path.join(__dirname, 'models/Item'))
@@ -55,6 +56,7 @@ module.exports = {
   ChapterVersion,
   Feedback,
   FeedbackResponse,
+  Note,
   Scene,
   Character,
   SceneVersion,

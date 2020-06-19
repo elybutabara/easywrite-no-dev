@@ -1,5 +1,6 @@
 <template>
-<div class="page-main">
+<div class="page-main" v-bind:class="{ 'collapsed': isCollapsed }">
+    <div @click="toggleMainSideBar()"  class="btn-sidebar-opener"><i class="las la-arrow-right"></i></div>
     <div v-if="ready">
         <main-side-navigation></main-side-navigation>
         <div class="es-right-side-content">
@@ -106,6 +107,7 @@ export default {
   data: function () {
     return {
       ready: false,
+      isCollapsed: false,
       books: [],
       syncer: {
         is_open: false
@@ -162,6 +164,10 @@ export default {
     toggleSyncer: function () {
       var scope = this
       scope.syncer.is_open = !scope.syncer.is_open
+    },
+    toggleMainSideBar: function () {
+      var scope = this
+      scope.isCollapsed = !scope.isCollapsed
     },
     checkHasUnsavedTabs: function () {
       let scope = this

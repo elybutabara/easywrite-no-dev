@@ -7,6 +7,7 @@ const { ChapterController } = require(path.join(__dirname, 'controller/ChapterCo
 const { ChapterVersionController } = require(path.join(__dirname, 'controller/ChapterVersionController'))
 const { FeedbackController } = require(path.join(__dirname, 'controller/FeedbackController'))
 const { FeedbackResponseController } = require(path.join(__dirname, 'controller/FeedbackResponseController'))
+const { NoteController } = require(path.join(__dirname, 'controller/NoteController'))
 const { CharacterController } = require(path.join(__dirname, 'controller/CharacterController'))
 const { LocationController } = require(path.join(__dirname, 'controller/LocationController'))
 const { ReaderController } = require(path.join(__dirname, 'controller/ReaderController'))
@@ -37,6 +38,7 @@ module.exports = {
   ChapterVersionController,
   FeedbackController,
   FeedbackResponseController,
+  NoteController,
   CharacterController,
   SceneController,
   SceneVersionController,

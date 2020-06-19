@@ -2,6 +2,7 @@
 <div class="left-side-bar no-select" :style="updateStyle()">
         <div class="header">
             <img src="@/assets/img/EasyWrite Logo White.png">
+            <i @click="$parent.toggleMainSideBar()" class="btn-sidebar-closer las la-compress-arrows-alt"></i>
         </div>
         <div style="display:none;"  class="search-box">
             <input type="text" :placeholder = " $t('SEARCH_KEYWORD')">
