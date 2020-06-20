@@ -203,6 +203,11 @@ import TinyMCE from '../../../components/TinyMCE'
 import CommentBasePanel from '../../../components/CommentBasePanel'
 const {ipcRenderer} = window.require('electron')
 
+var external = {
+  id: '',
+  uuid: ''
+}
+
 export default {
   name: 'chapter-form',
   props: ['properties'],
@@ -538,6 +543,9 @@ export default {
     if (scope.properties.chapter) {
       scope.$set(scope.data, 'id', scope.properties.chapter.id)
       scope.$set(scope.data, 'uuid', scope.properties.chapter.uuid)
+
+      external.id = scope.properties.chapter.id
+      external.uuid = scope.properties.chapter.uuid
     }
   },
   // destroyed () {
@@ -555,9 +563,7 @@ export default {
 }
 
 ipcRenderer.on('SHOW-SAVE-TO-SCENE', function (event, data) {
-  console.log(window.vm)
-  console.log(window.vm.$data.data.id)
-  console.log(window.vm.$data.data.uuid)
+  console.log(external)
   // if (scope.data.id === null && scope.data.uuid === null) {
   //   ipcRenderer.send('SEND-TO-STARTER-SHOW-SWAL-CANT-SAVE')
   // } else {
