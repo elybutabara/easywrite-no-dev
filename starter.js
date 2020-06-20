@@ -170,4 +170,15 @@ ipcMain.on('SHOW_SWAL_TIMESUP_STARTER', function (event, data) {
   mainWindow.webContents.send('SHOW_SWAL_TIMESUP')
 })
 
+ipcMain.on('SAVE-TO-SCENE-TO-STARTER-WITH-SELECTED', function (event, data) {
+  mainWindow.webContents.send('SHOW-SAVE-TO-SCENE', data)
+})
+
+ipcMain.on('SAVE-TO-SCENE-TO-STARTER-NO-SELECTED', function (event, data) {
+  mainWindow.webContents.send('SHOW-SAVE-TO-SCENE-NO-SELECTED')
+})
+
+ipcMain.on('SEND-TO-STARTER-SHOW-SWAL-CANT-SAVE', function (event, data) {
+  mainWindow.webContents.send('SHOW-SWAL-CANT-SAVE')
+})
 

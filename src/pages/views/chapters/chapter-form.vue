@@ -103,7 +103,7 @@
                                     <button class="es-button-white margin-bottom-1rem" @click="show_history = !show_history">{{$t('SHOW_HISTORY')}}</button>
                                 </div>
                                 <div class="form-group">
-                                    <tiny-editor :params="tiny_editor_params" :initValue="data.chapter_version.content" v-on:getEditorContent="setContent" class="form-control" />
+                                    <tiny-editor-chapter :params="tiny_editor_params" :initValue="data.chapter_version.content" v-on:getEditorContent="setContent" class="form-control" />
                                     <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params()"></CommentBasePanel>
                                 </div>
                                 <div v-if="show_history" class="chapter-history-items slideInRight animated">
@@ -161,6 +161,38 @@
             </div>
         </template>
     </b-overlay>
+
+    <b-overlay :show="save_to_scene" no-wrap fixed>
+        <template v-slot:overlay>
+            <div
+              id="overlay-background"
+              ref="dialog"
+              tabindex="-1"
+              role="dialog"
+              aria-modal="false"
+              aria-labelledby="form-confirm-label"
+              class="p-3"
+            >
+                <b-container class="bv-example-row">
+                    <b-card-group deck>
+                        <b-card header="Content">
+                            <template class="text-center" v-slot:header>
+                                <h4 class="mb-0">{{$t('SAVE_TO_SCENE')}}</h4>
+                            </template>
+                            <div class="margin-bottom-1rem">
+                                <div v-html="(!(historyContent)) ? '<em>No content</em>' : historyContent" class="history-content" ></div>
+                            </div>
+                            <div class="text-right">
+                                <button class="es-button-white" @click="useHistoryCon1t()">{{$t('SAVE')}}</button>
+                                <button class="es-button-white" @click="save_to_scene = !save_to_scene">{{$t('CLOSE')}}</button>
+                            </div>
+                        </b-card>
+                    </b-card-group>
+                </b-container>
+            </div>
+        </template>
+    </b-overlay>
+
 </div>
 </template>
 
@@ -245,7 +277,8 @@ export default {
           }
         }
       },
-      show_feedbacks: false
+      show_feedbacks: false,
+      save_to_scene: false
     }
   },
   components: {
@@ -507,6 +540,10 @@ export default {
       scope.$set(scope.data, 'uuid', scope.properties.chapter.uuid)
     }
   },
+  // destroyed () {
+  //   ipcRenderer.removeAllListeners('SHOW-SAVE-TO-SCENE')
+  // },
+
   mounted () {
     var scope = this
     if (scope.data.uuid) {
@@ -516,6 +553,34 @@ export default {
     }
   }
 }
+
+ipcRenderer.on('SHOW-SAVE-TO-SCENE', function (event, data) {
+  console.log(window.vm)
+  console.log(window.vm.$data.data.id)
+  console.log(window.vm.$data.data.uuid)
+  // if (scope.data.id === null && scope.data.uuid === null) {
+  //   ipcRenderer.send('SEND-TO-STARTER-SHOW-SWAL-CANT-SAVE')
+  // } else {
+  //   scope.save_to_scene = true
+  // }
+  // ipcRenderer.removeListeners('SHOW-SAVE-TO-SCENE', event)
+})
+
+ipcRenderer.on('SHOW-SWAL-CANT-SAVE', function (event, data) {
+  window.swal.fire({
+    icon: 'error',
+    title: window.vm.$t('PLEASE_SAVE_CHAPTER_FIRST'),
+    text: data
+  })
+
+  ipcRenderer.on('SHOW-SAVE-TO-SCENE-NO-SELECTED', function (event, data) {
+    window.swal.fire({
+      icon: 'error',
+      title: window.vm.$t('PLEASE_SELECT_FROM_CONTENT'),
+      text: data
+    })
+  })
+})
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
