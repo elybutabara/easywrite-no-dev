@@ -62,7 +62,7 @@ class CourseTakenController {
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await Course.query().insert({
+      data = await CoursesTaken.query().insert({
         uuid: row.uuid,
         user_id: row.user_id,
         package_id: row.package_id,

@@ -24,34 +24,22 @@ const { LessonController } = require(path.join(__dirname, '..', 'controllers'))
 //     .status(200)
 //     .json(lesson)
 // })
-//
-// router.get('/syncable', async function (req, res) {
-//   const rows = await LessonController.getSyncable(req.query.userID)
-//
-//   res
-//     .status(200)
-//     .json(rows)
-// })
-//
-// router.post('/sync', async function (req, res) {
-//   const row = await LessonController.sync(req.body)
-//
-//   res
-//     .status(200)
-//     .json(row)
-// })
-//
-// router.get('/:lessonId', async function (req, res) {
-//   const lesson = await LessonController.getByLessonId(req.params.lessonId)
-//
-//   if (lesson.pictures) {
-//     lesson.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'lessons', lesson.pictures)
-//   }
-//
-//   res
-//     .status(200)
-//     .json(lesson)
-// })
+
+router.get('/syncable', async function (req, res) {
+  const rows = await LessonController.getSyncable(req.query.userID)
+
+  res
+    .status(200)
+    .json(rows)
+})
+
+router.post('/sync', async function (req, res) {
+  const row = await LessonController.sync(req.body)
+
+  res
+    .status(200)
+    .json(row)
+})
 
 router.get('/:courseID', async function (req, res) {
   const param = {
