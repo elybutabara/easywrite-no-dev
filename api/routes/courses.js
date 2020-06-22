@@ -8,10 +8,6 @@ const { CourseController } = require(path.join(__dirname, '..', 'controllers'))
 router.post('/', async function (req, res) {
   const course = await CourseController.save(req.body)
 
-  if (course.pictures) {
-    course.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'courses', course.pictures)
-  }
-
   res
     .status(200)
     .json(course)
@@ -44,8 +40,8 @@ router.post('/sync', async function (req, res) {
 router.get('/:courseId', async function (req, res) {
   const course = await CourseController.getByCourseId(req.params.courseId)
 
-  if (course.pictures) {
-    course.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'courses', course.pictures)
+  if (course.image) {
+    course.image = 'file://' + path.resolve(resourcePath, 'resources', course.image)
   }
 
   res

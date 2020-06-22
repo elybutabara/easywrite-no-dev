@@ -3,7 +3,7 @@ const path = require('path')
 
 const { CoursesTaken, Course, User } = require(path.join(__dirname, '..', 'models'))
 
-class CourseController {
+class CourseTakenController {
   static async getAllByUserId (param) {
     let courseTaken = CoursesTaken.query()
       .where('user_id', param.userID)
@@ -16,20 +16,30 @@ class CourseController {
   }
 
   static getByCourseId (courseId) {
-    let course = Course.query()
-      .findById(courseId)
-    return course
+    let courseTaken = CoursesTaken.query()
+      .withGraphJoined('package')
+      .withGraphJoined('course')
+      .where('course_id', courseId)
+    return courseTaken
   }
 
   static getByCourseUUID (courseUUID) {
-    let course = Course.query()
+    let courseTaken = CoursesTaken.query()
+      .withGraphJoined('package')
+      .withGraphJoined('course')
       .where('uuid', courseUUID)
-    return course
+    return courseTaken
   }
 
   static async save (data) {
-    const saveCourse = await Course.query().upsertGraph([data]).first()
-    return this.getByCourseUUID(saveCourse.uuid)
+    const saveCourseTaken = await CoursesTaken.query().upsertGraph([data]).first()
+    return this.getByCourseUUID(saveCourseTaken.uuid)
+  }
+
+  static async delete (courseId) {
+    const course = await Course.query().softDeleteById(courseId)
+
+    return course
   }
 
   static async getSyncable (userId) {
@@ -40,55 +50,35 @@ class CourseController {
     const courseTaken = await CoursesTaken.query()
       .select('uuid')
       .where('user_id', user.uuid)
-      // .whereNull('books.deleted_at')
-      // .where('books.updated_at', '>', user.synced_at)
-
-    var courseUUIDs = []
-
-    for (let i = 0; i < courseTaken.length; i++) {
-      courseUUIDs.push(courseTaken[i].course.uuid)
-    }
-
-    const rows = await Course.query()
-      .whereIn('uuid', courseUUIDs)
+      // .whereNull('books.deleted_at') // no deleted_at column
       .where('updated_at', '>', user.synced_at)
 
-    return rows
+    return courseTaken
   }
 
   static async sync (row) {
-    var data = await Course.query()
+    var data = await CoursesTaken.query()
       .patch(row)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
       data = await Course.query().insert({
         uuid: row.uuid,
-        title: row.title,
-        description: row.description,
-        short_description: row.short_description,
-        image: row.image,
-        type: row.type,
-        email: row.email,
-        course_plan: row.course_plan,
-        course_plan_data: row.course_plan_data,
-        instructor: row.instructor,
+        user_id: row.user_id,
+        package_id: row.package_id,
+        is_active: row.is_active,
+        started_at: row.started_at,
         start_date: row.start_date,
         end_date: row.end_date,
-        extend_courses: row.extend_courses,
-        display_order: row.display_order,
-        for_sale: row.for_sale,
-        status: row.status,
+        access_lessons: row.access_lessons,
+        years: row.years,
+        sent_renew_email: row.sent_renew_email,
         is_free: row.is_free,
-        auto_list_id: row.auto_list_id,
-        photographer: row.photographer,
-        hide_price: row.hide_price,
-        student_discount: row.student_discount,
         created_at: row.created_at,
         updated_at: row.updated_at
       })
       // update uuid to match web
-      data = await Course.query()
+      data = await CoursesTaken.query()
         .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
         .where('uuid', '=', data.uuid)
     }
@@ -98,5 +88,5 @@ class CourseController {
 }
 
 module.exports = {
-  CourseController: CourseController
+  CourseTakenController: CourseTakenController
 }
