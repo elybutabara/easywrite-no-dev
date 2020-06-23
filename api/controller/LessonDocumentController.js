@@ -10,7 +10,7 @@ class LessonDocumentController {
       .withGraphJoined('author', { maxBatchSize: 1 })
 
     const courseTaken = await CoursesTaken.query()
-      .select('uuid')
+      .withGraphJoined('course')
       .where('user_id', user.uuid)
     // .whereNull('books.deleted_at')
     // .where('books.updated_at', '>', user.synced_at)
@@ -22,19 +22,19 @@ class LessonDocumentController {
     }
 
     const lessons = await Lesson.query()
-      .whereIn('uuid', coursesUUIDs)
+      .whereIn('course_id', coursesUUIDs)
 
-    let lessonsUUIDs = []
+    var lessonsUUIDs = []
 
     for (let i = 0; i < lessons.length; i++) {
       lessonsUUIDs.push(lessons[i].uuid)
     }
 
-    const rows = await LessonDocument.query()
-      .whereIn('uuid', lessonsUUIDs)
+    const lessonDocuments = await LessonDocument.query()
+      .whereIn('lesson_id', lessonsUUIDs)
       .where('updated_at', '>', user.synced_at)
 
-    return rows
+    return lessonDocuments
   }
 
   static async sync (row) {

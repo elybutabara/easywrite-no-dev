@@ -37,18 +37,12 @@ class CourseController {
       .findById(userId)
       .withGraphJoined('author', { maxBatchSize: 1 })
 
-    const courseTaken = await CoursesTaken.query()
-      .select('uuid')
-      .where('user_id', user.uuid)
-      // .whereNull('books.deleted_at')
-      // .where('books.updated_at', '>', user.synced_at)
-
+    const courseTaken = await this.getAllByUserId({userID: user.uuid})
     var courseUUIDs = []
 
     for (let i = 0; i < courseTaken.length; i++) {
       courseUUIDs.push(courseTaken[i].course.uuid)
     }
-
     const rows = await Course.query()
       .whereIn('uuid', courseUUIDs)
       .where('updated_at', '>', user.synced_at)

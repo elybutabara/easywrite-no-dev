@@ -9,20 +9,17 @@ class PackageController {
       .findById(userId)
       .withGraphJoined('author', { maxBatchSize: 1 })
 
-    const courseTaken = await CoursesTaken.query()
-      .select('uuid')
+    let courseTaken = await CoursesTaken.query()
       .where('user_id', user.uuid)
-      // .whereNull('books.deleted_at')
-      // .where('books.updated_at', '>', user.synced_at)
+      .withGraphJoined('course')
 
-    var packageUUIDs = []
-
+    var courseUUIDs = []
     for (let i = 0; i < courseTaken.length; i++) {
-      packageUUIDs.push(courseTaken[i].package.uuid)
+      courseUUIDs.push(courseTaken[i].course.uuid)
     }
 
     const rows = await Package.query()
-      .whereIn('uuid', packageUUIDs)
+      .whereIn('course_id', courseUUIDs)
       .where('updated_at', '>', user.synced_at)
 
     return rows

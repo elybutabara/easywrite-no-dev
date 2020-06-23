@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
 
-const { CoursesTaken, Package, User } = require(path.join(__dirname, '..', 'models'))
+const { CoursesTaken, Package, User, PackageCourse } = require(path.join(__dirname, '..', 'models'))
 
 class PackageCourseController {
   static async getSyncable (userId) {
@@ -9,23 +9,29 @@ class PackageCourseController {
       .findById(userId)
       .withGraphJoined('author', { maxBatchSize: 1 })
 
-    const courseTaken = await CoursesTaken.query()
-      .select('uuid')
+    let courseTaken = await CoursesTaken.query()
       .where('user_id', user.uuid)
-      // .whereNull('books.deleted_at')
-      // .where('books.updated_at', '>', user.synced_at)
+      .withGraphJoined('course')
 
-    var packageUUIDs = []
-
+    const courseUUIDs = []
     for (let i = 0; i < courseTaken.length; i++) {
-      packageUUIDs.push(courseTaken[i].package.uuid)
+      courseUUIDs.push(courseTaken[i].course.uuid)
     }
 
-    const rows = await Package.query()
-      .whereIn('uuid', packageUUIDs)
+    let packages = await Package.query()
+      .select('uuid')
+      .whereIn('course_id', courseUUIDs)
+
+    let packageUUIDs = []
+    for (let i = 0; i < packages.length; i++) {
+      packageUUIDs.push(packages[i].uuid)
+    }
+
+    let packageCourses = await PackageCourse.query()
+      .whereIn('package_id', packageUUIDs)
       .where('updated_at', '>', user.synced_at)
 
-    return rows
+    return packageCourses
   }
 
   static async sync (row) {
