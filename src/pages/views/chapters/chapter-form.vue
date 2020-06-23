@@ -563,13 +563,12 @@ export default {
 ipcRenderer.on('SHOW-SAVE-TO-SCENE', function (event, data) {
   console.log(component.data.id)
   console.log(component.data.uuid)
-  component.data.title = 'aaaaaaaaaaaaaa'
-  // if (scope.data.id === null && scope.data.uuid === null) {
-  //   ipcRenderer.send('SEND-TO-STARTER-SHOW-SWAL-CANT-SAVE')
-  // } else {
-  //   scope.save_to_scene = true
-  // }
-  // ipcRenderer.removeListeners('SHOW-SAVE-TO-SCENE', event)
+  // component.data.title = 'aaaaaaaaaaaaaa'
+  if (component.data.id === null && component.data.uuid === null) {
+    ipcRenderer.send('SEND-TO-STARTER-SHOW-SWAL-CANT-SAVE')
+  } else {
+    component.save_to_scene = true
+  }
 })
 
 ipcRenderer.on('SHOW-SWAL-CANT-SAVE', function (event, data) {
