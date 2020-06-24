@@ -1,0 +1,244 @@
+<template>
+<div class="assignment-form">
+  <div class="b-overlay" v-if="show_form">
+    <b-container class="bv-example-row" v-bind:class="{is_file: manuscript.is_file == 1}">
+      <b-card-group deck>
+        <b-card>
+          <template v-slot:header>
+            <h6 class="mb-0 card-title">{{ $tc('UPLOAD_SCRIPT_FOR') + ' ' + assignment.title  }}</h6>
+            <a href="javascript:;" ref="close-assignment-form" class="close" v-on:click="emitToParent">
+              <i class="fa fa-times"></i>
+            </a>
+          </template>
+
+          <b-row>
+            <b-col>
+              <b-row style="margin-bottom: 1rem;" class="text-left">
+                <b-col>
+                  <b-form-checkbox
+                    id="checkbox-1"
+                    v-model="manuscript.is_file"
+                    name="checkbox-1"
+                    value="0"
+                    unchecked-value="1"
+                  >
+                    {{ $tc('WRITE_ASSIGNMENT') }}
+                  </b-form-checkbox>
+                </b-col>
+              </b-row>
+              <b-row v-show="manuscript.is_file==1" style="margin-bottom: 1rem;" class="text-left">
+                <b-col>
+                  <label>{{$t('APPROVE_FILE_FORMATS_ARE')}} DOC, DOCX og ODT: </label>
+                  <b-form-file id="file-default" accept="application/msword,
+                            application/vnd.openxmlformats-officedocument.wordprocessingml.document"></b-form-file>
+                </b-col>
+              </b-row>
+              <b-row v-show="manuscript.is_file==0" style="margin-bottom: 1rem;" class="text-left">
+                <b-col>
+                  <label>{{$t('CONTENT')}}: </label>
+                  <tiny-editor :initValue="manuscript.content"
+                               v-on:getEditorContent="setContent"
+                               class="form-control"
+                  />
+                </b-col>
+              </b-row>
+              <b-row style="margin-bottom: 1rem;" class="text-left">
+                <b-col>
+                  <label>{{$t('GENRE')}}: </label>
+                  <b-form-select v-model="manuscript.genre"
+                                 id="input-genre"
+                                 :options="book_genres"
+                                 value-field="uuid"
+                                 :state="feedback.genre.state"
+                                 aria-describedby="input-live-help input-live-feedback"
+                                 text-field="name">
+                    <template v-slot:first>
+                      <b-form-select-option :value="null" disabled>{{ $tc('SELECT_GENRE') }}</b-form-select-option>
+                    </template>
+                  </b-form-select>
+                  <!-- This will only be shown if the preceding input has an invalid state -->
+                  <b-form-invalid-feedback id="input-genre-feedback">
+                    {{ feedback.genre.message }}
+                  </b-form-invalid-feedback>
+                </b-col>
+              </b-row>
+              <b-row style="margin-bottom: 1rem;" class="text-left">
+                <b-col>
+                  <b-form-group :label="$tc('WHERE_IN_THE_SCRIPT') + ':'">
+                    <b-form-radio v-model="manuscript.where_in_script" name="some-radios" value="whole">{{ $tc('WHOLE') }}</b-form-radio>
+                    <b-form-radio v-model="manuscript.where_in_script" name="some-radios" value="start">{{ $tc('START') }}</b-form-radio>
+                    <b-form-radio v-model="manuscript.where_in_script" name="some-radios" value="middle">{{ $tc('MIDDLE') }}</b-form-radio>
+                    <b-form-radio v-model="manuscript.where_in_script" name="some-radios" value="end">{{ $tc('END') }}</b-form-radio>
+                  </b-form-group>
+                </b-col>
+              </b-row>
+              <b-row style="margin-bottom: 1rem;" class="text-left">
+                <b-col>
+                  <label style="display: block">{{$tc('DO_YOU_WANT_TO_GIVE_AND_RECEIVE_FEEDBACK_FROM_OTHER_STUDENTS')}}? </label>
+                  <toggle-button :color="'#337ab7'"
+                                 :labels="{checked: $tc('YES'), unchecked: $t('NO')}" v-model="join_group"
+                                 :width="70" :height="30" :font-size="16"
+                                 sync=""/>
+                </b-col>
+              </b-row>
+            </b-col>
+          </b-row>
+
+          <template v-slot:footer>
+            <div class="text-right">
+              <b-button
+                variant="primary"
+                class="btn btn-dark"
+                @click="saveManuscript">
+                <span>{{ $t('UPLOAD') }}</span>
+              </b-button>
+            </div>
+          </template>
+        </b-card>
+      </b-card-group>
+    </b-container>
+  </div>
+</div>
+</template>
+
+<script>
+import Feedback from '../../../components/Feedback'
+import TinyMCE from '../../../components/TinyMCE'
+
+export default {
+  name: 'assignment-form',
+  props: {
+    assignment: {},
+    book_genres: {},
+    show_form: false
+  },
+  data: function () {
+    return {
+      manuscript: {
+        id: null,
+        assignment_id: '',
+        user_id: '',
+        content: '',
+        where_in_script: 'whole',
+        is_file: 1,
+        genre: null,
+        join_group: 0,
+        words: 0
+      },
+      // Feedback are for storing error message
+      feedback: {
+        genre: {
+          state: null,
+          message: null
+        }
+      },
+      join_group: false,
+      tempContent: '',
+      show_feedbacks: false
+    }
+  },
+  components: {
+    TinyMCE,
+    Feedback
+  },
+  methods: {
+    // Required for geting value from TinyMCE content
+    setContent (value) {
+      var scope = this
+      scope.tempContent = value
+      scope.manuscript.words = scope.WORD_COUNT(value)
+    },
+    emitToParent (event) {
+      this.$emit('getIsFormShow', !this.show_form)
+    },
+    // Set all child object/array of an object to same value like null/empty string
+    setAll (obj, val) {
+      Object.keys(obj).forEach(function (index) {
+        obj[index] = val
+      })
+    },
+    // Clear all error message and state to null
+    setFeedbackNull () {
+      var scope = this
+      scope.setAll(scope.feedback.genre, null)
+    },
+    validate () {
+      var scope = this
+      var isValid = true
+
+      scope.setFeedbackNull()
+
+      if (!scope.manuscript.genre) {
+        scope.feedback.genre.message = this.$tc('GENRE_IS_REQUIRED')
+        scope.feedback.genre.state = false
+        isValid = false
+      }
+
+      return isValid
+    },
+    saveManuscript () {
+      let scope = this
+
+      scope.manuscript.content = scope.tempContent
+      scope.manuscript.join_group = (scope.join_group) ? 1 : 0
+      scope.manuscript.is_file = parseInt(scope.manuscript.is_file)
+
+      if (!scope.validate()) {
+        return false
+      }
+
+      scope.axios
+        .post('http://localhost:3000/assignment-manuscripts', scope.manuscript)
+        .then(response => {
+          if (response.data) {
+            window.swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: this.$tc('ASSIGNMENT') + ' ' + this.$t('SUCCESSFULY_SAVED'),
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              scope.$refs['close-assignment-form'].click()
+              console.log(response.data)
+            })
+          }
+        })
+    }
+    // getManuscript: function () {
+    //   var scope = this
+    //   var assignmentUUID = scope.manuscript.assignment_id
+    //
+    //   scope.axios
+    //     .get('http://localhost:3000/assignment-manuscripts/' + assignmentUUID, scope.data)
+    //     .then(response => {
+    //       scope.assignments = response.data
+    //       console.log(scope.assignments)
+    //     })
+    // }
+  },
+  beforeUpdate () {
+    let scope = this
+
+    // only load data if the stored assignment_id is different to loaded assignment uuid
+    if (scope.manuscript.assignment_id !== scope.assignment.uuid) {
+      scope.manuscript.assignment_id = scope.assignment.uuid
+      scope.manuscript.user_id = scope.$store.getters.getUserID
+
+      if ('assignment_manuscript' in scope.assignment) {
+        scope.manuscript = scope.assignment.assignment_manuscript
+      }
+    }
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+  .card-header { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: start; -ms-flex-align: start; align-items: flex-start; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; padding: 1rem; border-bottom: 1px solid #e9ecef; border-top-left-radius: .3rem; border-top-right-radius: .3rem; }
+  .card-header .card-title { font-size: 1.25rem; margin-bottom: 0; line-height: 1.5; }
+  .card-header .close { padding: 1rem; margin: -1rem -1rem -1rem auto; }
+
+  .b-overlay { position: fixed; top: 0; left: 0; bottom: 0; right: 0; overflow: auto; background-color: rgba(44, 46, 47, 0.9); }
+  .bv-example-row { margin-top: 100px; margin-bottom: 70px; }
+  .is_file { width: 50%!important; }
+</style>

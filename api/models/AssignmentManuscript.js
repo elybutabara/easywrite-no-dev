@@ -4,26 +4,26 @@ const path = require('path')
 
 const { BaseModel } = require('./BaseModel')
 
-class Assignment extends BaseModel {
+class AssignmentManuscript extends BaseModel {
   // Table name is the only required property.
   static get tableName () {
-    return 'assignments'
+    return 'assignment_manuscripts'
   }
 
   static get idColumn () { return ['uuid'] }
 
   static relationMappings = {
-    courses: {
+    assignments: {
       relation: BaseModel.BelongsToOneRelation,
       modelClass: path.join(__dirname, 'Course'),
       join: {
-        from: 'assignments.course_id',
-        to: 'courses.uuid'
+        from: 'assignments.assignment_id',
+        to: 'assignment_manuscripts.uuid'
       }
     }
   }
 }
 
 module.exports = {
-  Assignment
+  AssignmentManuscript
 }

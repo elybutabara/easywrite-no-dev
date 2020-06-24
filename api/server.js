@@ -76,6 +76,7 @@ express.use('/book-chapter-history', require('./routes/book-chapter-history'))
 express.use('/book-scene-history', require('./routes/book-scene-history'))
 express.use('/courses', require('./routes/courses'))
 express.use('/assignments', require('./routes/assignments'))
+express.use('/assignment-manuscripts', require('./routes/assignment-manuscripts'))
 
 express.post(
   '/upload/:imgOf/image',

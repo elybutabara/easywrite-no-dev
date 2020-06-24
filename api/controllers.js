@@ -24,6 +24,8 @@ const { BookChapterHistoryController } = require(path.join(__dirname, 'controlle
 const { BookSceneHistoryController } = require(path.join(__dirname, 'controller/BookSceneHistoryController'))
 const { CourseController } = require(path.join(__dirname, 'controller/CourseController'))
 const { AssignmentController } = require(path.join(__dirname, 'controller/AssignmentController'))
+const { PackageController } = require(path.join(__dirname, 'controller/PackageController'))
+const { AssignmentManuscriptController } = require(path.join(__dirname, 'controller/AssignmentManuscriptController'))
 
 module.exports = {
   UserController,
@@ -49,5 +51,7 @@ module.exports = {
   BookChapterHistoryController,
   BookSceneHistoryController,
   CourseController,
-  AssignmentController
+  AssignmentController,
+  PackageController,
+  AssignmentManuscriptController
 }

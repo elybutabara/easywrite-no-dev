@@ -67,7 +67,7 @@
         </div>
         <br/>
         <div class="es-panel">
-            <assignment></assignment>
+            <assignment-listing></assignment-listing>
         </div>
         <div class="es-panel">
             <h4>Your literary family</h4>
@@ -91,7 +91,7 @@
 
 <script>
 import Syncing from '@/pages/views/syncing'
-import Assignment from '@/pages/views/assignment'
+import AssignmentListing from './assignment/assignment-listing'
 import { mapGetters, mapActions } from 'vuex'
 import Report from '../../components/Report'
 import CourseListing from './course/course-listing'
@@ -134,7 +134,7 @@ export default {
     'report': Report,
     'syncing': Syncing,
     'course-listing': CourseListing,
-    'assignment': Assignment
+    'assignment-listing': AssignmentListing
   },
   methods: {
     ...mapActions({ actionmutateStart: 'mutatePmdTimer' }),
