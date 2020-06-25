@@ -35,17 +35,18 @@ class PackageCourseController {
   }
 
   static async sync (row) {
+    let columns = {
+      package_id: row.package_id,
+      included_package_id: row.included_package_id,
+      created_at: row.created_at,
+      updated_at: row.updated_at
+    }
     var data = await Package.query()
-      .patch(row)
+      .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await Package.query().insert({
-        package_id: row.package_id,
-        included_package_id: row.included_package_id,
-        created_at: row.created_at,
-        updated_at: row.updated_at
-      })
+      data = await Package.query().insert(columns)
       // update uuid to match web
       data = await Package.query()
         .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })

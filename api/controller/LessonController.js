@@ -39,21 +39,22 @@ class LessonController {
   }
 
   static async sync (row) {
+    let columns = {
+      uuid: row.uuid,
+      course_id: row.course_id,
+      title: row.title,
+      content: row.content,
+      delay: row.delay,
+      order: row.order,
+      created_at: row.created_at,
+      updated_at: row.updated_at
+    }
     var data = await Lesson.query()
-      .patch(row)
+      .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await Lesson.query().insert({
-        uuid: row.uuid,
-        course_id: row.course_id,
-        title: row.title,
-        content: row.content,
-        delay: row.delay,
-        order: row.order,
-        created_at: row.created_at,
-        updated_at: row.updated_at
-      })
+      data = await Lesson.query().insert(columns)
       // update uuid to match web
       data = await Lesson.query()
         .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })

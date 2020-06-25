@@ -51,36 +51,37 @@ class CourseController {
   }
 
   static async sync (row) {
+    let columns = {
+      uuid: row.uuid,
+      title: row.title,
+      description: row.description,
+      short_description: row.short_description,
+      image: row.image,
+      type: row.type,
+      email: row.email,
+      course_plan: row.course_plan,
+      course_plan_data: row.course_plan_data,
+      instructor: row.instructor,
+      start_date: row.start_date,
+      end_date: row.end_date,
+      extend_courses: row.extend_courses,
+      display_order: row.display_order,
+      for_sale: row.for_sale,
+      status: row.status,
+      is_free: row.is_free,
+      auto_list_id: row.auto_list_id,
+      photographer: row.photographer,
+      hide_price: row.hide_price,
+      student_discount: row.student_discount,
+      created_at: row.created_at,
+      updated_at: row.updated_at
+    }
     var data = await Course.query()
-      .patch(row)
+      .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await Course.query().insert({
-        uuid: row.uuid,
-        title: row.title,
-        description: row.description,
-        short_description: row.short_description,
-        image: row.image,
-        type: row.type,
-        email: row.email,
-        course_plan: row.course_plan,
-        course_plan_data: row.course_plan_data,
-        instructor: row.instructor,
-        start_date: row.start_date,
-        end_date: row.end_date,
-        extend_courses: row.extend_courses,
-        display_order: row.display_order,
-        for_sale: row.for_sale,
-        status: row.status,
-        is_free: row.is_free,
-        auto_list_id: row.auto_list_id,
-        photographer: row.photographer,
-        hide_price: row.hide_price,
-        student_discount: row.student_discount,
-        created_at: row.created_at,
-        updated_at: row.updated_at
-      })
+      data = await Course.query().insert(columns)
       // update uuid to match web
       data = await Course.query()
         .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })

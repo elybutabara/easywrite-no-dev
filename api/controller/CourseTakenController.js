@@ -57,26 +57,27 @@ class CourseTakenController {
   }
 
   static async sync (row) {
+    let columns = {
+      uuid: row.uuid,
+      user_id: row.user_id,
+      package_id: row.package_id,
+      is_active: row.is_active,
+      started_at: row.started_at,
+      start_date: row.start_date,
+      end_date: row.end_date,
+      access_lessons: row.access_lessons,
+      years: row.years,
+      sent_renew_email: row.sent_renew_email,
+      is_free: row.is_free,
+      created_at: row.created_at,
+      updated_at: row.updated_at
+    }
     var data = await CoursesTaken.query()
-      .patch(row)
+      .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await CoursesTaken.query().insert({
-        uuid: row.uuid,
-        user_id: row.user_id,
-        package_id: row.package_id,
-        is_active: row.is_active,
-        started_at: row.started_at,
-        start_date: row.start_date,
-        end_date: row.end_date,
-        access_lessons: row.access_lessons,
-        years: row.years,
-        sent_renew_email: row.sent_renew_email,
-        is_free: row.is_free,
-        created_at: row.created_at,
-        updated_at: row.updated_at
-      })
+      data = await CoursesTaken.query().insert(columns)
       // update uuid to match web
       data = await CoursesTaken.query()
         .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })

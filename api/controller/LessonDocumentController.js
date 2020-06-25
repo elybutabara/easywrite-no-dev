@@ -38,20 +38,21 @@ class LessonDocumentController {
   }
 
   static async sync (row) {
+    let columns = {
+      uuid: row.uuid,
+      lesson_id: row.lesson_id,
+      title: row.title,
+      name: row.name,
+      document: row.document,
+      created_at: row.created_at,
+      updated_at: row.updated_at
+    }
     var data = await LessonDocument.query()
-      .patch(row)
+      .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await LessonDocument.query().insert({
-        uuid: row.uuid,
-        lesson_id: row.lesson_id,
-        title: row.title,
-        name: row.name,
-        document: row.document,
-        created_at: row.created_at,
-        updated_at: row.updated_at
-      })
+      data = await LessonDocument.query().insert(columns)
       // update uuid to match web
       data = await LessonDocument.query()
         .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
