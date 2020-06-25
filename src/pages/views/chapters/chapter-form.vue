@@ -179,6 +179,9 @@
                             <template class="text-center" v-slot:header>
                                 <h4 class="mb-0">{{$t('SAVE_TO_SCENE')}}</h4>
                             </template>
+                            <div>
+                              <multiselect class="custom-multiselect" :preselectFirst="true" :allow-empty="false" v-model="selected_chapter" :options="options_importance" @select="selectMultiselect" placeholder="Select Importance" label="text" track-by="value" :deselectLabel="$t('SELECTED')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+                            </div>
                             <div class="margin-bottom-1rem">
                                 <div v-html="(!(historyContent)) ? '<em>No content</em>' : historyContent" class="history-content" ></div>
                             </div>
@@ -280,7 +283,12 @@ export default {
         }
       },
       show_feedbacks: false,
-      save_to_scene: false
+      save_to_scene: false,
+      selected_chapter: null,
+      options_importance: [
+        {text: 'Plot', value: 'Plot'},
+        {text: 'Subplot', value: 'Subplot'}
+      ]
     }
   },
   components: {
@@ -557,6 +565,20 @@ export default {
     } else {
       scope.page.is_ready = true
     }
+
+    // var handler = function (event, data) {
+    //   console.log(scope.data.id)
+    //   console.log(scope.data.uuid)
+    //   if (scope.data.id === null && scope.data.uuid === null) {
+    //     ipcRenderer.send('SEND-TO-STARTER-SHOW-SWAL-CANT-SAVE')
+    //   } else {
+    //     scope.save_to_scene = true
+    //   }
+    // }
+
+    // ipcRenderer.on('SHOW-SAVE-TO-SCENE', handler)
+
+    // ipcRenderer.removeListener('SHOW-SAVE-TO-SCENE', handler)
   }
 }
 

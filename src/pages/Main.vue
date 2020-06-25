@@ -98,6 +98,8 @@ import CourseListing from '@/pages/views/course/course-listing'
 // const electron = window.require('electron')
 // const remote = electron.remote
 // const loginInfo = remote.getGlobal('loginInfo')
+import SaveToScene from '@/pages/views/chapters/save-to-scene'
+
 const electron = window.require('electron')
 const log = window.require('electron-log')
 const {ipcRenderer} = electron
@@ -151,7 +153,8 @@ export default {
     'pomodoro-timer': PomodoroTimer,
     'course-details': CourseDetails,
     'course-listing': CourseListing,
-    'lesson-details': LessonDetails
+    'lesson-details': LessonDetails,
+    'save-to-scene': SaveToScene
   },
   methods: {
     changeComponent: function (component, data) {
