@@ -186,3 +186,6 @@ ipcMain.on('SEND-TO-STARTER-SHOW-SWAL-CANT-SAVE', function (event, data) {
   mainWindow.webContents.send('SHOW-SWAL-CANT-SAVE')
 })
 
+ipcMain.on('SAVE_TO_SCENE_SHOW_SAVE_SCENE', function (event, data) {
+  mainWindow.webContents.send('SAVE_TO_SCENE_SHOW_SAVE_SCENE')
+})

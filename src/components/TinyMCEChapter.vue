@@ -8,11 +8,11 @@ const {ipcRenderer} = window.require('electron')
 const path = window.require('path')
 export default {
   name: 'TinyMCE',
-  props: ['initValue', 'disabled', 'params'],
+  props: ['initValue', 'disabled', 'params', 'chapterData'],
   data: function () {
     var scope = this
-    console.log('params........', scope.params)
     return {
+      save_to_scene: false,
       initConfig: {
         selector: 'input.tiny-area',
         language: 'custom_lang',
@@ -101,18 +101,23 @@ export default {
             }
           })
 
-          editor.ui.registry.addButton('saveToScene', {
-            text: 'Save to Scene',
-            tooltip: 'Save to Scene',
-            onAction: function (_) {
-              if (editor.selection.getContent()) {
-                ipcRenderer.send('SAVE-TO-SCENE-TO-STARTER-WITH-SELECTED', editor.selection.getContent())
+          if (scope.chapterData.uuid) {
+            editor.ui.registry.addButton('saveToScene', {
+              text: 'Save to Scene',
+              tooltip: 'Save to Scene',
+              onAction: function (_) {
+                if (editor.selection.getContent() && scope.chapterData.uuid) {
+                  // scope.showScene()
+                  ipcRenderer.send('SAVE_TO_SCENE_SHOW_SAVE_SCENE', editor.selection.getContent())
+                } else {
+                  window.swal.fire({
+                    icon: 'error',
+                    title: window.vm.$t('PLEASE_SELECT_FROM_CONTENT')
+                  })
+                }
               }
-              if (!editor.selection.getContent()) {
-                ipcRenderer.send('SAVE-TO-SCENE-TO-STARTER-NO-SELECTED')
-              }
-            }
-          })
+            })
+          }
 
           editor.on('keydown', function (ed) {
             if (ed.keyCode === 9) { // tab pressed
@@ -131,6 +136,10 @@ export default {
     }
   },
   methods: {
+    showScene: function () {
+      const scope = this
+      scope.$emit('setSaveToSceneShow', true)
+    },
     initEditor: function () {
       var vm = this
 
@@ -158,10 +167,11 @@ export default {
   mounted () {
     var vm = this
     vm.initEditor()
+    console.log('tinyMCECHapter-uid' + this._uid)
   }
 }
 </script>
 
-<style scoped>
+<style >
 
 </style>

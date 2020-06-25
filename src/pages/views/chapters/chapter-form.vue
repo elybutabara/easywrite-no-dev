@@ -103,7 +103,7 @@
                                     <button class="es-button-white margin-bottom-1rem" @click="show_history = !show_history">{{$t('SHOW_HISTORY')}}</button>
                                 </div>
                                 <div class="form-group">
-                                    <tiny-editor-chapter :params="tiny_editor_params" :initValue="data.chapter_version.content" v-on:getEditorContent="setContent" class="form-control" />
+                                  <tiny-editor-chapter  :chapterData="data" :params="tiny_editor_params" :initValue="data.chapter_version.content" v-on:getEditorContent="setContent" @getShowScene="save_to_scene=$event" class="form-control" />
                                     <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params()"></CommentBasePanel>
                                 </div>
                                 <div v-if="show_history" class="chapter-history-items slideInRight animated">
@@ -162,39 +162,9 @@
         </template>
     </b-overlay>
 
-    <b-overlay :show="save_to_scene" no-wrap fixed>
-        <template v-slot:overlay>
-            <div
-              id="overlay-background"
-              ref="dialog"
-              tabindex="-1"
-              role="dialog"
-              aria-modal="false"
-              aria-labelledby="form-confirm-label"
-              class="p-3"
-            >
-                <b-container class="bv-example-row">
-                    <b-card-group deck>
-                        <b-card header="Content">
-                            <template class="text-center" v-slot:header>
-                                <h4 class="mb-0">{{$t('SAVE_TO_SCENE')}}</h4>
-                            </template>
-                            <div>
-                              <multiselect class="custom-multiselect" :preselectFirst="true" :allow-empty="false" v-model="selected_chapter" :options="options_importance" @select="selectMultiselect" placeholder="Select Importance" label="text" track-by="value" :deselectLabel="$t('SELECTED')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
-                            </div>
-                            <div class="margin-bottom-1rem">
-                                <div v-html="(!(historyContent)) ? '<em>No content</em>' : historyContent" class="history-content" ></div>
-                            </div>
-                            <div class="text-right">
-                                <button class="es-button-white" @click="useHistoryCon1t()">{{$t('SAVE')}}</button>
-                                <button class="es-button-white" @click="save_to_scene = !save_to_scene">{{$t('CLOSE')}}</button>
-                            </div>
-                        </b-card>
-                    </b-card-group>
-                </b-container>
-            </div>
-        </template>
-    </b-overlay>
+    <div v-if="save_to_scene" class="b-overlay">
+      <SavetoScene :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></SavetoScene>
+    </div>
 
 </div>
 </template>
@@ -202,6 +172,7 @@
 <script>
 import Feedback from '../../../components/Feedback'
 import TinyMCE from '../../../components/TinyMCE'
+import SavetoScene from '@/pages/views/chapters/save-to-scene'
 
 import CommentBasePanel from '../../../components/CommentBasePanel'
 const {ipcRenderer} = window.require('electron')
@@ -294,7 +265,8 @@ export default {
   components: {
     TinyMCE,
     Feedback,
-    CommentBasePanel
+    CommentBasePanel,
+    SavetoScene
   },
   computed: {
     book: function () {
@@ -314,6 +286,13 @@ export default {
     }
   },
   methods: {
+    closeSaveToScene: function () {
+      var scope = this
+      scope.save_to_scene = false
+    },
+    emitToParent (event) {
+      this.save_to_scene = false
+    },
     getImport: function () {
       var scope = this
       ipcRenderer.send('IMPORT-DOCX', 'chapter')
@@ -366,6 +345,10 @@ export default {
       var scope = this
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       scope.tempChapterVersionCont = value
+    },
+    setShowScene (value) {
+      var scope = this
+      scope.save_to_scene = value
     },
     // Set all child object/array of an object to same value like null/empty string
     setAll (obj, val) {
@@ -566,31 +549,13 @@ export default {
       scope.page.is_ready = true
     }
 
-    // var handler = function (event, data) {
-    //   console.log(scope.data.id)
-    //   console.log(scope.data.uuid)
-    //   if (scope.data.id === null && scope.data.uuid === null) {
-    //     ipcRenderer.send('SEND-TO-STARTER-SHOW-SWAL-CANT-SAVE')
-    //   } else {
-    //     scope.save_to_scene = true
-    //   }
-    // }
-
-    // ipcRenderer.on('SHOW-SAVE-TO-SCENE', handler)
-
-    // ipcRenderer.removeListener('SHOW-SAVE-TO-SCENE', handler)
+    console.log('form-uid' + this._uid)
   }
 }
 
-ipcRenderer.on('SHOW-SAVE-TO-SCENE', function (event, data) {
-  console.log(component.data.id)
+ipcRenderer.on('SAVE_TO_SCENE_SHOW_SAVE_SCENE', function (event, data) {
   console.log(component.data.uuid)
-  // component.data.title = 'aaaaaaaaaaaaaa'
-  if (component.data.id === null && component.data.uuid === null) {
-    ipcRenderer.send('SEND-TO-STARTER-SHOW-SWAL-CANT-SAVE')
-  } else {
-    component.save_to_scene = true
-  }
+  component.save_to_scene = true
 })
 
 ipcRenderer.on('SHOW-SWAL-CANT-SAVE', function (event, data) {
@@ -648,4 +613,13 @@ ipcRenderer.on('SHOW-SWAL-CANT-SAVE', function (event, data) {
     }
 
    .history-content { max-height: 400px; overflow-y: auto }
+</style>
+<style scoped>
+  .card-header { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: start; -ms-flex-align: start; align-items: flex-start; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; padding: 1rem; border-bottom: 1px solid #e9ecef; border-top-left-radius: .3rem; border-top-right-radius: .3rem; }
+  .card-header .card-title { font-size: 1.25rem; margin-bottom: 0; line-height: 1.5; }
+  .card-header .close { padding: 1rem; margin: -1rem -1rem -1rem auto; }
+
+  .b-overlay { position: fixed; top: 0; left: 0; bottom: 0; right: 0; overflow: auto; background-color: rgba(44, 46, 47, 0.9); z-index: 2}
+  .bv-example-row { margin-top: 100px; margin-bottom: 70px; }
+  .is_file { width: 50%!important; }
 </style>
