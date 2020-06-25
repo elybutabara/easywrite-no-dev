@@ -103,7 +103,7 @@
                                     <button class="es-button-white margin-bottom-1rem" @click="show_history = !show_history">{{$t('SHOW_HISTORY')}}</button>
                                 </div>
                                 <div class="form-group">
-                                  <tiny-editor-chapter  :chapterData="data" :params="tiny_editor_params" :initValue="data.chapter_version.content" v-on:getEditorContent="setContent" @getShowScene="save_to_scene=$event" class="form-control" />
+                                  <tiny-editor-chapter  :chapterData="data" :params="tiny_editor_params" :initValue="data.chapter_version.content" v-on:showOverlay="viewOverlay" v-on:getEditorContent="setContent" @getShowScene="save_to_scene=$event" class="form-control" />
                                     <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params()"></CommentBasePanel>
                                 </div>
                                 <div v-if="show_history" class="chapter-history-items slideInRight animated">
@@ -345,6 +345,12 @@ export default {
       var scope = this
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       scope.tempChapterVersionCont = value
+    },
+    viewOverlay (value) {
+      console.log('chapter form logs')
+      console.log(this._uid)
+      console.log(value)
+      this.save_to_scene = true
     },
     setShowScene (value) {
       var scope = this

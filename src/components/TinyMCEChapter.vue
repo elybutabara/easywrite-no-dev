@@ -107,8 +107,9 @@ export default {
               tooltip: 'Save to Scene',
               onAction: function (_) {
                 if (editor.selection.getContent() && scope.chapterData.uuid) {
+                  scope.showSaveToScene(scope.chapterData)
                   // scope.showScene()
-                  ipcRenderer.send('SAVE_TO_SCENE_SHOW_SAVE_SCENE', editor.selection.getContent())
+                  // ipcRenderer.send('SAVE_TO_SCENE_SHOW_SAVE_SCENE', editor.selection.getContent())
                 } else {
                   window.swal.fire({
                     icon: 'error',
@@ -152,6 +153,9 @@ export default {
     },
     emitToParent (event) {
       this.$emit('getEditorContent', this.$el.value)
+    },
+    showSaveToScene (chapter) {
+      this.$emit('showOverlay', chapter)
     }
   },
   updated: function () {
