@@ -299,7 +299,7 @@ export default {
     },
     comments: function () {
       var scope = this
-      var chapterID = scope.chapter.uuid
+      var chapterID = (scope.chapter) ? scope.chapter.uuid : null
       return this.$store.getters.getChapterComments(chapterID)
     },
     getAuthor: function () {
@@ -570,26 +570,6 @@ export default {
     console.log('form-uid' + this._uid)
   }
 }
-
-ipcRenderer.on('SAVE_TO_SCENE_SHOW_SAVE_SCENE', function (event, data) {
-  component.save_to_scene = true
-})
-
-ipcRenderer.on('SHOW-SWAL-CANT-SAVE', function (event, data) {
-  window.swal.fire({
-    icon: 'error',
-    title: window.vm.$t('PLEASE_SAVE_CHAPTER_FIRST'),
-    text: data
-  })
-
-  ipcRenderer.on('SHOW-SAVE-TO-SCENE-NO-SELECTED', function (event, data) {
-    window.swal.fire({
-      icon: 'error',
-      title: window.vm.$t('PLEASE_SELECT_FROM_CONTENT'),
-      text: data
-    })
-  })
-})
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
