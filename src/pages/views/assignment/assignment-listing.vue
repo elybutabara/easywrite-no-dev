@@ -13,20 +13,35 @@
         </div>
         <div class="panel-body">
           <p class="description">{{ assingment.description }}</p>
-          <span>Frist: {{ assingment.submission_date }}</span>
+          <span>{{ $tc('DEADLINE') }}: {{ assingment.submission_date }}</span>
           <div v-if="('assignment_manuscript' in assingment)" class="mt-3">
-            <a href="javascript:;" @click="showManuscript(assingment.assignment_manuscript)" >{{ (assingment.assignment_manuscript.is_file) ? assingment.assignment_manuscript.content : $t('DETAILS')}}</a>
+            <a href="javascript:;" @click="showManuscript(assingment)" >{{ (assingment.assignment_manuscript.is_file) ? assingment.assignment_manuscript.content : $t('DETAILS')}}</a>
             <div class="float-right">
-              <a href="javascript:;" :title="$t('EDIT')" @click="editManuscript(assingment.assignment_manuscript)" class="btn btn-xs btn-info"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
+              <a href="javascript:;" :title="$t('EDIT')" @click="showForm(assingment)" class="btn btn-xs btn-info"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
               <a href="javascript:;" :title="$t('DELETE')" @click="deleteManuscript(assingment.assignment_manuscript)" class="btn btn-xs btn-danger"><i class="fas fa-trash-alt" aria-hidden="true"></i></a>
             </div>
           </div>
         </div>
-        <div class="panel-footer">Course: {{ assingment.course_title }}</div>
+        <div class="panel-footer">{{ $tc('COURSE') }}: {{ assingment.course_title }}</div>
       </div>
     </div>
   </div>
   <assignment-form v-show="show_form==true" :show_form="show_form" :assignment="selected_assignment" :book_genres="genres" v-on:getIsFormShow="setShowForm"></assignment-form>
+  <div class="b-overlay" v-if="show_manuscript_detail">
+    <b-container class="bv-example-row">
+      <b-card-group deck>
+        <b-card>
+          <template v-slot:header>
+            <h6 class="mb-0 card-title">{{ assignment_detail.title }}</h6>
+            <a href="javascript:;" ref="close-manuscript-detail" class="close" @click="show_manuscript_detail = !show_manuscript_detail">
+              <i class="fa fa-times"></i>
+            </a>
+          </template>
+          <div v-html="assignment_detail.assignment_manuscript.content"></div>
+        </b-card>
+      </b-card-group>
+    </b-container>
+  </div>
 </div>
 </template>
 
@@ -40,7 +55,9 @@ export default {
       assignments: [],
       selected_assignment: [],
       genres: [],
-      show_form: false
+      show_form: false,
+      show_manuscript_detail: false,
+      assignment_detail: []
     }
   },
   components: {
@@ -54,7 +71,13 @@ export default {
     },
     setShowForm (value) {
       let scope = this
-      scope.show_form = value
+      scope.show_form = value.show_form
+
+      if (value.manuscript.id) {
+        const index = scope.assignments.findIndex(assignment => assignment.uuid === value.manuscript.assignment_id)
+
+        scope.$set(scope.assignments[index], 'assignment_manuscript', value.manuscript)
+      }
     },
     getGenre: function () {
       var scope = this
@@ -74,16 +97,14 @@ export default {
           scope.assignments = response.data
         })
     },
-    showManuscript: function (manuscript) {
-      console.log(manuscript)
-    },
-    editManuscript: function (manuscript) {
-      console.log(manuscript)
-    },
-    deleteRecordFromObject (objcts, uuid) {
-      const index = objcts.findIndex(obj => obj.uuid === uuid)
-      console.log(index)
-      // obj.splice(index, 1)
+    showManuscript: function (assignment) {
+      if (assignment.assignment_manuscript.is_file) {
+        console.log(assignment.assignment_manuscript)
+      } else {
+        let scope = this
+        scope.show_manuscript_detail = !scope.show_manuscript_detail
+        scope.assignment_detail = assignment
+      }
     },
     deleteManuscript: function (manuscript) {
       var scope = this
@@ -142,4 +163,11 @@ export default {
       line-height: 1.5;
       border-radius: 3px;
     }
+
+    .card-header { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: start; -ms-flex-align: start; align-items: flex-start; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; padding: 1rem; border-bottom: 1px solid #e9ecef; border-top-left-radius: .3rem; border-top-right-radius: .3rem; }
+    .card-header .card-title { font-size: 1.25rem; margin-bottom: 0; line-height: 1.5; }
+    .card-header .close { padding: 1rem; margin: -1rem -1rem -1rem auto; }
+
+    .b-overlay { position: fixed; top: 0; left: 0; bottom: 0; right: 0; overflow: auto; background-color: rgba(44, 46, 47, 0.9); }
+    .bv-example-row { margin-top: 100px; margin-bottom: 70px; }
 </style>

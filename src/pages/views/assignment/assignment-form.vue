@@ -18,6 +18,7 @@
                   <b-form-checkbox
                     id="checkbox-1"
                     v-model="manuscript.is_file"
+                    @change="logging"
                     name="checkbox-1"
                     value="0"
                     unchecked-value="1"
@@ -29,7 +30,7 @@
               <b-row v-show="manuscript.is_file==1" style="margin-bottom: 1rem;" class="text-left">
                 <b-col>
                   <label>{{$t('APPROVE_FILE_FORMATS_ARE')}} DOC, DOCX og ODT: </label>
-                  <b-form-file id="file-default" accept="application/msword,
+                  <b-form-file  v-model="file" @input="displayFile" id="file-default" accept="application/msword,
                             application/vnd.openxmlformats-officedocument.wordprocessingml.document"></b-form-file>
                 </b-col>
               </b-row>
@@ -89,7 +90,7 @@
               <b-button
                 variant="primary"
                 class="btn btn-dark"
-                @click="saveManuscript">
+                @click="uploadFile">
                 <span>{{ $t('UPLOAD') }}</span>
               </b-button>
             </div>
@@ -134,7 +135,8 @@ export default {
       },
       join_group: false,
       tempContent: '',
-      show_feedbacks: false
+      show_feedbacks: false,
+      file: []
     }
   },
   components: {
@@ -142,6 +144,10 @@ export default {
     Feedback
   },
   methods: {
+    logging () {
+      var scope = this
+      console.log(scope.manuscript.is_file)
+    },
     // Required for geting value from TinyMCE content
     setContent (value) {
       var scope = this
@@ -149,7 +155,11 @@ export default {
       scope.manuscript.words = scope.WORD_COUNT(value)
     },
     emitToParent (event) {
-      this.$emit('getIsFormShow', !this.show_form)
+      var scope = this
+      scope.$emit('getIsFormShow', {
+        show_form: !scope.show_form,
+        manuscript: scope.manuscript
+      })
     },
     // Set all child object/array of an object to same value like null/empty string
     setAll (obj, val) {
@@ -176,12 +186,54 @@ export default {
 
       return isValid
     },
+    displayFile: function () {
+      var scope = this
+
+      let validFileTypes = ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.oasis.opendocument.text']
+
+      if (!validFileTypes.includes(scope.file['type'])) {
+        scope.file = []
+        window.swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'Uploading Failed!',
+          text: 'Only .doc, .docx, .odt files are allowed!',
+          showConfirmButton: false,
+          timer: 3000
+        })
+      }
+    },
+    uploadFile () {
+      var scope = this
+      if (scope.file) {
+        let formData = new FormData()
+        formData.append('single-file', scope.file)
+
+        scope.axios
+          .post('http://localhost:3000/upload/assignment-manuscript/file', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+          .then(response => {
+            scope.manuscript.content = response.data.file.name
+            scope.saveManuscript()
+          }).catch(function () {
+            console.log('FAILURE!!')
+          })
+      } else {
+        scope.saveManuscript()
+      }
+    },
     saveManuscript () {
       let scope = this
 
-      scope.manuscript.content = scope.tempContent
       scope.manuscript.join_group = (scope.join_group) ? 1 : 0
       scope.manuscript.is_file = parseInt(scope.manuscript.is_file)
+
+      if (!scope.manuscript.is_file) {
+        scope.manuscript.content = scope.tempContent
+      }
 
       if (!scope.validate()) {
         return false
@@ -198,34 +250,37 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
+              scope.manuscript = response.data
               scope.$refs['close-assignment-form'].click()
               console.log(response.data)
             })
           }
         })
     }
-    // getManuscript: function () {
-    //   var scope = this
-    //   var assignmentUUID = scope.manuscript.assignment_id
-    //
-    //   scope.axios
-    //     .get('http://localhost:3000/assignment-manuscripts/' + assignmentUUID, scope.data)
-    //     .then(response => {
-    //       scope.assignments = response.data
-    //       console.log(scope.assignments)
-    //     })
-    // }
   },
   beforeUpdate () {
     let scope = this
 
     // only load data if the stored assignment_id is different to loaded assignment uuid
     if (scope.manuscript.assignment_id !== scope.assignment.uuid) {
-      scope.manuscript.assignment_id = scope.assignment.uuid
-      scope.manuscript.user_id = scope.$store.getters.getUserID
+      scope.manuscript = {
+        id: null,
+        assignment_id: '',
+        user_id: '',
+        content: '',
+        where_in_script: 'whole',
+        is_file: 1,
+        genre: null,
+        join_group: 0,
+        words: 0
+      }
+
+      scope.$set(scope.manuscript, 'assignment_id', scope.assignment.uuid)
+      scope.$set(scope.manuscript, 'user_id', scope.$store.getters.getUserID)
 
       if ('assignment_manuscript' in scope.assignment) {
-        scope.manuscript = scope.assignment.assignment_manuscript
+        scope.$set(scope, 'manuscript', scope.assignment.assignment_manuscript)
+        scope.$set(scope, 'tempContent', scope.manuscript.content)
       }
     }
   }
