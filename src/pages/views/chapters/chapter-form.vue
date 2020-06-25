@@ -277,7 +277,7 @@ export default {
     },
     comments: function () {
       var scope = this
-      var chapterID = scope.chapter.uuid
+      var chapterID = (scope.chapter) ? scope.chapter.uuid : null
       return this.$store.getters.getChapterComments(chapterID)
     },
     getAuthor: function () {
@@ -573,6 +573,7 @@ ipcRenderer.on('SHOW-SWAL-CANT-SAVE', function (event, data) {
     })
   })
 })
+
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
