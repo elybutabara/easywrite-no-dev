@@ -19,7 +19,10 @@ class AssignmentManuscriptController {
 
     const saveAssignmentManuscript = await AssignmentManuscript.query().upsertGraph([data]).first()
 
-    return saveAssignmentManuscript
+    const assignmentManuscript = AssignmentManuscript.query()
+      .findById(saveAssignmentManuscript.uuid)
+
+    return assignmentManuscript
   }
   static async delete (manuscriptId) {
     const assignmentManuscript = await AssignmentManuscript.query().deleteById(manuscriptId)

@@ -205,7 +205,7 @@ export default {
     },
     uploadFile () {
       var scope = this
-      if (scope.file) {
+      if (scope.manuscript.is_file === 1 && scope.file) {
         let formData = new FormData()
         formData.append('single-file', scope.file)
 
@@ -250,9 +250,10 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              scope.manuscript = response.data
+              scope.$set(scope, 'manuscript', response.data)
+              scope.$set(scope, 'tempContent', scope.manuscript.content)
+            }).then(() => {
               scope.$refs['close-assignment-form'].click()
-              console.log(response.data)
             })
           }
         })

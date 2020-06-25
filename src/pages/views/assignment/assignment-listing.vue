@@ -47,6 +47,13 @@
 
 <script>
 import AssignmentForm from './assignment-form'
+
+const path = window.require('path')
+const electron = window.require('electron')
+const { shell } = electron
+
+const resourcePath = electron.remote.getGlobal('resourcePath')
+
 export default {
   name: 'assignment-listing',
   props: ['properties'],
@@ -99,7 +106,8 @@ export default {
     },
     showManuscript: function (assignment) {
       if (assignment.assignment_manuscript.is_file) {
-        console.log(assignment.assignment_manuscript)
+        let filePath = path.join(resourcePath, 'resources', 'files', 'assignment-manuscript', assignment.assignment_manuscript.content)
+        shell.openItem(filePath)
       } else {
         let scope = this
         scope.show_manuscript_detail = !scope.show_manuscript_detail
