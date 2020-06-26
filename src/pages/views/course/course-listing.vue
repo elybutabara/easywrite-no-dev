@@ -30,7 +30,7 @@
                     </div>
                     <div class="mt-3">
                       <h3 class="title ellipsis-2">{{ DISPLAY_TITLE(course_taken.course.title) }}</h3>
-                      <i class="description ellipsis-3"><span v-html="course_taken.course.short_description"></span></i>
+                      <i class="description ellipsis-3"><span v-html="REMOVE_HTML(course_taken.course.short_description)"></span></i>
                     </div>
                   </div>
                   <div class="es-card-footer text-center">

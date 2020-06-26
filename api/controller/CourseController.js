@@ -9,6 +9,7 @@ class CourseController {
       .where('user_id', param.userID)
       .withGraphJoined('package')
       .withGraphJoined('course')
+      .groupBy('course.id')
     if (param.limit) {
       courseTaken.limit(param.limit)
     }
