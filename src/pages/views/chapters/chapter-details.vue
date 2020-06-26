@@ -267,7 +267,10 @@ export default {
       scope.chapter_version.change_description = scope.tempVersionDesc
       scope.chapter_version.content = this.commentbase_vm.dom.innerHTML
       scope.chapter_version.comments = this.commentbase_vm.getCommentsJSON()
-
+      scope.chapter_version.new_comment_json = this.commentbase_vm.getLastComment()
+      scope.chapter_version.new_comment_json.chapter_id = chapterID
+      scope.chapter_version.new_comment_json.chapter_title = scope.page.data.chapter.title
+      scope.chapter_version.new_comment_json = JSON.stringify(scope.chapter_version.new_comment_json)
       scope.axios
         .post('http://localhost:3000/chapter-versions/comment', scope.chapter_version)
         .then(response => {

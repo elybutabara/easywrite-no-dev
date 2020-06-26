@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
 
-const { Book, Chapter, ChapterVersion, User } = require(path.join(__dirname, '..', 'models'))
+const { Book, Chapter, ChapterVersion, Notification, User } = require(path.join(__dirname, '..', 'models'))
 
 class ChapterVersionController {
   static getAllChapterVersionsByChapterId (chapterId) {
@@ -20,8 +20,29 @@ class ChapterVersionController {
   }
 
   static async comment (data) {
+    var newComment = data['new_comment_json']
+
+    try {
+      newComment = JSON.parse(newComment)
+    } catch (e) {
+      newComment = '{}'
+    }
+
+    delete data['new_comment_json']
     const chapterVersion = await ChapterVersion.query().upsertGraphAndFetch([data]).first()
-    console.log(data)
+    console.log(chapterVersion)
+
+    const notification = await Notification.query().upsertGraphAndFetch([{
+      type: 'ChapterComment',
+      name: 'chapter-' + data.chapter_id,
+      data: JSON.stringify(newComment),
+      user_id: 1
+    }]).first()
+
+    if (notification) {
+      //
+    }
+    console.log(notification)
 
     return chapterVersion
   }

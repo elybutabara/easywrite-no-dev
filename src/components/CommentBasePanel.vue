@@ -50,7 +50,8 @@ export default {
       author: {},
       showCommentActions: null,
       editingComment: null,
-      window: window
+      window: window,
+      lastComment: null
     }
     if (scope.params && scope.params.tinymce) {
       data.window = scope.params.tinymce.getWin()
@@ -83,6 +84,7 @@ export default {
     },
     displayTime: function (t) {
       var txt = moment(t).fromNow()
+      console.log(t)
       txt = txt.replace('a few seconds ago', 'just now')
       return txt
     },
@@ -147,6 +149,9 @@ export default {
     getCommentsJSON: function () {
       return JSON.stringify(this.comments)
     },
+    getLastComment: function () {
+      return this.lastComment
+    },
     pushComment: function (e) {
       e.preventDefault()
       var scope = this
@@ -177,6 +182,7 @@ export default {
           created_at: new Date().getTime(),
           message: message
         }
+        scope.lastComment = scope.comments[scope.selected_comments_id][k]
       }
 
       //

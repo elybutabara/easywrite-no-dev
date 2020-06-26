@@ -77,6 +77,7 @@ express.use('/book-chapter-history', require('./routes/book-chapter-history'))
 express.use('/book-scene-history', require('./routes/book-scene-history'))
 express.use('/courses', require('./routes/courses'))
 express.use('/lessons', require('./routes/lessons'))
+express.use('/notifications', require('./routes/notifications'))
 
 express.post(
   '/upload/:imgOf/image',

@@ -6,10 +6,14 @@
         <div class="es-right-side-content">
             <div class="es-top-parent">
                <pomodoro-timer></pomodoro-timer>
-                <div class="es-top-nav">
+                <div class="es-top-nav" style="position: relative;">
                     <button @click="CHANGE_COMPONENT({tabKey: 'dashboard', tabComponent: 'dashboard',  tabData: null, tabTitle: $t('DASHBOARD')})"> {{ $t('DASHBOARD') }}</button>
                     <button @click="CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing',  tabData: null, tabTitle: $t('SYNC_DATA'), newTab: true})">{{ $t('SYNC_DATA') }}</button>
                     <button @click="CHANGE_COMPONENT({tabKey: 'book-form', tabComponent: 'book-form',  tabData: null, tabTitle: $t('NEW_BOOK'), newTab: true})">{{ $t('NEW_BOOK') }}</button>
+                    <button @click.prevent="showMessageCenter=!showMessageCenter" class="btn btn-danger"><i class="fa fa-bell"></i></button>
+                    <div v-if="showMessageCenter" style="position: absolute; top: 43px; right: 0px; z-index: 10000; width: 500px; text-align: left;">
+                      <message-center-popup :params="{}"></message-center-popup>
+                    </div>
                 </div>
             </div>
             <div class="es-tab-nav">
@@ -55,11 +59,14 @@
             </div>
         </div>
     </div>
+    <messaging :params="{}"></messaging>
 </div>
 </template>
 
 <script>
 import MainSideNavigation from '@/components/MainSideNavigation'
+import MessageCenterPopup from '@/components/MessageCenterPopup'
+import Messaging from '@/components/Messaging'
 import Syncer from '@/components/Syncer'
 
 import Syncing from '@/pages/views/syncing'
@@ -117,11 +124,14 @@ export default {
         data: null,
         component: 'book-listing'
       },
+      showMessageCenter: false,
       forceQuit: false
     }
   },
   components: {
     'main-side-navigation': MainSideNavigation,
+    'message-center-popup': MessageCenterPopup,
+    'messaging': Messaging,
     'syncer': Syncer,
     'syncing': Syncing,
     'storyboard': StoryBoard,
@@ -219,6 +229,7 @@ export default {
 
   mounted () {
     var scope = this
+    window.AppMain = this
     var userUUID = this.$store.getters.getUserID
     var authorUUID = this.$store.getters.getAuthorID
     scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})

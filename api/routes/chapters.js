@@ -70,6 +70,12 @@ router.get('/:chapterId/history', async function (req, res) {
     .json(chapterHistory)
 })
 
+router.get('/', async function (req, res) {
+  res
+    .status(200)
+    .json({})
+})
+
 router.post('/', async function (req, res) {
   const chapter = await ChapterController.save(req.body)
 
