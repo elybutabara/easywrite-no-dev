@@ -24,8 +24,14 @@ const { AuthorPersonalProgressController } = require(path.join(__dirname, 'contr
 const { BookChapterHistoryController } = require(path.join(__dirname, 'controller/BookChapterHistoryController'))
 const { BookSceneHistoryController } = require(path.join(__dirname, 'controller/BookSceneHistoryController'))
 const { CourseController } = require(path.join(__dirname, 'controller/CourseController'))
+const { CourseTakenController } = require(path.join(__dirname, 'controller/CourseTakenController'))
+const { PackageController } = require(path.join(__dirname, 'controller/PackageController'))
+const { PackageCourseController } = require(path.join(__dirname, 'controller/PackageCourseController'))
 const { LessonController } = require(path.join(__dirname, 'controller/LessonController'))
 const { NotificationController } = require(path.join(__dirname, 'controller/NotificationController'))
+const { LessonDocumentController } = require(path.join(__dirname, 'controller/LessonDocumentController'))
+const { AssignmentController } = require(path.join(__dirname, 'controller/AssignmentController'))
+const { AssignmentManuscriptController } = require(path.join(__dirname, 'controller/AssignmentManuscriptController'))
 
 module.exports = {
   UserController,
@@ -52,6 +58,13 @@ module.exports = {
   BookChapterHistoryController,
   BookSceneHistoryController,
   CourseController,
+  NotificationController,
+  CourseTakenController,
+  PackageController,
+  PackageCourseController,
   LessonController,
-  NotificationController
+  LessonDocumentController,
+  AssignmentController,
+  AssignmentManuscriptController
+
 }

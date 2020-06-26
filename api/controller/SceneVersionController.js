@@ -13,12 +13,32 @@ class SceneVersionController {
     return version
   }
 
+  static getLatestSceneVersion (sceneId) {
+    var version = SceneVersion.query()
+      .where('book_scene_id', sceneId)
+      .whereNull('deleted_at')
+      .orderBy('id', 'desc')
+      .first()
+
+    return version
+  }
+
   static async save (data) {
     if (data.updated_at !== 'undefined' && data.updated_at !== null) {
       delete data.updated_at
     }
 
     const sceneVersion = await SceneVersion.query().upsertGraphAndFetch([data]).first()
+    return sceneVersion
+  }
+
+  static async saveToScene (data) {
+    console.log('Save to scene')
+    console.log(data)
+    var sceneVersion = await SceneVersion.query()
+      .patch({ content: data.content })
+      .where('uuid', '=', data.uuid)
+
     return sceneVersion
   }
 
@@ -64,24 +84,24 @@ class SceneVersionController {
   }
 
   static async sync (row) {
+    var columns = {
+      uuid: row.uuid,
+      book_scene_id: row.book_scene_id,
+      content: row.content,
+      change_description: row.change_description,
+      comments: row.comments,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      deleted_at: row.deleted_at,
+      from_local: row.from_local
+    }
+
     var data = await SceneVersion.query()
-      .patch(row)
+      .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await SceneVersion.query().insert({
-		  
-		  uuid: row.uuid,
-		  book_scene_id: row.book_scene_id,
-		  content: row.content,
-		  change_description: row.change_description,
-		  comments: row.comments,
-		  created_at: row.created_at,
-		  updated_at: row.updated_at,
-		  deleted_at: row.deleted_at,
-		  from_local: row.from_local,
-		  
-	  })
+      data = await SceneVersion.query().insert(columns)
 
       // update uuid to match web
       data = await SceneVersion.query()

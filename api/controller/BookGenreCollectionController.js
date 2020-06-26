@@ -34,23 +34,22 @@ class BookGenreCollectionController {
   }
 
   static async sync (row) {
+    var columns = {
+      uuid: row.uuid,
+      book_id: row.book_id,
+      genre_id: row.genre_id,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      deleted_at: row.deleted_at,
+      from_local: row.from_local
+    }
+
     var data = await BookGenreCollection.query()
-      .patch(row)
+      .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await BookGenreCollection.query().insert({
-		  
-		  uuid: row.uuid,
-		  book_id: row.book_id,
-		  genre_id: row.genre_id,
-		  created_at: row.created_at,
-		  updated_at: row.updated_at,
-		  deleted_at: row.deleted_at,
-		  from_local: row.from_local,
-		  
-	  })
-	  
+      data = await BookGenreCollection.query().insert(columns)
       // update uuid to match web
       data = await BookGenreCollection.query()
         .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })

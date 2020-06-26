@@ -14,6 +14,23 @@ router.post('/', async function (req, res) {
     .json(version)
 })
 
+router.post('/savetoscene', async function (req, res) {
+  const version = await SceneVersionController.saveToScene(req.body)
+
+  res
+    .status(200)
+    .json(version)
+})
+
+router.get('/:sceneId/latest', async function (req, res) {
+  console.log(req.params)
+  const rows = await SceneVersionController.getLatestSceneVersion(req.params.sceneId)
+
+  res
+    .status(200)
+    .json(rows)
+})
+
 router.get('/syncable', async function (req, res) {
   const rows = await SceneVersionController.getSyncable(req.query.userID)
 

@@ -1,36 +1,31 @@
 <template>
 <div style="z-index:3000;">
     <div class="note-wrap">
-      <div class="notes">
-        <div class="head">
-          Notes
-          <span @click="$parent.toggleNotes()" style="cursor:pointer; width:30px; height:30px; line-height:30px; text-align:center; position:absolute; background:#922c39; color:#fff; top:2px; right:5px;">X</span>
-        </div>
-        <div class="body">
-          <template @click="toggleNotes(note)" v-for="note in notes" >
-          <div :key="note.id" class="note-single">
-            <div class="note-single-header">
-              <strong class="author" >{{ note.author.alias || note.author.first_name }}</strong>
-              <span class="date">{{ formatDate(note) }}</span>
-            </div>
-            <div class="note-single-content-wrap" v-bind:class="{ 'open' : note.expand_content }">
-              <p @click="expandNoteContent(note)" class="message" v-bind:class="{ 'ellipsis-3' : !note.expand_content }" v-html="note.message"></p>
+
+       <div style="padding:10px; background:#faf6bd; width:350px; min-height:200px; max-height:440px; cursor:grab;" v-draggable="draggableValue" :ref="handleId">
+          <div style="font-weight:600;">
+              {{ $t('NOTE') }}
+              <i v-if="!edit" @click="toggleEdit()" style="float:right; font-size:20px; cursor:pointer;" class="las la-pencil-alt"></i>
+          </div>
+          <div style="max-height:400px; overflow-y:auto;">
+            <div style="white-space: pre-wrap; margin-top:8px;" v-if="!edit" v-html="note.message"></div>
+            <div v-else>
+              <textarea style="margin-top:10px; width:100%; background:transparent;" rows="5" v-model="note.message"></textarea>
+              <div style="text-align:right;">
+                <button @click="saveNote()" class="es-button-white">Save</button>
+                <button @click="toggleEdit()" class="es-button-white">Cancel</button>
+              </div>
             </div>
           </div>
-          </template>
-        </div>
-        <div class="foot">
-          <textarea  type="text" v-model="message"></textarea>
-          <button @click="saveNote()" class="es-button-white">Submit</button>
-        </div>
       </div>
-    </div>
+  </div>
 </div>
 </template>
 
 <script>
 // In renderer process (web page).
 import moment from 'moment'
+import { Draggable } from 'draggable-vue-directive'
 
 export default {
   name: 'Note',
@@ -38,11 +33,24 @@ export default {
   data () {
     return {
       filter: 'all',
-      notes: null,
+      edit: false,
+      note: {
+        id: null,
+        uuid: null,
+        author_id: '',
+        parent_id: '',
+        parent: '',
+        message: ''
+      },
       selected: false,
       message: '',
-      response: ''
+      response: '',
+      handleId: 'handle-id',
+      draggableValue: { }
     }
+  },
+  directives: {
+    Draggable
   },
   components: {
   },
@@ -52,41 +60,39 @@ export default {
     formatDate: function (data) {
       return moment(data.created_at).calendar()
     },
-    expandNoteContent: function (note) {
-      if (!note.expand_content) {
-        this.$set(note, 'expand_content', true)
-      } else {
-        this.$set(note, 'expand_content', false)
-      }
+    toggleEdit: function () {
+      var scope = this
+      scope.edit = !scope.edit
     },
     saveNote: function () {
       var scope = this
-      if (scope.message === '') {
-        return
-      }
-
-      let note = {
-        author_id: scope.$store.getters.getAuthorID,
-        parent_id: scope.properties.parent.uuid,
-        parent: scope.properties.parent_name,
-        message: scope.message
-      }
+      scope.note.author_id = scope.$store.getters.getAuthorID
+      scope.note.parent_id = scope.properties.parent.uuid
+      scope.note.parent = scope.properties.parent_name
 
       scope.axios
-        .post('http://localhost:3000/notes', note)
+        .post('http://localhost:3000/notes', scope.note)
         .then(response => {
-          if (response.data) {
-            scope.message = ''
-            scope.notes.push(response.data)
-          }
+          console.log(response.data)
+          scope.note.id = response.data.id
+          scope.note.uuid = response.data.uuid
+          scope.toggleEdit()
         })
     }
   },
   mounted () {
     var scope = this
-    scope.axios.get('http://localhost:3000/notes/' + scope.properties.parent_name + '/' + scope.properties.parent.uuid)
+    var authorID = scope.$store.getters.getAuthorID
+    var parent = scope.properties.parent_name
+    var parentID = scope.properties.parent.uuid
+
+    scope.axios.get('http://localhost:3000/notes/' + authorID + '/' + parent + '/' + parentID)
       .then(function (response) {
-        scope.notes = response.data
+        if (response.data.length > 0) {
+          scope.note.id = response.data[0].id
+          scope.note.uuid = response.data[0].uuid
+          scope.note.message = response.data[0].message
+        }
       })
       .catch(function (error) {
         console.log(error)
@@ -94,33 +100,17 @@ export default {
       .finally(function () {
         // always executed
       })
+
+    scope.draggableValue.handle = this.$refs[this.handleId]
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .note-wrap { position:absolute; top:0px; right:0px; z-index:9999; height:100%; overflow-y:auto; border-left:1px solid #ccc; background:#efefef; z-index:3000; width:480px; }
+  .note-wrap {
+    position:absolute; top:20px; right:10px; z-index:9999; height:100%;
+    overflow-y:auto; z-index:3000; width:400px;
+  }
   .note-wrap .notes { position:relative; height:100%;}
-  .note-wrap .notes .head {  position:relative; height:35px; line-height:35px; padding:0px 10px; background:#fff; border-bottom:1px solid #ccc; }
-  .note-wrap .notes .body { height:calc(100% - 125px); overflow-y:auto; }
-  .note-wrap .notes .body .note-single { background:#fff; border-bottom:1px solid #ccc; padding:0px 0px; padding-top:5px; }
-  .note-wrap .notes .body .note-single.done { background:#d3eed8; }
-  .note-wrap .notes .body .note-single .date { margin:0px; font-size:11px; color:#888; float:right; }
-  .note-wrap .notes .body .note-single .message { margin:0px; font-style:italic;}
-  .note-wrap .notes .foot { background:#fff; position:absolute; bottom:0px; left:0px; width:100%; height:90px; border-top:1px solid #ccc; padding:8px 5px; }
-  .note-wrap .notes .foot  textarea { width:100%; padding:5px; font-size:12px; }
-  .note-wrap .notes .foot  button { float:right; }
-
-  .note-single .note-single-header { padding:5px 15px; }
-  .note-single .note-single-content-wrap { cursor:pointer; padding:5px 15px; max-height:70px; overflow:hidden; margin-bottom:10px; }
-  .note-single .note-single-content-wrap.open { max-height: none !important; }
-
-  .note-single .note-single-replies-wrap { background:#efefef; }
-  .note-single .note-single-replies-wrap .note-single-replies-header { border-bottom:1px solid #ccc; padding:5px 10px; text-align:right; font-size:12px; }
-  .note-single .note-single-replies-wrap .note-single-replies-header span { cursor:pointer; }
-  .note-single .note-single-replies-wrap .note-single-replies { padding:5px 10px; text-align:left; font-size:12px; display:none; }
-  .note-single .note-single-replies-wrap.open .note-single-replies { display:block; }
-  .note-single .note-single-replies-wrap .note-single-replies-content { cursor:pointer; max-height:75px; overflow:hidden; margin-bottom:10px; }
-  .note-single .note-single-replies-wrap .note-single-replies-content.open { max-height:none !important;  }
 </style>

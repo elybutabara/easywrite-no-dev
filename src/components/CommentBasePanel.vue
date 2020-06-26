@@ -214,8 +214,6 @@ export default {
       el.addEventListener('mouseup', function (e) {
         scope.selected_comments_id = null
 
-        console.log('e ----------------- ', e)
-
         // cancel if not selected from within the container
         if (!scope.params.tinymce && !selectionStarted) {
           console.log('From outside select zone')

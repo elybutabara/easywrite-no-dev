@@ -1,33 +1,36 @@
 'use strict'
 const path = require('path')
 
-const { Book, Note, User } = require(path.join(__dirname, '..', 'models'))
+const { Book, Note, Chapter, Scene, Reader, User } = require(path.join(__dirname, '..', 'models'))
 
 class NoteController {
-  static getAllNotesByBookId (bookId) {
+  static getAllNotesByBookId (authorId, bookId) {
     var feedbacks = Note.query()
       .where('parent', 'book')
       .where('parent_id', bookId)
+      .where('author_id', authorId)
       .withGraphJoined('author', {maxBatchSize: 1})
       .orderBy('id', 'asc')
 
     return feedbacks
   }
 
-  static getAllNotesByChapterId (chapterId) {
+  static getAllNotesByChapterId (authorId, chapterId) {
     var feedbacks = Note.query()
       .where('parent', 'chapter')
       .where('parent_id', chapterId)
+      .where('author_id', authorId)
       .withGraphJoined('author', {maxBatchSize: 1})
       .orderBy('id', 'asc')
 
     return feedbacks
   }
 
-  static getAllNotesBySceneId (sceneId) {
+  static getAllNotesBySceneId (authorId, sceneId) {
     var feedbacks = Note.query()
       .where('parent', 'scene')
       .where('parent_id', sceneId)
+      .where('author_id', authorId)
       .withGraphJoined('author', {maxBatchSize: 1})
       .orderBy('id', 'asc')
 
@@ -35,7 +38,7 @@ class NoteController {
   }
 
   static async save (data) {
-    const note = await Note.query().upsertGraphAndFetch([data]).first()
+    const note = await Note.query().upsertGraph([data]).first()
 
     var row = Note.query()
       .where('notes.uuid', note.uuid)
@@ -43,14 +46,6 @@ class NoteController {
       .first()
 
     return row
-  }
-
-  static async updateStatus (row) {
-    var data = await Note.query()
-      .patch({ is_done: !row.is_done })
-      .where('uuid', '=', row.uuid)
-
-    return data
   }
 
   static async getSyncable (userId) {
@@ -68,10 +63,11 @@ class NoteController {
 
     for (let i = 0; i < books.length; i++) {
       bookUUIDs.push(books[i].uuid)
+      parentIDs.push(books[i].uuid)
     }
 
     // get all "books i read" IDs
-    const booksIRead = await Note.query()
+    const booksIRead = await Reader.query()
       .where('author_id', user.author.uuid)
 
     for (let i = 0; i < booksIRead.length; i++) {
@@ -80,7 +76,7 @@ class NoteController {
     }
 
     // get all "chapters" IDs
-    const chapters = await Note.query()
+    const chapters = await Chapter.query()
       .whereIn('book_id', bookUUIDs)
 
     var chapterUUIDs = []
@@ -91,7 +87,7 @@ class NoteController {
     }
 
     // get all "scenes" IDs
-    const scenes = await Note.query()
+    const scenes = await Scene.query()
       .whereIn('book_id', bookUUIDs)
 
     var sceneUUIDs = []
@@ -109,28 +105,22 @@ class NoteController {
   }
 
   static async sync (row) {
+    var columns = {
+      uuid: row.uuid,
+      author_id: row.author_id,
+      parent_id: row.parent_id,
+      parent: row.parent,
+      message: row.message,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      deleted_at: row.deleted_at
+    }
     var data = await Note.query()
-      .patch(row)
+      .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await Note.query().insert({
-        uuid: row.uuid,
-        chapter_id: row.chapter_id,
-        from: row.from,
-        to: row.to,
-        chapter_version_id: row.chapter_version_id,
-        mark: row.mark,
-        published: row.published,
-        type: row.type,
-        mark_as_finished: row.mark_as_finished,
-        general_comment: row.general_comment,
-        book_chapter_comment: row.book_chapter_comment,
-        message: row.message,
-        created_at: row.created_at,
-        updated_at: row.updated_at,
-        deleted_at: row.deleted_at
-      })
+      data = await Note.query().insert(columns)
 
       // update uuid to match web
       data = await Note.query()

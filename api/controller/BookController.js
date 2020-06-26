@@ -91,23 +91,25 @@ class BookController {
   }
 
   static async sync (row) {
+    var columns = {
+      uuid: row.uuid,
+      author_id: row.author_id,
+      title: row.title,
+      about: row.about,
+      numbered_chapter: row.numbered_chapter,
+      is_default: row.is_default,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      deleted_at: row.deleted_at,
+      from_local: row.from_local
+    }
+
     var data = await Book.query()
-      .patch(row)
+      .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await Book.query().insert({
-        uuid: row.uuid,
-        author_id: row.author_id,
-        title: row.title,
-        about: row.about,
-        numbered_chapter: row.numbered_chapter,
-        is_default: row.is_default,
-        created_at: row.created_at,
-        updated_at: row.updated_at,
-        deleted_at: row.deleted_at,
-        from_local: row.from_local
-      })
+      data = await Book.query().insert(columns)
 
       // update uuid to match web
       data = await Book.query()

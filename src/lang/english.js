@@ -1,4 +1,5 @@
 export default {
+  SAVE_TO_SCENE: 'Save To Scene',
   IMPORT_MULTIPLE_CHAPTERS: 'Import Multiple Chapters',
   SUCCESSFULY_IMPORTED: 'Successfuly Imported',
   A_LIST_OF_SCENES_THAT_DOES_NOT_BELONG_TO_ANY_CHAPTERS: 'A list of scenes that does not belong to any chapters',

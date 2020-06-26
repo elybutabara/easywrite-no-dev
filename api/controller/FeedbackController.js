@@ -75,7 +75,10 @@ class FeedbackController {
 
     for (let i = 0; i < books.length; i++) {
       bookUUIDs.push(books[i].uuid)
+      parentIDs.push(books[i].uuid)
     }
+
+    console.log(bookUUIDs)
 
     // get all "books i read" IDs
     const booksIRead = await Reader.query()
@@ -108,6 +111,9 @@ class FeedbackController {
       parentIDs.push(scenes[i].uuid)
     }
 
+    const test = await Feedback.query().whereIn('parent_id', parentIDs)
+    console.log(test)
+
     const rows = await Feedback.query()
       .whereIn('parent_id', parentIDs)
       .where('updated_at', '>', user.synced_at)
@@ -116,28 +122,24 @@ class FeedbackController {
   }
 
   static async sync (row) {
+    var columns = {
+      uuid: row.uuid,
+      author_id: row.author_id,
+      parent_id: row.parent_id,
+      parent: row.parent,
+      message: row.message,
+      is_done: row.uuid,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      deleted_at: row.deleted_at
+    }
+
     var data = await Feedback.query()
-      .patch(row)
+      .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await Feedback.query().insert({
-        uuid: row.uuid,
-        chapter_id: row.chapter_id,
-        from: row.from,
-        to: row.to,
-        chapter_version_id: row.chapter_version_id,
-        mark: row.mark,
-        published: row.published,
-        type: row.type,
-        mark_as_finished: row.mark_as_finished,
-        general_comment: row.general_comment,
-        book_chapter_comment: row.book_chapter_comment,
-        message: row.message,
-        created_at: row.created_at,
-        updated_at: row.updated_at,
-        deleted_at: row.deleted_at
-      })
+      data = await Feedback.query().insert(columns)
 
       // update uuid to match web
       data = await Feedback.query()

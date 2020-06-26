@@ -94,24 +94,24 @@ class RelationDetailController {
   }
 
   static async sync (row) {
+    var columns = {
+      uuid: row.uuid,
+      relation_id: row.relation_id,
+      character_id: row.character_id,
+      character_relation_id: row.character_relation_id,
+      is_opposite: row.is_opposite,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      deleted_at: row.deleted_at,
+      from_local: row.from_local
+    }
+
     var data = await RelationDetail.query()
-      .patch(row)
+      .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await RelationDetail.query().insert({
-		  
-		  uuid: row.uuid,
-		  relation_id: row.relation_id,
-		  character_id: row.character_id,
-		  character_relation_id: row.character_relation_id,
-		  is_opposite: row.is_opposite,
-		  created_at: row.created_at,
-		  updated_at: row.updated_at,
-		  deleted_at: row.deleted_at,
-		  from_local: row.from_local,
-		  
-	  })
+      data = await RelationDetail.query().insert(columns)
 
       // update uuid to match web
       data = await RelationDetail.query()

@@ -82,24 +82,24 @@ class ChapterVersionController {
   }
 
   static async sync (row) {
+    var columns = {
+      uuid: row.uuid,
+      chapter_id: row.chapter_id,
+      content: row.content,
+      change_description: row.change_description,
+      comments: row.comments,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      deleted_at: row.deleted_at,
+      from_local: row.from_local
+    }
+
     var data = await ChapterVersion.query()
-      .patch(row)
+      .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await ChapterVersion.query().insert({
-		  
-		  uuid: row.uuid,
-		  chapter_id: row.chapter_id,
-		  content: row.content,
-		  change_description: row.change_description,
-		  comments: row.comments,
-		  created_at: row.created_at,
-		  updated_at: row.updated_at,
-		  deleted_at: row.deleted_at,
-		  from_local: row.from_local,
-		 
-	  })
+      data = await ChapterVersion.query().insert(columns)
 
       // update uuid to match web
       data = await ChapterVersion.query()

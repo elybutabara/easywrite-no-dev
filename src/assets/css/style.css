@@ -99,7 +99,7 @@ ul { margin-left:0px; list-style:none;  }
 .left-side-bar  .btn-sidebar-closer { color: #618199;  font-size: 20px; position: absolute; top: 8px; right: 5px; background: #24303a; z-index: 5000; padding: 5px; border: 1px solid #324451; cursor:pointer; }
 .left-side-bar  .btn-sidebar-closer:hover { opacity:0.4; }
 
-.btn-sidebar-opener { display:none; background: #24303a; border: 1px solid #324451; color: #618199; position:fixed; top: 245px;; left:0px; z-index:9000; font-size:20px; padding:5px 8px; cursor:pointer; }
+.btn-sidebar-opener { display:none; background: #24303a; border: 1px solid #324451; color: #618199; position:absolute; top: 4px; left:5px; z-index:9000; font-size:18px; padding:2px 5px; cursor:pointer; }
 .page-main.collapsed .btn-sidebar-opener { display:inline-block; }
 .btn-sidebar-opener:hover { opacity:0.8; }
 

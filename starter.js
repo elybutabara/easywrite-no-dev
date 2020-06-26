@@ -171,3 +171,21 @@ ipcMain.on('SHOW_SWAL_TIMESUP_STARTER', function (event, data) {
 })
 
 
+
+
+
+ipcMain.on('SAVE-TO-SCENE-TO-STARTER-WITH-SELECTED', function (event, data) {
+  mainWindow.webContents.send('SHOW-SAVE-TO-SCENE', data)
+})
+
+ipcMain.on('SAVE-TO-SCENE-TO-STARTER-NO-SELECTED', function (event, data) {
+  mainWindow.webContents.send('SHOW-SAVE-TO-SCENE-NO-SELECTED')
+})
+
+ipcMain.on('SEND-TO-STARTER-SHOW-SWAL-CANT-SAVE', function (event, data) {
+  mainWindow.webContents.send('SHOW-SWAL-CANT-SAVE')
+})
+
+ipcMain.on('SAVE_TO_SCENE_SHOW_SAVE_SCENE', function (event, data) {
+  mainWindow.webContents.send('SAVE_TO_SCENE_SHOW_SAVE_SCENE')
+})

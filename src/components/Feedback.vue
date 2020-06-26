@@ -156,7 +156,7 @@ export default {
         .post('http://localhost:3000/feedback-responses', data)
         .then(response => {
           if (response.data) {
-            this.$set(feedback, 'reponse_text', '')
+            scope.$set(feedback, 'reponse_text', '')
             feedback.feedback_responses.push(response.data)
           }
         })
