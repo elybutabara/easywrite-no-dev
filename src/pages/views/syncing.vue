@@ -185,7 +185,8 @@ export default {
         { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: [], packed: [], error: [] },
         { title: 'Book Readers', api: 'book-readers', local: 'readers', downloaded: [], packed: [], error: [] },
         { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: [], packed: [], error: [] },
-        { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: [], packed: [], error: [] }
+        { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: [], packed: [], error: [] },
+        { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], error: [] }
         // { title: 'Book Feedbacks', api: 'book-feedbacks', local: 'feedbacks', downloaded: [], packed: [] },
         // { title: 'Book Chapter Feedbacks', api: 'book-chapter-feedbacks', local: 'chapter-feedbacks', downloaded: [], packed: [] },
         // { title: 'Book Chapter Feedback Responses', api: 'book-chapter-feedback-responses', local: 'chapter-feedback-responses', downloaded: [], packed: [] }
@@ -669,21 +670,25 @@ export default {
       scope.saving.total = 0
       scope.saving.error = false
       scope.endpoints = [
-        { title: 'Genres', api: 'book-genres', local: 'book-genres', downloaded: [], packed: [] },
-        { title: 'Relations', api: 'book-relations', local: 'relations', downloaded: [], packed: [] },
-        { title: 'Books', api: 'books', local: 'books', downloaded: [], packed: [] },
-        { title: 'Items', api: 'book-items', local: 'items', downloaded: [], packed: [] },
-        { title: 'Locations', api: 'book-locations', local: 'locations', downloaded: [], packed: [] },
-        { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: [], packed: [] },
+        { title: 'Genres', api: 'book-genres', local: 'book-genres', downloaded: [], packed: [], error: [] },
+        { title: 'Relations', api: 'book-relations', local: 'relations', downloaded: [], packed: [], error: [] },
+        { title: 'Books', api: 'books', local: 'books', downloaded: [], packed: [], error: [] },
+        { title: 'Items', api: 'book-items', local: 'items', downloaded: [], packed: [], error: [] },
+        { title: 'Locations', api: 'book-locations', local: 'locations', downloaded: [], packed: [], error: [] },
+        { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: [], packed: [], error: [] },
         { title: 'Chapters', api: 'book-chapters', local: 'chapters', downloaded: [], packed: [] },
-        { title: 'Chapter Versions', api: 'book-chapter-versions', local: 'chapter-versions', downloaded: [], packed: [] },
-        { title: 'Characters', api: 'book-characters', local: 'characters', downloaded: [], packed: [] },
-        { title: 'Relationships', api: 'book-relation-details', local: 'relation-details', downloaded: [], packed: [] },
-        { title: 'Scenes', api: 'book-scenes', local: 'scenes', downloaded: [], packed: [] },
-        { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: [], packed: [] },
-        { title: 'Scene Items', api: 'book-scene-items', local: 'scene-items', downloaded: [], packed: [] },
-        { title: 'Scene Locations', api: 'book-scene-locations', local: 'scene-locations', downloaded: [], packed: [] },
-        { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: [], packed: [] }
+        { title: 'Chapter Versions', api: 'book-chapter-versions', local: 'chapter-versions', downloaded: [], packed: [], error: [] },
+        { title: 'Characters', api: 'book-characters', local: 'characters', downloaded: [], packed: [], error: [] },
+        { title: 'Relationships', api: 'book-relation-details', local: 'relation-details', downloaded: [], packed: [], error: [] },
+        { title: 'Scenes', api: 'book-scenes', local: 'scenes', downloaded: [], packed: [], error: [] },
+        { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: [], packed: [], error: [] },
+        { title: 'Scene Items', api: 'book-scene-items', local: 'scene-items', downloaded: [], packed: [], error: [] },
+        { title: 'Scene Locations', api: 'book-scene-locations', local: 'scene-locations', downloaded: [], packed: [], error: [] },
+        { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: [], packed: [], error: [] },
+        { title: 'Book Readers', api: 'book-readers', local: 'readers', downloaded: [], packed: [], error: [] },
+        { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: [], packed: [], error: [] },
+        { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: [], packed: [], error: [] },
+        { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], error: [] }
       ]
     }
   },

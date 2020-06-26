@@ -1,7 +1,7 @@
 <template>
 <div class="page-main" v-bind:class="{ 'collapsed': isCollapsed }">
-    <div @click="toggleMainSideBar()"  class="btn-sidebar-opener"><i class="las la-arrow-right"></i></div>
     <div v-if="ready">
+        <div @click="toggleMainSideBar()"  class="btn-sidebar-opener"><i class="las la-arrow-right"></i></div>
         <main-side-navigation></main-side-navigation>
         <div class="es-right-side-content">
             <div class="es-top-parent">
@@ -287,5 +287,5 @@ ipcRenderer.on('SET_TRANSLATION_DOM', function (event, data) {
 <style scoped>
 .es-top-parent{ position: relative; background:#293742; border-left:1px solid #324553; border-bottom:1px solid #506d84; height:40px; line-height:40px; padding:0px 10px; text-align:right;}
 .es-top-nav { position: absolute; right: 10px;}
-.pomodoro-nav {position: absolute; height:40px; line-height:40px; padding:0px 10px; text-align: center;}
+.pomodoro-nav {position: absolute; left:35px; height:40px; line-height:40px; padding:0px 10px; text-align: center;}
 </style>

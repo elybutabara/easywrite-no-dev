@@ -64,22 +64,23 @@ class AuthorPersonalProgressController {
   }
 
   static async sync (row) {
+    var columns = {
+      uuid: row.uuid,
+      author_id: row.author_id,
+      relation_id: row.relation_id,
+      total_words: row.total_words,
+      is_for: row.is_for,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      deleted_at: row.deleted_at
+    }
+
     var data = await AuthorPersonalProgress.query()
-      .patch(row)
+      .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await AuthorPersonalProgress.query().insert(
-	  {
-		uuid: row.uuid,
-		author_id: row.author_id,
-		relation_id: row.relation_id,
-		total_words: row.total_words,
-		is_for: row.is_for,
-		created_at: row.created_at,
-		updated_at: row.updated_at,
-		deleted_at: row.deleted_at,
-	  })
+      data = await AuthorPersonalProgress.query().insert(columns)
 
       // update uuid to match web
       data = await AuthorPersonalProgress.query()

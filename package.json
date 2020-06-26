@@ -29,6 +29,7 @@
     "cross-env": "^7.0.0",
     "custom-electron-titlebar": "^3.2.2-hotfix62",
     "diff-match-patch": "^1.0.4",
+    "draggable-vue-directive": "^2.1.0",
     "electron-log": "^4.0.7",
     "electron-updater": "^4.2.5",
     "express": "latest",

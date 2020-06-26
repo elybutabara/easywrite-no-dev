@@ -91,22 +91,22 @@ class SceneLocationController {
   }
 
   static async sync (row) {
+    var columns = {
+      uuid: row.uuid,
+      book_scene_id: row.book_scene_id,
+      book_location_id: row.book_location_id,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      deleted_at: row.deleted_at,
+      from_local: row.from_local
+    }
+
     var data = await SceneLocation.query()
-      .patch(row)
+      .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await SceneLocation.query().insert({
-		  
-		  uuid: row.uuid,
-		  book_scene_id: row.book_scene_id,
-		  book_location_id: row.book_location_id,
-		  created_at: row.created_at,
-		  updated_at: row.updated_at,
-		  deleted_at: row.deleted_at,
-		  from_local: row.from_local,
-		  
-	  })
+      data = await SceneLocation.query().insert(columns)
 
       // update uuid to match web
       data = await SceneLocation.query()

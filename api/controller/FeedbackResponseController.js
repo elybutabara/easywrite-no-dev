@@ -90,12 +90,21 @@ class FeedbackResponseController {
   }
 
   static async sync (row) {
+    var columns = {
+      uuid: row.uuid,
+      feedback_id: row.feedback_id,
+      message: row.message,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      deleted_at: row.deleted_at
+    }
+
     var data = await FeedbackResponse.query()
-      .patch(row)
+      .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await FeedbackResponse.query().insert(row)
+      data = await FeedbackResponse.query().insert(columns)
 
       // update uuid to match web
       data = await FeedbackResponse.query()

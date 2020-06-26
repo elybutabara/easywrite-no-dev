@@ -92,7 +92,7 @@
                                         </div>
                                         <div v-if="details.show_weather" class="details">
                                             <p class="label"><i class="las la-cloud-sun"></i> {{ $t('WEATHER') }}</p>
-                                            <span class="data">{{ scene.weather || 'Not Set' }}</span>
+                                            <span class="data">{{ scene.weather_type || 'Not Set' }}</span>
                                         </div>
                                         <div v-if="details.show_perspective" class="details">
                                             <p class="label"><i class="las la-eye"></i> {{ $t('POINT_OF_VIEW') }}</p>
@@ -158,7 +158,7 @@
                                         </div>
                                         <div v-if="details.show_weather" class="details">
                                             <p class="label"><i class="las la-cloud-sun"></i> {{ $t('WEATHER') }}</p>
-                                            <span class="data">{{ scene.weather || 'Not Set' }}</span>
+                                            <span class="data">{{ scene.weather_type || 'Not Set' }}</span>
                                         </div>
                                         <div v-if="details.show_perspective" class="details">
                                             <p class="label"><i class="las la-eye"></i> {{ $t('POINT_OF_VIEW') }}</p>

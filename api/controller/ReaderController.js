@@ -83,26 +83,25 @@ class ReaderController {
   }
 
   static async sync (row) {
+    var columns = {
+      uuid: row.uuid,
+      author_id: row.author_id,
+      book_id: row.book_id,
+      role: row.role,
+      status: row.status,
+      reasons: row.reasons,
+      allow_feedback_email_notification: row.allow_feedback_email_notification,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      deleted_at: row.deleted_at
+    }
     var data = await Reader.query()
-      .patch(row)
+      .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await Reader.query().insert({
-		  
-		 uuid: row.uuid,
-		 author_id: row.author_id,
-		 book_id: row.book_id,
-		 role: row.role,
-		 status: row.status,
-		 reasons: row.reasons,
-		 allow_feedback_email_notification: row.allow_feedback_email_notification,
-		 created_at: row.created_at,
-		 updated_at: row.updated_at,
-		 deleted_at: row.deleted_at,
-		 
-	  })
-	  
+      data = await Reader.query().insert(columns)
+
       // update uuid to match web
       data = await Reader.query()
         .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })

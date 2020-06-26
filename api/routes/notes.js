@@ -30,24 +30,24 @@ router.get('/syncable', async function (req, res) {
     .json(rows)
 })
 
-router.get('/book/:parentId', async function (req, res) {
-  const rows = await NoteController.getAllNotesByBookId(req.params.parentId)
+router.get('/:authorID/book/:parentID', async function (req, res) {
+  const rows = await NoteController.getAllNotesByBookId(req.params.authorID, req.params.parentID)
 
   res
     .status(200)
     .json(rows)
 })
 
-router.get('/chapter/:parentId', async function (req, res) {
-  const rows = await NoteController.getAllNotesByChapterId(req.params.parentId)
+router.get('/:authorID/chapter/:parentID', async function (req, res) {
+  const rows = await NoteController.getAllNotesByChapterId(req.params.authorID, req.params.parentID)
 
   res
     .status(200)
     .json(rows)
 })
 
-router.get('/scene/:parentId', async function (req, res) {
-  const rows = await NoteController.getAllNotesBySceneId(req.params.parentId)
+router.get('/:authorID/scene/:parentID', async function (req, res) {
+  const rows = await NoteController.getAllNotesBySceneId(req.params.authorID, req.params.parentID)
 
   res
     .status(200)
