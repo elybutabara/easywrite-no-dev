@@ -1,19 +1,9 @@
 'use strict'
 const path = require('path')
 
-const { Lesson, User, CoursesTaken } = require(path.join(__dirname, '..', 'models'))
+const { Lesson, User, CoursesTaken, LessonDocument } = require(path.join(__dirname, '..', 'models'))
 
-class LessonController {
-  static async getAllByCourseId (param) {
-    let lessons = Lesson.query()
-      .where('course_id', param.courseID)
-      .withGraphJoined('lesson_documents')
-    if (param.limit) {
-      lessons.limit(param.limit)
-    }
-    return lessons
-  }
-
+class LessonDocumentController {
   static async getSyncable (userId) {
     const user = await User.query()
       .findById(userId)
@@ -31,32 +21,40 @@ class LessonController {
       coursesUUIDs.push(courseTaken[i].course.uuid)
     }
 
-    const rows = await Lesson.query()
+    const lessons = await Lesson.query()
       .whereIn('course_id', coursesUUIDs)
+
+    var lessonsUUIDs = []
+
+    for (let i = 0; i < lessons.length; i++) {
+      lessonsUUIDs.push(lessons[i].uuid)
+    }
+
+    const lessonDocuments = await LessonDocument.query()
+      .whereIn('lesson_id', lessonsUUIDs)
       .where('updated_at', '>', user.synced_at)
 
-    return rows
+    return lessonDocuments
   }
 
   static async sync (row) {
     let columns = {
       uuid: row.uuid,
-      course_id: row.course_id,
+      lesson_id: row.lesson_id,
       title: row.title,
-      content: row.content,
-      delay: row.delay,
-      order: row.order,
+      name: row.name,
+      document: row.document,
       created_at: row.created_at,
       updated_at: row.updated_at
     }
-    var data = await Lesson.query()
+    var data = await LessonDocument.query()
       .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      data = await Lesson.query().insert(columns)
+      data = await LessonDocument.query().insert(columns)
       // update uuid to match web
-      data = await Lesson.query()
+      data = await LessonDocument.query()
         .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
         .where('uuid', '=', data.uuid)
     }
@@ -66,5 +64,5 @@ class LessonController {
 }
 
 module.exports = {
-  LessonController
+  LessonDocumentController
 }

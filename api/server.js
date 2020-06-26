@@ -76,7 +76,11 @@ express.use('/author-personal-progress', require('./routes/author-personal-progr
 express.use('/book-chapter-history', require('./routes/book-chapter-history'))
 express.use('/book-scene-history', require('./routes/book-scene-history'))
 express.use('/courses', require('./routes/courses'))
+express.use('/courses_taken', require('./routes/courses_taken'))
+express.use('/packages', require('./routes/packages'))
+express.use('/package_courses', require('./routes/package_courses'))
 express.use('/lessons', require('./routes/lessons'))
+express.use('/lesson_documents', require('./routes/lessson_documents'))
 
 express.post(
   '/upload/:imgOf/image',
