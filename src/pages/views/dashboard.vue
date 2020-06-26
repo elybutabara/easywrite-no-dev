@@ -81,7 +81,6 @@ import Syncing from '@/pages/views/syncing'
 import AssignmentListing from './assignment/assignment-listing'
 import { mapGetters, mapActions } from 'vuex'
 import Report from '../../components/Report'
-import CourseListing from './course/course-listing'
 import CourseListingDashboard from './course/course-listing-dashboard'
 
 export default {
@@ -123,7 +122,6 @@ export default {
     'report': Report,
     'syncing': Syncing,
     'course-listing-dashboard': CourseListingDashboard,
-    'course-listing': CourseListing,
     'assignment-listing': AssignmentListing
 
   },
