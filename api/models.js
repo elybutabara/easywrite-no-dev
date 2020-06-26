@@ -39,6 +39,8 @@ const { Package } = require(path.join(__dirname, 'models/Package'))
 const { PackageCourse } = require(path.join(__dirname, 'models/PackageCourse'))
 const { Lesson } = require(path.join(__dirname, 'models/Lesson'))
 const { LessonDocument } = require(path.join(__dirname, 'models/LessonDocument'))
+const { Assignment } = require(path.join(__dirname, 'models/Assignment'))
+const { AssignmentManuscript } = require(path.join(__dirname, 'models/AssignmentManuscript'))
 
 Model.knex(knexConnection)
 
@@ -74,5 +76,7 @@ module.exports = {
   Package,
   PackageCourse,
   Lesson,
-  LessonDocument
+  LessonDocument,
+  Assignment,
+  AssignmentManuscript
 }

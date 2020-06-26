@@ -42,7 +42,8 @@ class SoftDeleteQueryBuilder extends Model.QueryBuilder {
   async softDeleteById (id, options = null) {
     if (options == null) {
       options = {
-        deleteWithRelated: true
+        deleteWithRelated: true,
+        hardDelete: false
       }
     }
 

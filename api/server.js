@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 'use strict'
 
 /*
@@ -51,6 +52,23 @@ const upload = multer({
   // you might also want to set some limits: https://github.com/expressjs/multer#limits
 })
 
+const uploadedFile = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, callback) => {
+      let fileOf = req.params.fileOf
+      // eslint-disable-next-line camelcase
+      let file_path = path.resolve(resourcePath, 'resources', 'files', fileOf)
+      fs.mkdirsSync(file_path)
+      callback(null, file_path)
+    },
+    filename: (req, file, callback) => {
+      // originalname is the uploaded file's name with extn
+      callback(null, file.originalname)
+    }
+  })
+  // you might also want to set some limits: https://github.com/expressjs/multer#limits
+})
+
 express.use('/authors', require('./routes/authors'))
 express.use('/users', require('./routes/users'))
 express.use('/book-genres', require('./routes/book-genres'))
@@ -81,6 +99,8 @@ express.use('/packages', require('./routes/packages'))
 express.use('/package_courses', require('./routes/package_courses'))
 express.use('/lessons', require('./routes/lessons'))
 express.use('/lesson_documents', require('./routes/lessson_documents'))
+express.use('/assignments', require('./routes/assignments'))
+express.use('/assignment-manuscripts', require('./routes/assignment-manuscripts'))
 
 express.post(
   '/upload/:imgOf/image',
@@ -118,6 +138,44 @@ express.post(
     }
   }
 )
+
+express.post(
+  '/upload/:fileOf/file',
+  uploadedFile.single('single-file' /* name attribute of <file> element in your form */),
+  (req, res) => {
+    const tempPath = req.file.path
+    const targetPath = req.file.destination// path.join(__dirname, "/app/public/images/${req.params.imgOf}/");
+
+    // eslint-disable-next-line camelcase
+    const file_ext = path.extname(req.file.originalname).toLowerCase()
+
+    // eslint-disable-next-line camelcase
+    const allowed_ext = ['.doc', '.docx', '.odt']
+
+    if (allowed_ext.includes(file_ext)) {
+      // eslint-disable-next-line camelcase
+      var new_file_name = uuid.v4() + file_ext
+
+      const newPath = path.join(targetPath, new_file_name)
+      fs.rename(tempPath, newPath, err => {
+        if (err) return handleError(err, res)
+
+        res
+          .status(200)
+          .send({status: 200, message: 'File uploaded!', file: {name: new_file_name, ext: file_ext}})
+      })
+    } else {
+      fs.unlink(tempPath, err => {
+        if (err) return handleError(err, res)
+
+        res
+          .status(403)
+          .send({status: 403, message: 'Only .odt, .doc, .docx files are allowed!'})
+      })
+    }
+  }
+)
+
 express.portNumber = 3000
 function listen (port) {
   express.portNumber = port

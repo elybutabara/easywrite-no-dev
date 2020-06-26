@@ -15,6 +15,15 @@ class CourseTakenController {
     return courseTaken
   }
 
+  static async getAllAssignmentByUserId (param) {
+    var course = CoursesTaken.query()
+      .where('user_id', param.userID)
+      .withGraphJoined('package')
+      .withGraphJoined('course')
+
+    return course
+  }
+
   static getByCourseId (courseId) {
     let courseTaken = CoursesTaken.query()
       .withGraphJoined('package')

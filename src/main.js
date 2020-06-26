@@ -86,6 +86,8 @@ import 'tinymce/plugins/print'
 import TinyMCE from './components/TinyMCE'
 import TinyMCEChapter from './components/TinyMCEChapter'
 
+import { ToggleButton } from 'vue-js-toggle-button'
+
 window.$ = window.jQuery = require('jquery')
 window.moment = require('moment')
 window.swal = require('sweetalert2')
@@ -104,6 +106,8 @@ Vue.use(VueAxios, axios)
 Vue.component('multiselect', Multiselect)
 Vue.component('tiny-editor', TinyMCE)
 Vue.component('tiny-editor-chapter', TinyMCEChapter)
+Vue.component('ToggleButton', ToggleButton)
+
 // Install BootstrapVue
 Vue.use(BootstrapVue)
 // Vue.use(jQuery)
