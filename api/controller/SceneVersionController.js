@@ -13,12 +13,32 @@ class SceneVersionController {
     return version
   }
 
+  static getLatestSceneVersion (sceneId) {
+    var version = SceneVersion.query()
+      .where('book_scene_id', sceneId)
+      .whereNull('deleted_at')
+      .orderBy('id', 'desc')
+      .first()
+
+    return version
+  }
+
   static async save (data) {
     if (data.updated_at !== 'undefined' && data.updated_at !== null) {
       delete data.updated_at
     }
 
     const sceneVersion = await SceneVersion.query().upsertGraphAndFetch([data]).first()
+    return sceneVersion
+  }
+
+  static async saveToScene (data) {
+    console.log('Save to scene')
+    console.log(data)
+    var sceneVersion = await SceneVersion.query()
+      .patch({ content: data.content })
+      .where('uuid', '=', data.uuid)
+
     return sceneVersion
   }
 

@@ -2,22 +2,49 @@
     <div class="page-content">
         This is a test
         <div class="es-card">
-          <multiselect class="custom-multiselect" :preselectFirst="true" :allow-empty="false" v-model="selected_scene" :options="options_scenes"  @select="selectMultiselect" :placeholder="$t('SELECT') + ' ' + $t('SCENE')" label="title" track-by="uuid" :deselectLabel="$t('SELECTED')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+          <multiselect class="custom-multiselect" :preselectFirst="true" :allow-empty="false" v-model="selected_scene" :options="options_scenes" :placeholder="$t('SELECT') + ' ' + $t('SCENE')" label="title" track-by="uuid" :deselectLabel="$t('SELECTED')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
           <div v-html="properties.scene_content"></div>
-            <!-- {{properties.chapter_id}} -->
-            <button @click="CloseMe()">Close</button>
+            <button @click="saveScene()">{{$t('SAVE')}}</button>
+            <button @click="CloseMe()">{{$t('CLOSE')}}</button>
         </div>
     </div>
 </template>
 
 <script>
+const moment = require('moment')
+
 export default {
   name: 'save-to-scene',
   props: ['properties'],
   data: function () {
     return {
       selected_scene: null,
-      options_scenes: [{title: this.$t('NEW_SCENE'), uuid: '-1'}]
+      options_scenes: [{title: this.$t('NEW_SCENE'), uuid: '-1'}],
+      data: {
+        id: null,
+        uuid: null,
+        book_id: this.properties.book_id,
+        chapter_id: this.properties.chapter_id,
+        title: 'NEW SCENE',
+        scene_version: {
+          content: this.properties.scene_content
+        },
+        typeofscene: 'Action',
+        importance: 'Plot',
+        tags: '',
+        status: 'Outline',
+        notes: '',
+        weather_type: 'Rainy',
+        date_starts: moment(Date.now()).format('YYYY-MM-DD').toString(),
+        date_ends: moment(Date.now()).format('YYYY-MM-DD').toString(),
+        character_id_vp: '-1',
+        viewpoint_description: ''
+      },
+      version: {
+        id: null,
+        uuid: null,
+        content: ''
+      }
     }
   },
   methods: {
@@ -34,11 +61,50 @@ export default {
       scenes.forEach(function (row, index) {
         scope.options_scenes.push(row)
       })
-      console.log(scope.options_scenes)
     },
-    selectMultiselect () {
+    saveScene () {
       var scope = this
-      console.log(scope.selected_scene)
+      if (scope.selected_scene.uuid === '-1') {
+        scope.data.id = null
+        scope.data.uuid = null
+
+        scope.axios
+          .post('http://localhost:3000/scenes', scope.data)
+          .then(response => {
+            window.swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: this.$t('SCENE') + ' ' + this.$t('SUCCESSFULY_SAVED'),
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              scope.$store.dispatch('loadScenesByChapter', response.data.chapter_id)
+              scope.$parent.closeSaveToScene()
+            })
+          })
+      } else {
+        scope.axios
+          .get('http://localhost:3000/scene-versions/' + scope.selected_scene.uuid + '/latest')
+          .then(response => {
+            scope.version.id = response.data.id
+            scope.version.uuid = response.data.uuid
+            scope.version.content = response.data.content + '<br>' + scope.properties.scene_content
+
+            scope.axios
+              .post('http://localhost:3000/scene-versions/savetoscene', {uuid: scope.version.uuid, content: scope.version.content})
+              .then(response => {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: this.$t('SCENE') + ' ' + this.$t('SUCCESSFULY_SAVED'),
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.$parent.closeSaveToScene()
+                })
+              })
+          })
+      }
     }
   },
   mounted () {

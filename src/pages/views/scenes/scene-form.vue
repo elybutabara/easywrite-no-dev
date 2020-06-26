@@ -493,7 +493,6 @@ export default {
     },
     selectMultiselect () {
       var scope = this
-
       if ((scope.data.chapter_id && scope.selected_chapter) && scope.selected_chapter.uuid !== scope.data.chapter_id) {
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       }

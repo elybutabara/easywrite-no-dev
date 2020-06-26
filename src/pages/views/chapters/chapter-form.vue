@@ -163,7 +163,7 @@
     </b-overlay>
 
     <div v-if="save_to_scene" class="b-overlay">
-      <SavetoScene :properties="{ scene_content:scene_content,chapter_id:data.uuid }"></SavetoScene>
+      <SavetoScene :properties="{ scene_content:scene_content,chapter_id:data.uuid,book_id:data.book_id }"></SavetoScene>
     </div>
 
 </div>
