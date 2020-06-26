@@ -1,11 +1,21 @@
 <template>
-    <div class="page-content">
-        This is a test
-        <div class="es-card">
-          <multiselect class="custom-multiselect" :preselectFirst="true" :allow-empty="false" v-model="selected_scene" :options="options_scenes" :placeholder="$t('SELECT') + ' ' + $t('SCENE')" label="title" track-by="uuid" :deselectLabel="$t('SELECTED')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
-          <div v-html="properties.scene_content"></div>
-            <button @click="saveScene()">{{$t('SAVE')}}</button>
-            <button @click="CloseMe()">{{$t('CLOSE')}}</button>
+    <div style="width:calc(100% - 40px); max-width:700px; background:#fff; margin:0px auto; margin-top:120px;">
+        <div style="background-color: rgba(0, 0, 0, 0.03); padding:5px 20px; border-bottom: 1px solid rgba(0, 0, 0, 0.125); font-weight:900;">
+          Save to Scene
+        </div>
+        <div style="padding:20px 20px;">
+          <div>
+            <p style="margin-bottom:5px; font-weight:600;">{{ $t('SELECT_A_SCENE') }}</p>
+            <multiselect class="custom-multiselect" :preselectFirst="true" :allow-empty="false" v-model="selected_scene" :options="options_scenes" :placeholder="$t('SELECT') + ' ' + $t('SCENE')" label="title" track-by="uuid" :deselectLabel="$t('SELECTED')" :selectLabel="$t('PLEASE_ENTER_TO_SELECT')"></multiselect>
+          </div>
+            <div style="margin-top:20px; margin-bottom:20px; ">
+            <p style="margin-bottom:5px; font-weight:600;">{{ $t('CONTENT') }}</p>
+            <div style="max-height:200px; overflow-y:auto; border: 1px solid rgba(0, 0, 0, 0.125); padding:5px;" v-html="properties.scene_content"></div>
+            </div>
+            <div style="text-align:right;">
+              <button class="es-button-white" @click="saveScene()">{{$t('SAVE')}}</button>
+              <button class="es-button-white" @click="CloseMe()">{{$t('CLOSE')}}</button>
+            </div>
         </div>
     </div>
 </template>
