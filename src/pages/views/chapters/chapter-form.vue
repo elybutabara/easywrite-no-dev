@@ -163,7 +163,7 @@
     </b-overlay>
 
     <div v-if="save_to_scene" class="b-overlay">
-      <SavetoScene :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></SavetoScene>
+      <SavetoScene :properties="{ scene_content:scene_content,chapter_id:data.uuid }"></SavetoScene>
     </div>
 
 </div>
@@ -254,12 +254,13 @@ export default {
         }
       },
       show_feedbacks: false,
-      save_to_scene: false,
       selected_chapter: null,
       options_importance: [
         {text: 'Plot', value: 'Plot'},
         {text: 'Subplot', value: 'Subplot'}
-      ]
+      ],
+      save_to_scene: false,
+      scene_content: ''
     }
   },
   components: {
@@ -347,9 +348,11 @@ export default {
       scope.tempChapterVersionCont = value
     },
     viewOverlay (value) {
+      var scope = this
       console.log('chapter form logs')
       console.log(this._uid)
       console.log(value)
+      scope.scene_content = value
       this.save_to_scene = true
     },
     setShowScene (value) {

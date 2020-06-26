@@ -4,7 +4,6 @@
 
 <script>
 import tinymce from 'tinymce'
-const {ipcRenderer} = window.require('electron')
 const path = window.require('path')
 export default {
   name: 'TinyMCE',
@@ -107,7 +106,7 @@ export default {
               tooltip: 'Save to Scene',
               onAction: function (_) {
                 if (editor.selection.getContent() && scope.chapterData.uuid) {
-                  scope.showSaveToScene(scope.chapterData)
+                  scope.showSaveToScene(editor.selection.getContent())
                   // scope.showScene()
                   // ipcRenderer.send('SAVE_TO_SCENE_SHOW_SAVE_SCENE', editor.selection.getContent())
                 } else {
@@ -154,8 +153,8 @@ export default {
     emitToParent (event) {
       this.$emit('getEditorContent', this.$el.value)
     },
-    showSaveToScene (chapter) {
-      this.$emit('showOverlay', chapter)
+    showSaveToScene (content) {
+      this.$emit('showOverlay', content)
     }
   },
   updated: function () {
