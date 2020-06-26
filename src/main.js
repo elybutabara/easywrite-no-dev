@@ -84,6 +84,7 @@ import 'tinymce/plugins/wordcount'
 import 'tinymce/plugins/print'
 
 import TinyMCE from './components/TinyMCE'
+import TinyMCEChapter from './components/TinyMCEChapter'
 
 window.$ = window.jQuery = require('jquery')
 window.moment = require('moment')
@@ -102,6 +103,7 @@ Vue.use(Notifications)
 Vue.use(VueAxios, axios)
 Vue.component('multiselect', Multiselect)
 Vue.component('tiny-editor', TinyMCE)
+Vue.component('tiny-editor-chapter', TinyMCEChapter)
 // Install BootstrapVue
 Vue.use(BootstrapVue)
 // Vue.use(jQuery)

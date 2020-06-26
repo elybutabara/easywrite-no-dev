@@ -98,6 +98,7 @@ import CourseListing from '@/pages/views/course/course-listing'
 // const electron = window.require('electron')
 // const remote = electron.remote
 // const loginInfo = remote.getGlobal('loginInfo')
+
 const electron = window.require('electron')
 const log = window.require('electron-log')
 const {ipcRenderer} = electron

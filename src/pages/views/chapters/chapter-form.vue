@@ -103,7 +103,7 @@
                                     <button class="es-button-white margin-bottom-1rem" @click="show_history = !show_history">{{$t('SHOW_HISTORY')}}</button>
                                 </div>
                                 <div class="form-group">
-                                    <tiny-editor :params="tiny_editor_params" :initValue="data.chapter_version.content" v-on:getEditorContent="setContent" class="form-control" />
+                                  <tiny-editor-chapter  :chapterData="data" :params="tiny_editor_params" :initValue="data.chapter_version.content" v-on:showOverlay="viewOverlay" v-on:getEditorContent="setContent" @getShowScene="save_to_scene=$event" class="form-control" />
                                     <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params()"></CommentBasePanel>
                                 </div>
                                 <div v-if="show_history" class="chapter-history-items slideInRight animated">
@@ -161,15 +161,23 @@
             </div>
         </template>
     </b-overlay>
+
+    <div v-if="save_to_scene" class="b-overlay">
+      <SavetoScene :properties="{ scene_content:scene_content,chapter_id:data.uuid,book_id:data.book_id }"></SavetoScene>
+    </div>
+
 </div>
 </template>
 
 <script>
 import Feedback from '../../../components/Feedback'
 import TinyMCE from '../../../components/TinyMCE'
+import SavetoScene from '@/pages/views/chapters/save-to-scene'
 
 import CommentBasePanel from '../../../components/CommentBasePanel'
 const {ipcRenderer} = window.require('electron')
+
+var component = null
 
 export default {
   name: 'chapter-form',
@@ -245,13 +253,21 @@ export default {
           }
         }
       },
-      show_feedbacks: false
+      show_feedbacks: false,
+      selected_chapter: null,
+      options_importance: [
+        {text: 'Plot', value: 'Plot'},
+        {text: 'Subplot', value: 'Subplot'}
+      ],
+      save_to_scene: false,
+      scene_content: ''
     }
   },
   components: {
     TinyMCE,
     Feedback,
-    CommentBasePanel
+    CommentBasePanel,
+    SavetoScene
   },
   computed: {
     book: function () {
@@ -262,7 +278,7 @@ export default {
     },
     comments: function () {
       var scope = this
-      var chapterID = scope.chapter.uuid
+      var chapterID = (scope.chapter) ? scope.chapter.uuid : null
       return this.$store.getters.getChapterComments(chapterID)
     },
     getAuthor: function () {
@@ -271,6 +287,13 @@ export default {
     }
   },
   methods: {
+    closeSaveToScene: function () {
+      var scope = this
+      scope.save_to_scene = false
+    },
+    emitToParent (event) {
+      this.save_to_scene = false
+    },
     getImport: function () {
       var scope = this
       ipcRenderer.send('IMPORT-DOCX', 'chapter')
@@ -323,6 +346,18 @@ export default {
       var scope = this
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       scope.tempChapterVersionCont = value
+    },
+    viewOverlay (value) {
+      var scope = this
+      console.log('chapter form logs')
+      console.log(this._uid)
+      console.log(value)
+      scope.scene_content = value
+      this.save_to_scene = true
+    },
+    setShowScene (value) {
+      var scope = this
+      scope.save_to_scene = value
     },
     // Set all child object/array of an object to same value like null/empty string
     setAll (obj, val) {
@@ -505,17 +540,49 @@ export default {
     if (scope.properties.chapter) {
       scope.$set(scope.data, 'id', scope.properties.chapter.id)
       scope.$set(scope.data, 'uuid', scope.properties.chapter.uuid)
+
+      external.id = scope.properties.chapter.id
+      external.uuid = scope.properties.chapter.uuid
     }
   },
+  // destroyed () {
+  //   ipcRenderer.removeAllListeners('SHOW-SAVE-TO-SCENE')
+  // },
+
   mounted () {
     var scope = this
+    component = scope
     if (scope.data.uuid) {
       scope.loadChapter(scope.properties.chapter)
     } else {
       scope.page.is_ready = true
     }
+
+    console.log('form-uid' + this._uid)
   }
 }
+
+ipcRenderer.on('SAVE_TO_SCENE_SHOW_SAVE_SCENE', function (event, data) {
+  console.log(component.data.uuid)
+  component.save_to_scene = true
+})
+
+ipcRenderer.on('SHOW-SWAL-CANT-SAVE', function (event, data) {
+  window.swal.fire({
+    icon: 'error',
+    title: window.vm.$t('PLEASE_SAVE_CHAPTER_FIRST'),
+    text: data
+  })
+
+  ipcRenderer.on('SHOW-SAVE-TO-SCENE-NO-SELECTED', function (event, data) {
+    window.swal.fire({
+      icon: 'error',
+      title: window.vm.$t('PLEASE_SELECT_FROM_CONTENT'),
+      text: data
+    })
+  })
+})
+
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
@@ -556,4 +623,13 @@ export default {
     }
 
    .history-content { max-height: 400px; overflow-y: auto }
+</style>
+<style scoped>
+  .card-header { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: start; -ms-flex-align: start; align-items: flex-start; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; padding: 1rem; border-bottom: 1px solid #e9ecef; border-top-left-radius: .3rem; border-top-right-radius: .3rem; }
+  .card-header .card-title { font-size: 1.25rem; margin-bottom: 0; line-height: 1.5; }
+  .card-header .close { padding: 1rem; margin: -1rem -1rem -1rem auto; }
+
+  .b-overlay { position: fixed; top: 0; left: 0; bottom: 0; right: 0; overflow: auto; background-color: rgba(44, 46, 47, 0.9); z-index: 2}
+  .bv-example-row { margin-top: 100px; margin-bottom: 70px; }
+  .is_file { width: 50%!important; }
 </style>
