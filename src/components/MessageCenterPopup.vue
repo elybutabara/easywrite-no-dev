@@ -24,6 +24,9 @@
               <div v-if="row.type=='Message'" style="cursor: pointer;">
                 <div v-html="row.data.message" v-on:click="openMessage(3)"></div>
               </div>
+              <div v-if="row.type=='SceneComment'">
+                Commented on scene <a v-bind:href="'#'" @click.prevent="CHANGE_COMPONENT({tabKey: 'scene-details-' + row.data.scene_id, tabComponent: 'scene-details',  tabData: { }, tabTitle: $t('VIEW')+ ' - ' + row.data.scene_title})">{{row.data.scene_title}}</a>
+              </div>
               <div v-if="row.type=='ChapterComment'">
                 Commented on chapter <a v-bind:href="'#'" @click.prevent="CHANGE_COMPONENT({tabKey: 'chapter-details-' + row.data.chapter_id, tabComponent: 'chapter-details',  tabData: { }, tabTitle: $t('VIEW')+ ' - ' + row.data.chapter_title})">{{row.data.chapter_title}}</a>
               </div>
@@ -47,22 +50,7 @@ export default {
   data: function () {
     var scope = this
     var data = {
-      items: [
-        /*
-        {type: 'Message', data: {name: 'John Doe', message: 'Test Message...'}, created_at: '2020-06-22T13:00+08'},
-        {type: 'Comment', data: {name: 'John Doe', message: 'Commented on scene <a href="#">Test Scene</a>'}, created_at: '2020-06-22T14:00+08'},
-        {type: 'Message', data: {name: 'John Doe', message: 'Test Message...'}, created_at: '2020-06-20T00:00+00'},
-        {type: 'Comment', data: {name: 'John Doe', message: 'Commented on scene <a href="#">Test Scene</a>'}, created_at: '2020-06-22T14:00+08'},
-        {type: 'Message', data: {name: 'John Doe', message: 'Test Message...'}, created_at: '2020-06-22T13:00+08'},
-        {type: 'Comment', data: {name: 'John Doe', message: 'Commented on scene <a href="#">Test Scene</a>'}, created_at: '2020-06-22T14:00+08'},
-        {type: 'Message', data: {name: 'John Doe', message: 'Test Message...'}, created_at: '2020-06-20T00:00+00'},
-        {type: 'Comment', data: {name: 'John Doe', message: 'Commented on scene <a href="#">Test Scene</a>'}, created_at: '2020-06-22T14:00+08'},
-        {type: 'Message', data: {name: 'John Doe', message: 'Test Message...'}, created_at: '2020-06-22T13:00+08'},
-        {type: 'Comment', data: {name: 'John Doe', message: 'Commented on scene <a href="#">Test Scene</a>'}, created_at: '2020-06-22T14:00+08'},
-        {type: 'Message', data: {name: 'John Doe', message: 'Test Message...'}, created_at: '2020-06-20T00:00+00'},
-        {type: 'Comment', data: {name: 'John Doe', message: 'Commented on scene <a href="#">Test Scene</a>'}, created_at: '2020-06-22T14:00+08'}
-        */
-      ],
+      items: [],
       type: 'All',
       itemsCounts: {
         'All': 0,

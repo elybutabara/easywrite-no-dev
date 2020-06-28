@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
 
-const { Book, Scene, SceneVersion, User } = require(path.join(__dirname, '..', 'models'))
+const { Book, Scene, SceneVersion, User, Notification } = require(path.join(__dirname, '..', 'models'))
 
 class SceneVersionController {
   static getAllSceneVersionsBySceneId (sceneId) {
@@ -43,8 +43,29 @@ class SceneVersionController {
   }
 
   static async comment (data) {
+    var newComment = data['new_comment_json']
+
+    try {
+      newComment = JSON.parse(newComment)
+    } catch (e) {
+      newComment = '{}'
+    }
+
+    delete data['new_comment_json']
     const sceneVersion = await SceneVersion.query().upsertGraphAndFetch([data]).first()
-    console.log(data)
+    console.log(sceneVersion)
+
+    const notification = await Notification.query().upsertGraphAndFetch([{
+      type: 'SceneComment',
+      name: 'scene-' + data.chapter_id,
+      data: JSON.stringify(newComment),
+      user_id: newComment.user_id
+    }]).first()
+
+    if (notification) {
+      //
+    }
+    console.log(notification)
 
     return sceneVersion
   }

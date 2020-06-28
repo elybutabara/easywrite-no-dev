@@ -17,7 +17,23 @@
             </div>
             <div style="padding: 15px;">
                 <div style="color: #c0c0c0; font-size: 13px;">You may select 1 user for private message or multiple users for group chat.</div>
-                <input type="text" class="form-control" placeholder="Select a user..." />
+                <multiselect v-model="userSelect.selected" id="ajax" label="name" track-by="id" placeholder="Select a user..." open-direction="bottom" :options="userSelect.rows" :multiple="true" :searchable="true" :loading="userSelect.isLoading" :internal-search="false" :clear-on-select="false" :close-on-select="false" :options-limit="300" :limit="3" :limit-text="userSelectLimitText" :max-height="600" :show-no-results="false" :hide-selected="true" @search-change="userSelectFind">
+                  <template slot="tag" slot-scope="{ option, remove }">
+                    <span class="custom__tag" style="float: left;cursor:default;background: rgb(73, 109, 125);line-height: 24px;padding: 0 8px;margin: 0;margin-left: 5px;border-radius: 5px;color: #fff;">
+                      <span>{{ option.name }}</span>
+                      <button @click="remove(option)" type="button" aria-label="Close" class="close" style="margin-left: 5px;color: #fff;font-size: 20px;"><span aria-hidden="true">×</span></button>
+                    </span>
+                  </template>
+                  <template slot="clear" slot-scope="props">
+                    <div class="multiselect__clear" v-if="userSelect.selected.length" @mousedown.prevent.stop="userSelectClearAll(props.search)"></div>
+                  </template><span slot="noResult">Oops! No elements found. Consider changing the search query.</span>
+                </multiselect>
+                <div v-if="userSelect.selected.length > 1" style="margin-top: 15px;">
+                  <input v-model="userSelect.groupName" type="text" placeholder="Group Name" class="form-control" />
+                </div>
+                <div v-if="userSelect.selected.length > 0" style="margin-top: 15px;">
+                  <button class="btn es-button-white btn-secondary">Next <i class="fa fa-arrow-right"></i></button>
+                </div>
             </div>
           </div>
         </div>
@@ -55,7 +71,7 @@
             </li>
           </ul>
           <div style="position: absolute; bottom: 0; left: 0; width: 100%; text-align: center; padding: 5px;">
-            <button class="btn es-button-white btn-secondary" v-on:click.prevent="selected_group_id=null">New Message</button>
+            <button class="btn es-button-white btn-secondary" v-on:click.prevent="selected_group_id=null"><i class="fa fa-plus"></i> New Message</button>
           </div>
         </div>
       </div>
@@ -64,8 +80,8 @@
 </template>
 
 <script>
-import moment from 'moment'
-import Vue from 'vue'
+// import moment from 'moment'
+// import Vue from 'vue'
 
 export default {
   name: 'Messaging',
@@ -79,6 +95,12 @@ export default {
         {id: 1, name: 'Luell Kearl'},
         {id: 2, name: 'Kenji'}
       ],
+      userSelect: {
+        groupName: '',
+        selected: [],
+        rows: [],
+        isLoading: false
+      },
       selected_group_id: null,
       window: window
     }
@@ -91,6 +113,34 @@ export default {
     //
   },
   methods: {
+    //
+    userSelectLimitText (count) {
+      return `and ${count} other users`
+    },
+    userSelectFind (query) {
+      var scope = this
+      scope.userSelect.isLoading = true
+
+      setTimeout(function () {
+        scope.userSelect.rows = [
+          {id: 3, name: 'John'},
+          {id: 1, name: 'Luell Kearl'},
+          {id: 2, name: 'Kenji'}
+        ]
+        scope.userSelect.isLoading = false
+      }, 1)
+
+      scope.axios
+        .post('http://localhost:3000/chapter-versions/comment', scope.chapter_version)
+        .then(response => {
+          if (response.data) {
+            //
+          }
+        })
+    },
+    userSelectClearAll () {
+      this.userSelect.rows = []
+    },
     //
     open: function (params) {
       this.show = true

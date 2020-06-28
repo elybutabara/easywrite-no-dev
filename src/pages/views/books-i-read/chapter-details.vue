@@ -38,7 +38,8 @@
           </div>
 
           <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
-              <div v-html="getChapterContent" class="description" v-commentbase="commentbase_params"></div>
+              <div v-html="getChapterContent" class="description" v-bind:id="commentbase_id"></div>
+              <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params"></CommentBasePanel>
           </div>
           <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
               <books-i-read-chapter-scenes :properties="{ book: book, chapter: chapter }"></books-i-read-chapter-scenes>
@@ -58,16 +59,13 @@ import ChapterCompareVersions from '@/pages/views/chapters/chapter-compare-versi
 import moment from 'moment'
 import Vue from 'vue'
 
-import CommentBase from '../../../components/CommentBase'
+import CommentBasePanel from '../../../components/CommentBasePanel'
 
 // const {ipcRenderer} = window.require('electron')
 
 export default {
   name: 'books-i-read-chapter-details',
   props: ['properties'],
-  directives: {
-    commentbase: CommentBase
-  },
   data: function () {
     var scope = this
     return {
@@ -88,6 +86,8 @@ export default {
       },
       busy: false,
       tempVersionDesc: '',
+      commentbase_id: ('cm-' + Math.random()).replace('.', ''),
+      commentbase_dom: null,
       commentbase_params: {
         onMounted: (vm) => {
           scope.commentbase_vm = vm
@@ -106,7 +106,8 @@ export default {
     Note,
     'books-i-read-chapter-scenes': ChapterScenes,
     ChapterVersions,
-    ChapterCompareVersions
+    ChapterCompareVersions,
+    CommentBasePanel
   },
   computed: {
     getChapterContent: function () {
@@ -149,9 +150,17 @@ export default {
       var scope = this
       scope.tempVersionDesc = value
     },
-    changeTab: function (active) {
+    changeTab: function (tab) {
       var scope = this
-      scope.tab.active = active
+      scope.tab.active = tab
+
+      Vue.nextTick(function () {
+        if (tab === 'content') {
+          scope.commentbase_dom = document.getElementById(scope.commentbase_id)
+        } else {
+          scope.commentbase_dom = null
+        }
+      })
     },
     saveComments () {
       var scope = this
@@ -160,8 +169,12 @@ export default {
       scope.chapter_version.chapter_id = chapterID
       scope.chapter_version.uuid = this.$store.getters.getChapterVersionUUID(chapterID)
       scope.chapter_version.change_description = scope.tempVersionDesc
-      scope.chapter_version.content = this.commentbase_vm.getContent()
+      scope.chapter_version.content = this.commentbase_vm.dom.innerHTML
       scope.chapter_version.comments = this.commentbase_vm.getCommentsJSON()
+      scope.chapter_version.new_comment_json = this.commentbase_vm.getLastComment()
+      scope.chapter_version.new_comment_json.chapter_id = chapterID
+      scope.chapter_version.new_comment_json.chapter_title = scope.page.data.chapter.title
+      scope.chapter_version.new_comment_json = JSON.stringify(scope.chapter_version.new_comment_json)
 
       /*
       var data = Object.assign({}, scope.chapter_version, {

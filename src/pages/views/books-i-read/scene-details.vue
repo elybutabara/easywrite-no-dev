@@ -40,7 +40,8 @@
         <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content" style="position:relative;">
             <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: scene, parent_name: 'scene' }"></Feedback>
             <Note v-if="show_notes" :properties="{ book: book, parent: scene, parent_name: 'scene' }"></Note>
-            <div v-html="getSceneContent" class="description" v-commentbase="commentbase_params"></div>
+            <div v-html="getSceneContent" class="description" v-bind:id="commentbase_id"></div>
+            <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params"></CommentBasePanel>
         </div>
     </div>
 </div>
@@ -49,14 +50,13 @@
 <script>
 import Feedback from '../../../components/Feedback'
 import Note from '../../../components/Note'
-import CommentBase from '../../../components/CommentBase'
+import CommentBasePanel from '../../../components/CommentBasePanel'
+
+import Vue from 'vue'
 
 export default {
   name: 'books-i-read-scene-details',
   props: ['properties'],
-  directives: {
-    commentbase: CommentBase
-  },
   data: function () {
     var scope = this
     return {
@@ -77,6 +77,8 @@ export default {
       tempVersionDesc: '',
       show_feedbacks: false,
       show_notes: false,
+      commentbase_id: ('cm-' + Math.random()).replace('.', ''),
+      commentbase_dom: null,
       commentbase_params: {
         onMounted: (vm) => {
           scope.commentbase_vm = vm
@@ -91,7 +93,8 @@ export default {
   },
   components: {
     Feedback,
-    Note
+    Note,
+    CommentBasePanel
   },
   computed: {
     book: function () {
@@ -127,6 +130,13 @@ export default {
     changeTab: function (tab) {
       var scope = this
       scope.tab.active = tab
+      Vue.nextTick(function () {
+        if (tab === 'content') {
+          scope.commentbase_dom = document.getElementById(scope.commentbase_id)
+        } else {
+          scope.commentbase_dom = null
+        }
+      })
     },
     // todo
     saveComments () {
@@ -135,9 +145,13 @@ export default {
       var sceneID = scope.page.data.scene.uuid
       scope.scene_version.uuid = this.$store.getters.getSceneVersionUUID(sceneID)
       scope.scene_version.change_description = scope.tempVersionDesc
-      scope.scene_version.content = this.commentbase_vm.getContent()
+      scope.scene_version.content = this.commentbase_vm.dom.innerHTML
       scope.scene_version.comments = this.commentbase_vm.getCommentsJSON()
       scope.scene_version.book_scene_id = sceneID
+      scope.scene_version.new_comment_json = this.commentbase_vm.getLastComment()
+      scope.scene_version.new_comment_json.scene_id = sceneID
+      scope.scene_version.new_comment_json.scene_title = scope.page.data.scene.title
+      scope.scene_version.new_comment_json = JSON.stringify(scope.scene_version.new_comment_json)
 
       scope.axios
         .post('http://localhost:3000/scene-versions/comment', scope.scene_version)
@@ -167,6 +181,7 @@ export default {
 
       setTimeout(function () {
         scope.page.is_ready = true
+        scope.changeTab('content')
       }, 500)
     },
     toggleFeedbacks: function () {

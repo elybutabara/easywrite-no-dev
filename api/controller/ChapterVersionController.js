@@ -36,7 +36,7 @@ class ChapterVersionController {
       type: 'ChapterComment',
       name: 'chapter-' + data.chapter_id,
       data: JSON.stringify(newComment),
-      user_id: 1
+      user_id: newComment.user_id
     }]).first()
 
     if (notification) {
