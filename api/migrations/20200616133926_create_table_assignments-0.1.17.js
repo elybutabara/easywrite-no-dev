@@ -19,6 +19,7 @@ exports.up = async function (knex) {
         t.integer(`show_join_group_question`) // tinyint(4) NOT NULL DEFAULT 1,
         t.text(`created_at`) // timestamp NULL DEFAULT NULL,
         t.text(`updated_at`) // timestamp NULL DEFAULT NULL,
+        t.text(`deleted_at`) // timestamp NULL DEFAULT NULL,
       }).then(function () {
         log.info('Migrate assignments to latest : success')
       }).catch(function (err) {

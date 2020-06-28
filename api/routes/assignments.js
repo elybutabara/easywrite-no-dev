@@ -61,4 +61,12 @@ router.get('/:userId', async function (req, res) {
     .json(result)
 })
 
+router.post('/sync', async function (req, res) {
+  const row = await AssignmentController.sync(req.body)
+
+  res
+    .status(200)
+    .json(row)
+})
+
 module.exports = router
