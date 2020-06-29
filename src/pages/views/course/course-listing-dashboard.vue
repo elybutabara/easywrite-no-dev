@@ -10,7 +10,7 @@
     </div>
     <hr/>
     <div class="row">
-      <div class="col-md-4" v-for="course_taken in courses_taken" :key="course_taken.uuid">
+      <div class="col-md-4" v-for="course_taken in courses_taken" :key="course_taken.uuid" v-if="isNotExpired(course_taken) && course_taken.started_at!=null">
         <div class="col-md-12">
           <div class="uploaded-file-preview" style="height: 150px;background: #d2d2d2">
             <div class="default-preview"><i class="fa fa-image"></i></div>
@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
   name: 'course-listing-dashboard',
   data: function () {
@@ -39,12 +40,18 @@ export default {
       }
     }
   },
+  methods: {
+    isNotExpired (courseTaken) {
+      return moment(courseTaken.end_date).isAfter(moment())
+    }
+  },
   async mounted () {
     let scope = this
     let response
     try {
       response = await scope.axios.get('http://localhost:3000/courses/' + this.$store.getters.getUserID + '/course-list-dashboard')
     } finally {
+      console.clear()
       scope.courses_taken = response.data
       scope.page.is_ready = true
     }

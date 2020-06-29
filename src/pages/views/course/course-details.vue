@@ -44,8 +44,8 @@
             </div>
             <div class="col-4">
               <h4>{{ $t('TITLE')}}: {{course_taken.course.title }}</h4>
-              <div>{{ $tc('DATE_STARTED') }} - {{ data.started_at  }}</div>
-              <div>{{ $tc('EXPIRES_ON') }} - {{ data.expired_at  }}</div>
+              <div>{{ $tc('DATE_STARTED') }} - <i class="fa fa-calendar-check" aria-hidden="true"></i> {{ data.started_at  }}</div>
+              <div>{{ $tc('EXPIRES_ON') }} - <i class="fa fa-calendar-times" aria-hidden="true"></i> {{ data.expired_at  }}</div>
               <div><i class="fa fa-book"></i> {{ lessons.length }} {{ lessons.length > 1 ? $t('LESSONS') : $t('LESSON') }} </div>
             </div>
           </div>
@@ -103,8 +103,8 @@ export default {
       if (response) {
         scope.lessons = response.data
         scope.lessons.forEach(function (lesson, index) {
-          let availabilityDate = moment(scope.data.started_at).add(lesson.delay, 'days').format('MMM D YYYY, h:mm:ss a')
-          if (availabilityDate <= moment().format('MMM D YYYY, h:mm:ss a')) {
+          let availabilityDate = moment(scope.data.started_at).add(lesson.delay, 'days').format('MMM D YYYY, h:mm:ss a').toString()
+          if (moment().isAfter(availabilityDate)) {
             scope.lessons[index].is_available = true
           } else {
             scope.lessons[index].is_available = false
