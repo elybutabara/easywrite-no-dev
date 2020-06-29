@@ -474,7 +474,7 @@ export default {
                   })
               }
             }
-          } else if (['Feedbacks'].indexOf(endpoint.title) > -1) {
+          } else if (['Feedbacks', 'Chapter Versions', 'Scene Versions'].indexOf(endpoint.title) > -1) {
             scope.saveAuthorDetails(response.data.authors)
           }
 
