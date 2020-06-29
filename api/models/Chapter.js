@@ -19,6 +19,15 @@ class Chapter extends BaseModel {
         to: 'book_chapter_versions.chapter_id'
       },
       softDelete: true
+    },
+    book: {
+      relation: BaseModel.BelongsToOneRelation,
+      modelClass: path.join(__dirname, 'Book'),
+      join: {
+        from: 'book_chapters.book_id',
+        to: 'books.uuid'
+      },
+      softDelete: false
     }
   };
 }

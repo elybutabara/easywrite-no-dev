@@ -57,6 +57,14 @@ router.get('/:sceneId/history', async function (req, res) {
     .json(sceneHistory)
 })
 
+router.get('/:sceneId/book-chapter', async function (req, res) {
+  const sceneHistory = await SceneController.getSceneByIdWithBookandChapter(req.params.sceneId)
+
+  res
+    .status(200)
+    .json(sceneHistory)
+})
+
 router.post('/', async function (req, res) {
   const scene = await SceneController.save(req.body)
 

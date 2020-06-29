@@ -131,6 +131,7 @@ export default {
   props: ['properties'],
   data: function () {
     return {
+      sync_version: 18,
       api_token: '',
       retry: 0,
       fullscreen: false,
@@ -332,6 +333,7 @@ export default {
 
       data.created_at = scope.timeConvertToUTC(data.created_at)
       data.updated_at = scope.timeConvertToUTC(data.updated_at)
+      data.sync_version = scope.sync_version
 
       var finalData = data
       var headers = {
@@ -472,7 +474,7 @@ export default {
                   })
               }
             }
-          } else if (['Feedbacks'].indexOf(endpoint.title) > -1) {
+          } else if (['Feedbacks', 'Chapter Versions', 'Scene Versions'].indexOf(endpoint.title) > -1) {
             scope.saveAuthorDetails(response.data.authors)
           }
 

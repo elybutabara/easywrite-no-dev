@@ -177,7 +177,7 @@ export default {
         // push comment object
         var k = 'c-' + new Date().getTime() + '-' + (Math.random() + '').replace('0.', '')
         scope.comments[scope.selected_comments_id][k] = {
-          user_id: scope.author.id,
+          user_id: scope.author.uuid,
           user_name: scope.author.alias,
           created_at: new Date().getTime(),
           message: message
