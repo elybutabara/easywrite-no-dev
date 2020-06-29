@@ -39,6 +39,14 @@ class ChapterController {
     return chapter
   }
 
+  static getChapterByIdWithBook (chapterId) {
+    const chapter = Chapter.query().findById(chapterId)
+      .withGraphJoined('book', {maxBatchSize: 1})
+      .first()
+
+    return chapter
+  }
+
   static async getAll () {
     return Chapter.query()
       .whereNull('deleted_at')

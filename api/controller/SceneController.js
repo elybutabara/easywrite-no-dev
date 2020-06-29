@@ -90,6 +90,13 @@ class SceneController {
     return scene
   }
 
+  static getSceneByIdWithBookandChapter (sceneId) {
+    const scene = Scene.query().findById(sceneId)
+      .withGraphJoined('book', {maxBatchSize: 1})
+      .withGraphJoined('chapter', {maxBatchSize: 1})
+    return scene
+  }
+
   static async delete (sceneId) {
     const scene = await Scene.query().softDeleteById(sceneId)
 

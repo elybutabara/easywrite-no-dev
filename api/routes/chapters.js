@@ -70,6 +70,14 @@ router.get('/:chapterId/history', async function (req, res) {
     .json(chapterHistory)
 })
 
+router.get('/:chapterId/book', async function (req, res) {
+  const chapter = await ChapterController.getChapterByIdWithBook(req.params.chapterId)
+
+  res
+    .status(200)
+    .json(chapter)
+})
+
 router.get('/', async function (req, res) {
   res
     .status(200)

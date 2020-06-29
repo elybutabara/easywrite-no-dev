@@ -46,6 +46,24 @@ class Scene extends BaseModel {
         to: 'book_scene_items.book_scene_id'
       },
       softDelete: true
+    },
+    book: {
+      relation: BaseModel.BelongsToOneRelation,
+      modelClass: path.join(__dirname, 'Book'),
+      join: {
+        from: 'book_scenes.book_id',
+        to: 'books.uuid'
+      },
+      softDelete: false
+    },
+    chapter: {
+      relation: BaseModel.BelongsToOneRelation,
+      modelClass: path.join(__dirname, 'Chapter'),
+      join: {
+        from: 'book_scenes.chapter_id',
+        to: 'book_chapters.uuid'
+      },
+      softDelete: false
     }
   }
 }

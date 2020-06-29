@@ -25,10 +25,10 @@
                 <div v-html="row.data.message" v-on:click="openMessage(3)"></div>
               </div>
               <div v-if="row.type=='SceneComment'">
-                Commented on scene <a v-bind:href="'#'" @click.prevent="CHANGE_COMPONENT({tabKey: 'scene-details-' + row.data.scene_id, tabComponent: 'scene-details',  tabData: { }, tabTitle: $t('VIEW')+ ' - ' + row.data.scene_title})">{{row.data.scene_title}}</a>
+                Commented on scene <a v-bind:href="'#'" @click.prevent="openLink(row.type, row.data)">{{row.data.scene_title}}</a>
               </div>
               <div v-if="row.type=='ChapterComment'">
-                Commented on chapter <a v-bind:href="'#'" @click.prevent="CHANGE_COMPONENT({tabKey: 'chapter-details-' + row.data.chapter_id, tabComponent: 'chapter-details',  tabData: { }, tabTitle: $t('VIEW')+ ' - ' + row.data.chapter_title})">{{row.data.chapter_title}}</a>
+                Commented on chapter <a v-bind:href="'#'" @click.prevent="openLink(row.type, row.data)">{{row.data.chapter_title}}</a>
               </div>
               <div style="font-size: 80%; line-height: 100%; opacity: 0.5;">{{displayTime(row.created_at)}}</div>
             </div>
@@ -93,6 +93,45 @@ export default {
       window.AppMessaging.open(v)
       window.AppMain.showMessageCenter = false
     },
+    openLink: function (type, data) {
+      var scope = this
+      var url = ''
+      console.log(type)
+      if (type === 'ChapterComment') {
+        url = 'chapters/' + data.chapter_id + '/book'
+      } else if (type === 'SceneComment') {
+        url = 'scenes/' + data.scene_id + '/book-chapter'
+      }
+
+      scope.getData(url).then(res => {
+        if (type === 'ChapterComment') {
+          let chapter = res.data
+          let book = chapter.book
+
+          scope.CHANGE_COMPONENT(
+            {
+              tabKey: 'chapter-details-' + chapter.uuid,
+              tabComponent: 'chapter-details',
+              tabData: { book: book, chapter: chapter },
+              tabTitle: scope.$t('VIEW') + ' - ' + chapter.title,
+              newTab: true
+            })
+        } else if (type === 'SceneComment') {
+          let scene = res.data
+          let book = scene.book
+          let chapter = scene.chapter
+
+          scope.CHANGE_COMPONENT(
+            {
+              tabKey: 'scene-details-' + scene.uuid,
+              tabComponent: 'scene-details',
+              tabData: { book: book, chapter: chapter, scene: scene },
+              tabTitle: scope.$t('VIEW') + ' - ' + scene.title,
+              newTab: true
+            })
+        }
+      })
+    },
     updateItemsCounts: function () {
       var scope = this
       for (var x in scope.itemsCounts) {
@@ -106,6 +145,18 @@ export default {
           scope.itemsCounts['Notification']++
         }
       }
+    },
+    getData: function (url) {
+      var scope = this
+      // scope.credentials.error = null
+      return scope.axios
+        .get('http://localhost:3000' + '/' + url)
+        .then(response => {
+          return response
+        })
+        .catch(function (error) {
+          return error
+        })
     },
     fetch: function () {
       var scope = this
