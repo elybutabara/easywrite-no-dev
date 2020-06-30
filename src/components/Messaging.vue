@@ -69,7 +69,7 @@
           </div>
           <div style="position: absolute; padding-left: 200px; bottom: 0; width: 100%;">
             <div style="padding: 5px;">
-              <textarea v-model="chatMessage" v-bind:id="textareaId" class="form-control" style="float: left; height: 30px; width: calc(100% - 65px); padding: 0 10px;" placeholder="Type a message..."></textarea>
+              <textarea v-model="chatMessage" @keydown.enter.exact.prevent @keyup.enter.exact="sendChatMessage()" @keydown.enter.shift.exact="newline()" v-bind:id="textareaId" class="form-control" style="float: left; height: 30px; width: calc(100% - 65px); padding: 0 10px;" placeholder="Type a message..."></textarea>
               <button v-on:click="sendChatMessage()" class="btn es-button-white btn-secondary" style="float: left;margin-left: 5px;width: 60px;">Send</button>
             </div>
           </div>
@@ -180,6 +180,9 @@ export default {
       var objDiv = document.getElementById(this.chatContentId)
       objDiv.scrollTop = objDiv.scrollHeight
       this.chatMessage = ''
+    },
+    newline: function () {
+      this.chatMessage = this.chatMessage + '\n'
     },
     displayChatTime: function (t) {
       var tm = moment(t)
