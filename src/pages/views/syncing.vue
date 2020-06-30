@@ -189,15 +189,15 @@ export default {
         { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: [], packed: [], error: [] },
         { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], error: [] }
         // { title: 'Courses', api: 'courses', local: 'courses', downloaded: [], packed: [], error: [] },
-        // { title: 'Courses Taken', api: 'courses-taken', local: 'courses_taken', downloaded: [], packed: [], error: [] },
+        // { title: 'Courses Taken', api: 'courses-taken', local: 'courses-taken', downloaded: [], packed: [], error: [] },
         // { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], error: [] },
-        // { title: 'Package Courses', api: 'package-courses', local: 'package_courses', downloaded: [], packed: [], error: [] },
+        // { title: 'Package Courses', api: 'package-courses', local: 'package-courses', downloaded: [], packed: [], error: [] },
         // { title: 'Lessons', api: 'lessons', local: 'lessons', downloaded: [], packed: [], error: [] },
-        // { title: 'Lesson Documents', api: 'lesson-documents', local: 'lesson_documents', downloaded: [], packed: [], error: [] },
+        // { title: 'Lesson Documents', api: 'lesson-documents', local: 'lesson-documents', downloaded: [], packed: [], error: [] },
         // { title: 'Book Feedbacks', api: 'book-feedbacks', local: 'feedbacks', downloaded: [], packed: [] },
         // { title: 'Book Chapter Feedbacks', api: 'book-chapter-feedbacks', local: 'chapter-feedbacks', downloaded: [], packed: [] },
-        // { title: 'Book Chapter Feedback Responses', api: 'book-chapter-feedback-responses', local: 'chapter-feedback-responses', downloaded: [], packed: [] }
-        // { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [] }
+        // { title: 'Book Chapter Feedback Responses', api: 'book-chapter-feedback-responses', local: 'chapter-feedback-responses', downloaded: [], packed: [] },
+        // { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [] },
         // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
       ],
       bookUUID: ''
@@ -699,11 +699,16 @@ export default {
         { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: [], packed: [], error: [] },
         { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], error: [] }
         // { title: 'Courses', api: 'courses', local: 'courses', downloaded: [], packed: [], error: [] },
-        // { title: 'Courses Taken', api: 'courses_taken', local: 'courses_taken', downloaded: [], packed: [], error: [] },
+        // { title: 'Courses Taken', api: 'courses-taken', local: 'courses-taken', downloaded: [], packed: [], error: [] },
         // { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], error: [] },
-        // { title: 'Package Courses', api: 'package_courses', local: 'package_courses', downloaded: [], packed: [], error: [] },
+        // { title: 'Package Courses', api: 'package-courses', local: 'package-courses', downloaded: [], packed: [], error: [] },
         // { title: 'Lessons', api: 'lessons', local: 'lessons', downloaded: [], packed: [], error: [] },
-        // { title: 'Lesson Documents', api: 'lesson_documents', local: 'lesson_documents', downloaded: [], packed: [], error: [] }
+        // { title: 'Lesson Documents', api: 'lesson-documents', local: 'lesson-documents', downloaded: [], packed: [], error: [] },
+        // { title: 'Book Feedbacks', api: 'book-feedbacks', local: 'feedbacks', downloaded: [], packed: [] },
+        // { title: 'Book Chapter Feedbacks', api: 'book-chapter-feedbacks', local: 'chapter-feedbacks', downloaded: [], packed: [] },
+        // { title: 'Book Chapter Feedback Responses', api: 'book-chapter-feedback-responses', local: 'chapter-feedback-responses', downloaded: [], packed: [] },
+        // { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [] },
+        // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
       ]
     }
   },
