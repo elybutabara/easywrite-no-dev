@@ -48,6 +48,7 @@
     "officegen": "^0.6.4",
     "select2": "^4.0.13",
     "select2-theme-bootstrap4": "^0.2.0-beta.6",
+    "socket.io": "^2.3.0",
     "sqlite3": "^4.1.1",
     "sweetalert2": "^9.7.2",
     "tinymce": "^5.2.0",

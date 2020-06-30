@@ -182,16 +182,6 @@ export default {
               }
 
               scope.items = response.data.rows
-              scope.items.push({
-                type: 'Message',
-                name: 'testmessage',
-                data: {
-                  user_name: 'John Doe',
-                  message: 'Sent you a message. "Dummy reply test..."'
-                },
-                user_id: 1,
-                created_at: new Date()
-              })
 
               Vue.nextTick(function () {
                 scope.updateItemsCounts()
