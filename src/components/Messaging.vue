@@ -38,42 +38,34 @@
           </div>
         </div>
         <div v-if="selectedGroupId">
-          <div v-bind:id="chatContentId" style="position: absolute; right: 0; top: 0; width: calc(100% - 200px); height: calc(100% - 40px); padding-left: 0; background: #fff; overflow-y: auto;">
-            <div style="padding: 15px;" v-if="false && selectedGroupId == 'group-a'">
-                <div style="float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px;">Hey!</div>
-                <div style="float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px;">Dummy reply...</div>
-            </div>
-            <div style="padding: 15px;" v-if="false && selectedGroupId == 'group-b'">
-                <div style="float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px;">Test Message...</div>
-                <div style="float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px;">Dummy reply test..</div>
-            </div>
-            <div style="padding: 15px;" v-if="false && selectedGroupId == 'group-c'">
-                <div style="float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px;">Dummy chat..</div>
-                <div style="float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px;">Dummy reply...</div>
-                <div style="float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px;">Dummy long chat.. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
-                <div style="float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px;">Dummy reply...</div>
-                <div style="float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px;">Dummy reply test..</div>
-            </div>
-            <div v-for="(gm, i) in messagesHistory" v-bind:key="'gmh-'+selectedGroupId+'-'+i" style="padding: 15px;">
-              <div v-if="gm.author_uuid !== getAuthor.uuid" style="position: relative; float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px;">
+          <div v-bind:id="chatContentId" style="position: absolute; right: 0; top: 0; width: calc(100% - 200px); height: calc(100% - 40px); padding: 15px; background: #fff; overflow-y: auto;">
+            <div v-for="(gm, i) in messagesHistory" v-bind:key="'gmh-'+selectedGroupId+'-'+i" style="position: relative;">
+              <div v-if="gm.author_uuid !== getAuthor.uuid" style="float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px;">
                 {{gm.message}}
-                <div style="position: absolute; left: 0; top: -15px; opacity: 0.3; font-size: 90%;">{{gm.author_alias}}</div>
+                <div style="position: absolute; left: 0; top: 5px; opacity: 0.3; font-size: 90%; color: #000;">{{gm.author_alias}}, {{displayChatTime(gm.created_at)}}</div>
+                <div style="clear: both;"></div>
               </div>
-              <div v-if="gm.author_uuid === getAuthor.uuid" style="position: relative; float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px;">
-                <div style="position: absolute; right: 0; top: -15px; opacity: 0.3; font-size: 90%;">{{gm.author_alias}}</div>
+              <div v-if="gm.author_uuid === getAuthor.uuid" style="float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px;">
                 {{gm.message}}
+                <div style="position: absolute; right: 0; top: 5px; opacity: 0.3; font-size: 90%;">{{gm.author_alias}}, {{displayChatTime(gm.created_at)}}</div>
+                <div style="clear: both;"></div>
               </div>
+              <div style="clear: both;"></div>
             </div>
-            <div v-for="(gm, i) in groupMessages" v-bind:key="'gm-'+selectedGroupId+'-'+i" style="padding: 15px;">
-              <div v-if="gm.author_uuid !== getAuthor.uuid" style="position: relative; float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px;">
+            <div v-for="(gm, i) in groupMessages" v-bind:key="'gm-'+selectedGroupId+'-'+i" style="position: relative">
+              <div v-if="gm.author_uuid !== getAuthor.uuid" style="float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px;">
                 {{gm.message}}
-                <div style="position: absolute; left: 0; top: -15px; opacity: 0.3; font-size: 90%;">{{gm.author_alias}}</div>
+                <div style="position: absolute; left: 0; top: 5px; opacity: 0.3; font-size: 90%; color: #000;">{{gm.author_alias}}, {{displayChatTime(gm.created_at)}}</div>
+                <div style="clear: both;"></div>
               </div>
-              <div v-if="gm.author_uuid === getAuthor.uuid" style="position: relative; float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px;">
-                <div style="position: absolute; right: 0; top: -15px; opacity: 0.3; font-size: 90%;">{{gm.author_alias}}</div>
+              <div v-if="gm.author_uuid === getAuthor.uuid" style="float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px;">
                 {{gm.message}}
+                <div style="position: absolute; right: 0; top: 5px; opacity: 0.3; font-size: 90%;">{{gm.author_alias}}, {{displayChatTime(gm.created_at)}}</div>
+                <div style="clear: both;"></div>
               </div>
+              <div style="clear: both;"></div>
             </div>
+            <div style="clear: both;"></div>
           </div>
           <div style="position: absolute; padding-left: 200px; bottom: 0; width: 100%;">
             <div style="padding: 5px;">
@@ -103,7 +95,7 @@
 </template>
 
 <script>
-// import moment from 'moment'
+import moment from 'moment'
 import Vue from 'vue'
 import socketIO from 'socket.io-client'
 
@@ -167,6 +159,9 @@ export default {
       if (!this.socketConnected) {
         return
       }
+      if (this.messagesHistoryLoaded) {
+        return
+      }
       this.socket.emit('group message history', {chat_group_uuid: this.selectedGroupId})
     }
   },
@@ -176,9 +171,21 @@ export default {
       if (!this.socketConnected) {
         return
       }
+      if (this.chatMessage === '') {
+        return
+      }
       this.socket.emit('group message', {chat_group_uuid: this.selectedGroupId, message: this.chatMessage})
       var objDiv = document.getElementById(this.chatContentId)
       objDiv.scrollTop = objDiv.scrollHeight
+      this.chatMessage = ''
+    },
+    displayChatTime: function (t) {
+      var tm = moment(t)
+      var tmNow = moment()
+      if (tm.format('MM-DD-YYYY') === tmNow.format('MM-DD-YYYY')) {
+        return tm.format('h:mma')
+      }
+      return tm.format('MM/DD/YYYY h:mma')
     },
     groupChatDisplayName: function (gc) {
       if (gc.uuid.indexOf('pm-') === 0) {
@@ -265,8 +272,9 @@ export default {
       })
       socket.on('group message history', function (data) {
         console.log('group message history ', data)
-        if (scope.currentGroup) {
+        if (scope.currentGroup && !scope.currentGroup.messagesHistoryLoaded) {
           scope.currentGroup.messagesHistory = data.messages
+          scope.currentGroup.messagesHistoryLoaded = true
         }
       })
       socket.on('group chats', function (data) {
@@ -294,10 +302,11 @@ export default {
           if (!scope.groupChats[g.uuid]) {
             Vue.set(scope.groupChats, g.uuid, g)
           }
+          if (g.select) {
+            Vue.set(scope, 'selectedGroupId', g.uuid)
+            delete g.select
+          }
         }
-      })
-      socket.on('group created', function (data) {
-        
       })
       socket.on('disconnect', function () {
         scope.socketConnected = false
