@@ -10,14 +10,14 @@
       <div style="padding: 0 20px;">
       </div>
       <div class="card-body" style="padding: 0; margin: 0; height: calc(100vh - 400px); position: relative;">
-        <div v-if="!selected_group_id">
+        <div v-if="!selectedGroupId">
           <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; padding-left: 200px; padding-bottom: 40px; background: #fff;">
             <div style="padding: 15px; border-bottom: 1px solid rgb(227, 230, 240);">
                 <h6 style="margin: 0;">New Message</h6>
             </div>
             <div style="padding: 15px;">
                 <div style="color: #c0c0c0; font-size: 13px;">You may select 1 user for private message or multiple users for group chat.</div>
-                <multiselect v-model="userSelect.selected" id="ajax" label="name" track-by="id" placeholder="Select a user..." open-direction="bottom" :options="userSelect.rows" :multiple="true" :searchable="true" :loading="userSelect.isLoading" :internal-search="false" :clear-on-select="false" :close-on-select="false" :options-limit="300" :limit="3" :limit-text="userSelectLimitText" :max-height="600" :show-no-results="false" :hide-selected="true" @search-change="userSelectFind">
+                <multiselect v-model="userSelect.selected" id="ajax" label="name" track-by="uuid" placeholder="Select a user..." open-direction="bottom" :options="userSelect.rows" :multiple="true" :searchable="true" :loading="userSelect.isLoading" :internal-search="false" :clear-on-select="false" :close-on-select="false" :options-limit="300" :limit="3" :limit-text="userSelectLimitText" :max-height="600" :show-no-results="false" :hide-selected="true" @search-change="userSelectFind">
                   <template slot="tag" slot-scope="{ option, remove }">
                     <span class="custom__tag" style="float: left;cursor:default;background: rgb(73, 109, 125);line-height: 24px;padding: 0 8px;margin: 0;margin-left: 5px;border-radius: 5px;color: #fff;">
                       <span>{{ option.name }}</span>
@@ -32,32 +32,53 @@
                   <input v-model="userSelect.groupName" type="text" placeholder="Group Name" class="form-control" />
                 </div>
                 <div v-if="userSelect.selected.length > 0" style="margin-top: 15px;">
-                  <button class="btn es-button-white btn-secondary">Next <i class="fa fa-arrow-right"></i></button>
+                  <button v-on:click="createGroupChat($event)" class="btn es-button-white btn-secondary">Next <i class="fa fa-arrow-right"></i></button>
                 </div>
             </div>
           </div>
         </div>
-        <div v-if="selected_group_id">
-          <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; padding-left: 200px; padding-bottom: 40px; background: #fff;">
-            <div style="padding: 15px;" v-if="selected_group_id == 1">
+        <div v-if="selectedGroupId">
+          <div v-bind:id="chatContentId" style="position: absolute; right: 0; top: 0; width: calc(100% - 200px); height: calc(100% - 40px); padding-left: 0; background: #fff; overflow-y: auto;">
+            <div style="padding: 15px;" v-if="false && selectedGroupId == 'group-a'">
                 <div style="float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px;">Hey!</div>
                 <div style="float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px;">Dummy reply...</div>
             </div>
-            <div style="padding: 15px;" v-if="selected_group_id == 2">
+            <div style="padding: 15px;" v-if="false && selectedGroupId == 'group-b'">
                 <div style="float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px;">Test Message...</div>
                 <div style="float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px;">Dummy reply test..</div>
             </div>
-            <div style="padding: 15px;" v-if="selected_group_id == 3">
+            <div style="padding: 15px;" v-if="false && selectedGroupId == 'group-c'">
                 <div style="float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px;">Dummy chat..</div>
                 <div style="float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px;">Dummy reply...</div>
                 <div style="float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px;">Dummy long chat.. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
                 <div style="float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px;">Dummy reply...</div>
                 <div style="float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px;">Dummy reply test..</div>
             </div>
+            <div v-for="(gm, i) in messagesHistory" v-bind:key="'gmh-'+selectedGroupId+'-'+i" style="padding: 15px;">
+              <div v-if="gm.author_uuid !== getAuthor.uuid" style="position: relative; float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px;">
+                {{gm.message}}
+                <div style="position: absolute; left: 0; top: -15px; opacity: 0.3; font-size: 90%;">{{gm.author_alias}}</div>
+              </div>
+              <div v-if="gm.author_uuid === getAuthor.uuid" style="position: relative; float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px;">
+                <div style="position: absolute; right: 0; top: -15px; opacity: 0.3; font-size: 90%;">{{gm.author_alias}}</div>
+                {{gm.message}}
+              </div>
+            </div>
+            <div v-for="(gm, i) in groupMessages" v-bind:key="'gm-'+selectedGroupId+'-'+i" style="padding: 15px;">
+              <div v-if="gm.author_uuid !== getAuthor.uuid" style="position: relative; float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px;">
+                {{gm.message}}
+                <div style="position: absolute; left: 0; top: -15px; opacity: 0.3; font-size: 90%;">{{gm.author_alias}}</div>
+              </div>
+              <div v-if="gm.author_uuid === getAuthor.uuid" style="position: relative; float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px;">
+                <div style="position: absolute; right: 0; top: -15px; opacity: 0.3; font-size: 90%;">{{gm.author_alias}}</div>
+                {{gm.message}}
+              </div>
+            </div>
           </div>
           <div style="position: absolute; padding-left: 200px; bottom: 0; width: 100%;">
             <div style="padding: 5px;">
-            <textarea class="form-control" style="height: 30px; width: 100%; padding: 0 10px;" placeholder="Type a message..."></textarea>
+              <textarea v-model="chatMessage" v-bind:id="textareaId" class="form-control" style="float: left; height: 30px; width: calc(100% - 65px); padding: 0 10px;" placeholder="Type a message..."></textarea>
+              <button v-on:click="sendChatMessage()" class="btn es-button-white btn-secondary" style="float: left;margin-left: 5px;width: 60px;">Send</button>
             </div>
           </div>
         </div>
@@ -66,12 +87,14 @@
             <input type="text" class="form-control" placeholder="Search users &amp; groups..." />
           </div>
           <ul style="padding: 0; margin: 0;">
-            <li v-for="(group, i) in groups" v-bind:key="'group-index-'+i" style="padding: 0; margin: 0;">
-              <div v-bind:class="{active: selected_group_id==group.id}" v-on:click.prevent="selected_group_id=group.id" class="messaging-group-nav" style="font-size: 12px; padding: 8px 15px;">{{group.name}}</div>
+            <li v-for="(group, i) in sortedGroupChats" v-bind:key="'group-index-'+group.uuid" style="padding: 0; margin: 0;">
+              <div v-bind:class="{active: selectedGroupId==group.uuid}" v-on:click.prevent="selectedGroupId=group.uuid" class="messaging-group-nav" style="font-size: 12px; padding: 8px 15px;">
+                {{groupChatDisplayName(group)}}
+              </div>
             </li>
           </ul>
           <div style="position: absolute; bottom: 0; left: 0; width: 100%; text-align: center; padding: 5px;">
-            <button class="btn es-button-white btn-secondary" v-on:click.prevent="selected_group_id=null"><i class="fa fa-plus"></i> New Message</button>
+            <button class="btn es-button-white btn-secondary" v-on:click.prevent="selectedGroupId=null"><i class="fa fa-plus"></i> New Message</button>
           </div>
         </div>
       </div>
@@ -81,7 +104,8 @@
 
 <script>
 // import moment from 'moment'
-// import Vue from 'vue'
+import Vue from 'vue'
+import socketIO from 'socket.io-client'
 
 export default {
   name: 'Messaging',
@@ -89,54 +113,195 @@ export default {
   data: function () {
     // var scope = this
     var data = {
-      show: false,
-      groups: [
-        {id: 3, name: 'John'},
-        {id: 1, name: 'Luell Kearl'},
-        {id: 2, name: 'Kenji'}
-      ],
+      show: !false,
       userSelect: {
         groupName: '',
         selected: [],
         rows: [],
         isLoading: false
       },
-      selected_group_id: null,
-      window: window
+      groupChats: {},
+      selectedGroupId: null,
+      window: window,
+      socket: null,
+      socketConnected: false,
+      chatMessage: '',
+      chatContentId: ('chat-content-').replace('.', ''),
+      textareaId: ('txt-').replace('.', '')
     }
     return data
   },
   computed: {
     //
+    currentGroup: function () {
+      var currentGroup = this.groupChats[this.selectedGroupId]
+      return currentGroup
+    },
+    messagesHistory: function () {
+      return this.currentGroup.messagesHistory
+    },
+    groupMessages: function () {
+      return this.currentGroup.messages
+    },
+    getAuthor: function () {
+      var scope = this
+      return scope.$store.getters.getAuthor
+    },
+    sortedGroupChats: function () {
+      var groups = []
+      for (var x in this.groupChats) {
+        groups.push(this.groupChats[x])
+      }
+      groups.sort(function (a, b) {
+        console.log(a.last_activity + ' < ' + b.last_activity)
+        return (''+a.last_activity).localeCompare(''+b.last_activity)
+      })
+      return groups
+    }
   },
   watch: {
-    //
+    selectedGroupId: function () {
+      if (!this.selectedGroupId) {
+        return
+      }
+      if (!this.socketConnected) {
+        return
+      }
+      this.socket.emit('group message history', {chat_group_uuid: this.selectedGroupId})
+    }
   },
   methods: {
     //
+    sendChatMessage: function () {
+      if (!this.socketConnected) {
+        return
+      }
+      this.socket.emit('group message', {chat_group_uuid: this.selectedGroupId, message: this.chatMessage})
+      var objDiv = document.getElementById(this.chatContentId)
+      objDiv.scrollTop = objDiv.scrollHeight
+    },
+    groupChatDisplayName: function (gc) {
+      if (gc.uuid.indexOf('pm-') === 0) {
+        var data = JSON.parse(gc.data)
+        for (var x in data.members_cache) {
+          var mc = data.members_cache[x]
+          if (mc.author_uuid !== this.getAuthor.uuid) {
+            return mc.author_alias
+          }
+        }
+      }
+      return gc.name
+    },
+    createGroupChat: function (e) {
+      e.preventDefault()
+      if (!this.socketConnected) {
+        return
+      }
+      if (this.userSelect.selected.length < 1) {
+        return
+      }
+      if (this.userSelect.selected.length > 1) {
+        if (this.userSelect.groupName === '') {
+          return
+        }
+      } else {
+        this.userSelect.groupName = ''
+      }
+      this.socket.emit('group create', {name: this.userSelect.groupName, members: this.userSelect.selected})
+    },
     userSelectLimitText (count) {
       return `and ${count} other users`
     },
-    userSelectFind (query) {
+    userSelectFind (q) {
       var scope = this
       scope.userSelect.isLoading = true
 
-      setTimeout(function () {
-        scope.userSelect.rows = [
-          {id: 3, name: 'John'},
-          {id: 1, name: 'Luell Kearl'},
-          {id: 2, name: 'Kenji'}
-        ]
-        scope.userSelect.isLoading = false
-      }, 1)
+      var headers = {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Authorization': 'Bearer ' + scope.$store.getters.getUserToken
+      }
 
       scope.axios
-        .post('http://localhost:3000/chapter-versions/comment', scope.chapter_version)
+        .get('http://api.pilotleser.no/live/search/authors?q=' + escape(q) + '&limit=10',
+          {
+            'headers': headers
+          })
         .then(response => {
-          if (response.data) {
-            //
+          if (response.data && response.data.rows) {
+            var rows = []
+            for (var i = 0; i < response.data.rows.length; i++) {
+              var row = response.data.rows[i]
+              rows.push({uuid: row.uuid, name: row.alias})
+            }
+            scope.userSelect.rows = rows
+            // console.log('rows', rows)
           }
+        }).finally(function () {
+          scope.userSelect.isLoading = false
         })
+    },
+    connect: function () {
+      //
+      var scope = this
+
+      var socket = socketIO('http://dev.kunohay.com:3030')
+      socket.on('connect', function () {
+        scope.socket = socket
+        scope.socketConnected = true
+        socket.emit('authenticate', {
+          token: scope.$store.getters.getUserToken
+        })
+      })
+      socket.on('authenticate response', function (data) {
+        console.log('authenticate response', data)
+      })
+      socket.on('group message', function (data) {
+        console.log('group message: ', data)
+        scope.groupChats[data.chat_group_uuid].messages.push(data)
+        Vue.nextTick(function () {
+          var objDiv = document.getElementById(scope.chatContentId)
+          objDiv.scrollTop = objDiv.scrollHeight
+        })
+      })
+      socket.on('group message history', function (data) {
+        console.log('group message history ', data)
+        if (scope.currentGroup) {
+          scope.currentGroup.messagesHistory = data.messages
+        }
+      })
+      socket.on('group chats', function (data) {
+        console.log('group chats ', data)
+        var list = {}
+        for (var i = 0; i < data.length; i++) {
+          var gc = data[i]
+          if (!gc.messages) {
+            gc.messages = []
+          }
+          if (!gc.messagesHistory) {
+            gc.messagesHistory = []
+          }
+          list[gc.uuid] = gc
+        }
+        Vue.set(scope, 'groupChats', list)
+      })
+      socket.on('group chats update', function (groups) {
+        console.log('group chats update ', groups)
+        for (var i = 0; i < groups.length; i++) {
+          var g = groups[i]
+          if (!g.messages) {
+            g.messages = []
+          }
+          if (!scope.groupChats[g.uuid]) {
+            Vue.set(scope.groupChats, g.uuid, g)
+          }
+        }
+      })
+      socket.on('group created', function (data) {
+        
+      })
+      socket.on('disconnect', function () {
+        scope.socketConnected = false
+      })
     },
     userSelectClearAll () {
       this.userSelect.rows = []
@@ -145,9 +310,9 @@ export default {
     open: function (params) {
       this.show = true
       if (!params) {
-        this.selected_group_id = null
+        this.selectedGroupId = null
       } else {
-        this.selected_group_id = params
+        this.selectedGroupId = params
       }
     },
     close: function () {
@@ -157,6 +322,7 @@ export default {
   mounted: function () {
     var scope = this
     window.AppMessaging = scope
+    this.connect()
   },
   beforeDestroy: function () {
 
