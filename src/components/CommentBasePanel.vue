@@ -6,7 +6,7 @@
     <div style="height: calc(100% - 127px); background: #fff; overflow-y: auto;">
       <div v-for="(c, k) in comments[selected_comments_id]" v-bind:key="k" v-bind:style="{'border': editingComment==k?'1px solid orange':'1px solid #f1f1f1'}" class="commentbase-comment" style="border: 0; border: 1px solid #f1f1f1; padding: 15px; margin-bottom: 0;">
         <div style="line-height: 0.8; position: relative;">
-          <div v-if="c.user_id==author.id" class="c-pop-menu-btn" style="position: absolute; top: 0; right: 5px; border: 0 solid #c0c0c0;" v-on:click.prevent="showCommentActions=showCommentActions==k?null:k">
+          <div v-if="c.user_id==author.uuid" class="c-pop-menu-btn" style="position: absolute; top: 0; right: 5px; border: 0 solid #c0c0c0;" v-on:click.prevent="showCommentActions=showCommentActions==k?null:k">
               <div style="text-align: right; padding: 0; font-weight: bold; cursor: pointer;">
                   <i class="fa fa-ellipsis-h"></i>
                   <div class="c-pop-menu" v-show="showCommentActions==k" style="display: block; background: #293742; border: 1px solid #293742; padding: 3px; border-radius: 3px; margin-top: -1px; line-height: 1.2; font-size: 12px;">
