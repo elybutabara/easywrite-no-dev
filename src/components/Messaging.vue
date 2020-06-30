@@ -78,10 +78,11 @@
           <div style="padding: 5px;">
             <input type="text" class="form-control" placeholder="Search users &amp; groups..." />
           </div>
-          <ul style="padding: 0; margin: 0;">
-            <li v-for="(group, i) in sortedGroupChats" v-bind:key="'group-index-'+group.uuid" style="padding: 0; margin: 0;">
-              <div v-bind:class="{active: selectedGroupId==group.uuid}" v-on:click.prevent="selectedGroupId=group.uuid" class="messaging-group-nav" style="font-size: 12px; padding: 8px 15px;">
+          <ul style="padding: 0px;margin: 0px;overflow: auto;height: calc(100% - 85px);position: absolute;width: 100%;">
+            <li v-for="(group, i) in sortedGroupChats" v-bind:key="'group-index'+i+'-'+group.uuid" style="padding: 0; margin: 0;">
+              <div v-bind:class="{active: selectedGroupId==group.uuid}" v-on:click.prevent="selectedGroupId=group.uuid" class="messaging-group-nav" style="font-size: 12px; padding: 8px 15px; position: relative;">
                 {{groupChatDisplayName(group)}}
+                <div v-if="group.unreadCount && group.unreadCount>0" style="position: absolute; top: 8px; right: 10px; background: red; width: 16px; height: 16px; line-height: 16px; text-align: center; color: #fff; border-radius: 50%; font-size: 10px;">{{group.unreadCount}}</div>
               </div>
             </li>
           </ul>
@@ -146,7 +147,7 @@ export default {
       }
       groups.sort(function (a, b) {
         console.log(a.last_activity + ' < ' + b.last_activity)
-        return (''+a.last_activity).localeCompare(''+b.last_activity)
+        return ('' + a.last_activity).localeCompare('' + b.last_activity)
       })
       return groups
     }
@@ -162,6 +163,7 @@ export default {
       if (this.messagesHistoryLoaded) {
         return
       }
+      this.currentGroup.unreadCount = 0
       this.socket.emit('group message history', {chat_group_uuid: this.selectedGroupId})
     }
   },
@@ -264,10 +266,18 @@ export default {
       })
       socket.on('group message', function (data) {
         console.log('group message: ', data)
+        if (data.chat_group_uuid !== scope.selectedGroupId) {
+          if (!scope.groupChats[data.chat_group_uuid].unreadCount) {
+            scope.groupChats[data.chat_group_uuid].unreadCount = 0
+          }
+          scope.groupChats[data.chat_group_uuid].unreadCount++
+        }
         scope.groupChats[data.chat_group_uuid].messages.push(data)
         Vue.nextTick(function () {
-          var objDiv = document.getElementById(scope.chatContentId)
-          objDiv.scrollTop = objDiv.scrollHeight
+          if (scope.selectedGroupId) {
+            var objDiv = document.getElementById(scope.chatContentId)
+            objDiv.scrollTop = objDiv.scrollHeight
+          }
         })
       })
       socket.on('group message history', function (data) {
@@ -288,6 +298,9 @@ export default {
           if (!gc.messagesHistory) {
             gc.messagesHistory = []
           }
+          if (!gc.unreadCount) {
+            gc.unreadCount = 0
+          }
           list[gc.uuid] = gc
         }
         Vue.set(scope, 'groupChats', list)
@@ -298,6 +311,12 @@ export default {
           var g = groups[i]
           if (!g.messages) {
             g.messages = []
+          }
+          if (!g.messagesHistory) {
+            g.messagesHistory = []
+          }
+          if (!g.unreadCount) {
+            g.unreadCount = 0
           }
           if (!scope.groupChats[g.uuid]) {
             Vue.set(scope.groupChats, g.uuid, g)
