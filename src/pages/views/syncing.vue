@@ -187,10 +187,10 @@ export default {
         { title: 'Book Readers', api: 'book-readers', local: 'readers', downloaded: [], packed: [], error: [] },
         { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: [], packed: [], error: [] },
         { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: [], packed: [], error: [] },
-        { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], error: [] }
-        // { title: 'Courses', api: 'courses', local: 'courses', downloaded: [], packed: [], error: [] },
-        // { title: 'Courses Taken', api: 'courses-taken', local: 'courses-taken', downloaded: [], packed: [], error: [] },
-        // { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], error: [] },
+        { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], error: [] },
+        { title: 'Courses', api: 'courses', local: 'courses', downloaded: [], packed: [], error: [] },
+        { title: 'Courses Taken', api: 'courses-taken', local: 'courses-taken', downloaded: [], packed: [], error: [] },
+        { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], error: [] }
         // { title: 'Package Courses', api: 'package-courses', local: 'package-courses', downloaded: [], packed: [], error: [] },
         // { title: 'Lessons', api: 'lessons', local: 'lessons', downloaded: [], packed: [], error: [] },
         // { title: 'Lesson Documents', api: 'lesson-documents', local: 'lesson-documents', downloaded: [], packed: [], error: [] },
@@ -697,10 +697,10 @@ export default {
         { title: 'Book Readers', api: 'book-readers', local: 'readers', downloaded: [], packed: [], error: [] },
         { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: [], packed: [], error: [] },
         { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: [], packed: [], error: [] },
-        { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], error: [] }
-        // { title: 'Courses', api: 'courses', local: 'courses', downloaded: [], packed: [], error: [] },
-        // { title: 'Courses Taken', api: 'courses-taken', local: 'courses-taken', downloaded: [], packed: [], error: [] },
-        // { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], error: [] },
+        { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], error: [] },
+        { title: 'Courses', api: 'courses', local: 'courses', downloaded: [], packed: [], error: [] },
+        { title: 'Courses Taken', api: 'courses-taken', local: 'courses-taken', downloaded: [], packed: [], error: [] },
+        { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], error: [] }
         // { title: 'Package Courses', api: 'package-courses', local: 'package-courses', downloaded: [], packed: [], error: [] },
         // { title: 'Lessons', api: 'lessons', local: 'lessons', downloaded: [], packed: [], error: [] },
         // { title: 'Lesson Documents', api: 'lesson-documents', local: 'lesson-documents', downloaded: [], packed: [], error: [] },
