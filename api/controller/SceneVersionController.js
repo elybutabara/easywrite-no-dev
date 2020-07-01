@@ -33,8 +33,8 @@ class SceneVersionController {
   }
 
   static async saveToScene (data) {
-    console.log('Save to scene')
-    console.log(data)
+    // console.log('Save to scene')
+    // console.log(data)
     var sceneVersion = await SceneVersion.query()
       .patch({ content: data.content })
       .where('uuid', '=', data.uuid)
@@ -53,7 +53,7 @@ class SceneVersionController {
 
     delete data['new_comment_json']
     const sceneVersion = await SceneVersion.query().upsertGraphAndFetch([data]).first()
-    console.log(sceneVersion)
+    // console.log(sceneVersion)
 
     /*
     const notification = await Notification.query().upsertGraphAndFetch([{

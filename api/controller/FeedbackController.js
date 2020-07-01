@@ -78,7 +78,7 @@ class FeedbackController {
       parentIDs.push(books[i].uuid)
     }
 
-    console.log(bookUUIDs)
+    // console.log(bookUUIDs)
 
     // get all "books i read" IDs
     const booksIRead = await Reader.query()

@@ -44,7 +44,7 @@ router.get('/:userId', async function (req, res) {
 
       let isAllowed = false
       packages.forEach(function (pack, index) {
-        if (allowedPackages.includes(pack.id)) {
+        if (allowedPackages != null && allowedPackages.includes(pack.id)) {
           isAllowed = true
         }
       })
