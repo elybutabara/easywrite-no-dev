@@ -190,8 +190,8 @@ export default {
         { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], error: [] },
         { title: 'Courses', api: 'courses', local: 'courses', downloaded: [], packed: [], error: [] },
         { title: 'Courses Taken', api: 'courses-taken', local: 'courses-taken', downloaded: [], packed: [], error: [] },
-        { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], error: [] }
-        // { title: 'Package Courses', api: 'package-courses', local: 'package-courses', downloaded: [], packed: [], error: [] },
+        { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], error: [] },
+        { title: 'Package Courses', api: 'package-courses', local: 'package-courses', downloaded: [], packed: [], error: [] }
         // { title: 'Lessons', api: 'lessons', local: 'lessons', downloaded: [], packed: [], error: [] },
         // { title: 'Lesson Documents', api: 'lesson-documents', local: 'lesson-documents', downloaded: [], packed: [], error: [] },
         // { title: 'Book Feedbacks', api: 'book-feedbacks', local: 'feedbacks', downloaded: [], packed: [] },
@@ -700,8 +700,8 @@ export default {
         { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], error: [] },
         { title: 'Courses', api: 'courses', local: 'courses', downloaded: [], packed: [], error: [] },
         { title: 'Courses Taken', api: 'courses-taken', local: 'courses-taken', downloaded: [], packed: [], error: [] },
-        { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], error: [] }
-        // { title: 'Package Courses', api: 'package-courses', local: 'package-courses', downloaded: [], packed: [], error: [] },
+        { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], error: [] },
+        { title: 'Package Courses', api: 'package-courses', local: 'package-courses', downloaded: [], packed: [], error: [] }
         // { title: 'Lessons', api: 'lessons', local: 'lessons', downloaded: [], packed: [], error: [] },
         // { title: 'Lesson Documents', api: 'lesson-documents', local: 'lesson-documents', downloaded: [], packed: [], error: [] },
         // { title: 'Book Feedbacks', api: 'book-feedbacks', local: 'feedbacks', downloaded: [], packed: [] },

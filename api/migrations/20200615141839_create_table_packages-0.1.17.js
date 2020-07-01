@@ -72,6 +72,7 @@ exports.up = async function (knex) {
     if (!exists) {
       await knex.schema.createTable('package_courses', function (t) {
         t.increments(`id`) // int(10) unsigned NOT NULL AUTO_INCREMENT,
+        t.text('uuid')
         t.string(`package_id`) // int(10) unsigned NOT NULL,
         t.string(`included_package_id`) // int(10) unsigned NOT NULL,
         t.text(`created_at`) // timestamp NULL DEFAULT NULL,
