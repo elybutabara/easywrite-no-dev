@@ -32,6 +32,7 @@ class ChapterVersionController {
     const chapterVersion = await ChapterVersion.query().upsertGraphAndFetch([data]).first()
     console.log(chapterVersion)
 
+    /*
     const notification = await Notification.query().upsertGraphAndFetch([{
       type: 'ChapterComment',
       name: 'chapter-' + data.chapter_id,
@@ -43,6 +44,7 @@ class ChapterVersionController {
       //
     }
     console.log(notification)
+  */
 
     return chapterVersion
   }

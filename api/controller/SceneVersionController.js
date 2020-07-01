@@ -55,6 +55,7 @@ class SceneVersionController {
     const sceneVersion = await SceneVersion.query().upsertGraphAndFetch([data]).first()
     console.log(sceneVersion)
 
+    /*
     const notification = await Notification.query().upsertGraphAndFetch([{
       type: 'SceneComment',
       name: 'scene-' + data.chapter_id,
@@ -66,6 +67,7 @@ class SceneVersionController {
       //
     }
     console.log(notification)
+    */
 
     return sceneVersion
   }
