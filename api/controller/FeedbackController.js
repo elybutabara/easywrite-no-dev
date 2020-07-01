@@ -111,8 +111,8 @@ class FeedbackController {
       parentIDs.push(scenes[i].uuid)
     }
 
-    const test = await Feedback.query().whereIn('parent_id', parentIDs)
-    console.log(test)
+    // const test = await Feedback.query().whereIn('parent_id', parentIDs)
+    // console.log(test)
 
     const rows = await Feedback.query()
       .whereIn('parent_id', parentIDs)

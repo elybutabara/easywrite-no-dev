@@ -452,15 +452,15 @@ export default {
           var data = response.data.rows
 
           if (['Items', 'Characters', 'Locations'].indexOf(endpoint.title) > -1) {
-            console.log(endpoint.title + ' response.data.rows ---->\n', response.data.rows)
+            // console.log(endpoint.title + ' response.data.rows ---->\n', response.data.rows)
 
             if (response.data && response.data.rows && response.data.rows.length > 0) {
               for (var i = 0; i < response.data.rows.length; i++) {
                 var row = response.data.rows[i]
                 var src = uploadsBaseURL + '/book-' + endpoint.title.toLowerCase() + '/' + (row.picture || row.pictures)
                 var dst = path.resolve(app.getAppPath() + '\\resources', 'resources', 'images', endpoint.title.toLowerCase(), (row.picture || row.pictures) + '')
-                console.log('src = ', src)
-                console.log('dst = ', dst)
+                // console.log('src = ', src)
+                // console.log('dst = ', dst)
                 fetch(src, {
                   method: 'GET'
                 })
@@ -573,7 +573,7 @@ export default {
         scope.axios
           .post('http://localhost:3000/users/connections', rows[i])
           .then(function (response) {
-            console.log(response)
+            // console.log(response)
           })
           .catch(function (error) {
             // handle error
