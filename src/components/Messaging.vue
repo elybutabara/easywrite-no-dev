@@ -410,6 +410,7 @@ export default {
     },
     close: function () {
       this.show = false
+      this.selectedGroupId = null
     }
   },
   mounted: function () {
