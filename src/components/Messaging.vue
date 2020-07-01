@@ -40,26 +40,22 @@
         <div v-if="selectedGroupId">
           <div v-bind:id="chatContentId" style="position: absolute; right: 0; top: 0; width: calc(100% - 200px); height: calc(100% - 40px); padding: 15px; background: #fff; overflow-y: auto;">
             <div v-for="(gm, i) in messagesHistory" v-bind:key="'gmh-'+selectedGroupId+'-'+i" style="position: relative;">
-              <div v-if="gm.author_uuid !== getAuthor.uuid" style="float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px;">
-                {{gm.message}}
+              <div v-if="gm.author_uuid !== getAuthor.uuid" style="float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px; white-space: pre-line;">{{gm.message}}
                 <div style="position: absolute; left: 0; top: 5px; opacity: 0.3; font-size: 90%; color: #000;">{{gm.author_alias}}, {{displayChatTime(gm.created_at)}}</div>
                 <div style="clear: both;"></div>
               </div>
-              <div v-if="gm.author_uuid === getAuthor.uuid" style="float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px;">
-                {{gm.message}}
+              <div v-if="gm.author_uuid === getAuthor.uuid" style="float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px; white-space: pre-line;">{{gm.message}}
                 <div style="position: absolute; right: 0; top: 5px; opacity: 0.3; font-size: 90%;">{{gm.author_alias}}, {{displayChatTime(gm.created_at)}}</div>
                 <div style="clear: both;"></div>
               </div>
               <div style="clear: both;"></div>
             </div>
             <div v-for="(gm, i) in groupMessages" v-bind:key="'gm-'+selectedGroupId+'-'+i" style="position: relative">
-              <div v-if="gm.author_uuid !== getAuthor.uuid" style="float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px;">
-                {{gm.message}}
+              <div v-if="gm.author_uuid !== getAuthor.uuid" style="float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px; white-space: pre-line;">{{gm.message}}
                 <div style="position: absolute; left: 0; top: 5px; opacity: 0.3; font-size: 90%; color: #000;">{{gm.author_alias}}, {{displayChatTime(gm.created_at)}}</div>
                 <div style="clear: both;"></div>
               </div>
-              <div v-if="gm.author_uuid === getAuthor.uuid" style="float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px;">
-                {{gm.message}}
+              <div v-if="gm.author_uuid === getAuthor.uuid" style="float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px; white-space: pre-line;">{{gm.message}}
                 <div style="position: absolute; right: 0; top: 5px; opacity: 0.3; font-size: 90%;">{{gm.author_alias}}, {{displayChatTime(gm.created_at)}}</div>
                 <div style="clear: both;"></div>
               </div>
@@ -76,12 +72,12 @@
         </div>
         <div style="position: absolute; left: 0; top: 0; height: 100%; width: 200px; background: #f5f8fa; border-right: 1px solid rgb(227, 230, 240);">
           <div style="padding: 5px;">
-            <input type="text" class="form-control" placeholder="Search users &amp; groups..." />
+            <input v-model="groupsFilterTxt" type="text" class="form-control" placeholder="Search users &amp; groups..." />
           </div>
           <ul style="padding: 0px;margin: 0px;overflow: auto;height: calc(100% - 85px);position: absolute;width: 100%;">
             <li v-for="(group, i) in sortedGroupChats" v-bind:key="'group-index'+i+'-'+group.uuid" style="padding: 0; margin: 0;">
               <div v-bind:class="{active: selectedGroupId==group.uuid}" v-on:click.prevent="selectedGroupId=group.uuid" class="messaging-group-nav" style="font-size: 12px; padding: 8px 15px; position: relative;">
-                {{groupChatDisplayName(group)}}
+                {{(group.uuid.indexOf('pm-')!==0?'[Group] ':'') + group.name}}
                 <div v-if="group.unreadCount && group.unreadCount>0" style="position: absolute; top: 8px; right: 10px; background: red; width: 16px; height: 16px; line-height: 16px; text-align: center; color: #fff; border-radius: 50%; font-size: 10px;">{{group.unreadCount}}</div>
               </div>
             </li>
@@ -106,7 +102,7 @@ export default {
   data: function () {
     // var scope = this
     var data = {
-      show: !false,
+      show: false,
       userSelect: {
         groupName: '',
         selected: [],
@@ -119,8 +115,9 @@ export default {
       socket: null,
       socketConnected: false,
       chatMessage: '',
-      chatContentId: ('chat-content-').replace('.', ''),
-      textareaId: ('txt-').replace('.', '')
+      chatContentId: ('chat-content-' + Math.random()).replace('.', ''),
+      textareaId: ('txt-' + Math.random()).replace('.', ''),
+      groupsFilterTxt: ''
     }
     return data
   },
@@ -131,9 +128,15 @@ export default {
       return currentGroup
     },
     messagesHistory: function () {
+      if (!this.currentGroup) {
+        return []
+      }
       return this.currentGroup.messagesHistory
     },
     groupMessages: function () {
+      if (!this.currentGroup) {
+        return []
+      }
       return this.currentGroup.messages
     },
     getAuthor: function () {
@@ -141,15 +144,19 @@ export default {
       return scope.$store.getters.getAuthor
     },
     sortedGroupChats: function () {
-      var groups = []
+      var filtered = []
       for (var x in this.groupChats) {
-        groups.push(this.groupChats[x])
+        var gc = this.groupChats[x]
+        if (gc.name.toLowerCase().indexOf(this.groupsFilterTxt.toLowerCase()) > -1) {
+          filtered.push(gc)
+        }
       }
-      groups.sort(function (a, b) {
-        console.log(a.last_activity + ' < ' + b.last_activity)
-        return ('' + a.last_activity).localeCompare('' + b.last_activity)
+
+      filtered.sort(function (a, b) {
+        return b.last_activity - a.last_activity
       })
-      return groups
+
+      return filtered
     }
   },
   watch: {
@@ -157,18 +164,55 @@ export default {
       if (!this.selectedGroupId) {
         return
       }
+      this.chatScrollBottom()
       if (!this.socketConnected) {
         return
       }
-      if (this.messagesHistoryLoaded) {
-        return
+      if (!this.currentGroup.messagesHistoryLoaded) {
+        this.socket.emit('group message history', {chat_group_uuid: this.selectedGroupId})
       }
-      this.currentGroup.unreadCount = 0
-      this.socket.emit('group message history', {chat_group_uuid: this.selectedGroupId})
+      if (this.currentGroup.unreadCount > 0) {
+        if (window.AppMain && window.AppMain.addNotificationCount) {
+          window.AppMain.addNotificationCount(this.currentGroup.unreadCount * -1)
+        }
+        if (window.AppMessageCenterPopup && window.AppMessageCenterPopup.addNotificationCount) {
+          window.AppMessageCenterPopup.addNotificationCount(this.currentGroup.unreadCount * -1)
+          window.AppMessageCenterPopup.addMessagesCount(this.currentGroup.unreadCount * -1)
+        }
+        this.currentGroup.unreadCount = 0
+      }
     }
   },
   methods: {
     //
+    setGroupLastActivity: function (g) {
+      if (!g) {
+        return
+      }
+      var lastActivity = g.last_activity
+      if (g.messages && g.messages.length > 0) {
+        lastActivity = g.messages[g.messages.length - 1].created_at
+      } else if (g.messagesHistory && g.messagesHistory.length > 0) {
+        lastActivity = g.messagesHistory[g.messagesHistory.length - 1].created_at
+      }
+      lastActivity = parseInt(moment(lastActivity).format('x'))
+      g.last_activity = lastActivity
+      console.log('setGroupLastActivity', g.last_activity, g)
+      this.$forceUpdate()
+    },
+    chatScrollBottom: function () {
+      var scope = this
+      if (!this.selectedGroupId) {
+        return
+      }
+      // console.log('scroll bottom')
+      setTimeout(function () {
+        var d = document.getElementById(scope.chatContentId)
+        if (d) {
+          d.scrollTop = d.scrollHeight
+        }
+      }, 10)
+    },
     sendChatMessage: function () {
       if (!this.socketConnected) {
         return
@@ -177,8 +221,7 @@ export default {
         return
       }
       this.socket.emit('group message', {chat_group_uuid: this.selectedGroupId, message: this.chatMessage})
-      var objDiv = document.getElementById(this.chatContentId)
-      objDiv.scrollTop = objDiv.scrollHeight
+      this.chatScrollBottom()
       this.chatMessage = ''
     },
     newline: function () {
@@ -264,9 +307,11 @@ export default {
           token: scope.$store.getters.getUserToken
         })
       })
+
       socket.on('authenticate response', function (data) {
         console.log('authenticate response', data)
       })
+
       socket.on('group message', function (data) {
         console.log('group message: ', data)
         if (data.chat_group_uuid !== scope.selectedGroupId) {
@@ -274,22 +319,33 @@ export default {
             scope.groupChats[data.chat_group_uuid].unreadCount = 0
           }
           scope.groupChats[data.chat_group_uuid].unreadCount++
+          if (window.AppMain && window.AppMain.addNotificationCount) {
+            window.AppMain.addNotificationCount(1)
+          }
+          if (window.AppMessageCenterPopup && window.AppMessageCenterPopup.addNotificationCount) {
+            window.AppMessageCenterPopup.addNotificationCount(1)
+            window.AppMessageCenterPopup.addMessagesCount(1)
+          }
         }
         scope.groupChats[data.chat_group_uuid].messages.push(data)
-        Vue.nextTick(function () {
-          if (scope.selectedGroupId) {
-            var objDiv = document.getElementById(scope.chatContentId)
-            objDiv.scrollTop = objDiv.scrollHeight
-          }
-        })
+        // scope.setGroupLastActivity(scope.groupChats[data.chat_group_uuid])
+        scope.groupChats[data.chat_group_uuid].last_activity = parseInt(moment(data.last_activity).format('x'))
+        if (data.chat_group_uuid === scope.selectedGroupId) {
+          scope.chatScrollBottom()
+        }
       })
+
       socket.on('group message history', function (data) {
         console.log('group message history ', data)
         if (scope.currentGroup && !scope.currentGroup.messagesHistoryLoaded) {
           scope.currentGroup.messagesHistory = data.messages
           scope.currentGroup.messagesHistoryLoaded = true
         }
+        if (data.chat_group_uuid === scope.selectedGroupId) {
+          scope.chatScrollBottom()
+        }
       })
+
       socket.on('group chats', function (data) {
         console.log('group chats ', data)
         var list = {}
@@ -304,6 +360,9 @@ export default {
           if (!gc.unreadCount) {
             gc.unreadCount = 0
           }
+          gc.name = scope.groupChatDisplayName(gc)
+          gc.last_activity = parseInt(moment(gc.last_activity).format('x'))
+          // scope.setGroupLastActivity(gc)
           list[gc.uuid] = gc
         }
         Vue.set(scope, 'groupChats', list)
@@ -321,6 +380,9 @@ export default {
           if (!g.unreadCount) {
             g.unreadCount = 0
           }
+          g.name = scope.groupChatDisplayName(g)
+          g.last_activity = parseInt(moment(g.last_activity).format('x'))
+          // scope.setGroupLastActivity(g)
           if (!scope.groupChats[g.uuid]) {
             Vue.set(scope.groupChats, g.uuid, g)
           }
@@ -356,7 +418,11 @@ export default {
     this.connect()
   },
   beforeDestroy: function () {
-
+    if (this.socketConnected) {
+      this.socket.disconnect()
+    }
+    delete window.AppMessaging
+    console.log('window.AppMessaging destroyed')
   }
 }
 </script>

@@ -10,8 +10,11 @@
                     <button @click="CHANGE_COMPONENT({tabKey: 'dashboard', tabComponent: 'dashboard',  tabData: null, tabTitle: $t('DASHBOARD')})"> {{ $t('DASHBOARD') }}</button>
                     <button @click="CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing',  tabData: null, tabTitle: $t('SYNC_DATA'), newTab: true})">{{ $t('SYNC_DATA') }}</button>
                     <button @click="CHANGE_COMPONENT({tabKey: 'book-form', tabComponent: 'book-form',  tabData: null, tabTitle: $t('NEW_BOOK'), newTab: true})">{{ $t('NEW_BOOK') }}</button>
-                    <button @click.prevent="showMessageCenter=!showMessageCenter" class="btn btn-danger"><i class="fa fa-bell"></i></button>
-                    <div v-if="showMessageCenter" style="position: absolute; top: 43px; right: 0px; z-index: 10000; width: 500px; text-align: left;">
+                    <button @click.prevent="showMessageCenter=!showMessageCenter" class="btn btn-danger" style="position: relative;">
+                      <i class="fa fa-bell"></i>
+                      <span v-if="notificationCount > 0" style="position: absolute;width: 20px;height: 20px;border-radius: 50%;background: red;color: rgb(255, 255, 255);top: -5px;right: -8px;line-height: 20px;text-align: center;font-size: 12px;">{{notificationCount}}</span>
+                    </button>
+                    <div v-show="showMessageCenter" style="position: absolute; top: 43px; right: 0px; z-index: 10000; width: 500px; text-align: left;">
                       <message-center-popup :params="{}"></message-center-popup>
                     </div>
                 </div>
@@ -126,7 +129,8 @@ export default {
         component: 'book-listing'
       },
       showMessageCenter: false,
-      forceQuit: false
+      forceQuit: false,
+      notificationCount: 0
     }
   },
   components: {
@@ -212,6 +216,9 @@ export default {
           })
         }
       }
+    },
+    addNotificationCount: function (n) {
+      this.notificationCount += n
     }
   },
   beforeMount () {

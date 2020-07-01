@@ -6,7 +6,7 @@
       </div>
       <div style="padding: 0 20px;">
         <a href="#" v-on:click.prevent="type = 'All'">All ({{itemsCounts['All']}})</a> |
-        <a href="#" v-on:click.prevent="type = 'Message'">Messages ({{itemsCounts['Message']}})</a> |
+        <a href="#" v-on:click="openMessage(null, $event)">Messages ({{messagesCount}})</a> |
         <a href="#" v-on:click.prevent="type = 'Notification'">Notifications ({{itemsCounts['Notification']}})</a>
         <div style="float: right;">
           <button v-on:click="openMessage(null, $event)" class="btn btn-default" style="height: 24px; line-height: 24px; text-transform: none;">New Message</button>
@@ -57,7 +57,9 @@ export default {
         'Message': 0,
         'Notification': 0
       },
-      params_: {}
+      params_: {},
+      notificationsCount: 0,
+      messagesCount: 0
     }
     if (scope.params) {
       Vue.nextTick(() => {
@@ -89,6 +91,14 @@ export default {
     }
   },
   methods: {
+    addNotificationCount: function (n) {
+      console.log('addNotificationCount', n)
+      this.notificationsCount += n
+    },
+    addMessagesCount: function (n) {
+      console.log('addMessagesCount', n)
+      this.messagesCount += n
+    },
     openMessage: function (v) {
       window.AppMessaging.open(v)
       window.AppMain.showMessageCenter = false
@@ -207,7 +217,9 @@ export default {
     scope.fetch()
   },
   beforeDestroy: function () {
+    delete window.AppMessageCenterPopup
 
+    console.log('window.AppMessageCenterPopup destroyed')
   }
 }
 </script>
