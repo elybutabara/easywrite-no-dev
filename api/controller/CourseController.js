@@ -42,7 +42,7 @@ class CourseController {
     var courseUUIDs = []
 
     for (let i = 0; i < courseTaken.length; i++) {
-      courseUUIDs.push(courseTaken[i].course.uuid)
+      if (courseTaken[i].course) courseUUIDs.push(courseTaken[i].course.uuid)
     }
     const rows = await Course.query()
       .whereIn('uuid', courseUUIDs)
