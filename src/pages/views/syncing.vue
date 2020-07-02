@@ -122,6 +122,9 @@ const path = window.require('path')
 
 const app = window.require('electron').remote.app
 
+const electron = window.require('electron')
+const resourcePath = electron.remote.getGlobal('resourcePath')
+
 // const FormData = window.require('form-data')
 
 const uploadsBaseURL = 'https://www.pilotleser.no/uploads' // to do: use a production upload_base_url if the app is in production mode
@@ -197,7 +200,8 @@ export default {
         // { title: 'Book Feedbacks', api: 'book-feedbacks', local: 'feedbacks', downloaded: [], packed: [] },
         // { title: 'Book Chapter Feedbacks', api: 'book-chapter-feedbacks', local: 'chapter-feedbacks', downloaded: [], packed: [] },
         // { title: 'Book Chapter Feedback Responses', api: 'book-chapter-feedback-responses', local: 'chapter-feedback-responses', downloaded: [], packed: [] },
-        { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [] }
+        { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [] },
+        { title: 'Assignment Manuscripts', api: 'assignment-manuscripts', local: 'assignment-manuscripts', downloaded: [], packed: [] }
         // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
       ],
       bookUUID: ''
@@ -361,6 +365,32 @@ export default {
 
           finalData = data_
         }
+      } else if (['Assignment Manuscripts'].indexOf(endpoint.title) > -1) {
+        if (data.is_file) {
+          var file = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), data.content)
+
+          if (!electronFs.existsSync(file)) {
+            console.log('local file not found: ', file)
+          } else {
+            headers['Content-Type'] = 'multipart/form-data'
+
+            // eslint-disable-next-line no-redeclare
+            var data_ = new FormData()
+
+            // eslint-disable-next-line no-redeclare
+            for (var x in data) {
+              if (data[x]) {
+                data_.append(x, data[x])
+              }
+            }
+
+            data_.append('file', new Blob([electronFs.readFileSync(file)]), data.content)
+
+            finalData = data_
+            console.log(data)
+            console.log(finalData)
+          }
+        }
       }
 
       scope.axios.post(window.API_URL + '/' + endpoint.api + '',
@@ -476,6 +506,34 @@ export default {
             }
           } else if (['Feedbacks', 'Chapter Versions', 'Scene Versions'].indexOf(endpoint.title) > -1) {
             scope.saveAuthorDetails(response.data.authors)
+          } else if (['Assignment Manuscripts'].indexOf(endpoint.title) > -1) {
+            if (response.data && response.data.rows && response.data.rows.length > 0) {
+              // eslint-disable-next-line no-redeclare
+              for (var i = 0; i < response.data.rows.length; i++) {
+                // eslint-disable-next-line no-redeclare
+                var row = response.data.rows[i]
+
+                if (row.is_file) {
+                  // eslint-disable-next-line no-redeclare
+                  var src = uploadsBaseURL + '/' + endpoint.title.replace(/\s+/g, '-').toLowerCase() + '/' + (row.content)
+                  // eslint-disable-next-line no-redeclare
+                  var dst = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), row.content)
+                  // console.log('src = ', src)
+                  // console.log('dst = ', dst)
+                  fetch(src, {
+                    method: 'GET'
+                  })
+                    .then(response => response.blob())
+                    .then(blob => {
+                      var fileReader = new FileReader()
+                      fileReader.onload = function () {
+                        electronFs.writeFileSync(dst, Buffer.from(new Uint8Array(this.result)))
+                      }
+                      fileReader.readAsArrayBuffer(blob)
+                    })
+                }
+              }
+            }
           }
 
           scope.endpoints[scope.download.pointer].downloaded = data

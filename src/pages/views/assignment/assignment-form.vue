@@ -123,6 +123,8 @@ export default {
         where_in_script: 'whole',
         is_file: 1,
         genre: null,
+        editor_id: 0,
+        has_feedback: 0,
         join_group: 0,
         words: 0
       },
@@ -210,7 +212,7 @@ export default {
         formData.append('single-file', scope.file)
 
         scope.axios
-          .post('http://localhost:3000/upload/assignment-manuscript/file', formData, {
+          .post('http://localhost:3000/upload/assignment-manuscripts/file', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
@@ -272,6 +274,8 @@ export default {
         where_in_script: 'whole',
         is_file: 1,
         genre: null,
+        editor_id: 0,
+        has_feedback: 0,
         join_group: 0,
         words: 0
       }
