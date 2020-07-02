@@ -16,7 +16,34 @@ class Note extends BaseModel {
         from: 'notes.author_id',
         to: 'authors.uuid'
       },
-      softDelete: true
+      softDelete: false
+    },
+    chapter: {
+      relation: BaseModel.BelongsToOneRelation,
+      modelClass: path.join(__dirname, 'Chapter'),
+      join: {
+        from: 'notes.parent_id',
+        to: 'book_chapters.uuid'
+      },
+      softDelete: false
+    },
+    scene: {
+      relation: BaseModel.BelongsToOneRelation,
+      modelClass: path.join(__dirname, 'Scene'),
+      join: {
+        from: 'notes.parent_id',
+        to: 'book_scenes.uuid'
+      },
+      softDelete: false
+    },
+    book: {
+      relation: BaseModel.BelongsToOneRelation,
+      modelClass: path.join(__dirname, 'Book'),
+      join: {
+        from: 'notes.parent_id',
+        to: 'books.uuid'
+      },
+      softDelete: false
     }
   };
 }

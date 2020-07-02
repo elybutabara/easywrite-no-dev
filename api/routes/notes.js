@@ -15,15 +15,23 @@ router.post('/', async function (req, res) {
 })
 
 router.delete('/:ID', async function (req, res) {
-  const character = await NoteController.delete(req.params.ID)
+  const note = await NoteController.delete(req.params.ID)
 
   res
     .status(200)
-    .json(character)
+    .json(note)
 })
 
 router.get('/syncable', async function (req, res) {
   const rows = await NoteController.getSyncable(req.query.userID)
+
+  res
+    .status(200)
+    .json(rows)
+})
+
+router.get('/:authorID', async function (req, res) {
+  const rows = await NoteController.getAllNotesByAuthor(req.params.authorID)
 
   res
     .status(200)

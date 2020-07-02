@@ -7,7 +7,7 @@
             <div class="es-top-parent">
                <pomodoro-timer></pomodoro-timer>
                 <div class="es-top-nav" style="position: relative;">
-                    <button @click="CHANGE_COMPONENT({tabKey: 'webinar', tabComponent: 'webinar',  tabData: null, tabTitle: $t('WEBINARS')})"> {{ $t('WEBINARS') }}</button>
+                    <button @click="CHANGE_COMPONENT({tabKey: 'webinar-listing', tabComponent: 'webinar-listing',  tabData: null, tabTitle: $t('WEBINARS')})"> {{ $t('WEBINARS') }}</button>
                     <button @click="CHANGE_COMPONENT({tabKey: 'note-listing', tabComponent: 'note-listing',  tabData: null, tabTitle: $t('NOTES')})"> {{ $t('NOTES') }}</button>
                     <button @click="CHANGE_COMPONENT({tabKey: 'dashboard', tabComponent: 'dashboard',  tabData: null, tabTitle: $t('DASHBOARD')})"> {{ $t('DASHBOARD') }}</button>
                     <button @click="CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing',  tabData: null, tabTitle: $t('SYNC_DATA'), newTab: true})">{{ $t('SYNC_DATA') }}</button>
@@ -60,6 +60,7 @@
                 <lesson-details :key="tab.key" v-if="tab.component == 'lesson-details'" :properties="tab.data"></lesson-details>
 
                 <note-listing :key="tab.key" v-if="tab.component == 'note-listing'" :properties="tab.data"></note-listing>
+                <webinar-listing :key="tab.key" v-if="tab.component == 'webinar-listing'" :properties="tab.data"></webinar-listing>
             </div>
         </div>
     </div>
@@ -108,6 +109,7 @@ import LessonDetails from '@/pages/views/lessons/lesson-details'
 import CourseListing from '@/pages/views/course/course-listing'
 
 import NoteListing from '@/pages/views/notes/note-listing'
+import WebinarListing from '@/pages/views/webinars/webinar-listing'
 // const electron = window.require('electron')
 // const remote = electron.remote
 // const loginInfo = remote.getGlobal('loginInfo')
@@ -169,7 +171,8 @@ export default {
     'course-details': CourseDetails,
     'course-listing': CourseListing,
     'lesson-details': LessonDetails,
-    'note-listing': NoteListing
+    'note-listing': NoteListing,
+    'webinar-listing': WebinarListing
   },
   methods: {
     changeComponent: function (component, data) {
