@@ -25,7 +25,7 @@
             <div class="feedback-single-content-wrap" v-bind:class="{ 'open' : feedback.expand_content }">
               <p @click="expandFeedbackContent(feedback)" class="message" v-bind:class="{ 'ellipsis-3' : !feedback.expand_content }" v-html="feedback.message"></p>
               <div class="feedback-modify" v-if="$store.getters.getAuthorID === feedback.author_id">
-                <!-- <span @click="modifyFeedbackContent(feedback)">{{$t('EDIT')}}</span> -->
+                <span @click="modifyFeedbackContent(feedback)">{{$t('EDIT')}}</span>
                 <span @click="deleteFeedbackContent(feedback)">{{$t('DELETE')}}</span>
               </div>
             </div>
@@ -43,7 +43,7 @@
                     </div>
                     <p @click="expandFeedbackResponseContent(response)" class="message"  v-bind:class="{ 'ellipsis-3' : !response.expand_content }"  v-html="response.message"  style="font-size:14px;"></p>
                     <div class="feedback-modify" v-if="$store.getters.getAuthorID === response.author_id">
-                      <!-- <span @click="modifyFeedbackResponseContent(response)">{{$t('EDIT')}}</span> -->
+                      <span @click="modifyFeedbackResponseContent(feedback, response)">{{$t('EDIT')}}</span>
                       <span @click="deleteFeedbackResponseContent(response)">{{$t('DELETE')}}</span>
                     </div>
                   </div>
@@ -55,7 +55,8 @@
               <div class="" style="text-align:right;">
                 <form v-on:submit.prevent="sendReply(feedback)">
                   <textarea style="width:100%;" type="text" v-model="feedback.reponse_text"></textarea>
-                  <button type="submit" class="es-button-white">Submit</button>
+                  <button v-if="feedback_responses_uuid != null" type="submit" class="es-button-white">Update</button>
+                  <button v-else type="submit" class="es-button-white">Submit</button>
                 </form>
               </div>
               </div>
@@ -65,7 +66,8 @@
         </div>
         <div class="foot">
           <textarea  type="text" v-model="message"></textarea>
-          <button @click="saveFeedback()" class="es-button-white">Submit</button>
+          <button v-if="feedback_uuid != null" @click="saveFeedback()" class="es-button-white">Update</button>
+          <button v-else @click="saveFeedback()" class="es-button-white">Submit</button>
         </div>
       </div>
     </div>
@@ -85,7 +87,9 @@ export default {
       feedbacks: null,
       selected: false,
       message: '',
-      response: ''
+      response: '',
+      feedback_uuid: null,
+      feedback_responses_uuid: null
     }
   },
   components: {
@@ -98,7 +102,7 @@ export default {
       scope.axios.get('http://localhost:3000/feedbacks/' + scope.properties.parent_name + '/' + scope.properties.parent.uuid)
         .then(function (response) {
           scope.feedbacks = response.data
-          console.log(scope.feedbacks)
+          // console.log(scope.feedbacks)
         })
         .catch(function (error) {
           console.log(error)
@@ -108,7 +112,9 @@ export default {
         })
     },
     modifyFeedbackContent: function (feedback) {
-      // console.log(feedback)
+      var scope = this
+      scope.message = feedback.message
+      scope.feedback_uuid = feedback.uuid
     },
     deleteFeedbackContent: function (feedback) {
       var scope = this
@@ -141,8 +147,12 @@ export default {
         }
       })
     },
-    modifyFeedbackResponseContent: function (response) {
-      // console.log(response)
+    modifyFeedbackResponseContent: function (feedback, response) {
+      console.log(feedback)
+      console.log(response)
+      var scope = this
+      scope.$set(feedback, 'reponse_text', response.message)
+      scope.feedback_responses_uuid = response.uuid
     },
     deleteFeedbackResponseContent: function (response) {
       var scope = this
@@ -214,6 +224,7 @@ export default {
       }
 
       let feedback = {
+        uuid: scope.feedback_uuid,
         author_id: scope.$store.getters.getAuthorID,
         parent_id: scope.properties.parent.uuid,
         parent: scope.properties.parent_name,
@@ -226,7 +237,9 @@ export default {
         .then(response => {
           if (response.data) {
             scope.message = ''
-            scope.feedbacks.push(response.data)
+            scope.feedback_uuid = null
+            // scope.feedbacks.push(response.data)
+            scope.initFeedbacks()
           }
         })
     },
@@ -237,6 +250,7 @@ export default {
       }
 
       let data = {
+        uuid: scope.feedback_responses_uuid,
         author_id: scope.$store.getters.getAuthorID,
         feedback_id: feedback.uuid,
         message: feedback.reponse_text
@@ -247,7 +261,9 @@ export default {
         .then(response => {
           if (response.data) {
             scope.$set(feedback, 'reponse_text', '')
-            feedback.feedback_responses.push(response.data)
+            scope.feedback_responses_uuid = null
+            scope.initFeedbacks()
+            // feedback.feedback_responses.push(response.data)
           }
         })
     },
