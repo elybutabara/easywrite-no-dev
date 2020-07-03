@@ -148,8 +148,6 @@ export default {
       })
     },
     modifyFeedbackResponseContent: function (feedback, response) {
-      console.log(feedback)
-      console.log(response)
       var scope = this
       scope.$set(feedback, 'reponse_text', response.message)
       scope.feedback_responses_uuid = response.uuid
@@ -236,10 +234,18 @@ export default {
         .post('http://localhost:3000/feedbacks', feedback)
         .then(response => {
           if (response.data) {
+            if (scope.feedback_uuid === null) {
+              scope.feedbacks.push(response.data)
+            } else {
+              for (var key in scope.feedbacks) {
+                if (scope.feedbacks[key].uuid === feedback.uuid) {
+                  scope.feedbacks[key].message = feedback.message
+                }
+              }
+            }
             scope.message = ''
             scope.feedback_uuid = null
-            // scope.feedbacks.push(response.data)
-            scope.initFeedbacks()
+            // scope.initFeedbacks()
           }
         })
     },
@@ -260,10 +266,20 @@ export default {
         .post('http://localhost:3000/feedback-responses', data)
         .then(response => {
           if (response.data) {
+            if (scope.feedback_responses_uuid === null) {
+              feedback.feedback_responses.push(response.data)
+            } else {
+              for (var key in scope.feedbacks) {
+                for (var responsekey in scope.feedbacks[key].feedback_responses) {
+                  if (scope.feedbacks[key].feedback_responses[responsekey].uuid === data.uuid) {
+                    scope.feedbacks[key].feedback_responses[responsekey].message = data.message
+                  }
+                }
+              }
+            }
             scope.$set(feedback, 'reponse_text', '')
             scope.feedback_responses_uuid = null
-            scope.initFeedbacks()
-            // feedback.feedback_responses.push(response.data)
+            // scope.initFeedbacks()
           }
         })
     },
