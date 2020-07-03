@@ -9,9 +9,9 @@
             </div>
         </div>
     </div>
-    <div class="es-page-content"> 
+    <div class="es-page-content">
         <div class="webinar-list">
-            <div class="webinar-single" @click.prevent="openExternalBrowser('https://www.forfatterskolen.no/')"  v-for="webinar in webinars" :key="webinar.id">
+            <div class="webinar-single" @click.prevent="openExternalBrowser('https://attendee.gotowebinar.com/register/' + webinar.gtwebinar_id)"  v-for="webinar in webinars" :key="webinar.id">
                 <img v-bind:src="'https://www.forfatterskolen.no/'+ webinar.image">
                 <div class="details">
                     <strong>{{ webinar.title }}</strong>
