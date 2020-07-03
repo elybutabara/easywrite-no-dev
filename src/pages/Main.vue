@@ -109,6 +109,8 @@ import CourseListing from '@/pages/views/course/course-listing'
 // const remote = electron.remote
 // const loginInfo = remote.getGlobal('loginInfo')
 
+var shell = window.require('electron').shell
+
 const electron = window.require('electron')
 const log = window.require('electron-log')
 const {ipcRenderer} = electron
@@ -289,6 +291,20 @@ export default {
     })
 
     scope.checkHasUnsavedTabs()
+
+    // open external links on system default web browser
+    if (!window.openExternalAllExternalLinks) {
+      window.openExternalAllExternalLinks = true
+      document.addEventListener('click', function (e) {
+        for (var target = e.target; target && target !== this; target = target.parentNode) {
+          if (target.matches('a[href^="http"]') && !target.matches('a[href^="http://localhost"]')) {
+            e.preventDefault()
+            shell.openExternal(target.href)
+            break
+          }
+        }
+      }, false)
+    }
   }
 }
 
