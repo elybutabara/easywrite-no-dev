@@ -24,6 +24,12 @@ class FeedbackResponseController {
     return row
   }
 
+  static async delete (feedbackresponseId) {
+    const feedbackResponse = await FeedbackResponse.query().softDeleteById(feedbackresponseId)
+
+    return feedbackResponse
+  }
+
   static async getSyncable (userId) {
     const user = await User.query()
       .findById(userId)
@@ -93,6 +99,7 @@ class FeedbackResponseController {
     var columns = {
       uuid: row.uuid,
       feedback_id: row.feedback_id,
+      author_id: row.author_id,
       message: row.message,
       created_at: row.created_at,
       updated_at: row.updated_at,

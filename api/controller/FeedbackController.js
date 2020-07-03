@@ -8,7 +8,12 @@ class FeedbackController {
     var feedbacks = Feedback.query()
       .where('parent', 'book')
       .where('parent_id', bookId)
+      .whereNull('feedbacks.deleted_at')
       .withGraphJoined('[feedback_responses.author]', {maxBatchSize: 1})
+      .modifyGraph('[feedback_responses]', builder => {
+        builder.whereNull('feedback_responses.deleted_at')
+        builder.orderBy('feedback_responses.id', 'asc')
+      })
       .withGraphJoined('author', {maxBatchSize: 1})
       .orderBy('id', 'asc')
 
@@ -19,8 +24,10 @@ class FeedbackController {
     var feedbacks = Feedback.query()
       .where('parent', 'chapter')
       .where('parent_id', chapterId)
+      .whereNull('feedbacks.deleted_at')
       .withGraphJoined('[feedback_responses.author]', {maxBatchSize: 1})
       .modifyGraph('[feedback_responses]', builder => {
+        builder.whereNull('feedback_responses.deleted_at')
         builder.orderBy('feedback_responses.id', 'asc')
       })
       .withGraphJoined('author', {maxBatchSize: 1})
@@ -33,7 +40,12 @@ class FeedbackController {
     var feedbacks = Feedback.query()
       .where('parent', 'scene')
       .where('parent_id', sceneId)
+      .whereNull('feedbacks.deleted_at')
       .withGraphJoined('[feedback_responses.author]', {maxBatchSize: 1})
+      .modifyGraph('[feedback_responses]', builder => {
+        builder.whereNull('feedback_responses.deleted_at')
+        builder.orderBy('feedback_responses.id', 'asc')
+      })
       .withGraphJoined('author', {maxBatchSize: 1})
       .orderBy('id', 'asc')
 
@@ -50,6 +62,12 @@ class FeedbackController {
       .first()
 
     return row
+  }
+
+  static async delete (feedbackId) {
+    const feedback = await Feedback.query().softDeleteById(feedbackId)
+
+    return feedback
   }
 
   static async updateStatus (row) {

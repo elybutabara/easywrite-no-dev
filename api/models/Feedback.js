@@ -25,7 +25,7 @@ class Feedback extends BaseModel {
         from: 'feedbacks.author_id',
         to: 'author_names.uuid'
       },
-      softDelete: true
+      softDelete: false
     }
   };
 }
