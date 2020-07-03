@@ -146,7 +146,7 @@ class FeedbackController {
       parent_id: row.parent_id,
       parent: row.parent,
       message: row.message,
-      is_done: row.uuid,
+      is_done: row.is_done,
       created_at: row.created_at,
       updated_at: row.updated_at,
       deleted_at: row.deleted_at
