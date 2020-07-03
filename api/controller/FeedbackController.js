@@ -15,7 +15,7 @@ class FeedbackController {
         builder.orderBy('feedback_responses.id', 'asc')
       })
       .withGraphJoined('author', {maxBatchSize: 1})
-      .orderBy('id', 'asc')
+      .orderBy('id', 'DESC')
 
     return feedbacks
   }
