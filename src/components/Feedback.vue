@@ -4,7 +4,7 @@
       <div class="feedbacks">
         <div class="head">
           Feedbacks
-          <select v-model="filter" style="position:absolute; top:7px; right:50px;">
+          <select v-model="filter" v-if="$store.getters.getAuthorID === properties.book.author_id" style="position:absolute; top:7px; right:50px;">
             <option value="all">All</option>
             <option value="done">Done</option>
             <option value="undone">Undone</option>
@@ -24,6 +24,10 @@
             </div>
             <div class="feedback-single-content-wrap" v-bind:class="{ 'open' : feedback.expand_content }">
               <p @click="expandFeedbackContent(feedback)" class="message" v-bind:class="{ 'ellipsis-3' : !feedback.expand_content }" v-html="feedback.message"></p>
+              <div class="feedback-modify" v-if="$store.getters.getAuthorID === feedback.author_id">
+                <!-- <span @click="modifyFeedbackContent(feedback)">{{$t('EDIT')}}</span> -->
+                <span @click="deleteFeedbackContent(feedback)">{{$t('DELETE')}}</span>
+              </div>
             </div>
             <div class="feedback-single-replies-wrap " v-bind:class="{ 'open' : feedback.show_replies }">
               <div class="feedback-single-replies-header ">
@@ -38,6 +42,10 @@
                       <span class="date">{{ formatDate(response) }}</span>
                     </div>
                     <p @click="expandFeedbackResponseContent(response)" class="message"  v-bind:class="{ 'ellipsis-3' : !response.expand_content }"  v-html="response.message"  style="font-size:14px;"></p>
+                    <div class="feedback-modify" v-if="$store.getters.getAuthorID === response.author_id">
+                      <!-- <span @click="modifyFeedbackResponseContent(response)">{{$t('EDIT')}}</span> -->
+                      <span @click="deleteFeedbackResponseContent(response)">{{$t('DELETE')}}</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -85,6 +93,88 @@ export default {
   computed: {
   },
   methods: {
+    initFeedbacks: function () {
+      var scope = this
+      scope.axios.get('http://localhost:3000/feedbacks/' + scope.properties.parent_name + '/' + scope.properties.parent.uuid)
+        .then(function (response) {
+          scope.feedbacks = response.data
+          console.log(scope.feedbacks)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+        .finally(function () {
+          // always executed
+        })
+    },
+    modifyFeedbackContent: function (feedback) {
+      // console.log(feedback)
+    },
+    deleteFeedbackContent: function (feedback) {
+      var scope = this
+      window.swal.fire({
+        title: this.$t('ARE_YOU_SURE'),
+        text: this.$t('YOU_WONT_BE_ABLE_TO_REVERT_THIS'),
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: this.$t('YES_DELETE_IT'),
+        cancelButtonText: this.$t('CANCEL')
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/feedbacks/' + feedback.uuid)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: this.$t('RECORD_SUCCESSFULY_DELETED'),
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.initFeedbacks()
+                })
+              }
+            })
+        }
+      })
+    },
+    modifyFeedbackResponseContent: function (response) {
+      // console.log(response)
+    },
+    deleteFeedbackResponseContent: function (response) {
+      var scope = this
+      window.swal.fire({
+        title: this.$t('ARE_YOU_SURE'),
+        text: this.$t('YOU_WONT_BE_ABLE_TO_REVERT_THIS'),
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: this.$t('YES_DELETE_IT'),
+        cancelButtonText: this.$t('CANCEL')
+      }).then((result) => {
+        if (result.value) {
+          scope.axios
+            .delete('http://localhost:3000/feedback-responses/' + response.uuid)
+            .then(response => {
+              if (response.data) {
+                window.swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: this.$t('RECORD_SUCCESSFULY_DELETED'),
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  scope.initFeedbacks()
+                })
+              }
+            })
+        }
+      })
+    },
     formatDate: function (data) {
       return moment(data.created_at).calendar()
     },
@@ -174,23 +264,14 @@ export default {
   },
   mounted () {
     var scope = this
-    scope.axios.get('http://localhost:3000/feedbacks/' + scope.properties.parent_name + '/' + scope.properties.parent.uuid)
-      .then(function (response) {
-        scope.feedbacks = response.data
-        console.log(scope.feedbacks)
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
-      .finally(function () {
-        // always executed
-      })
+    scope.initFeedbacks()
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  .feedback-modify {text-align: right;}
   .feedback-wrap { position:absolute; top:0px; right:0px; z-index:9999; height:100%; overflow-y:auto; border-left:1px solid #ccc; background:#efefef; z-index:3000; width:480px; }
   .feedback-wrap .feedbacks { position:relative; height:100%;}
   .feedback-wrap .feedbacks .head {  position:relative; height:35px; line-height:35px; padding:0px 10px; background:#fff; border-bottom:1px solid #ccc; }

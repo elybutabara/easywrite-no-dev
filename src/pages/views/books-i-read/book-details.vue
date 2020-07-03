@@ -119,6 +119,7 @@ export default {
     scope.page.title = scope.properties.title
     scope.page.data = scope.properties
     scope.page.is_ready = true
+    console.log(scope.properties)
   }
 }
 
