@@ -3,15 +3,19 @@
     <div class="es-page-head">
         <div class="inner">
             <div class="details">
-                {{ $t('FREE_WEBINARS') }}
+                {{ page_title }}
             </div>
             <div class="actions">
             </div>
         </div>
     </div>
+    <div class="es-page-tabs">
+      <button class="open-free-webinar" @click="open(freeWebinars, 'free')">{{ $tc('FREE_WEBINARS') }}</button>
+      <button class="open-paid-webinar" @click="open(webinars, 'paid')">{{ $tc('PAID_WEBINARS') }}</button>
+    </div>
     <div class="es-page-content">
         <div class="webinar-list">
-            <div class="webinar-single" @click.prevent="openExternalBrowser('https://attendee.gotowebinar.com/register/' + webinar.gtwebinar_id)"  v-for="webinar in webinars" :key="webinar.id">
+            <div class="webinar-single" @click.prevent="openExternalBrowser('https://attendee.gotowebinar.com/register/' + (webinar.gtwebinar_id ? webinar.gtwebinar_id : webinar.link))"  v-for="webinar in selected" :key="webinar.id">
                 <img v-bind:src="'https://www.forfatterskolen.no/'+ webinar.image">
                 <div class="details">
                     <strong>{{ webinar.title }}</strong>
@@ -36,9 +40,11 @@ export default {
   props: ['properties'],
   data: function () {
     return {
+      freeWebinars: [],
       webinars: [],
       selected: null,
-      api_token: ''
+      api_token: '',
+      page_title: ''
     }
   },
   components: {
@@ -47,9 +53,15 @@ export default {
 
   },
   methods: {
-    open: function (webinar) {
+    open: function (webinar, type = 'free') {
       var scope = this
       scope.selected = webinar
+
+      window.$('.es-page-tabs button').removeClass('current')
+
+      let currButton = window.$('.open-' + type + '-webinar')
+      scope.page_title = currButton.html()
+      currButton.addClass('current')
     },
     close: function () {
       var scope = this
@@ -58,9 +70,29 @@ export default {
     openExternalBrowser (url) {
       remote.shell.openExternal(url)
     },
-    loadWebinars: function () {
+    loadFreeWebinars: function () {
       var scope = this
       scope.axios.get('http://api.pilotleser.no/live/free-webinars',
+        {
+          'headers': {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Authorization': 'Bearer ' + scope.api_token
+          }
+        })
+        .then(function (response) {
+          scope.freeWebinars = response.data.rows
+          scope.open(scope.freeWebinars, 'free')
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+        .finally(function () {
+        // always executed
+        })
+    },
+    loadWebinars: function () {
+      var scope = this
+      scope.axios.get('http://api.pilotleser.no/live/webinars',
         {
           'headers': {
             'X-Requested-With': 'XMLHttpRequest',
@@ -74,13 +106,14 @@ export default {
           console.log(error)
         })
         .finally(function () {
-        // always executed
+          // always executed
         })
     }
   },
   mounted () {
     var scope = this
     scope.api_token = scope.$store.getters.getUserToken
+    scope.loadFreeWebinars()
     scope.loadWebinars()
   }
 }
@@ -100,9 +133,16 @@ export default {
     .es-card .es-card-footer button i { font-size:18px; }
     .es-card .es-card-footer button.btn-delete { font-weight:600; color:#8f2c39; border-left:1px solid #e0e5ee; position:absolute; top:0px; right:0px; }
 
-    .webinar-list { cursor:pointer; width:100%; max-width:1300px; padding:10px; margin:0px auto; display:flex; flex-wrap: wrap; justify-content: space-between; }
-    .webinar-list .webinar-single { width:calc(33.33% - 10px); background:#fff; border:1px solid #ccc; margin-bottom:10px; }
+    .webinar-list { cursor:pointer; width:100%; max-width:1300px; padding:10px; margin:0px auto; display:flex; flex-wrap: wrap; justify-content: left; }
+    .webinar-list .webinar-single { width:calc(33.33% - 10px); background:#fff; border:1px solid #ccc; margin:0 5px 10px; }
     .webinar-list .webinar-single img { width:100%; height:auto; height:200px; object-fit: cover; border-bottom:1px solid #ccc; }
     .webinar-list .webinar-single .details { padding:10px; }
     .webinar-list .webinar-single .webinar-badge { background:#ae2937; color:#fff; padding:2px 5px; border-radius:3px; margin-right:5px; font-size:12px; display:inline-block; }
+
+    .es-page-head {
+      border-bottom: 0px;
+    }
+    .es-page-content {
+      background: #fff;
+    }
 </style>

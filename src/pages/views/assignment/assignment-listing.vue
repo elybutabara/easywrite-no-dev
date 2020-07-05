@@ -15,7 +15,7 @@
           <p class="description">{{ assingment.description }}</p>
           <span>{{ $tc('DEADLINE') }}: {{ assingment.submission_date }}</span>
           <div v-if="('assignment_manuscript' in assingment)" class="mt-3">
-            <a href="javascript:;" @click="showManuscript(assingment)" >{{ (assingment.assignment_manuscript.is_file) ? assingment.assignment_manuscript.content : $t('DETAILS')}}</a>
+            <a href="javascript:;" :title="formattedContent(assingment, false)" @click="showManuscript(assingment)" >{{ formattedContent(assingment) }}</a>
             <div class="float-right">
               <a href="javascript:;" :title="$t('EDIT')" @click="showForm(assingment)" class="btn btn-xs btn-info"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
               <a href="javascript:;" :title="$t('DELETE')" @click="deleteManuscript(assingment.assignment_manuscript)" class="btn btn-xs btn-danger"><i class="fas fa-trash-alt" aria-hidden="true"></i></a>
@@ -26,7 +26,7 @@
       </div>
     </div>
   </div>
-  <assignment-form v-show="show_form==true" :show_form="show_form" :assignment="selected_assignment" :book_genres="genres" v-on:getIsFormShow="setShowForm"></assignment-form>
+  <assignment-form v-show="show_form==true" :show_form="show_form" :book_genres="genres" v-on:getIsFormShow="setShowForm"></assignment-form>
   <div class="b-overlay" v-if="show_manuscript_detail">
     <b-container class="bv-example-row">
       <b-card-group deck>
@@ -60,7 +60,6 @@ export default {
   data: function () {
     return {
       assignments: [],
-      selected_assignment: [],
       genres: [],
       show_form: false,
       show_manuscript_detail: false,
@@ -71,10 +70,25 @@ export default {
     'assignment-form': AssignmentForm
   },
   methods: {
+    formattedContent: function (assingment, is_fommated = true) {
+      let scope = this
+
+      if (assingment.assignment_manuscript.is_file) {
+        // eslint-disable-next-line camelcase
+        if (!is_fommated) {
+          return assingment.assignment_manuscript.content
+        }
+
+        let file = assingment.assignment_manuscript.content.split('.')
+        return file[0].substring(0, 16) + '...' + file[0].substring(file[0].length - 4) + '.' + file[1]
+      }
+
+      return scope.$t('DETAILS')
+    },
     showForm: function (assignment) {
       let scope = this
-      scope.$set(scope, 'selected_assignment', assignment)
       scope.show_form = !scope.show_form
+      scope.$root.$emit('loadManuscript', assignment)
     },
     setShowForm (value) {
       let scope = this

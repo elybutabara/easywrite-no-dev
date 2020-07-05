@@ -46,7 +46,7 @@
               <b-row style="margin-bottom: 1rem;" class="text-left">
                 <b-col>
                   <label>{{$t('GENRE')}}: </label>
-                  <b-form-select v-model="manuscript.genre"
+                  <b-form-select v-model="selected_genre"
                                  id="input-genre"
                                  :options="book_genres"
                                  value-field="uuid"
@@ -109,12 +109,12 @@ import TinyMCE from '../../../components/TinyMCE'
 export default {
   name: 'assignment-form',
   props: {
-    assignment: {},
     book_genres: {},
     show_form: false
   },
   data: function () {
     return {
+      assignment: {},
       manuscript: {
         id: null,
         assignment_id: '',
@@ -138,7 +138,8 @@ export default {
       join_group: false,
       tempContent: '',
       show_feedbacks: false,
-      file: []
+      file: [],
+      selected_genre: ''
     }
   },
   components: {
@@ -207,7 +208,7 @@ export default {
     },
     uploadFile () {
       var scope = this
-      if (scope.manuscript.is_file === 1 && scope.file) {
+      if (scope.manuscript.is_file === 1 && scope.file.length) {
         let formData = new FormData()
         formData.append('single-file', scope.file)
 
@@ -232,6 +233,7 @@ export default {
 
       scope.manuscript.join_group = (scope.join_group) ? 1 : 0
       scope.manuscript.is_file = parseInt(scope.manuscript.is_file)
+      scope.manuscript.genre = scope.selected_genre
 
       if (!scope.manuscript.is_file) {
         scope.manuscript.content = scope.tempContent
@@ -259,13 +261,10 @@ export default {
             })
           }
         })
-    }
-  },
-  beforeUpdate () {
-    let scope = this
+    },
+    loadManuscript: function (assignment) {
+      let scope = this
 
-    // only load data if the stored assignment_id is different to loaded assignment uuid
-    if (scope.manuscript.assignment_id !== scope.assignment.uuid) {
       scope.manuscript = {
         id: null,
         assignment_id: '',
@@ -280,15 +279,32 @@ export default {
         words: 0
       }
 
-      scope.$set(scope.manuscript, 'assignment_id', scope.assignment.uuid)
+      scope.$set(scope.manuscript, 'assignment_id', assignment.uuid)
       scope.$set(scope.manuscript, 'user_id', scope.$store.getters.getUserID)
 
-      if ('assignment_manuscript' in scope.assignment) {
-        scope.$set(scope, 'manuscript', scope.assignment.assignment_manuscript)
+      if ('assignment_manuscript' in assignment) {
+        scope.$set(scope, 'manuscript', assignment.assignment_manuscript)
         scope.$set(scope, 'tempContent', scope.manuscript.content)
+        scope.$set(scope, 'selected_genre', scope.manuscript.genre)
       }
     }
+  },
+  mounted () {
+    let scope = this
+
+    scope.$root.$on('loadManuscript', (assignment) => {
+      scope.$set(scope, 'assignment', assignment)
+      scope.loadManuscript(assignment)
+    })
   }
+  // beforeUpdate () {
+  //   let scope = this
+  //
+  //   // only load data if the stored assignment_id is different to loaded assignment uuid
+  //   if (scope.manuscript.assignment_id !== scope.assignment.uuid) {
+  //     scope.loadManuscript()
+  //   }
+  // }
 }
 </script>
 

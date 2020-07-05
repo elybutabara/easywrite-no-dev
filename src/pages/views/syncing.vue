@@ -1,122 +1,123 @@
 <template>
-<div class="page-syncing" v-bind:class="{'fullscreen' : fullscreen}">
+  <div class="page-syncing" v-bind:class="{'fullscreen' : fullscreen}">
     <div>
-        <div class="es-page-head">
-            <div class="inner">
-                <div class="details">
-                    <h4>{{$t('SYNCING')}}</h4>
-                    <small>{{$t('SYNCING_YOUR_DATA')}}</small>
-                </div>
-            </div>
+      <div class="es-page-head">
+        <div class="inner">
+          <div class="details">
+            <h4>{{$t('SYNCING')}}</h4>
+            <small>{{$t('SYNCING_YOUR_DATA')}}</small>
+          </div>
         </div>
-        <div class="es-page-content">
-            <div v-if="stage == 'intro'" class="es-card fadeIn animated">
-                <div class="es-card-header">{{$t('DATA_SYNCER')}}</div>
-                <div class="es-card-content">
-                    <p class="intro-message">
-                        <i style="font-size:80px;" class="las la-sync"></i> <br/>
-                        {{ $t('SYNCING_YOUR_DATA')}} {{$t('FROM_DESKTOP_TO_WEB_VICE_VERSA') }}...
-                        <br/>
-                        <br/>
-                        <button class="syncer-button" @click="checkConnection()">{{$t('START_SYNCING')}}</button>
-                    </p>
-                </div>
-            </div>
-            <div v-if="stage == 'connecting'" class="es-card fadeIn animated">
-                <div class="es-card-header">{{$t('CONNECTING')}}</div>
-                <div class="es-card-content">
-                    <img class="loader" src="@/assets/img/loader-cog.svg">
-                    <p>{{ progress_message }}</p>
-                    <br/>
-                    <br/>
-                </div>
-            </div>
-            <div v-if="stage == 'packing'" class="es-card">
-                <div class="es-card-header">{{$t('PACKING')}}</div>
-                <div class="es-card-content">
-                    <img class="loader" src="@/assets/img/loader-cog.svg">
-                    <p style="font-size:20px;">{{ packingProgess }}%</p>
-                    <div class="es-progress-bar">
-                        <div v-bind:class="{'error' : packing.error }" class="es-progress" v-bind:style="{ width: packingProgess + '%' }"></div>
-                    </div>
-                    <p>{{ progress_message }}</p>
-                    <br/>
-                    <br/>
-                </div>
-            </div>
-            <div v-if="stage == 'uploading'" class="es-card">
-                <div class="es-card-header">{{$t('UPLOADING_DATA')}}</div>
-                <div class="es-card-content">
-                    <img class="loader" src="@/assets/img/loader-cog.svg">
-                    <p style="font-size:20px;">{{ uploadProgess }}%</p>
-                    <div class="es-progress-bar">
-                        <div v-bind:class="{'error' : upload.error }" class="es-progress" v-bind:style="{ width: uploadProgess + '%' }"></div>
-                    </div>
-                    <p>{{ progress_message }}</p>
-                    <br/>
-                    <br/>
-                </div>
-            </div>
-            <div v-if="stage == 'downloading'" class="es-card">
-                <div class="es-card-header">{{$t('DOWNLOADING_DATA')}}</div>
-                <div class="es-card-content">
-                    <img class="loader" src="@/assets/img/loader-cog.svg">
-                    <p style="font-size:20px;">{{ downloadProgess }}%</p>
-                    <div class="es-progress-bar">
-                        <div v-bind:class="{'error' : download.error }" class="es-progress" v-bind:style="{ width: downloadProgess + '%' }"></div>
-                    </div>
-                    <p>{{ progress_message }}</p>
-                    <br/>
-                    <br/>
-                </div>
-            </div>
-            <div v-if="stage == 'saving'" class="es-card">
-                <div class="es-card-header">{{$t('SAVING_DATA')}}</div>
-                <div class="es-card-content">
-                    <img class="loader" src="@/assets/img/loader-cog.svg">
-                    <p style="font-size:20px;">{{ savingProgess }}%</p>
-                    <div class="es-progress-bar">
-                        <div v-bind:class="{'error' : saving.error }" class="es-progress" v-bind:style="{ width: savingProgess + '%' }"></div>
-                    </div>
-                    <p>{{ progress_message }}</p>
-                    <br/>
-                    <br/>
-                </div>
-            </div>
-            <div v-if="stage == 'logs'" class="es-card">
-                <div class="es-card-header">{{$t('CHANGE_LOGS')}}</div>
-                <div class="es-card-content">
-                   <div style="text-align:left; color:#ccc;">
-                        <p style="margin:2px 0px; color:#293742; font-size:12px;" v-for="(endpoint,index) in endpoints" v-bind:key="index">
-                           {{$t('DOWNLOADED')}} {{ endpoint.downloaded.length}} <strong>{{ endpoint.title }}</strong>
-                        </p>
-                       <button v-if="autostart" class="syncer-button" @click="backToDashboard()">OK</button>
-                       <button v-else class="syncer-button" @click="backToIntro()">OK</button>
-                   </div>
-                </div>
-            </div>
-            <div v-if="stage == 'no-connection'" class="es-card">
-                <div class="es-card-header">{{ $t('NO_CONNECTION') }}</div>
-                <div class="es-card-content">
-                    <br/>
-                    <br/>
-                    <i style="font-size:60px; color:#e3d457;" class="las la-exclamation-triangle"></i>
-                    <p style="font-size:20px;">Failed syncing data, Please check your internet connection...</p>
-                    <button class="syncer-button" @click="backToDashboard()">OK</button>
-                    <br/>
-                    <br/>
-                    <br/>
-                </div>
-            </div>
+      </div>
+      <div class="es-page-content">
+        <div v-if="stage == 'intro'" class="es-card fadeIn animated">
+          <div class="es-card-header">{{$t('DATA_SYNCER')}}</div>
+          <div class="es-card-content">
+            <p class="intro-message">
+              <i style="font-size:80px;" class="las la-sync"></i> <br/>
+              {{ $t('SYNCING_YOUR_DATA')}} {{$t('FROM_DESKTOP_TO_WEB_VICE_VERSA') }}...
+              <br/>
+              <br/>
+              <button class="syncer-button" @click="checkConnection()">{{$t('START_SYNCING')}}</button>
+            </p>
+          </div>
         </div>
+        <div v-if="stage == 'connecting'" class="es-card fadeIn animated">
+          <div class="es-card-header">{{$t('CONNECTING')}}</div>
+          <div class="es-card-content">
+            <img class="loader" src="@/assets/img/loader-cog.svg">
+            <p>{{ progress_message }}</p>
+            <br/>
+            <br/>
+          </div>
+        </div>
+        <div v-if="stage == 'packing'" class="es-card">
+          <div class="es-card-header">{{$t('PACKING')}}</div>
+          <div class="es-card-content">
+            <img class="loader" src="@/assets/img/loader-cog.svg">
+            <p style="font-size:20px;">{{ packingProgess }}%</p>
+            <div class="es-progress-bar">
+              <div v-bind:class="{'error' : packing.error }" class="es-progress" v-bind:style="{ width: packingProgess + '%' }"></div>
+            </div>
+            <p>{{ progress_message }}</p>
+            <br/>
+            <br/>
+          </div>
+        </div>
+        <div v-if="stage == 'uploading'" class="es-card">
+          <div class="es-card-header">{{$t('UPLOADING_DATA')}}</div>
+          <div class="es-card-content">
+            <img class="loader" src="@/assets/img/loader-cog.svg">
+            <p style="font-size:20px;">{{ uploadProgess }}%</p>
+            <div class="es-progress-bar">
+              <div v-bind:class="{'error' : upload.error }" class="es-progress" v-bind:style="{ width: uploadProgess + '%' }"></div>
+            </div>
+            <p>{{ progress_message }}</p>
+            <br/>
+            <br/>
+          </div>
+        </div>
+        <div v-if="stage == 'downloading'" class="es-card">
+          <div class="es-card-header">{{$t('DOWNLOADING_DATA')}}</div>
+          <div class="es-card-content">
+            <img class="loader" src="@/assets/img/loader-cog.svg">
+            <p style="font-size:20px;">{{ downloadProgess }}%</p>
+            <div class="es-progress-bar">
+              <div v-bind:class="{'error' : download.error }" class="es-progress" v-bind:style="{ width: downloadProgess + '%' }"></div>
+            </div>
+            <p>{{ progress_message }}</p>
+            <br/>
+            <br/>
+          </div>
+        </div>
+        <div v-if="stage == 'saving'" class="es-card">
+          <div class="es-card-header">{{$t('SAVING_DATA')}}</div>
+          <div class="es-card-content">
+            <img class="loader" src="@/assets/img/loader-cog.svg">
+            <p style="font-size:20px;">{{ savingProgess }}%</p>
+            <div class="es-progress-bar">
+              <div v-bind:class="{'error' : saving.error }" class="es-progress" v-bind:style="{ width: savingProgess + '%' }"></div>
+            </div>
+            <p>{{ progress_message }}</p>
+            <br/>
+            <br/>
+          </div>
+        </div>
+        <div v-if="stage == 'logs'" class="es-card">
+          <div class="es-card-header">{{$t('CHANGE_LOGS')}}</div>
+          <div class="es-card-content">
+            <div style="text-align:left; color:#ccc;">
+              <p style="margin:2px 0px; color:#293742; font-size:12px;" v-for="(endpoint,index) in endpoints" v-bind:key="index">
+                {{$t('DOWNLOADED')}} {{ endpoint.downloaded.length}} <strong>{{ endpoint.title }}</strong>
+              </p>
+              <button v-if="autostart" class="syncer-button" @click="backToDashboard()">OK</button>
+              <button v-else class="syncer-button" @click="backToIntro()">OK</button>
+            </div>
+          </div>
+        </div>
+        <div v-if="stage == 'no-connection'" class="es-card">
+          <div class="es-card-header">{{ $t('NO_CONNECTION') }}</div>
+          <div class="es-card-content">
+            <br/>
+            <br/>
+            <i style="font-size:60px; color:#e3d457;" class="las la-exclamation-triangle"></i>
+            <p style="font-size:20px;">Failed syncing data, Please check your internet connection...</p>
+            <button class="syncer-button" @click="backToDashboard()">OK</button>
+            <br/>
+            <br/>
+            <br/>
+          </div>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
 </template>
 
 <script>
 import moment from 'moment'
 
 var electronFs = window.require('fs')
+const fs = window.require('fs-extra')
 
 const path = window.require('path')
 
@@ -258,19 +259,19 @@ export default {
 
       scope.axios.get(window.API_URL + '/user/connect')
         .then(function (response) {
-        // handle success
+          // handle success
           scope.progress_message = scope.$t('CONNECTED') + '!'
           setTimeout(function () {
             scope.getSyncableData()
           }, 1000)
         })
         .catch(function (error) {
-        // handle error
+          // handle error
           console.log(error)
           scope.stage = 'no-connection'
         })
         .finally(function () {
-        // always executed
+          // always executed
         })
     },
     getSyncableData: function () {
@@ -387,8 +388,6 @@ export default {
             data_.append('file', new Blob([electronFs.readFileSync(file)]), data.content)
 
             finalData = data_
-            console.log(data)
-            console.log(finalData)
           }
         }
       }
@@ -516,8 +515,14 @@ export default {
                 if (row.is_file) {
                   // eslint-disable-next-line no-redeclare
                   var src = uploadsBaseURL + '/' + endpoint.title.replace(/\s+/g, '-').toLowerCase() + '/' + (row.content)
+
                   // eslint-disable-next-line no-redeclare
                   var dst = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), row.content)
+
+                  // Added by mael this will create the directory if not exist
+                  let dstDir = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase())
+                  fs.mkdirsSync(dstDir)
+
                   // console.log('src = ', src)
                   // console.log('dst = ', dst)
                   fetch(src, {
@@ -647,8 +652,8 @@ export default {
       scope.stage = 'logs'
 
       /* reload Book-i-Read tree list after sync : JPM
-      *  TODO: how to reload Tree List Book without collapse open
-      * */
+        *  TODO: how to reload Tree List Book without collapse open
+        * */
       const userUUID = this.$store.getters.getUserID
       const authorUUID = this.$store.getters.getAuthorID
       scope.$store.dispatch('reloadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
@@ -793,20 +798,20 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    .page-syncing.fullscreen .es-page-content {  position: fixed; top: 0px; left: 0px;  background: rgba(31,46,58,0.8); width: 100%; height: 100vh; z-index: 999; }
-    .page-syncing.fullscreen .es-card { margin-top:100px; }
+  .page-syncing.fullscreen .es-page-content {  position: fixed; top: 0px; left: 0px;  background: rgba(31,46,58,0.8); width: 100%; height: 100vh; z-index: 999; }
+  .page-syncing.fullscreen .es-card { margin-top:100px; }
 
-    .es-card { width:calc(100% - 40px); max-width:750px; margin:0px auto; margin-top:10px; color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
-    .es-card .es-card-content { position:relative; padding:20px; min-height:150px; text-align:center; }
-    .es-card .es-card-content .intro-message { padding:80px 10px; }
-    .es-card .es-card-content .loader { display:inline-block; margin:0px auto; padding:20px 0px; max-width:100px; }
+  .es-card { width:calc(100% - 40px); max-width:750px; margin:0px auto; margin-top:10px; color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
+  .es-card .es-card-content { position:relative; padding:20px; min-height:150px; text-align:center; }
+  .es-card .es-card-content .intro-message { padding:80px 10px; }
+  .es-card .es-card-content .loader { display:inline-block; margin:0px auto; padding:20px 0px; max-width:100px; }
 
-    .es-card .es-card-content .syncer-button {cursor:pointer; background:#862e3b; border:none; color:#fff; padding:10px 40px; border-radius:4px; }
-    .es-card .es-card-content .syncer-button:hover { background:#973241;  }
+  .es-card .es-card-content .syncer-button {cursor:pointer; background:#862e3b; border:none; color:#fff; padding:10px 40px; border-radius:4px; }
+  .es-card .es-card-content .syncer-button:hover { background:#973241;  }
 
-    .es-card .es-card-content .es-progress-bar { margin-top:-8px; margin-bottom:10px; position:relative; background:#ccc; border-radius:8px; height:10px;  }
-    .es-card .es-card-content .es-progress { position:absolute; top:0px; left:0px; border-radius:8px; height:10px; background:#43c853; width:0%; height:100%;  }
-    .es-card .es-card-content .es-progress.error { background:#ef3551;  }
+  .es-card .es-card-content .es-progress-bar { margin-top:-8px; margin-bottom:10px; position:relative; background:#ccc; border-radius:8px; height:10px;  }
+  .es-card .es-card-content .es-progress { position:absolute; top:0px; left:0px; border-radius:8px; height:10px; background:#43c853; width:0%; height:100%;  }
+  .es-card .es-card-content .es-progress.error { background:#ef3551;  }
 
-    .es-card .es-card-header { font-weight:600; position:relative; background:#f5f8fa; height:40px; line-height:40px; padding:0px 10px; border-bottom:1px solid #e0e5ee; }
+  .es-card .es-card-header { font-weight:600; position:relative; background:#f5f8fa; height:40px; line-height:40px; padding:0px 10px; border-bottom:1px solid #e0e5ee; }
 </style>
