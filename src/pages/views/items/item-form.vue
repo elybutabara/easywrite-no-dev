@@ -23,7 +23,7 @@
         <button @click="CHANGE_COMPONENT({tabKey: 'item-listing-' + book.uuid, tabComponent: 'item-listing', tabData: book, tabTitle: $t('ITEMS') + ' - ' + book.title})">{{ $t('ITEMS') }}</button>
         /
         <button class="current">
-            <span v-if="item !== null">{{ item.itemname }}</span>
+            <span v-if="data !== null">{{ data.itemname }}</span>
             <span v-else>{{$t('NEW_ITEM')}}</span>
         </button>
     </div>
@@ -97,7 +97,7 @@
 import TinyMCE from '../../../components/TinyMCE'
 
 export default {
-  name: 'book-form',
+  name: 'item-form',
   props: ['properties'],
   data: function () {
     return {
@@ -247,7 +247,7 @@ export default {
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
                 scope.$store.dispatch('updateItemList', response.data)
-                scope.CHANGE_COMPONENT({tabKey: 'item-form-' + response.data.uuid, tabComponent: 'item-form', tabData: { book_id: response.data.book_id, item: response.data }, tabTitle: this.$t('EDIT') + ' - ' + response.data.itemname, tabIndex: scope.$store.getters.getActiveTab})
+                scope.CHANGE_COMPONENT({tabKey: 'item-form-' + response.data.uuid, tabComponent: 'item-form', tabData: { book: response.data.book, item: response.data }, tabTitle: this.$t('EDIT') + ' - ' + response.data.itemname, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
@@ -255,43 +255,38 @@ export default {
                 scope.$store.dispatch('updateItemList', response.data)
                 scope.$store.dispatch('changeTabTitle', { key: 'item-form-' + response.data.uuid, title: this.$t('EDIT') + ' - ' + response.data.itemname })
               }
-
-              scope.loadItem(response.data)
             })
           }
         })
     },
     loadItem (itemProp) {
       var scope = this
-      setTimeout(function () {
-        let item = scope.$store.getters.findItem(itemProp)
+      let item
+      item = scope.$store.getters.findItem(itemProp)
+      if (item) {
         scope.data.itemname = item.itemname
         scope.data.AKA = item.AKA
         scope.data.tags = item.tags
         scope.data.description = item.description
         scope.data.pictures = item.pictures
         scope.picture_src = item.picture_src
-      }, 500)
+      }
     }
   },
   beforeMount () {
     var scope = this
+    if (scope.properties.item) scope.data = scope.properties.item
     scope.data.book_id = scope.properties.book.uuid
-
-    if (scope.properties.item) {
-      scope.$set(scope.data, 'id', scope.properties.item.id)
-      scope.$set(scope.data, 'uuid', scope.properties.item.uuid)
-    }
   },
-  mounted () {
+  async mounted () {
     var scope = this
-    if (scope.data.uuid) {
-      scope.loadItem(scope.data)
-    }
-
-    setTimeout(function () {
+    try {
+      if (scope.data.uuid) {
+        await scope.loadItem(scope.data)
+      }
+    } finally {
       scope.page.is_ready = true
-    }, 550)
+    }
   }
 }
 </script>
