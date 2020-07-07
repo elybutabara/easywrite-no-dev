@@ -43,14 +43,14 @@ class PackageCourseController {
     }
     var data = await PackageCourse.query()
       .patch(columns)
-      .where('uuid', '=', row.uuid)
+      .where('package_id', '=', row.package_id)
 
     if (!data || data === 0) {
       data = await PackageCourse.query().insert(columns)
       // update uuid to match web
       data = await PackageCourse.query()
-        .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
-        .where('uuid', '=', data.uuid)
+        .patch({ created_at: row.created_at, updated_at: row.updated_at })
+        .where('package_id', '=', data.package_id)
     }
 
     return data

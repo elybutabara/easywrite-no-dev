@@ -1,126 +1,130 @@
 <template>
-<div class="page-syncing" v-bind:class="{'fullscreen' : fullscreen}">
+  <div class="page-syncing" v-bind:class="{'fullscreen' : fullscreen}">
     <div>
-        <div class="es-page-head">
-            <div class="inner">
-                <div class="details">
-                    <h4>{{$t('SYNCING')}}</h4>
-                    <small>{{$t('SYNCING_YOUR_DATA')}}</small>
-                </div>
-            </div>
+      <div class="es-page-head">
+        <div class="inner">
+          <div class="details">
+            <h4>{{$t('SYNCING')}}</h4>
+            <small>{{$t('SYNCING_YOUR_DATA')}}</small>
+          </div>
         </div>
-        <div class="es-page-content">
-            <div v-if="stage == 'intro'" class="es-card fadeIn animated">
-                <div class="es-card-header">{{$t('DATA_SYNCER')}}</div>
-                <div class="es-card-content">
-                    <p class="intro-message">
-                        <i style="font-size:80px;" class="las la-sync"></i> <br/>
-                        {{ $t('SYNCING_YOUR_DATA')}} {{$t('FROM_DESKTOP_TO_WEB_VICE_VERSA') }}...
-                        <br/>
-                        <br/>
-                        <button class="syncer-button" @click="checkConnection()">{{$t('START_SYNCING')}}</button>
-                    </p>
-                </div>
-            </div>
-            <div v-if="stage == 'connecting'" class="es-card fadeIn animated">
-                <div class="es-card-header">{{$t('CONNECTING')}}</div>
-                <div class="es-card-content">
-                    <img class="loader" src="@/assets/img/loader-cog.svg">
-                    <p>{{ progress_message }}</p>
-                    <br/>
-                    <br/>
-                </div>
-            </div>
-            <div v-if="stage == 'packing'" class="es-card">
-                <div class="es-card-header">{{$t('PACKING')}}</div>
-                <div class="es-card-content">
-                    <img class="loader" src="@/assets/img/loader-cog.svg">
-                    <p style="font-size:20px;">{{ packingProgess }}%</p>
-                    <div class="es-progress-bar">
-                        <div v-bind:class="{'error' : packing.error }" class="es-progress" v-bind:style="{ width: packingProgess + '%' }"></div>
-                    </div>
-                    <p>{{ progress_message }}</p>
-                    <br/>
-                    <br/>
-                </div>
-            </div>
-            <div v-if="stage == 'uploading'" class="es-card">
-                <div class="es-card-header">{{$t('UPLOADING_DATA')}}</div>
-                <div class="es-card-content">
-                    <img class="loader" src="@/assets/img/loader-cog.svg">
-                    <p style="font-size:20px;">{{ uploadProgess }}%</p>
-                    <div class="es-progress-bar">
-                        <div v-bind:class="{'error' : upload.error }" class="es-progress" v-bind:style="{ width: uploadProgess + '%' }"></div>
-                    </div>
-                    <p>{{ progress_message }}</p>
-                    <br/>
-                    <br/>
-                </div>
-            </div>
-            <div v-if="stage == 'downloading'" class="es-card">
-                <div class="es-card-header">{{$t('DOWNLOADING_DATA')}}</div>
-                <div class="es-card-content">
-                    <img class="loader" src="@/assets/img/loader-cog.svg">
-                    <p style="font-size:20px;">{{ downloadProgess }}%</p>
-                    <div class="es-progress-bar">
-                        <div v-bind:class="{'error' : download.error }" class="es-progress" v-bind:style="{ width: downloadProgess + '%' }"></div>
-                    </div>
-                    <p>{{ progress_message }}</p>
-                    <br/>
-                    <br/>
-                </div>
-            </div>
-            <div v-if="stage == 'saving'" class="es-card">
-                <div class="es-card-header">{{$t('SAVING_DATA')}}</div>
-                <div class="es-card-content">
-                    <img class="loader" src="@/assets/img/loader-cog.svg">
-                    <p style="font-size:20px;">{{ savingProgess }}%</p>
-                    <div class="es-progress-bar">
-                        <div v-bind:class="{'error' : saving.error }" class="es-progress" v-bind:style="{ width: savingProgess + '%' }"></div>
-                    </div>
-                    <p>{{ progress_message }}</p>
-                    <br/>
-                    <br/>
-                </div>
-            </div>
-            <div v-if="stage == 'logs'" class="es-card">
-                <div class="es-card-header">{{$t('CHANGE_LOGS')}}</div>
-                <div class="es-card-content">
-                   <div style="text-align:left; color:#ccc;">
-                        <p style="margin:2px 0px; color:#293742; font-size:12px;" v-for="(endpoint,index) in endpoints" v-bind:key="index">
-                           {{$t('DOWNLOADED')}} {{ endpoint.downloaded.length}} <strong>{{ endpoint.title }}</strong>
-                        </p>
-                       <button v-if="autostart" class="syncer-button" @click="backToDashboard()">OK</button>
-                       <button v-else class="syncer-button" @click="backToIntro()">OK</button>
-                   </div>
-                </div>
-            </div>
-            <div v-if="stage == 'no-connection'" class="es-card">
-                <div class="es-card-header">{{ $t('NO_CONNECTION') }}</div>
-                <div class="es-card-content">
-                    <br/>
-                    <br/>
-                    <i style="font-size:60px; color:#e3d457;" class="las la-exclamation-triangle"></i>
-                    <p style="font-size:20px;">Failed syncing data, Please check your internet connection...</p>
-                    <button class="syncer-button" @click="backToDashboard()">OK</button>
-                    <br/>
-                    <br/>
-                    <br/>
-                </div>
-            </div>
+      </div>
+      <div class="es-page-content">
+        <div v-if="stage == 'intro'" class="es-card fadeIn animated">
+          <div class="es-card-header">{{$t('DATA_SYNCER')}}</div>
+          <div class="es-card-content">
+            <p class="intro-message">
+              <i style="font-size:80px;" class="las la-sync"></i> <br/>
+              {{ $t('SYNCING_YOUR_DATA')}} {{$t('FROM_DESKTOP_TO_WEB_VICE_VERSA') }}...
+              <br/>
+              <br/>
+              <button class="syncer-button" @click="checkConnection()">{{$t('START_SYNCING')}}</button>
+            </p>
+          </div>
         </div>
+        <div v-if="stage == 'connecting'" class="es-card fadeIn animated">
+          <div class="es-card-header">{{$t('CONNECTING')}}</div>
+          <div class="es-card-content">
+            <img class="loader" src="@/assets/img/loader-cog.svg">
+            <p>{{ progress_message }}</p>
+            <br/>
+            <br/>
+          </div>
+        </div>
+        <div v-if="stage == 'packing'" class="es-card">
+          <div class="es-card-header">{{$t('PACKING')}}</div>
+          <div class="es-card-content">
+            <img class="loader" src="@/assets/img/loader-cog.svg">
+            <p style="font-size:20px;">{{ packingProgess }}%</p>
+            <div class="es-progress-bar">
+              <div v-bind:class="{'error' : packing.error }" class="es-progress" v-bind:style="{ width: packingProgess + '%' }"></div>
+            </div>
+            <p>{{ progress_message }}</p>
+            <br/>
+            <br/>
+          </div>
+        </div>
+        <div v-if="stage == 'uploading'" class="es-card">
+          <div class="es-card-header">{{$t('UPLOADING_DATA')}}</div>
+          <div class="es-card-content">
+            <img class="loader" src="@/assets/img/loader-cog.svg">
+            <p style="font-size:20px;">{{ uploadProgess }}%</p>
+            <div class="es-progress-bar">
+              <div v-bind:class="{'error' : upload.error }" class="es-progress" v-bind:style="{ width: uploadProgess + '%' }"></div>
+            </div>
+            <p>{{ progress_message }}</p>
+            <br/>
+            <br/>
+          </div>
+        </div>
+        <div v-if="stage == 'downloading'" class="es-card">
+          <div class="es-card-header">{{$t('DOWNLOADING_DATA')}}</div>
+          <div class="es-card-content">
+            <img class="loader" src="@/assets/img/loader-cog.svg">
+            <p style="font-size:20px;">{{ downloadProgess }}%</p>
+            <div class="es-progress-bar">
+              <div v-bind:class="{'error' : download.error }" class="es-progress" v-bind:style="{ width: downloadProgess + '%' }"></div>
+            </div>
+            <p>{{ progress_message }}</p>
+            <br/>
+            <br/>
+          </div>
+        </div>
+        <div v-if="stage == 'saving'" class="es-card">
+          <div class="es-card-header">{{$t('SAVING_DATA')}}</div>
+          <div class="es-card-content">
+            <img class="loader" src="@/assets/img/loader-cog.svg">
+            <p style="font-size:20px;">{{ savingProgess }}%</p>
+            <div class="es-progress-bar">
+              <div v-bind:class="{'error' : saving.error }" class="es-progress" v-bind:style="{ width: savingProgess + '%' }"></div>
+            </div>
+            <p>{{ progress_message }}</p>
+            <br/>
+            <br/>
+          </div>
+        </div>
+        <div v-if="stage == 'logs'" class="es-card">
+          <div class="es-card-header">{{$t('CHANGE_LOGS')}}</div>
+          <div class="es-card-content">
+            <div style="text-align:left; color:#ccc;">
+              <p style="margin:2px 0px; color:#293742; font-size:12px;" v-for="(endpoint,index) in endpoints" v-bind:key="index">
+                {{$t('DOWNLOADED')}} {{ endpoint.downloaded.length}} <strong>{{ endpoint.title }}</strong>
+              </p>
+              <button v-if="autostart" class="syncer-button" @click="backToDashboard()">OK</button>
+              <button v-else class="syncer-button" @click="backToIntro()">OK</button>
+            </div>
+          </div>
+        </div>
+        <div v-if="stage == 'no-connection'" class="es-card">
+          <div class="es-card-header">{{ $t('NO_CONNECTION') }}</div>
+          <div class="es-card-content">
+            <br/>
+            <br/>
+            <i style="font-size:60px; color:#e3d457;" class="las la-exclamation-triangle"></i>
+            <p style="font-size:20px;">Failed syncing data, Please check your internet connection...</p>
+            <button class="syncer-button" @click="backToDashboard()">OK</button>
+            <br/>
+            <br/>
+            <br/>
+          </div>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
 </template>
 
 <script>
 import moment from 'moment'
 
 var electronFs = window.require('fs')
+const fs = window.require('fs-extra')
 
 const path = window.require('path')
 
 const app = window.require('electron').remote.app
+
+const electron = window.require('electron')
+const resourcePath = electron.remote.getGlobal('resourcePath')
 
 // const FormData = window.require('form-data')
 
@@ -187,17 +191,18 @@ export default {
         { title: 'Book Readers', api: 'book-readers', local: 'readers', downloaded: [], packed: [], error: [] },
         { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: [], packed: [], error: [] },
         { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: [], packed: [], error: [] },
-        { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], error: [] }
-        // { title: 'Courses', api: 'courses', local: 'courses', downloaded: [], packed: [], error: [] },
-        // { title: 'Courses Taken', api: 'courses-taken', local: 'courses-taken', downloaded: [], packed: [], error: [] },
-        // { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], error: [] },
-        // { title: 'Package Courses', api: 'package-courses', local: 'package-courses', downloaded: [], packed: [], error: [] },
-        // { title: 'Lessons', api: 'lessons', local: 'lessons', downloaded: [], packed: [], error: [] },
-        // { title: 'Lesson Documents', api: 'lesson-documents', local: 'lesson-documents', downloaded: [], packed: [], error: [] },
+        { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], error: [] },
+        { title: 'Courses', api: 'courses', local: 'courses', downloaded: [], packed: [], error: [] },
+        { title: 'Courses Taken', api: 'courses-taken', local: 'courses-taken', downloaded: [], packed: [], error: [] },
+        { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], error: [] },
+        { title: 'Package Courses', api: 'package-courses', local: 'package-courses', downloaded: [], packed: [], error: [] },
+        { title: 'Lessons', api: 'lessons', local: 'lessons', downloaded: [], packed: [], error: [] },
+        { title: 'Lesson Documents', api: 'lesson-documents', local: 'lesson-documents', downloaded: [], packed: [], error: [] },
         // { title: 'Book Feedbacks', api: 'book-feedbacks', local: 'feedbacks', downloaded: [], packed: [] },
         // { title: 'Book Chapter Feedbacks', api: 'book-chapter-feedbacks', local: 'chapter-feedbacks', downloaded: [], packed: [] },
         // { title: 'Book Chapter Feedback Responses', api: 'book-chapter-feedback-responses', local: 'chapter-feedback-responses', downloaded: [], packed: [] },
-        // { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [] },
+        { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [] },
+        { title: 'Assignment Manuscripts', api: 'assignment-manuscripts', local: 'assignment-manuscripts', downloaded: [], packed: [] }
         // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
       ],
       bookUUID: ''
@@ -254,19 +259,19 @@ export default {
 
       scope.axios.get(window.API_URL + '/user/connect')
         .then(function (response) {
-        // handle success
+          // handle success
           scope.progress_message = scope.$t('CONNECTED') + '!'
           setTimeout(function () {
             scope.getSyncableData()
           }, 1000)
         })
         .catch(function (error) {
-        // handle error
+          // handle error
           console.log(error)
           scope.stage = 'no-connection'
         })
         .finally(function () {
-        // always executed
+          // always executed
         })
     },
     getSyncableData: function () {
@@ -361,6 +366,30 @@ export default {
 
           finalData = data_
         }
+      } else if (['Assignment Manuscripts'].indexOf(endpoint.title) > -1) {
+        if (data.is_file) {
+          var file = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), data.content)
+
+          if (!electronFs.existsSync(file)) {
+            console.log('local file not found: ', file)
+          } else {
+            headers['Content-Type'] = 'multipart/form-data'
+
+            // eslint-disable-next-line no-redeclare
+            var data_ = new FormData()
+
+            // eslint-disable-next-line no-redeclare
+            for (var x in data) {
+              if (data[x]) {
+                data_.append(x, data[x])
+              }
+            }
+
+            data_.append('file', new Blob([electronFs.readFileSync(file)]), data.content)
+
+            finalData = data_
+          }
+        }
       }
 
       scope.axios.post(window.API_URL + '/' + endpoint.api + '',
@@ -452,15 +481,19 @@ export default {
           var data = response.data.rows
 
           if (['Items', 'Characters', 'Locations'].indexOf(endpoint.title) > -1) {
-            console.log(endpoint.title + ' response.data.rows ---->\n', response.data.rows)
+            // console.log(endpoint.title + ' response.data.rows ---->\n', response.data.rows)
 
             if (response.data && response.data.rows && response.data.rows.length > 0) {
               for (var i = 0; i < response.data.rows.length; i++) {
                 var row = response.data.rows[i]
                 var src = uploadsBaseURL + '/book-' + endpoint.title.toLowerCase() + '/' + (row.picture || row.pictures)
                 var dst = path.resolve(app.getAppPath() + '\\resources', 'resources', 'images', endpoint.title.toLowerCase(), (row.picture || row.pictures) + '')
-                console.log('src = ', src)
-                console.log('dst = ', dst)
+
+                // Added by mael this will create the directory if not exist
+                let dstDir = path.join(resourcePath, 'resources', 'images', endpoint.title.toLowerCase())
+                fs.mkdirsSync(dstDir)
+                // console.log('src = ', src)
+                // console.log('dst = ', dst)
                 fetch(src, {
                   method: 'GET'
                 })
@@ -476,6 +509,40 @@ export default {
             }
           } else if (['Feedbacks', 'Chapter Versions', 'Scene Versions'].indexOf(endpoint.title) > -1) {
             scope.saveAuthorDetails(response.data.authors)
+          } else if (['Assignment Manuscripts'].indexOf(endpoint.title) > -1) {
+            if (response.data && response.data.rows && response.data.rows.length > 0) {
+              // eslint-disable-next-line no-redeclare
+              for (var i = 0; i < response.data.rows.length; i++) {
+                // eslint-disable-next-line no-redeclare
+                var row = response.data.rows[i]
+
+                if (row.is_file) {
+                  // eslint-disable-next-line no-redeclare
+                  var src = uploadsBaseURL + '/' + endpoint.title.replace(/\s+/g, '-').toLowerCase() + '/' + (row.content)
+
+                  // eslint-disable-next-line no-redeclare
+                  var dst = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), row.content)
+
+                  // Added by mael this will create the directory if not exist
+                  let dstDir = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase())
+                  fs.mkdirsSync(dstDir)
+
+                  // console.log('src = ', src)
+                  // console.log('dst = ', dst)
+                  fetch(src, {
+                    method: 'GET'
+                  })
+                    .then(response => response.blob())
+                    .then(blob => {
+                      var fileReader = new FileReader()
+                      fileReader.onload = function () {
+                        electronFs.writeFileSync(dst, Buffer.from(new Uint8Array(this.result)))
+                      }
+                      fileReader.readAsArrayBuffer(blob)
+                    })
+                }
+              }
+            }
           }
 
           scope.endpoints[scope.download.pointer].downloaded = data
@@ -573,7 +640,7 @@ export default {
         scope.axios
           .post('http://localhost:3000/users/connections', rows[i])
           .then(function (response) {
-            console.log(response)
+            // console.log(response)
           })
           .catch(function (error) {
             // handle error
@@ -589,8 +656,8 @@ export default {
       scope.stage = 'logs'
 
       /* reload Book-i-Read tree list after sync : JPM
-      *  TODO: how to reload Tree List Book without collapse open
-      * */
+        *  TODO: how to reload Tree List Book without collapse open
+        * */
       const userUUID = this.$store.getters.getUserID
       const authorUUID = this.$store.getters.getAuthorID
       scope.$store.dispatch('reloadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
@@ -697,17 +764,17 @@ export default {
         { title: 'Book Readers', api: 'book-readers', local: 'readers', downloaded: [], packed: [], error: [] },
         { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: [], packed: [], error: [] },
         { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: [], packed: [], error: [] },
-        { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], error: [] }
-        // { title: 'Courses', api: 'courses', local: 'courses', downloaded: [], packed: [], error: [] },
-        // { title: 'Courses Taken', api: 'courses-taken', local: 'courses-taken', downloaded: [], packed: [], error: [] },
-        // { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], error: [] },
-        // { title: 'Package Courses', api: 'package-courses', local: 'package-courses', downloaded: [], packed: [], error: [] },
-        // { title: 'Lessons', api: 'lessons', local: 'lessons', downloaded: [], packed: [], error: [] },
-        // { title: 'Lesson Documents', api: 'lesson-documents', local: 'lesson-documents', downloaded: [], packed: [], error: [] },
+        { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], error: [] },
+        { title: 'Courses', api: 'courses', local: 'courses', downloaded: [], packed: [], error: [] },
+        { title: 'Courses Taken', api: 'courses-taken', local: 'courses-taken', downloaded: [], packed: [], error: [] },
+        { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], error: [] },
+        { title: 'Package Courses', api: 'package-courses', local: 'package-courses', downloaded: [], packed: [], error: [] },
+        { title: 'Lessons', api: 'lessons', local: 'lessons', downloaded: [], packed: [], error: [] },
+        { title: 'Lesson Documents', api: 'lesson-documents', local: 'lesson-documents', downloaded: [], packed: [], error: [] },
         // { title: 'Book Feedbacks', api: 'book-feedbacks', local: 'feedbacks', downloaded: [], packed: [] },
         // { title: 'Book Chapter Feedbacks', api: 'book-chapter-feedbacks', local: 'chapter-feedbacks', downloaded: [], packed: [] },
         // { title: 'Book Chapter Feedback Responses', api: 'book-chapter-feedback-responses', local: 'chapter-feedback-responses', downloaded: [], packed: [] },
-        // { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [] },
+        { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [] }
         // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
       ]
     }
@@ -735,20 +802,20 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    .page-syncing.fullscreen .es-page-content {  position: fixed; top: 0px; left: 0px;  background: rgba(31,46,58,0.8); width: 100%; height: 100vh; z-index: 999; }
-    .page-syncing.fullscreen .es-card { margin-top:100px; }
+  .page-syncing.fullscreen .es-page-content {  position: fixed; top: 0px; left: 0px;  background: rgba(31,46,58,0.8); width: 100%; height: 100vh; z-index: 999; }
+  .page-syncing.fullscreen .es-card { margin-top:100px; }
 
-    .es-card { width:calc(100% - 40px); max-width:750px; margin:0px auto; margin-top:10px; color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
-    .es-card .es-card-content { position:relative; padding:20px; min-height:150px; text-align:center; }
-    .es-card .es-card-content .intro-message { padding:80px 10px; }
-    .es-card .es-card-content .loader { display:inline-block; margin:0px auto; padding:20px 0px; max-width:100px; }
+  .es-card { width:calc(100% - 40px); max-width:750px; margin:0px auto; margin-top:10px; color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
+  .es-card .es-card-content { position:relative; padding:20px; min-height:150px; text-align:center; }
+  .es-card .es-card-content .intro-message { padding:80px 10px; }
+  .es-card .es-card-content .loader { display:inline-block; margin:0px auto; padding:20px 0px; max-width:100px; }
 
-    .es-card .es-card-content .syncer-button {cursor:pointer; background:#862e3b; border:none; color:#fff; padding:10px 40px; border-radius:4px; }
-    .es-card .es-card-content .syncer-button:hover { background:#973241;  }
+  .es-card .es-card-content .syncer-button {cursor:pointer; background:#862e3b; border:none; color:#fff; padding:10px 40px; border-radius:4px; }
+  .es-card .es-card-content .syncer-button:hover { background:#973241;  }
 
-    .es-card .es-card-content .es-progress-bar { margin-top:-8px; margin-bottom:10px; position:relative; background:#ccc; border-radius:8px; height:10px;  }
-    .es-card .es-card-content .es-progress { position:absolute; top:0px; left:0px; border-radius:8px; height:10px; background:#43c853; width:0%; height:100%;  }
-    .es-card .es-card-content .es-progress.error { background:#ef3551;  }
+  .es-card .es-card-content .es-progress-bar { margin-top:-8px; margin-bottom:10px; position:relative; background:#ccc; border-radius:8px; height:10px;  }
+  .es-card .es-card-content .es-progress { position:absolute; top:0px; left:0px; border-radius:8px; height:10px; background:#43c853; width:0%; height:100%;  }
+  .es-card .es-card-content .es-progress.error { background:#ef3551;  }
 
-    .es-card .es-card-header { font-weight:600; position:relative; background:#f5f8fa; height:40px; line-height:40px; padding:0px 10px; border-bottom:1px solid #e0e5ee; }
+  .es-card .es-card-header { font-weight:600; position:relative; background:#f5f8fa; height:40px; line-height:40px; padding:0px 10px; border-bottom:1px solid #e0e5ee; }
 </style>

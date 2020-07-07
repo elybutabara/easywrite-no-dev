@@ -36,7 +36,7 @@ router.get('/:userId', async function (req, res) {
 
     let assignmentManuscript = await AssignmentManuscriptController.getAssignmentManuscript(assignment.uuid)
 
-    if (assignment.allowed_package === '[]') {
+    if (assignment.allowed_package === '[]' || assignment.allowed_package === null) {
       assignment.assignment_manuscript = assignmentManuscript
       result.push(assignment)
     } else {
@@ -44,7 +44,7 @@ router.get('/:userId', async function (req, res) {
 
       let isAllowed = false
       packages.forEach(function (pack, index) {
-        if (allowedPackages.includes(pack.id)) {
+        if (allowedPackages != null && allowedPackages.includes(pack.id)) {
           isAllowed = true
         }
       })
@@ -55,6 +55,8 @@ router.get('/:userId', async function (req, res) {
       }
     }
   })
+
+  console.log(result)
 
   res
     .status(200)

@@ -51,7 +51,6 @@ export default {
     try {
       response = await scope.axios.get('http://localhost:3000/courses/' + this.$store.getters.getUserID + '/course-list-dashboard')
     } finally {
-      console.clear()
       scope.courses_taken = response.data
       scope.page.is_ready = true
     }

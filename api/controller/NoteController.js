@@ -1,5 +1,6 @@
 'use strict'
 const path = require('path')
+const moment = require('moment')
 
 const { Book, Note, Chapter, Scene, Reader, User } = require(path.join(__dirname, '..', 'models'))
 
@@ -35,6 +36,47 @@ class NoteController {
       .orderBy('id', 'asc')
 
     return feedbacks
+  }
+
+  static async getAllNotesByAuthor (authorId) {
+    var notes = await Note.query()
+      .where('notes.message', '!=', '')
+      .where('notes.author_id', authorId)
+      .withGraphJoined('author', {maxBatchSize: 1})
+      .orderBy('id', 'asc')
+
+    for (let i = 0; i < notes.length; i++) {
+      let parent = notes[i].parent
+      let parentID = notes[i].parent_id
+
+      if (parent === 'chapter') {
+        notes[i].chapter = await Chapter.query().findById(parentID)
+        notes[i].scene = null
+        notes[i].book = await Book.query().findById(notes[i].chapter.book_id)
+      } else if (parent === 'scene') {
+        notes[i].chapter = null
+        notes[i].scene = await Scene.query().findById(parentID)
+        notes[i].book = await Book.query().findById(notes[i].scene.book_id)
+      } else if (parent === 'book') {
+        notes[i].chapter = null
+        notes[i].scene = null
+        notes[i].book = await Book.query().findById(parentID)
+      }
+    }
+
+    return notes
+  }
+
+  static async delete (noteId) {
+    let updatedAt = moment().format('YYYY-MM-DD HH:mm:ss').toString()
+    const note = await Note.query().upsertGraph([{ message: '', uuid: noteId, updated_at: updatedAt }]).first()
+
+    var row = Note.query()
+      .where('notes.uuid', note.uuid)
+      .withGraphJoined('author', {maxBatchSize: 1})
+      .first()
+
+    return row
   }
 
   static async save (data) {

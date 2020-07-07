@@ -8,9 +8,14 @@ class FeedbackController {
     var feedbacks = Feedback.query()
       .where('parent', 'book')
       .where('parent_id', bookId)
+      .whereNull('feedbacks.deleted_at')
       .withGraphJoined('[feedback_responses.author]', {maxBatchSize: 1})
+      .modifyGraph('[feedback_responses]', builder => {
+        builder.whereNull('feedback_responses.deleted_at')
+        builder.orderBy('feedback_responses.id', 'asc')
+      })
       .withGraphJoined('author', {maxBatchSize: 1})
-      .orderBy('id', 'asc')
+      .orderBy('id', 'DESC')
 
     return feedbacks
   }
@@ -19,8 +24,10 @@ class FeedbackController {
     var feedbacks = Feedback.query()
       .where('parent', 'chapter')
       .where('parent_id', chapterId)
+      .whereNull('feedbacks.deleted_at')
       .withGraphJoined('[feedback_responses.author]', {maxBatchSize: 1})
       .modifyGraph('[feedback_responses]', builder => {
+        builder.whereNull('feedback_responses.deleted_at')
         builder.orderBy('feedback_responses.id', 'asc')
       })
       .withGraphJoined('author', {maxBatchSize: 1})
@@ -33,7 +40,12 @@ class FeedbackController {
     var feedbacks = Feedback.query()
       .where('parent', 'scene')
       .where('parent_id', sceneId)
+      .whereNull('feedbacks.deleted_at')
       .withGraphJoined('[feedback_responses.author]', {maxBatchSize: 1})
+      .modifyGraph('[feedback_responses]', builder => {
+        builder.whereNull('feedback_responses.deleted_at')
+        builder.orderBy('feedback_responses.id', 'asc')
+      })
       .withGraphJoined('author', {maxBatchSize: 1})
       .orderBy('id', 'asc')
 
@@ -50,6 +62,12 @@ class FeedbackController {
       .first()
 
     return row
+  }
+
+  static async delete (feedbackId) {
+    const feedback = await Feedback.query().softDeleteById(feedbackId)
+
+    return feedback
   }
 
   static async updateStatus (row) {
@@ -78,7 +96,7 @@ class FeedbackController {
       parentIDs.push(books[i].uuid)
     }
 
-    console.log(bookUUIDs)
+    // console.log(bookUUIDs)
 
     // get all "books i read" IDs
     const booksIRead = await Reader.query()
@@ -111,8 +129,8 @@ class FeedbackController {
       parentIDs.push(scenes[i].uuid)
     }
 
-    const test = await Feedback.query().whereIn('parent_id', parentIDs)
-    console.log(test)
+    // const test = await Feedback.query().whereIn('parent_id', parentIDs)
+    // console.log(test)
 
     const rows = await Feedback.query()
       .whereIn('parent_id', parentIDs)
@@ -128,7 +146,7 @@ class FeedbackController {
       parent_id: row.parent_id,
       parent: row.parent,
       message: row.message,
-      is_done: row.uuid,
+      is_done: row.is_done,
       created_at: row.created_at,
       updated_at: row.updated_at,
       deleted_at: row.deleted_at

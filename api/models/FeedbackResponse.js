@@ -16,7 +16,7 @@ class FeedbackResponse extends BaseModel {
         from: 'feedback_responses.author_id',
         to: 'author_names.uuid'
       },
-      softDelete: true
+      softDelete: false
     }
   };
 }

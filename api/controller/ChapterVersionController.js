@@ -30,7 +30,7 @@ class ChapterVersionController {
 
     delete data['new_comment_json']
     const chapterVersion = await ChapterVersion.query().upsertGraphAndFetch([data]).first()
-    console.log(chapterVersion)
+    // console.log(chapterVersion)
 
     /*
     const notification = await Notification.query().upsertGraphAndFetch([{

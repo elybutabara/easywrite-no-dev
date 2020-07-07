@@ -23,11 +23,11 @@ router.post('/', async function (req, res) {
 })
 
 router.delete('/:ID', async function (req, res) {
-  const character = await FeedbackController.delete(req.params.ID)
+  const feedback = await FeedbackController.delete(req.params.ID)
 
   res
     .status(200)
-    .json(character)
+    .json(feedback)
 })
 
 router.get('/syncable', async function (req, res) {
