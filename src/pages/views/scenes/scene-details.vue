@@ -5,7 +5,7 @@
             <div class="inner">
                 <div class="details">
                     <div>
-                        <h4><strong>{{ properties.scene.title  || $tc('Untitled')}}</strong></h4>
+                        <h4><strong>{{ properties.scene.title  || $t('Untitled')}}</strong></h4>
                     </div>
                 </div>
                 <div class="actions">

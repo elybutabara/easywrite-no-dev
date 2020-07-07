@@ -32,11 +32,11 @@
           <div class="feedback-wrap">
           <div class="feedbacks">
           <div class="head">
-            Feedbacks
+            {{$t('FEEDBACKS')}}
             <select v-model="filter" style="position:absolute; top:7px; right:10px;">
-              <option value="all">All</option>
-              <option value="done">Done</option>
-              <option value="undone">Undone</option>
+              <option value="all">{{$t('ALL')}}</option>
+              <option value="done">{{$t('DONE')}}</option>
+              <option value="undone">{{$t('UNDONE')}}</option>
             </select>
           </div>
           <div class="body">
@@ -46,8 +46,8 @@
                 <strong class="author" >{{ feedback.author.alias }}</strong>
                 <span class="date">{{ formatDate(feedback) }}</span>
                 <div v-if="$store.getters.getAuthorID === properties.author_id">
-                  <span @click="toggleMark(feedback)" v-if="!feedback.is_done" style="cursor:pointer; font-size:12px; border:1px solid #ccc; border-radius:3px; padding:3px 5px; background:#fff;">Mark as Done</span>
-                  <span @click="toggleMark(feedback)" v-else style="cursor:pointer; font-size:12px; border:1px solid #fff; border-radius:3px; padding:3px 5px; background:#5bd05d; color:#fff;">Mark as Undone</span>
+                  <span @click="toggleMark(feedback)" v-if="!feedback.is_done" style="cursor:pointer; font-size:12px; border:1px solid #ccc; border-radius:3px; padding:3px 5px; background:#fff;">{{$t('MARK_AS_DONE')}}</span>
+                  <span @click="toggleMark(feedback)" v-else style="cursor:pointer; font-size:12px; border:1px solid #fff; border-radius:3px; padding:3px 5px; background:#5bd05d; color:#fff;">{{$t('MARK_AS_UNDONE')}}</span>
                 </div>
               </div>
               <div class="feedback-single-content-wrap" v-bind:class="{ 'open' : feedback.expand_content }">
@@ -55,7 +55,7 @@
               </div>
               <div class="feedback-single-replies-wrap " v-bind:class="{ 'open' : feedback.show_replies }">
                 <div class="feedback-single-replies-header ">
-                  <span @click="openFeedback(feedback)">{{ feedback.feedback_responses.length }} Replies</span>
+                  <span @click="openFeedback(feedback)">{{ feedback.feedback_responses.length }} {{$t('REPLIES')}}</span>
                 </div>
                 <div class="feedback-single-replies">
                 <div v-if="feedback.feedback_responses.length > 0" >
@@ -70,12 +70,12 @@
                   </div>
                 </div>
                 <div v-else style="padding:10px; text-align:center;">
-                  No Response for this feedback yet.
+                  {{$t('NO_RESPONSE_FOR_THIS_FEEDBACK_YET')}}
                 </div>
                 <div class="" style="text-align:right;">
                   <form v-on:submit.prevent="sendReply(feedback)">
                     <textarea style="width:100%;" type="text" v-model="feedback.reponse_text"></textarea>
-                    <button type="submit" class="es-button-white">Submit</button>
+                    <button type="submit" class="es-button-white">{{$t('SUBMIT')}}</button>
                   </form>
                 </div>
                 </div>
@@ -85,7 +85,7 @@
           </div>
           <div class="foot">
             <textarea  type="text" v-model="message"></textarea>
-            <button @click="saveFeedback()" class="es-button-white">Submit</button>
+            <button @click="saveFeedback()" class="es-button-white">{{$t('SUBMIT')}}</button>
           </div>
         </div>
         </div>

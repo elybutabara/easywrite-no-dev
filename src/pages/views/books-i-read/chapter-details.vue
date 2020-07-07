@@ -10,20 +10,20 @@
                 </div>
                 <div class="actions">
                   <button class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
-                  <button class="es-button-white" @click="toggleNotes()">{{$t('MY NOTES').toUpperCase()}}</button>
+                  <button class="es-button-white" @click="toggleNotes()">{{$t('MY_NOTES').toUpperCase()}}</button>
                 </div>
             </div>
         </div>
         <div class="es-page-breadcrumbs">
             <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'books-i-read-book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
             /
-            <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'books-i-read-chapter-listing', tabData: book, tabTitle: $tc('CHAPTER', 2) + ' - ' + book.title})">{{ $tc('CHAPTER', 2) }}</button>
+            <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'books-i-read-chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})">{{ $t('CHAPTERS') }}</button>
             /
             <button class="current">{{ chapter.title }}</button>
         </div>
         <div class="es-chapter-details-tab">
             <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-chapter-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
-            <div v-bind:class="{ 'active' : tab.active == 'scenes' }" @click="changeTab('scenes')" class="es-chapter-details-tab-item">{{$tc('SCENE', 2).toUpperCase()}}</div>
+            <div v-bind:class="{ 'active' : tab.active == 'scenes' }" @click="changeTab('scenes')" class="es-chapter-details-tab-item">{{$t('SCENES').toUpperCase()}}</div>
         </div>
         <div style="position:relative; padding-bottom:40px;">
           <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></Feedback>

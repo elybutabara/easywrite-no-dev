@@ -25,7 +25,7 @@
     <button @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + book.uuid, tabComponent: 'chapter-details', tabData: { book: book, chapter: chapter }, tabTitle: 'VIEW - ' + chapter.title})">{{ chapter.title || 'Untitled' }}</button>
     /
     <button class="current">
-      <span>{{ (data.id) ? data.title || $tc('Untitled') : $t('NEW_SCENE')}}</span>
+      <span>{{ (data.id) ? data.title || $t('Untitled') : $t('NEW_SCENE')}}</span>
     </button>
   </div>
     <div class="es-page-content">

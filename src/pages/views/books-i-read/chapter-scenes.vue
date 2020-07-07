@@ -11,7 +11,7 @@
                     <i class="description ellipsis-2">{{ scene.short_description || $t('NO_SHORT_DESCRIPTION') + '...'  }}</i>
                 </div>
                 <div class="es-card-footer">
-                    <small>{{$tc('VERSION', 2)}}: {{ scene.scene_version.length }}</small>
+                    <small>{{$t('VERSIONS')}}: {{ scene.scene_version.length }}</small>
                     <small style="float:right;">{{$t('WORD_COUNT')}}: {{ WORD_COUNT(scene.scene_version[0].content) }}</small>
                 </div>
             </div>

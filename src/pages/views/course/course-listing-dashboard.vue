@@ -2,10 +2,10 @@
   <div class="component-course-listing-dashboard" v-if="page.is_ready">
     <div class="row">
       <div class="col-md-6">
-        <h4 style="margin-bottom: 0">{{$tc('COURSES')}}</h4>
+        <h4 style="margin-bottom: 0">{{$t('COURSES')}}</h4>
       </div>
       <div class="col-md-6 text-right" v-if="courses_taken.length">
-        <b-button style="" class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'course-list', tabComponent: 'course-listing',  tabData: {}, tabTitle: $t('COURSES'), newTab: true})">{{ $tc('VIEW_ALL') }}</b-button>
+        <b-button style="" class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'course-list', tabComponent: 'course-listing',  tabData: {}, tabTitle: $t('COURSES'), newTab: true})">{{ $t('VIEW_ALL') }}</b-button>
       </div>
     </div>
     <hr/>
@@ -20,7 +20,7 @@
             <span class="ellipsis-2" v-html="REMOVE_HTML(course_taken.course.short_description)"></span>
           </div>
           <div class="mt-3 text-center">
-            <b-button @click="CHANGE_COMPONENT({tabKey: 'course-details-' + course_taken.uuid , tabComponent: 'course-details',  tabData: {course_taken:course_taken}, tabTitle: $t('COURSE'), newTab: true})" class="es-button-white">{{ (course_taken.started_at) ? $tc('CONTINUE_WITH_COURSE') : $tc('START')}}</b-button>
+            <b-button @click="CHANGE_COMPONENT({tabKey: 'course-details-' + course_taken.uuid , tabComponent: 'course-details',  tabData: {course_taken:course_taken}, tabTitle: $t('COURSE'), newTab: true})" class="es-button-white">{{ (course_taken.started_at) ? $t('CONTINUE_WITH_COURSE') : $t('START')}}</b-button>
           </div>
         </div>
       </div>

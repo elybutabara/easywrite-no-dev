@@ -49,8 +49,8 @@
 <!--            </div>-->
 <!--          </div>-->
           <div class="text-right">
-            <b-badge href="#" variant="dark" class="p-2">{{ $tc('DATE_STARTED') }}: <i class="fa fa-calendar-check" aria-hidden="true"></i> {{ data.started_at }}</b-badge>
-            <b-badge href="#" variant="dark" class="p-2">{{ $tc('EXPIRES_ON') }}: <i class="fa fa-calendar-times" aria-hidden="true"></i> {{ data.expired_at }}</b-badge>
+            <b-badge href="#" variant="dark" class="p-2">{{ $t('DATE_STARTED') }}: <i class="fa fa-calendar-check" aria-hidden="true"></i> {{ data.started_at }}</b-badge>
+            <b-badge href="#" variant="dark" class="p-2">{{ $t('EXPIRES_ON') }}: <i class="fa fa-calendar-times" aria-hidden="true"></i> {{ data.expired_at }}</b-badge>
           </div>
           <div class="row mt-2">
             <div class="col-md-12" v-html="lesson.content"></div>

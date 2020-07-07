@@ -257,7 +257,7 @@ export default {
         setTimeout(function () {
           scope.page.is_ready = true
           let pdf = {
-            name: scope.bookTitle + ' - ' + scope.$tc('SCENE', 2)
+            name: scope.bookTitle + ' - ' + scope.$t('SCENES')
           }
           ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
         }, 500)

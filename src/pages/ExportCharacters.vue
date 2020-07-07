@@ -127,15 +127,6 @@ export default {
   },
   computed: {},
   methods: {
-    // exportCharacter: function () {
-    //   const scope = this
-    //   window.$('#printCharacterButton').hide()
-    //   let pdf = {
-    //     name: scope.bookTitle + ' - ' + this.$tc('CHARACTER', 2)
-    //   }
-    //   ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
-    // },
-
     viewCharacters: function () {
       const scope = this
       let characters = scope.$store.getters.getCharactersByBook(scope.bookUUID)
@@ -159,7 +150,7 @@ export default {
         scope.page.is_ready = true
       })
       let pdf = {
-        name: scope.bookTitle + ' - ' + scope.$tc('CHARACTER', 2)
+        name: scope.bookTitle + ' - ' + scope.$t('CHARACTERS')
       }
       ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
     }

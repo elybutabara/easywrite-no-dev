@@ -64,7 +64,7 @@ export default {
         is_ready: false
       },
       exportOnProgress: false,
-      exportDefaultName: this.$tc('EXPORT', 1).toUpperCase() + ' ' + this.$tc('SCENE', 2).toUpperCase() + ' ' + this.$tc('LIST', 1).toUpperCase(),
+      exportDefaultName: this.$t('EXPORT_SCENES_LIST').toUpperCase(),
       exportLoading: this.$t('Loading'),
       bookUUID: ''
     }
