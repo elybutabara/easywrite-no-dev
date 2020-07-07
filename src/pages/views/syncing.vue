@@ -488,6 +488,10 @@ export default {
                 var row = response.data.rows[i]
                 var src = uploadsBaseURL + '/book-' + endpoint.title.toLowerCase() + '/' + (row.picture || row.pictures)
                 var dst = path.resolve(app.getAppPath() + '\\resources', 'resources', 'images', endpoint.title.toLowerCase(), (row.picture || row.pictures) + '')
+
+                // Added by mael this will create the directory if not exist
+                let dstDir = path.join(resourcePath, 'resources', 'images', endpoint.title.toLowerCase())
+                fs.mkdirsSync(dstDir)
                 // console.log('src = ', src)
                 // console.log('dst = ', dst)
                 fetch(src, {
