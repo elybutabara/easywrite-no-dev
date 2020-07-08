@@ -458,6 +458,7 @@ export default {
     comments: function () {
       // return '{}'
       var scope = this
+      if (!scope.scene) return null
       var sceneID = scope.scene.uuid
       return this.$store.getters.getSceneComments(sceneID)
     },
@@ -813,7 +814,7 @@ export default {
       } catch (ex) {
         console.log('Failed to load data')
       } finally {
-        let scene = scope.$store.getters.findScene(sceneProp)
+        let scene = sceneProp
         let chapters = scope.$store.getters.getChaptersByBook(sceneProp.book_id)
         let chapter = scope.$store.getters.findChapter({ book_id: sceneProp.book_id, uuid: sceneProp.chapter_id })
         let characters = scope.$store.getters.getCharactersByBook(sceneProp.book_id)
@@ -838,7 +839,7 @@ export default {
         scope.tempSceneEnd = scene.date_ends
 
         // chapters
-        scope.options_chapters = [{title: scope.$t('OTHER_SCENE'), uuid: '-1'}]
+        scope.options_chapters = [{title: window.vm.$t('OTHER_SCENE'), uuid: '-1'}]
         chapters.forEach(function (row, index) {
           scope.options_chapters.push(row)
         })
