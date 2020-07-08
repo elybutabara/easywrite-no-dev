@@ -256,25 +256,21 @@ export default {
     },
     loadLocation (locationProp) {
       var scope = this
-      setTimeout(function () {
-        let location = scope.$store.getters.findLocation(locationProp)
-        scope.data.location = location.location
-        scope.data.AKA = location.AKA
-        scope.data.tags = location.tags
-        scope.data.description = location.description
-        scope.data.pictures = location.pictures
-        scope.picture_src = location.picture_src
-      }, 500)
+      let location = locationProp.location
+      scope.data.location = location.location
+      scope.data.AKA = location.AKA
+      scope.data.tags = location.tags
+      scope.data.description = location.description
+      scope.data.pictures = location.pictures
+      scope.picture_src = location.picture_src
     }
   },
   beforeMount () {
-    var scope = this
-    scope.data.book_id = scope.properties.book.uuid
-
+    const scope = this
     if (scope.properties.location) {
-      scope.$set(scope.data, 'id', scope.properties.location.id)
-      scope.$set(scope.data, 'uuid', scope.properties.location.uuid)
+      scope.data = scope.properties.location
     }
+    scope.data.book_id = scope.properties.book.uuid
   },
   mounted () {
     var scope = this
