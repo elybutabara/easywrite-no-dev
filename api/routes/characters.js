@@ -22,9 +22,8 @@ router.get('/:characterId/relations', async function (req, res) {
 
 router.post('/', async function (req, res) {
   const character = await CharacterController.save(req.body)
-
-  if (character.pictures) {
-    character.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'characters', character.pictures)
+  if (character.picture) {
+    character.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'characters', character.picture)
   }
 
   res
