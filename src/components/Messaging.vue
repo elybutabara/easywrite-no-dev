@@ -73,6 +73,17 @@
               <button v-on:click="sendChatMessage()" class="btn es-button-white btn-secondary" style="float: left;margin-left: 5px;width: 60px;">Send</button>
             </div>
           </div>
+          <div v-show="!showMembers" style="position: absolute; left: 210px; top: 10px; background: #000; color: #fff; width: 16px; height: 16px; border-radius: 50%; text-align: center; line-height: 16px; font-size: 10px;">
+            <i v-on:click.prevent="showMembers=true" class="fa fa-users" title="View Members" style="cursor: pointer;"></i>
+          </div>
+          <div v-show="showMembers" style="position: absolute; left: 210px; top: 10px; background: rgb(245, 248, 250); color: #000; width: 200px; min-height: 200px; padding: 10px; border: 1px solid rgb(227, 230, 240);">
+            <ul style="padding: 0; margin: 0;">
+              <li v-for="m in currentGroup.members" v-bind:key="'gc-m-'+m.uuid" style="padding: 0; margin: 0; font-size: 12px; cursor: default;">
+                {{m.author_alias}}
+              </li>
+            </ul>
+            <button v-on:click.prevent="showMembers=false" type="button" aria-label="Close" class="close" style="position: absolute; top: 5px; right: 10px;"><span aria-hidden="true">×</span></button>
+          </div>
         </div>
         <div style="position: absolute; left: 0; top: 0; height: 100%; width: 200px; background: #f5f8fa; border-right: 1px solid rgb(227, 230, 240);">
           <div style="padding: 5px;">
@@ -107,6 +118,7 @@ export default {
     // var scope = this
     var data = {
       show: !false,
+      showMembers: false,
       userSelect: {
         groupName: '',
         selected: [],
@@ -165,6 +177,7 @@ export default {
   },
   watch: {
     selectedGroupId: function () {
+      this.showMembers = false
       if (!this.selectedGroupId) {
         return
       }
@@ -209,7 +222,6 @@ export default {
       if (!this.selectedGroupId) {
         return
       }
-      // console.log('scroll bottom')
       setTimeout(function () {
         var d = document.getElementById(scope.chatContentId)
         if (d) {
