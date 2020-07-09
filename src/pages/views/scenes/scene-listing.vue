@@ -32,7 +32,7 @@
                         </div>
                         <div class="es-card-footer">
                             <small>{{$t('VERSIONS')}}: {{ scene.scene_version.length }}</small>
-                            <small style="float:right;">{{$t('WORD_COUNT')}}: {{ WORD_COUNT(scene.scene_version[0].content) }}</small>
+                            <small style="float:right;">{{$t('WORD_COUNT')}}: {{ WORD_COUNT((scene.scene_version[0]) ? scene.scene_version[0].content : 0) }}</small>
                         </div>
                     </div>
                 </div>

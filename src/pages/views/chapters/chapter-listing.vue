@@ -37,9 +37,9 @@
                     <i class="description ellipsis-2">{{ chapter.short_description || $t('NO_SHORT_DESCRIPTION') + '...' }}</i>
                 </div>
                 <div class="es-card-footer">
-                    <small>{{$t('SCENES')}}: {{ $store.getters.getScenesByChapter(chapter.uuid).length }}</small>
+                    <small>{{$t('SCENES')}}: {{ $store.getters.getScenesByChapter(chapter.uuid).length || 0 }}</small>
                     &nbsp; &bull; &nbsp;
-                    <small>{{$t('VERSIONS')}}: {{ $store.getters.getChapterVersions(chapter.uuid).length }}</small>
+                    <small>{{$t('VERSIONS')}}: {{ $store.getters.getChapterVersions(chapter.uuid).length || 0}}</small>
                     <small style="float:right;">{{$t('WORD_COUNT')}}: {{ WORD_COUNT($store.getters.getChapterContent(chapter.uuid)) }}</small>
                 </div>
             </div>
