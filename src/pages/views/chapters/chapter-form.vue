@@ -500,7 +500,7 @@ export default {
       } catch (ex) {
         console.log('Failed to load data')
       } finally {
-        let chapter = scope.$store.getters.findChapter(chapterProp)
+        let chapter = chapterProp
         let version = scope.$store.getters.findLatestChapterVersionByChapter(chapterProp)
         let progress = scope.$store.getters.getTodayAuthorPersonalProgressForChapter(chapterProp)
 

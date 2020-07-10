@@ -43,17 +43,25 @@ export default {
   methods: {
     isNotExpired (courseTaken) {
       return moment(courseTaken.end_date).isAfter(moment())
+    },
+    async loadCourses () {
+      const scope = this
+      let response
+      try {
+        response = await scope.axios.get('http://localhost:3000/courses/' + this.$store.getters.getUserID + '/course-list-dashboard')
+      } finally {
+        scope.courses_taken = response.data
+        scope.page.is_ready = true
+      }
     }
   },
-  async mounted () {
+  mounted () {
     let scope = this
-    let response
-    try {
-      response = await scope.axios.get('http://localhost:3000/courses/' + this.$store.getters.getUserID + '/course-list-dashboard')
-    } finally {
-      scope.courses_taken = response.data
-      scope.page.is_ready = true
-    }
+    scope.loadCourses()
+
+    scope.$root.$on('loadCourses', () => {
+      scope.loadCourses()
+    })
   }
 }
 </script>

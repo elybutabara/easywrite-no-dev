@@ -19,7 +19,7 @@
                 </div>
                 <div class="es-card-footer">
                     <small>{{$t('VERSIONS')}}: {{ scene.scene_version.length }}</small>
-                    <small style="float:right;">{{$t('WORD_COUNT')}}: {{ WORD_COUNT(scene.scene_version[0].content) }}</small>
+                    <small style="float:right;">{{$t('WORD_COUNT')}}: {{ WORD_COUNT((scene.scene_version[0]) ? scene.scene_version[0].content : 0) }}</small>
                 </div>
             </div>
         </div>
@@ -99,12 +99,13 @@ export default {
   beforeUpdate () {
     // var scope = this
   },
-  mounted () {
+  async mounted () {
     var scope = this
-    scope.scenes = scope.$store.dispatch('loadScenesByChapter', scope.chapter.uuid)
-    setTimeout(function () {
+    try {
+      scope.scenes = await scope.$store.dispatch('loadScenesByChapter', scope.chapter.uuid)
+    } finally {
       scope.page.is_ready = true
-    }, 500)
+    }
   }
 }
 </script>

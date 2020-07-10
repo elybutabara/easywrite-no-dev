@@ -110,7 +110,7 @@
                                     <label class="mb-0">{{$t('CONTENT')}} :</label>
                                 </div>
                             </div>
-                            <div class="col-md-12" v-html="scene.scene_version[scene.scene_version.length-1].content"></div>
+                            <div v-if="scene.scene_version.length != 0" class="col-md-12" v-html="scene.scene_version[scene.scene_version.length-1].content"></div>
                         </div><br/>
                         <div class="row">
                             <div class="col-md-12">
@@ -155,6 +155,7 @@
 <script>
 const electron = window.require('electron')
 const {ipcRenderer} = electron
+let component
 export default {
   name: 'ExportScenes',
   props: ['properties'],
@@ -243,32 +244,31 @@ export default {
   },
   beforeMount () {},
   mounted () {
-    const scope = this
-    ipcRenderer.on('EXPORT_PDF_LIST_CHAPTERS', function (event, data) {
-      scope.bookUUID = data.bookUUID
-      scope.bookTitle = data.title
-
-      scope.$store.dispatch('loadCharactersByBook', scope.bookUUID)
-      scope.$store.dispatch('loadChaptersWithScenesByBook', scope.bookUUID)
-
-      setTimeout(function () {
-        scope.allCharacterFromBook = scope.$store.getters.getCharactersByBook(scope.bookUUID)
-        scope.chapters = scope.$store.getters.getChaptersByBook(scope.bookUUID)
-        setTimeout(function () {
-          scope.page.is_ready = true
-          let pdf = {
-            name: scope.bookTitle + ' - ' + scope.$tc('SCENE', 2)
-          }
-          ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
-        }, 500)
-      }, 1000)
-    })
-
+    component = this
     // ipcRenderer.on('EXPORT_PDF_SHOW_BUTTON', function (event, data) {
     //   window.$('#printCharacterButton').show()
     // })
   }
 }
+
+ipcRenderer.on('EXPORT_PDF_LIST_CHAPTERS', async function EXPORT_PDF_LIST_CHAPTERS (event, data) {
+  const scope = component
+  scope.bookUUID = data.bookUUID
+  scope.bookTitle = data.title
+
+  try {
+    await scope.$store.dispatch('loadCharactersByBook', scope.bookUUID)
+    await scope.$store.dispatch('loadChaptersWithScenesByBook', scope.bookUUID)
+  } finally {
+    scope.allCharacterFromBook = scope.$store.getters.getCharactersByBook(scope.bookUUID)
+    scope.chapters = scope.$store.getters.getChaptersByBook(scope.bookUUID)
+    scope.page.is_ready = true
+    let pdf = {
+      name: scope.bookTitle + ' - ' + scope.$tc('SCENE', 2)
+    }
+    ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
+  }
+})
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>

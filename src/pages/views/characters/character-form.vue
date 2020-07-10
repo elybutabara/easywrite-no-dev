@@ -23,7 +23,7 @@
         <button @click="CHANGE_COMPONENT({tabKey: 'character-listing-' + book.uuid, tabComponent: 'character-listing', tabData: book, tabTitle: $t('CHARACTERS') + ' - ' + book.title})">{{ $t('CHARACTERS') }}</button>
         /
         <button class="current">
-            <span v-if="character !== null">{{ character.fullname }}</span>
+            <span v-if="character !== null">{{ data.fullname }}</span>
             <span v-else>{{$t('NEW_CHARACTER')}}</span>
         </button>
     </div>
@@ -36,6 +36,7 @@
                             <input v-on:change="displayImage" ref="fileInput" type="file" class="single-picture-file" name="single-picture-file" accept=".png, .jpg, .jpeg">
                             <div @click="$refs.fileInput.click()" class="uploaded-file-preview">
                                 <div v-if="picture_src == false" class="default-preview"><i class="fa fa-image"></i></div>
+
                                 <div v-if="picture_src != false"><img :src="picture_src"></div>
                             </div>
                         </div>
@@ -277,7 +278,6 @@ export default {
       scope.axios
         .post('http://localhost:3000/characters', scope.data)
         .then(response => {
-          console.log(response.data)
           if (response.data) {
             window.swal.fire({
               position: 'center',
@@ -292,7 +292,7 @@ export default {
                 scope.$set(scope.data, 'uuid', response.data.uuid)
                 scope.$set(scope.data, 'updated_at', response.data.updated_at)
                 scope.$store.dispatch('updateCharacterList', response.data)
-                scope.CHANGE_COMPONENT({tabKey: 'character-form-' + response.data.uuid, tabComponent: 'character-form', tabData: { book_id: response.data.book_id, character: response.data }, tabTitle: this.$t('EDIT') + ' - ' + response.data.fullname, tabIndex: scope.$store.getters.getActiveTab})
+                scope.CHANGE_COMPONENT({tabKey: 'character-form-' + response.data.uuid, tabComponent: 'character-form', tabData: { book: response.data.book, character: response.data }, tabTitle: this.$t('EDIT') + ' - ' + response.data.fullname, tabIndex: scope.$store.getters.getActiveTab})
               } else {
                 scope.$set(scope.data, 'id', response.data.id)
                 scope.$set(scope.data, 'uuid', response.data.uuid)
@@ -308,27 +308,24 @@ export default {
     },
     loadCharacter (characterProp) {
       var scope = this
-      setTimeout(function () {
-        let character = scope.$store.getters.findCharacter(characterProp.character)
-        scope.data.shortname = character.shortname
-        scope.data.fullname = character.fullname
-        scope.data.nickname = character.nickname
-        scope.data.occupation = character.occupation
-        scope.data.description = character.description
-        scope.data.bio = character.bio
-        scope.data.goals = character.goals
-        scope.data.birthdate = character.birthdate
-        scope.tempBirthdate = character.birthdate
+      let character = characterProp.character
+      scope.data.shortname = character.shortname
+      scope.data.fullname = character.fullname
+      scope.data.nickname = character.nickname
+      scope.data.occupation = character.occupation
+      scope.data.description = character.description
+      scope.data.bio = character.bio
+      scope.data.goals = character.goals
+      scope.data.birthdate = character.birthdate
+      scope.tempBirthdate = character.birthdate
 
-        scope.tempDescription = character.description
-        scope.tempBio = character.bio
-        scope.tempGoals = character.goals
-
-        if (character.picture) {
-          scope.$set(scope.data, 'picture', character.picture)
-          scope.picture_src = character.picture_src
-        }
-      }, 500)
+      scope.tempDescription = character.description
+      scope.tempBio = character.bio
+      scope.tempGoals = character.goals
+      if (character.picture) {
+        scope.$set(scope.data, 'picture', character.picture)
+        scope.picture_src = character.picture_src
+      }
     }
   },
   beforeMount () {
@@ -340,15 +337,15 @@ export default {
       scope.$set(scope.data, 'uuid', scope.properties.character.uuid)
     }
   },
-  mounted () {
-    var scope = this
-    if (scope.data.uuid) {
-      scope.loadCharacter(scope.properties)
-    }
-
-    setTimeout(function () {
+  async mounted () {
+    const scope = this
+    try {
+      if (scope.data.uuid) {
+        await scope.loadCharacter({character: scope.properties.character})
+      }
+    } finally {
       scope.page.is_ready = true
-    }, 550)
+    }
   }
 }
 </script>

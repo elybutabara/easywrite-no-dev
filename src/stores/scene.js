@@ -84,8 +84,6 @@ export default {
 
       if (state.scene_versions[sceneUUID] !== 'undefined' && state.scene_versions[sceneUUID].rows.length > 0) {
         var index = state.scene_versions[sceneUUID].rows.length - 1
-        console.log('sulod')
-        console.log(state.scene_versions[sceneUUID].rows[index])
         return state.scene_versions[sceneUUID].rows[index]
       }
       return null
