@@ -41,13 +41,16 @@
           </div>
           <div class="body">
             <template @click="openFeedback(feedback)" v-for="feedback in feedbacks" >
-            <div :key="feedback.id"  v-if="isVisible(feedback)" v-bind:class="{'done' : feedback.is_done}" class="feedback-single">
+            <div :key="feedback.id"  v-if="isVisible(feedback)" v-bind:class="{'done' : feedback.is_done, 'seen' : feedback.is_seen}"  class="feedback-single">
               <div class="feedback-single-header">
                 <strong class="author" >{{ feedback.author.alias }}</strong>
                 <span class="date">{{ formatDate(feedback) }}</span>
                 <div v-if="$store.getters.getAuthorID === properties.author_id">
                   <span @click="toggleMark(feedback)" v-if="!feedback.is_done" style="cursor:pointer; font-size:12px; border:1px solid #ccc; border-radius:3px; padding:3px 5px; background:#fff;">Mark as Done</span>
                   <span @click="toggleMark(feedback)" v-else style="cursor:pointer; font-size:12px; border:1px solid #fff; border-radius:3px; padding:3px 5px; background:#5bd05d; color:#fff;">Mark as Undone</span>
+
+                  <span @click="toggleSeen(feedback)" v-if="!feedback.is_seen" style="cursor:pointer; font-size:12px; border:1px solid #ccc; border-radius:3px; padding:3px 5px; background:#fff;">Mark as Seen</span>
+                  <span @click="toggleSeen(feedback)" v-else style="cursor:pointer; font-size:12px; border:1px solid #fff; border-radius:3px; padding:3px 5px; background:#5bd05d; color:#fff;">Mark Unseen</span>
                 </div>
               </div>
               <div class="feedback-single-content-wrap" v-bind:class="{ 'open' : feedback.expand_content }">
@@ -279,6 +282,16 @@ export default {
             feedback.is_done = !feedback.is_done
           }
         })
+    },
+    toggleSeen: function (feedback) {
+      var scope = this
+      scope.axios
+        .post('http://localhost:3000/feedbacks/seen', { uuid: feedback.uuid, is_seen: feedback.is_seen })
+        .then(response => {
+          if (response.data) {
+            feedback.is_seen = !feedback.is_seen
+          }
+        })
     }
 
   },
@@ -361,8 +374,9 @@ ipcRenderer.on('GET-DOCX-CONTENT-MULTI-CHAPTERS-2', function (event, data) {
 .feedback-wrap .feedbacks { position:relative; height:100%;}
 .feedback-wrap .feedbacks .head {  position:relative; height:35px; line-height:35px; padding:0px 10px; background:#fff; border-bottom:1px solid #ccc; }
 .feedback-wrap .feedbacks .body { height:calc(100% - 125px); overflow-y:auto; background:#fff; }
-.feedback-wrap .feedbacks .body .feedback-single { background:#fff; border-bottom:1px solid #ccc; padding:0px 0px; padding-top:5px; }
-.feedback-wrap .feedbacks .body .feedback-single.done { background:#d3eed8; }
+.feedback-wrap .feedbacks .body .feedback-single { background:#fafafa; border-bottom:1px solid #ccc; padding:0px 0px; padding-top:5px; }
+.feedback-wrap .feedbacks .body .feedback-single.seen { background:#fff; }
+.feedback-wrap .feedbacks .body .feedback-single.done { background:#d3eed8 !important; }
 .feedback-wrap .feedbacks .body .feedback-single .date { margin:0px; font-size:11px; color:#888; float:right; }
 .feedback-wrap .feedbacks .body .feedback-single .message { margin:0px; font-style:italic;}
 .feedback-wrap .feedbacks .foot { background:#fff; position:absolute; bottom:0px; left:0px; width:100%; height:90px; border-top:1px solid #ccc; padding:8px 5px; }

@@ -259,6 +259,16 @@ export default {
             feedback.is_done = !feedback.is_done
           }
         })
+    },
+    toggleSeen: function (feedback) {
+      var scope = this
+      scope.axios
+        .post('http://localhost:3000/feedbacks/seen', { uuid: feedback.uuid, is_seen: feedback.is_seen })
+        .then(response => {
+          if (response.data) {
+            feedback.is_seen = !feedback.is_seen
+          }
+        })
     }
   },
   mounted () {

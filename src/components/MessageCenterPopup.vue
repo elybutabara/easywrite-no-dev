@@ -20,15 +20,24 @@
           <div v-for="(row, i) in rows" v-bind:key="'mcp-key-'+i" style="padding: 10px; border-top: 1px solid #e3e6f0; clear: both;" v-bind:style="{backgroundColor: row.is_seen?'#fff':'rgb(245, 248, 250)'}">
             <div v-bind:style="{'background-image': 'url(@/assets/img/blank-profile-picture.png)'}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #c0c0c0; float: left;"></div>
             <div style="float: left; margin-left: 10px;">
-              <div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{row.data.user_name || 'Null'}}</div>
+              <div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{ row.data.user_name || 'Null'}}</div>
               <div v-if="row.type=='Message'" style="cursor: pointer;">
                 <div v-html="row.data.message" v-on:click="openMessage(3)"></div>
               </div>
-              <div v-if="row.type=='SceneComment'">
-                Commented on scene <a v-bind:href="'#'" @click.prevent="openLink(row)">{{row.data.scene_title}}</a>
+              <div v-if="row.type === 'SceneComment'">
+                Commented on scene <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.scene_title }}</a>
               </div>
-              <div v-if="row.type=='ChapterComment'">
-                Commented on chapter <a v-bind:href="'#'" @click.prevent="openLink(row)">{{row.data.chapter_title}}</a>
+              <div v-if="row.type === 'ChapterComment'">
+                Commented on chapter <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.chapter_title }}</a>
+              </div>
+              <div v-if="row.type === 'FeedbackBook'">
+                Left a feedback on book <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.book.title }}</a>
+              </div>
+              <div v-if="row.type === 'FeedbackChapter'">
+                Left a feedback on chapter <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.chapter.title }}</a>
+              </div>
+              <div v-if="row.type === 'FeedbackScene'">
+                Left a feedback on scene <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.scene.title }}</a>
               </div>
               <div style="font-size: 80%; line-height: 100%; opacity: 0.5;">{{displayTime(row.created_at)}}</div>
             </div>
@@ -112,27 +121,41 @@ export default {
       var data = row.data
       var scope = this
       var url = ''
-      console.log(type)
+
       if (type === 'ChapterComment') {
         url = 'chapters/' + data.chapter_id + '/book'
       } else if (type === 'SceneComment') {
         url = 'scenes/' + data.scene_id + '/book-chapter'
+      } else if (type === 'FeedbackChapter') {
+        url = 'chapters/' + data.parent_id + '/book'
+      } else if (type === 'FeedbackScene') {
+        url = 'scenes/' + data.parent_id + '/book-chapter'
+      } else if (type === 'FeedbackBook') {
+        scope.CHANGE_COMPONENT(
+          {
+            tabKey: 'book-details-' + data.book.uuid,
+            tabComponent: 'books-i-read-book-details',
+            tabData: { book: data.book },
+            tabTitle: scope.$t('VIEW') + ' - ' + data.book.title,
+            newTab: true
+          })
+        return
       }
 
       scope.getData(url).then(res => {
-        if (type === 'ChapterComment') {
+        if (type === 'ChapterComment' || type === 'FeedbackChapter') {
           let chapter = res.data
           let book = chapter.book
 
           scope.CHANGE_COMPONENT(
             {
               tabKey: 'chapter-details-' + chapter.uuid,
-              tabComponent: 'chapter-details',
+              tabComponent: 'books-i-read-chapter-details',
               tabData: { book: book, chapter: chapter },
               tabTitle: scope.$t('VIEW') + ' - ' + chapter.title,
               newTab: true
             })
-        } else if (type === 'SceneComment') {
+        } else if (type === 'SceneComment' || type === 'FeedbackScene') {
           let scene = res.data
           let book = scene.book
           let chapter = scene.chapter
@@ -140,7 +163,7 @@ export default {
           scope.CHANGE_COMPONENT(
             {
               tabKey: 'scene-details-' + scene.uuid,
-              tabComponent: 'scene-details',
+              tabComponent: 'books-i-read-scene-details',
               tabData: { book: book, chapter: chapter, scene: scene },
               tabTitle: scope.$t('VIEW') + ' - ' + scene.title,
               newTab: true

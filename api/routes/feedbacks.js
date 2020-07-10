@@ -14,6 +14,14 @@ router.post('/update-status', async function (req, res) {
     .json(feedback)
 })
 
+router.post('/seen', async function (req, res) {
+  const feedback = await FeedbackController.markSeen(req.body)
+
+  res
+    .status(200)
+    .json(feedback)
+})
+
 router.post('/', async function (req, res) {
   const feedback = await FeedbackController.save(req.body)
 

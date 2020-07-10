@@ -67,7 +67,6 @@ class FeedbackController {
         .first()
 
       book = await Book.query().where('uuid', row.book.uuid).first()
-
     } else if (feedback.parent === 'chapter') {
       row = await Feedback.query()
         .where('feedbacks.uuid', feedback.uuid)
@@ -77,6 +76,7 @@ class FeedbackController {
         .first()
 
       book = await Book.query().where('uuid', row.chapter.book_id).first()
+      row.book = book
     } else if (feedback.parent === 'scene') {
       row = await Feedback.query()
         .where('feedbacks.uuid', feedback.uuid)
@@ -86,6 +86,7 @@ class FeedbackController {
         .first()
 
       book = await Book.query().where('uuid', row.scene.book_id).first()
+      row.book = book
     }
 
     if (row.author_id !== book.author_id) {
@@ -118,6 +119,14 @@ class FeedbackController {
   static async updateStatus (row) {
     var data = await Feedback.query()
       .patch({ is_done: !row.is_done })
+      .where('uuid', '=', row.uuid)
+
+    return data
+  }
+
+  static async markSeen (row) {
+    var data = await Feedback.query()
+      .patch({ is_seen: !row.is_seen })
       .where('uuid', '=', row.uuid)
 
     return data
