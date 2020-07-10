@@ -24,6 +24,12 @@ class NotificationController {
 
     return notification
   }
+
+  static async read (notificationId) {
+    const notification = await Notification.query().upsertGraphAndFetch([{uuid: notificationId, is_seen: true}]).first()
+
+    return notification
+  }
 }
 module.exports = {
   NotificationController

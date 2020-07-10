@@ -25,4 +25,11 @@ router.post('/', async function (req, res) {
     .json(data)
 })
 
+router.get('/read/:notificationId', async function (req, res) {
+  const row = await NotificationController.read(req.params.notificationId)
+  res
+    .status(200)
+    .json(row)
+})
+
 module.exports = router
