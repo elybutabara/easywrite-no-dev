@@ -89,6 +89,7 @@
 <script>
 const electron = window.require('electron')
 const {ipcRenderer} = electron
+let component
 export default {
   name: 'ExportCharacters',
   props: ['properties'],
@@ -158,21 +159,25 @@ export default {
   beforeMount () {},
   mounted () {
     const scope = this
-    ipcRenderer.on('EXPORT_PDF_LIST_CHARACTERS', function (event, book) {
-      scope.bookUUID = book.bookUUID
-      scope.bookTitle = book.title
-      scope.$store.dispatch('loadCharactersByBook', scope.bookUUID)
-
-      setTimeout(function () {
-        scope.viewCharacters()
-      }, 550)
-    })
+    component = scope
 
     // ipcRenderer.on('EXPORT_PDF_SHOW_BUTTON', function (event, data) {
     //   window.$('#printCharacterButton').show()
     // })
   }
 }
+
+ipcRenderer.on('EXPORT_PDF_LIST_CHARACTERS', async function EXPORT_PDF_LIST_CHARACTERS (event, book) {
+  const scope = component
+
+  try {
+    scope.bookUUID = book.bookUUID
+    scope.bookTitle = book.title
+    await scope.$store.dispatch('loadCharactersByBook', scope.bookUUID)
+  } finally {
+    scope.viewCharacters()
+  }
+})
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>

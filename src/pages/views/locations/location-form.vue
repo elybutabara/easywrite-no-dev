@@ -276,7 +276,7 @@ export default {
     var scope = this
 
     if (scope.data.uuid) {
-      window.$('.page-location-form .page-title h3').html('Update ' + scope.properties.location.location)
+      if (scope.properties.location) window.$('.page-location-form .page-title h3').html('Update ' + scope.properties.location.location)
       scope.loadLocation(scope.data)
     }
   }
