@@ -40,25 +40,29 @@
         <div v-if="selectedGroupId">
           <div v-bind:id="chatContentId" style="position: absolute; right: 0; top: 0; width: calc(100% - 200px); height: calc(100% - 40px); padding: 15px; background: #fff; overflow-y: auto;">
             <div v-for="(gm, i) in messagesHistory" v-bind:key="'gmh-'+selectedGroupId+'-'+i" style="position: relative;">
-              <div v-if="gm.author_uuid !== getAuthor.uuid" style="float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px; white-space: pre-line;">{{gm.message}}
-                <div style="position: absolute; left: 0; top: 5px; opacity: 0.3; font-size: 90%; color: #000;">{{gm.author_alias}}, {{displayChatTime(gm.created_at)}}</div>
+              <div v-if="gm.author_uuid !== getAuthor.uuid" class="messaging-msg">{{gm.message}}
+                <div class="messaging-msg-name">{{gm.author_alias}}, {{displayChatTime(gm.created_at)}}</div>
                 <div style="clear: both;"></div>
               </div>
-              <div v-if="gm.author_uuid === getAuthor.uuid" style="float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px; white-space: pre-line;">{{gm.message}}
-                <div style="position: absolute; right: 0; top: 5px; opacity: 0.3; font-size: 90%;">{{gm.author_alias}}, {{displayChatTime(gm.created_at)}}</div>
+              <div v-if="gm.author_uuid === getAuthor.uuid" class="messaging-msg own">{{gm.message}}
+                <div class="messaging-msg-name own">{{gm.author_alias}}, {{displayChatTime(gm.created_at)}}</div>
                 <div style="clear: both;"></div>
               </div>
               <div style="clear: both;"></div>
+              <div v-bind:style="{float: gm.author_uuid !== getAuthor.uuid?'left':'right'}" style="float: right;font-size: 9px;opacity: 0.4;margin-top: -9px;margin-bottom: 5px;">Seen by {{messageSeenBy(gm, i)}}</div>
+              <div style="clear: both;"></div>
             </div>
             <div v-for="(gm, i) in groupMessages" v-bind:key="'gm-'+selectedGroupId+'-'+i" style="position: relative">
-              <div v-if="gm.author_uuid !== getAuthor.uuid" style="float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px; white-space: pre-line;">{{gm.message}}
-                <div style="position: absolute; left: 0; top: 5px; opacity: 0.3; font-size: 90%; color: #000;">{{gm.author_alias}}, {{displayChatTime(gm.created_at)}}</div>
+              <div v-if="gm.author_uuid !== getAuthor.uuid" class="messaging-msg">{{gm.message}}
+                <div class="messaging-msg-name">{{gm.author_alias}}, {{displayChatTime(gm.created_at)}}</div>
                 <div style="clear: both;"></div>
               </div>
-              <div v-if="gm.author_uuid === getAuthor.uuid" style="float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px; white-space: pre-line;">{{gm.message}}
-                <div style="position: absolute; right: 0; top: 5px; opacity: 0.3; font-size: 90%;">{{gm.author_alias}}, {{displayChatTime(gm.created_at)}}</div>
+              <div v-if="gm.author_uuid === getAuthor.uuid" class="messaging-msg own">{{gm.message}}
+                <div class="messaging-msg-name own">{{gm.author_alias}}, {{displayChatTime(gm.created_at)}}</div>
                 <div style="clear: both;"></div>
               </div>
+              <div style="clear: both;"></div>
+              <div v-bind:style="{float: gm.author_uuid !== getAuthor.uuid?'left':'right'}" style="float: right;font-size: 9px;opacity: 0.4;margin-top: -9px;margin-bottom: 5px;">Seen by {{messageSeenBy(gm, i)}}</div>
               <div style="clear: both;"></div>
             </div>
             <div style="clear: both;"></div>
@@ -69,15 +73,26 @@
               <button v-on:click="sendChatMessage()" class="btn es-button-white btn-secondary" style="float: left;margin-left: 5px;width: 60px;">Send</button>
             </div>
           </div>
+          <div v-show="!showMembers" style="position: absolute; left: 210px; top: 10px; background: #000; color: #fff; width: 16px; height: 16px; border-radius: 50%; text-align: center; line-height: 16px; font-size: 10px;">
+            <i v-on:click.prevent="showMembers=true" class="fa fa-users" title="View Members" style="cursor: pointer;"></i>
+          </div>
+          <div v-show="showMembers" style="position: absolute; left: 210px; top: 10px; background: rgb(245, 248, 250); color: #000; width: 200px; min-height: 200px; padding: 10px; border: 1px solid rgb(227, 230, 240);">
+            <ul style="padding: 0; margin: 0;">
+              <li v-for="m in currentGroup.members" v-bind:key="'gc-m-'+m.uuid" style="padding: 0; margin: 0; font-size: 12px; cursor: default;">
+                {{m.author_alias}}
+              </li>
+            </ul>
+            <button v-on:click.prevent="showMembers=false" type="button" aria-label="Close" class="close" style="position: absolute; top: 5px; right: 10px;"><span aria-hidden="true">×</span></button>
+          </div>
         </div>
         <div style="position: absolute; left: 0; top: 0; height: 100%; width: 200px; background: #f5f8fa; border-right: 1px solid rgb(227, 230, 240);">
           <div style="padding: 5px;">
             <input v-model="groupsFilterTxt" type="text" class="form-control" placeholder="Search users &amp; groups..." />
           </div>
-          <ul style="padding: 0px;margin: 0px;overflow: auto;height: calc(100% - 85px);position: absolute;width: 100%;">
-            <li v-for="(group, i) in sortedGroupChats" v-bind:key="'group-index'+i+'-'+group.uuid" style="padding: 0; margin: 0;">
-              <div v-bind:class="{active: selectedGroupId==group.uuid}" v-on:click.prevent="selectedGroupId=group.uuid" class="messaging-group-nav" style="font-size: 12px; padding: 8px 15px; position: relative;">
-                {{(group.uuid.indexOf('pm-')!==0?'[Group] ':'') + group.name}}
+          <ul class="messaging-group-nav-list">
+            <li v-for="(group, i) in sortedGroupChats" v-bind:key="'group-index'+i+'-'+group.uuid">
+              <div v-bind:class="{active: selectedGroupId==group.uuid}" v-on:click.prevent="selectedGroupId=group.uuid" class="messaging-group-nav" style="">
+                {{(group.uuid.indexOf('pm-')!==0?'[Group] ':'') + group.name}} {{group.unreadCount1}}
                 <div v-if="group.unreadCount && group.unreadCount>0" style="position: absolute; top: 8px; right: 10px; background: red; width: 16px; height: 16px; line-height: 16px; text-align: center; color: #fff; border-radius: 50%; font-size: 10px;">{{group.unreadCount}}</div>
               </div>
             </li>
@@ -102,7 +117,8 @@ export default {
   data: function () {
     // var scope = this
     var data = {
-      show: false,
+      show: !false,
+      showMembers: false,
       userSelect: {
         groupName: '',
         selected: [],
@@ -161,6 +177,7 @@ export default {
   },
   watch: {
     selectedGroupId: function () {
+      this.showMembers = false
       if (!this.selectedGroupId) {
         return
       }
@@ -168,6 +185,7 @@ export default {
       if (!this.socketConnected) {
         return
       }
+      this.socket.emit('group seen', {chat_group_uuid: this.selectedGroupId})
       if (!this.currentGroup.messagesHistoryLoaded) {
         this.socket.emit('group message history', {chat_group_uuid: this.selectedGroupId})
       }
@@ -184,28 +202,43 @@ export default {
     }
   },
   methods: {
-    //
-    setGroupLastActivity: function (g) {
-      if (!g) {
-        return
+    recountUnread: function () {
+      //
+      var c = 0
+      for (var x in this.groupChats) {
+        var gc = this.groupChats[x]
+        if (gc.unreadCount) {
+          c += gc.unreadCount
+        }
       }
-      var lastActivity = g.last_activity
-      if (g.messages && g.messages.length > 0) {
-        lastActivity = g.messages[g.messages.length - 1].created_at
-      } else if (g.messagesHistory && g.messagesHistory.length > 0) {
-        lastActivity = g.messagesHistory[g.messagesHistory.length - 1].created_at
+      if (window.AppMain && window.AppMain.addNotificationKeyedCount) {
+        window.AppMain.addNotificationKeyedCount('Group Chat', c)
       }
-      lastActivity = parseInt(moment(lastActivity).format('x'))
-      g.last_activity = lastActivity
-      console.log('setGroupLastActivity', g.last_activity, g)
-      this.$forceUpdate()
+      if (window.AppMessageCenterPopup && window.AppMessageCenterPopup.addNotificationKeyedCount) {
+        this.AppMessageCenterPopup.addNotificationKeyedCount('Group Chat', c)
+        this.AppMessageCenterPopup.addMessagesKeyedCount('Group Chat', c)
+      }
+    },
+    messageSeenBy: function (msg, i) {
+      var members = this.currentGroup.members || []
+      var seenBy = []
+      var messageCreatedAt = moment(msg.created_at).format('x')
+      for (var ii = 0; ii < members.length; ii++) {
+        var m = members[ii]
+        if (messageCreatedAt <= moment(m.last_seen_at)) {
+          seenBy.push(m.author_alias)
+        }
+      }
+      if (seenBy.length < 1) {
+        return 'nobody'
+      }
+      return seenBy.join(', ')
     },
     chatScrollBottom: function () {
       var scope = this
       if (!this.selectedGroupId) {
         return
       }
-      // console.log('scroll bottom')
       setTimeout(function () {
         var d = document.getElementById(scope.chatContentId)
         if (d) {
@@ -289,7 +322,6 @@ export default {
               rows.push({uuid: row.uuid, name: row.alias})
             }
             scope.userSelect.rows = rows
-            // console.log('rows', rows)
           }
         }).finally(function () {
           scope.userSelect.isLoading = false
@@ -312,10 +344,29 @@ export default {
         console.log('authenticate response', data)
       })
 
+      socket.on('group seen', function (data) {
+        var g = scope.groupChats[data.chat_group_uuid]
+        console.log('group seen', data, g)
+        if (!g.members) {
+          Vue.set(g, 'members', [])
+        }
+        if (data.members) {
+          Vue.set(g, 'members', data.members)
+        }
+        /*
+        for (var i = 0; i < g.members.length; i++) {
+          if (g.members[i].author_uuid === data.author_uuid) {
+            g.members[i].last_seen_at = data.last_seen_at
+          }
+        }
+        */
+        g.members.push()
+      })
+
       socket.on('group message', function (data) {
         console.log('group message: ', data)
         if (data.chat_group_uuid !== scope.selectedGroupId) {
-          if (!scope.groupChats[data.chat_group_uuid].unreadCount) {
+          if (typeof scope.groupChats[data.chat_group_uuid].unreadCount === 'undefined') {
             scope.groupChats[data.chat_group_uuid].unreadCount = 0
           }
           scope.groupChats[data.chat_group_uuid].unreadCount++
@@ -328,10 +379,10 @@ export default {
           }
         }
         scope.groupChats[data.chat_group_uuid].messages.push(data)
-        // scope.setGroupLastActivity(scope.groupChats[data.chat_group_uuid])
         scope.groupChats[data.chat_group_uuid].last_activity = parseInt(moment(data.last_activity).format('x'))
         if (data.chat_group_uuid === scope.selectedGroupId) {
           scope.chatScrollBottom()
+          scope.socket.emit('group seen', {chat_group_uuid: data.chat_group_uuid})
         }
       })
 
@@ -350,23 +401,23 @@ export default {
         console.log('group chats ', data)
         var list = {}
         for (var i = 0; i < data.length; i++) {
-          var gc = data[i]
-          if (!gc.messages) {
-            gc.messages = []
+          var g = data[i]
+          if (!g.messages) {
+            g.messages = []
           }
-          if (!gc.messagesHistory) {
-            gc.messagesHistory = []
+          if (!g.messagesHistory) {
+            g.messagesHistory = []
           }
-          if (!gc.unreadCount) {
-            gc.unreadCount = 0
+          if (!g.unreadCount) {
+            g.unreadCount = 0
           }
-          gc.name = scope.groupChatDisplayName(gc)
-          gc.last_activity = parseInt(moment(gc.last_activity).format('x'))
-          // scope.setGroupLastActivity(gc)
-          list[gc.uuid] = gc
+          g.name = scope.groupChatDisplayName(g)
+          g.last_activity = parseInt(moment(g.last_activity).format('x'))
+          list[g.uuid] = g
         }
         Vue.set(scope, 'groupChats', list)
       })
+
       socket.on('group chats update', function (groups) {
         console.log('group chats update ', groups)
         for (var i = 0; i < groups.length; i++) {
@@ -382,7 +433,6 @@ export default {
           }
           g.name = scope.groupChatDisplayName(g)
           g.last_activity = parseInt(moment(g.last_activity).format('x'))
-          // scope.setGroupLastActivity(g)
           if (!scope.groupChats[g.uuid]) {
             Vue.set(scope.groupChats, g.uuid, g)
           }
@@ -429,7 +479,14 @@ export default {
 </script>
 
 <style>
-.messaging-group-nav{cursor: pointer;}
+.messaging-group-nav-list{padding: 0px;margin: 0px;overflow: auto;height: calc(100% - 85px);position: absolute;width: 100%;}
+.messaging-group-nav-list > li{padding: 0; margin: 0;}
+.messaging-group-nav{cursor: pointer; font-size: 12px; padding: 8px 15px; position: relative;}
 .messaging-group-nav.active{background-color: rgb(227, 230, 240);}
 .messaging-group-nav:hover{opacity: 0.5;}
+.messaging-group-nav.active{background-color: rgb(227, 230, 240);}
+.messaging-msg{float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px; white-space: pre-line;}
+.messaging-msg.own{float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px; white-space: pre-line;}
+.messaging-msg-name{position: absolute; left: 0; top: 5px; opacity: 0.3; font-size: 90%; color: #000;}
+.messaging-msg-name.own{position: absolute; left: initial; right: 0; top: 5px; opacity: 0.3; font-size: 90%;}
 </style>

@@ -17,7 +17,7 @@
           <div v-if="rows.length < 1" style="text-align: center; padding: 30px 0; opacity: 0.5;">
             Empty
           </div>
-          <div v-for="(row, i) in rows" v-bind:key="'mcp-key-'+i" style="padding: 10px; border-top: 1px solid #e3e6f0; clear: both;">
+          <div v-for="(row, i) in rows" v-bind:key="'mcp-key-'+i" style="padding: 10px; border-top: 1px solid #e3e6f0; clear: both;" v-bind:style="{backgroundColor: row.is_seen?'#fff':'rgb(245, 248, 250)'}">
             <div v-bind:style="{'background-image': 'url(@/assets/img/blank-profile-picture.png)'}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #c0c0c0; float: left;"></div>
             <div style="float: left; margin-left: 10px;">
               <div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{row.data.user_name || 'Null'}}</div>
@@ -25,10 +25,10 @@
                 <div v-html="row.data.message" v-on:click="openMessage(3)"></div>
               </div>
               <div v-if="row.type=='SceneComment'">
-                Commented on scene <a v-bind:href="'#'" @click.prevent="openLink(row.type, row.data)">{{row.data.scene_title}}</a>
+                Commented on scene <a v-bind:href="'#'" @click.prevent="openLink(row)">{{row.data.scene_title}}</a>
               </div>
               <div v-if="row.type=='ChapterComment'">
-                Commented on chapter <a v-bind:href="'#'" @click.prevent="openLink(row.type, row.data)">{{row.data.chapter_title}}</a>
+                Commented on chapter <a v-bind:href="'#'" @click.prevent="openLink(row)">{{row.data.chapter_title}}</a>
               </div>
               <div style="font-size: 80%; line-height: 100%; opacity: 0.5;">{{displayTime(row.created_at)}}</div>
             </div>
@@ -69,6 +69,10 @@ export default {
     return data
   },
   computed: {
+    getAuthor: function () {
+      var scope = this
+      return scope.$store.getters.getAuthor
+    },
     rows: function () {
       var scope = this
       var rows = []
@@ -103,7 +107,9 @@ export default {
       window.AppMessaging.open(v)
       window.AppMain.showMessageCenter = false
     },
-    openLink: function (type, data) {
+    openLink: function (row) {
+      var type = row.type
+      var data = row.data
       var scope = this
       var url = ''
       console.log(type)
@@ -141,6 +147,11 @@ export default {
             })
         }
       })
+
+      row.is_seen = 1
+      scope.getData('notifications/read/' + row.uuid).then(res => {
+        //
+      })
     },
     updateItemsCounts: function () {
       var scope = this
@@ -171,7 +182,7 @@ export default {
     fetch: function () {
       var scope = this
       scope.axios
-        .get('http://localhost:3000/notifications/')
+        .get('http://localhost:3000/notifications/' + scope.getAuthor.uuid)
         .then(async function (response) {
           if (response.data) {
             try {
