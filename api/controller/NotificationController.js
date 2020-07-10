@@ -4,8 +4,9 @@ const path = require('path')
 const { Notification } = require(path.join(__dirname, '..', 'models'))
 
 class NotificationController {
-  static async getAll () {
+  static async getAll (authorUuid) {
     var notification = Notification.query()
+      .where('user_id', authorUuid)
       .whereNull('deleted_at').orderBy('created_at', 'desc')
 
     for (var i = 0; i < notification.length; i++) {

@@ -6,8 +6,8 @@ const router = express.Router()
 
 const { NotificationController } = require(path.join(__dirname, '..', 'controllers'))
 
-router.get('/', async function (req, res) {
-  const data = await NotificationController.getAll()
+router.get('/:authorUuid', async function (req, res) {
+  const data = await NotificationController.getAll(req.params.authorUuid)
   const response = {
     'count': data.length,
     'rows': data

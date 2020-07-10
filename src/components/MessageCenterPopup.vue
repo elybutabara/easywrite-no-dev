@@ -69,6 +69,10 @@ export default {
     return data
   },
   computed: {
+    getAuthor: function () {
+      var scope = this
+      return scope.$store.getters.getAuthor
+    },
     rows: function () {
       var scope = this
       var rows = []
@@ -144,13 +148,10 @@ export default {
         }
       })
 
-      console.log('row dataaaaaaaaaa', row)
-
       row.is_seen = 1
       scope.getData('notifications/read/' + row.uuid).then(res => {
         //
       })
-
     },
     updateItemsCounts: function () {
       var scope = this
@@ -181,7 +182,7 @@ export default {
     fetch: function () {
       var scope = this
       scope.axios
-        .get('http://localhost:3000/notifications/')
+        .get('http://localhost:3000/notifications/' + scope.getAuthor.uuid)
         .then(async function (response) {
           if (response.data) {
             try {
