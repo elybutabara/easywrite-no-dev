@@ -17,7 +17,7 @@
         <div v-if="chapter !== null" class="es-page-breadcrumbs">
             <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'books-i-read-book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
             /
-            <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'books-i-read-chapter-listing', tabData: book, tabTitle: $tc('CHAPTER', 2) + ' - ' + book.title})">{{ $tc('CHAPTER', 2) }}</button>
+            <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'books-i-read-chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})">{{ $t('CHAPTERS') }}</button>
             /
             <button @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + book.uuid, tabComponent: 'books-i-read-chapter-details', tabData: { book: book, chapter: chapter }, tabTitle: 'VIEW - ' + chapter.title})">{{ chapter.title || 'Untitled' }}</button>
             /
@@ -28,7 +28,7 @@
         <div v-else class="es-page-breadcrumbs">
             <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'books-i-read-book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
             /
-            <button @click="CHANGE_COMPONENT({tabKey: 'scene-listing-' + book.uuid, tabComponent: 'books-i-read-scene-listing', tabData: book, tabTitle: $tc('OTHER_SCENES', 2) + ' - ' + book.title})">{{ $tc('OTHER_SCENES', 2) }}</button>
+            <button @click="CHANGE_COMPONENT({tabKey: 'scene-listing-' + book.uuid, tabComponent: 'books-i-read-scene-listing', tabData: book, tabTitle: $t('OTHER_SCENES') + ' - ' + book.title})">{{ $t('OTHER_SCENES') }}</button>
             /
             <button class="current">
                 <span>{{ scene.title || 'Untitled' }}</span>

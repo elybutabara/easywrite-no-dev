@@ -5,7 +5,7 @@
       <b-card-group deck>
         <b-card>
           <template v-slot:header>
-            <h6 class="mb-0 card-title">{{ $tc('UPLOAD_SCRIPT_FOR') + ' ' + assignment.title  }}</h6>
+            <h6 class="mb-0 card-title">{{ $t('UPLOAD_SCRIPT_FOR') + ' ' + assignment.title  }}</h6>
             <a href="javascript:;" ref="close-assignment-form" class="close" v-on:click="emitToParent">
               <i class="fa fa-times"></i>
             </a>
@@ -23,7 +23,7 @@
                     value="0"
                     unchecked-value="1"
                   >
-                    {{ $tc('WRITE_ASSIGNMENT') }}
+                    {{ $t('WRITE_ASSIGNMENT') }}
                   </b-form-checkbox>
                 </b-col>
               </b-row>
@@ -54,7 +54,7 @@
                                  aria-describedby="input-live-help input-live-feedback"
                                  text-field="name">
                     <template v-slot:first>
-                      <b-form-select-option :value="null" disabled>{{ $tc('SELECT_GENRE') }}</b-form-select-option>
+                      <b-form-select-option :value="null" disabled>{{ $t('SELECT_GENRE') }}</b-form-select-option>
                     </template>
                   </b-form-select>
                   <!-- This will only be shown if the preceding input has an invalid state -->
@@ -65,19 +65,19 @@
               </b-row>
               <b-row style="margin-bottom: 1rem;" class="text-left">
                 <b-col>
-                  <b-form-group :label="$tc('WHERE_IN_THE_SCRIPT') + ':'">
-                    <b-form-radio v-model="manuscript.where_in_script" name="some-radios" value="whole">{{ $tc('WHOLE') }}</b-form-radio>
-                    <b-form-radio v-model="manuscript.where_in_script" name="some-radios" value="start">{{ $tc('START') }}</b-form-radio>
-                    <b-form-radio v-model="manuscript.where_in_script" name="some-radios" value="middle">{{ $tc('MIDDLE') }}</b-form-radio>
-                    <b-form-radio v-model="manuscript.where_in_script" name="some-radios" value="end">{{ $tc('END') }}</b-form-radio>
+                  <b-form-group :label="$t('WHERE_IN_THE_SCRIPT') + ':'">
+                    <b-form-radio v-model="manuscript.where_in_script" name="some-radios" value="whole">{{ $t('WHOLE') }}</b-form-radio>
+                    <b-form-radio v-model="manuscript.where_in_script" name="some-radios" value="start">{{ $t('START') }}</b-form-radio>
+                    <b-form-radio v-model="manuscript.where_in_script" name="some-radios" value="middle">{{ $t('MIDDLE') }}</b-form-radio>
+                    <b-form-radio v-model="manuscript.where_in_script" name="some-radios" value="end">{{ $t('END') }}</b-form-radio>
                   </b-form-group>
                 </b-col>
               </b-row>
               <b-row style="margin-bottom: 1rem;" class="text-left">
                 <b-col>
-                  <label style="display: block">{{$tc('DO_YOU_WANT_TO_GIVE_AND_RECEIVE_FEEDBACK_FROM_OTHER_STUDENTS')}}? </label>
+                  <label style="display: block">{{$t('DO_YOU_WANT_TO_GIVE_AND_RECEIVE_FEEDBACK_FROM_OTHER_STUDENTS')}}? </label>
                   <toggle-button :color="'#337ab7'"
-                                 :labels="{checked: $tc('YES'), unchecked: $t('NO')}" v-model="join_group"
+                                 :labels="{checked: $t('YES'), unchecked: $t('NO')}" v-model="join_group"
                                  :width="70" :height="30" :font-size="16"
                                  sync=""/>
                 </b-col>
@@ -182,7 +182,7 @@ export default {
       scope.setFeedbackNull()
 
       if (!scope.manuscript.genre) {
-        scope.feedback.genre.message = this.$tc('GENRE_IS_REQUIRED')
+        scope.feedback.genre.message = this.$t('GENRE_IS_REQUIRED')
         scope.feedback.genre.state = false
         isValid = false
       }
@@ -250,7 +250,7 @@ export default {
             window.swal.fire({
               position: 'center',
               icon: 'success',
-              title: this.$tc('ASSIGNMENT') + ' ' + this.$t('SUCCESSFULY_SAVED'),
+              title: this.$t('ASSIGNMENT_SUCCESSFULY_SAVED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {

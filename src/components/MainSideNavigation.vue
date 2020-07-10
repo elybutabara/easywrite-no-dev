@@ -144,19 +144,19 @@ export default {
         window.swal.fire({
           position: 'center',
           icon: 'warning',
-          title: this.$tc('Unable to install new update, you have unsaved changes'),
+          title: this.$t('UNABLE_TO_INSTALL_NEW_UPDATE_YOU_HAVE_UNSAVED_CHANGES'),
           html: text + '<br/>'
         })
         return false
       }
       window.swal.fire({
-        title: this.$tc('Are you sure you want to install update?'),
-        text: this.$tc('Please save all your work before you install') + this.$tc("You won't be able to revert this!"),
+        title: this.$t('ARE_YOU_SURE_YOU_WANT_TO_INSTALL_UPDATE'),
+        text: this.$t('PLEASE_SAVE_ALL_YOUR_WORK_BEFORE_YOU_INSTALL') + this.$t('YOU_WONT_BE_ABLE_TO_REVERT_THIS'),
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: this.$tc('Restart and Install')
+        confirmButtonText: this.$t('RESTART_AND_INSTALL')
       }).then((result) => {
         if (result.value) {
           log.info('Quit and install update triggered')

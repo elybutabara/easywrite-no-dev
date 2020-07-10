@@ -244,7 +244,28 @@ export default {
   },
   beforeMount () {},
   mounted () {
-    component = this
+    const scope = this
+    component = scope
+    ipcRenderer.on('EXPORT_PDF_LIST_CHAPTERS', function (event, data) {
+      scope.bookUUID = data.bookUUID
+      scope.bookTitle = data.title
+
+      scope.$store.dispatch('loadCharactersByBook', scope.bookUUID)
+      scope.$store.dispatch('loadChaptersWithScenesByBook', scope.bookUUID)
+
+      setTimeout(function () {
+        scope.allCharacterFromBook = scope.$store.getters.getCharactersByBook(scope.bookUUID)
+        scope.chapters = scope.$store.getters.getChaptersByBook(scope.bookUUID)
+        setTimeout(function () {
+          scope.page.is_ready = true
+          let pdf = {
+            name: scope.bookTitle + ' - ' + scope.$t('SCENES')
+          }
+          ipcRenderer.send('EXPORT_PDF_CONFIRM_GENERATE', {pdf: pdf})
+        }, 500)
+      }, 1000)
+    })
+
     // ipcRenderer.on('EXPORT_PDF_SHOW_BUTTON', function (event, data) {
     //   window.$('#printCharacterButton').show()
     // })

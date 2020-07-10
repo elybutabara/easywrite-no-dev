@@ -12,8 +12,8 @@
             <div v-else>
               <textarea style="margin-top:10px; width:100%; background:transparent;" rows="5" v-model="note.message"></textarea>
               <div style="text-align:right;">
-                <button @click="saveNote()" class="es-button-white">Save</button>
-                <button @click="toggleEdit()" class="es-button-white">Cancel</button>
+                <button @click="saveNote()" class="es-button-white">{{ $t('SAVE') }}</button>
+                <button @click="toggleEdit()" class="es-button-white">{{ $t('CANCEL') }}</button>
               </div>
             </div>
           </div>

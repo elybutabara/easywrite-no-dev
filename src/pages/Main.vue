@@ -213,13 +213,13 @@ export default {
             text += '<p style="margin:0px;">' + current.title + '</p>'
           }
           window.swal.fire({
-            title: this.$tc('Are you sure you want to Close EasyWrite with unsaved changes?') + '<br>' + this.$tc("You won't be able to revert this!"),
+            title: this.$t('ARE_YOU_SURE_YOU_WANT_TO_CLOSE_EASYWRITE_WITH_UNSAVED_CHANGES') + '<br>' + this.$t('YOU_WONT_BE_ABLE_TO_REVERT_THIS'),
             html: text + '<br/>',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: this.$tc('Force Quit')
+            confirmButtonText: this.$t('FORCE_QUIT')
           }).then((result) => {
             if (result.value) {
               log.info('FORCE QUIT')

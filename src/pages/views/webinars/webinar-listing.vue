@@ -10,8 +10,8 @@
         </div>
     </div>
     <div class="es-page-tabs">
-      <button class="open-free-webinar" @click="open(freeWebinars, 'free')">{{ $tc('FREE_WEBINARS') }}</button>
-      <button class="open-paid-webinar" @click="open(webinars, 'paid')">{{ $tc('PAID_WEBINARS') }}</button>
+      <button class="open-free-webinar" @click="open(freeWebinars, 'free')">{{ $t('FREE_WEBINARS') }}</button>
+      <button class="open-paid-webinar" @click="open(webinars, 'paid')">{{ $t('PAID_WEBINARS') }}</button>
     </div>
     <div class="es-page-content">
         <div class="webinar-list">

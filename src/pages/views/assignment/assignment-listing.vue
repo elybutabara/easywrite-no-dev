@@ -1,6 +1,6 @@
 <template>
 <div class="page-assignment">
-  <h4>{{ $tc('ASSIGNMENTS') }}</h4>
+  <h4>{{ $t('ASSIGNMENTS') }}</h4>
   <hr>
   <div class="row">
     <div class="col-12 col-md-4 mb-3" v-for="assingment in assignments" v-bind:key="assingment.id">
@@ -8,12 +8,12 @@
         <div class="panel-heading">
           <strong><i class="fas fa-file-signature"></i> {{ assingment.title }}</strong>
           <div class="float-right">
-            <button v-if="!('assignment_manuscript' in assingment)" class="btn btn-sm" style="background: rgb(41, 55, 66); color: rgb(255, 255, 255); border: 1px solid rgb(41, 55, 66); border-radius: 3px;" :title="$tc('UPLOAD_SCRIPT')" @click="showForm(assingment)"><i class="fa fa-upload" aria-hidden="true"></i></button>
+            <button v-if="!('assignment_manuscript' in assingment)" class="btn btn-sm" style="background: rgb(41, 55, 66); color: rgb(255, 255, 255); border: 1px solid rgb(41, 55, 66); border-radius: 3px;" :title="$t('UPLOAD_SCRIPT')" @click="showForm(assingment)"><i class="fa fa-upload" aria-hidden="true"></i></button>
           </div>
         </div>
         <div class="panel-body">
           <p class="description">{{ assingment.description }}</p>
-          <span>{{ $tc('DEADLINE') }}: {{ assingment.submission_date }}</span>
+          <span>{{ $t('DEADLINE') }}: {{ assingment.submission_date }}</span>
           <div v-if="('assignment_manuscript' in assingment)" class="mt-3">
             <a href="javascript:;" :title="formattedContent(assingment, false)" @click="showManuscript(assingment)" >{{ formattedContent(assingment) }}</a>
             <div class="float-right">
@@ -22,7 +22,7 @@
             </div>
           </div>
         </div>
-        <div class="panel-footer">{{ $tc('COURSE') }}: {{ assingment.course_title }}</div>
+        <div class="panel-footer">{{ $t('COURSE') }}: {{ assingment.course_title }}</div>
       </div>
     </div>
   </div>

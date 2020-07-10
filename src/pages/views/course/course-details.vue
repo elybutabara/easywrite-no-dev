@@ -11,8 +11,8 @@
         </div>
       </div>
       <div class="es-chapter-details-tab">
-        <div v-bind:class="{ 'active' : tab.active == 'lesson' }" @click="changeTab('lesson')" class="es-chapter-details-tab-item">{{$tc('LESSON').toUpperCase()}}</div>
-        <div v-bind:class="{ 'active' : tab.active == 'course_plan' }" @click="changeTab('course_plan')" class="es-chapter-details-tab-item">{{$tc('COURSE PLAN', 2).toUpperCase()}}</div>
+        <div v-bind:class="{ 'active' : tab.active == 'lesson' }" @click="changeTab('lesson')" class="es-chapter-details-tab-item">{{$t('LESSON').toUpperCase()}}</div>
+        <div v-bind:class="{ 'active' : tab.active == 'course_plan' }" @click="changeTab('course_plan')" class="es-chapter-details-tab-item">{{$t('COURSE_PLAN').toUpperCase()}}</div>
       </div>
       <div style="position:relative; padding-bottom:40px;">
         <div v-if="tab.active === 'lesson'"  class="">
@@ -28,7 +28,7 @@
                     <i class="description ellipsis-3"><span v-html="lesson.content"></span></i>
                   </div>
                   <div class="es-card-footer">
-                    <small style="float:right;">{{ lesson.is_available ? $tc('AVAILABLE') : $tc('AVAILABLE_AT') + ' : ' + lesson.availability_date}}</small>
+                    <small style="float:right;">{{ lesson.is_available ? $t('AVAILABLE') : $t('AVAILABLE_AT') + ' : ' + lesson.availability_date}}</small>
                   </div>
                 </div>
               </div>
@@ -44,8 +44,8 @@
             </div>
             <div class="col-4">
               <h4>{{ $t('TITLE')}}: {{course_taken.course.title }}</h4>
-              <div>{{ $tc('DATE_STARTED') }} - <i class="fa fa-calendar-check" aria-hidden="true"></i> {{ data.started_at  }}</div>
-              <div>{{ $tc('EXPIRES_ON') }} - <i class="fa fa-calendar-times" aria-hidden="true"></i> {{ data.expired_at  }}</div>
+              <div>{{ $t('DATE_STARTED') }} - <i class="fa fa-calendar-check" aria-hidden="true"></i> {{ data.started_at  }}</div>
+              <div>{{ $t('EXPIRES_ON') }} - <i class="fa fa-calendar-times" aria-hidden="true"></i> {{ data.expired_at  }}</div>
               <div><i class="fa fa-book"></i> {{ lessons.length }} {{ lessons.length > 1 ? $t('LESSONS') : $t('LESSON') }} </div>
             </div>
           </div>
