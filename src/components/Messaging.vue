@@ -202,6 +202,23 @@ export default {
     }
   },
   methods: {
+    recountUnread: function () {
+      //
+      var c = 0
+      for (var x in this.groupChats) {
+        var gc = this.groupChats[x]
+        if (gc.unreadCount) {
+          c += gc.unreadCount
+        }
+      }
+      if (window.AppMain && window.AppMain.addNotificationKeyedCount) {
+        window.AppMain.addNotificationKeyedCount('Group Chat', c)
+      }
+      if (window.AppMessageCenterPopup && window.AppMessageCenterPopup.addNotificationKeyedCount) {
+        this.AppMessageCenterPopup.addNotificationKeyedCount('Group Chat', c)
+        this.AppMessageCenterPopup.addMessagesKeyedCount('Group Chat', c)
+      }
+    },
     messageSeenBy: function (msg, i) {
       var members = this.currentGroup.members || []
       var seenBy = []
