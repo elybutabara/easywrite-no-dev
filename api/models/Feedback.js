@@ -26,6 +26,33 @@ class Feedback extends BaseModel {
         to: 'author_names.uuid'
       },
       softDelete: false
+    },
+    chapter: {
+      relation: BaseModel.BelongsToOneRelation,
+      modelClass: path.join(__dirname, 'Chapter'),
+      join: {
+        from: 'feedbacks.parent_id',
+        to: 'book_chapters.uuid'
+      },
+      softDelete: false
+    },
+    scene: {
+      relation: BaseModel.BelongsToOneRelation,
+      modelClass: path.join(__dirname, 'Scene'),
+      join: {
+        from: 'feedbacks.parent_id',
+        to: 'book_scenes.uuid'
+      },
+      softDelete: false
+    },
+    book: {
+      relation: BaseModel.BelongsToOneRelation,
+      modelClass: path.join(__dirname, 'Book'),
+      join: {
+        from: 'feedbacks.parent_id',
+        to: 'books.uuid'
+      },
+      softDelete: false
     }
   };
 }

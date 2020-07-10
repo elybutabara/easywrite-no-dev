@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
 
-const { Book, Feedback, Chapter, Scene, Reader, User } = require(path.join(__dirname, '..', 'models'))
+const { Book, Feedback, Chapter, Notification, Scene, Reader, User } = require(path.join(__dirname, '..', 'models'))
 
 class FeedbackController {
   static getAllFeedbacksByBookId (bookId) {
@@ -55,11 +55,56 @@ class FeedbackController {
   static async save (data) {
     const feedback = await Feedback.query().upsertGraphAndFetch([data]).first()
 
-    var row = Feedback.query()
-      .where('feedbacks.uuid', feedback.uuid)
-      .withGraphJoined('feedback_responses', {maxBatchSize: 1})
-      .withGraphJoined('author', {maxBatchSize: 1})
-      .first()
+    var row
+    var book
+
+    if (feedback.parent === 'book') {
+      row = await Feedback.query()
+        .where('feedbacks.uuid', feedback.uuid)
+        .withGraphJoined('feedback_responses', {maxBatchSize: 1})
+        .withGraphJoined('author', {maxBatchSize: 1})
+        .withGraphJoined('book', {maxBatchSize: 1})
+        .first()
+
+      book = await Book.query().where('uuid', row.book.uuid).first()
+
+    } else if (feedback.parent === 'chapter') {
+      row = await Feedback.query()
+        .where('feedbacks.uuid', feedback.uuid)
+        .withGraphJoined('feedback_responses', {maxBatchSize: 1})
+        .withGraphJoined('author', {maxBatchSize: 1})
+        .withGraphJoined('chapter', {maxBatchSize: 1})
+        .first()
+
+      book = await Book.query().where('uuid', row.chapter.book_id).first()
+    } else if (feedback.parent === 'scene') {
+      row = await Feedback.query()
+        .where('feedbacks.uuid', feedback.uuid)
+        .withGraphJoined('feedback_responses', {maxBatchSize: 1})
+        .withGraphJoined('author', {maxBatchSize: 1})
+        .withGraphJoined('scene', {maxBatchSize: 1})
+        .first()
+
+      book = await Book.query().where('uuid', row.scene.book_id).first()
+    }
+
+    if (row.author_id !== book.author_id) {
+      var parent = data.parent.replace(/\b[a-z]/g, function (letter) {
+        return letter.toUpperCase()
+      })
+
+      // append alias
+      row['author_alias'] = row.author.alias
+
+      const notification = await Notification.query().upsertGraphAndFetch([{
+        type: 'Feedback' + parent,
+        name: 'feeback-' + row.uuid,
+        data: JSON.stringify(row),
+        user_id: book.uuid
+      }]).first()
+
+      console.log(notification)
+    }
 
     return row
   }
@@ -95,8 +140,6 @@ class FeedbackController {
       bookUUIDs.push(books[i].uuid)
       parentIDs.push(books[i].uuid)
     }
-
-    // console.log(bookUUIDs)
 
     // get all "books i read" IDs
     const booksIRead = await Reader.query()
