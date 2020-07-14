@@ -9,13 +9,11 @@ class ChapterVersionController {
       .where('chapter_id', chapterId)
       .whereNull('deleted_at')
       .orderBy('id', 'asc')
-
     return version
   }
 
   static async save (data) {
     const chapterVersion = await ChapterVersion.query().upsertGraphAndFetch([data]).first()
-
     return chapterVersion
   }
 
@@ -30,22 +28,61 @@ class ChapterVersionController {
 
     delete data['new_comment_json']
     const chapterVersion = await ChapterVersion.query().upsertGraphAndFetch([data]).first()
-    // console.log(chapterVersion)
+    // console.log('chapterVersion...............................', chapterVersion)
 
-    /*
-    const notification = await Notification.query().upsertGraphAndFetch([{
-      type: 'ChapterComment',
-      name: 'chapter-' + data.chapter_id,
-      data: JSON.stringify(newComment),
-      user_id: newComment.user_id
-    }]).first()
+    const row = await ChapterVersion.query().where('book_chapter_versions.uuid', chapterVersion.uuid).withGraphJoined('chapter', {maxBatchSize: 1}).first()
+    // console.log('chapterVersion.chapter..............', row.chapter)
 
-    if (notification) {
-      //
+    let book = await Book.query().where('uuid', row.chapter.book_id).first()
+    // console.log('book.author_id................................', book.author_id)
+
+    //
+    var notifyUsers = {}
+
+    // notify the author
+    notifyUsers[book.author_id] = 1
+
+    var comments = null
+    try {
+      comments = JSON.parse(data.comments)
+    } catch (e) {
+      comments = null
     }
-    console.log(notification)
-  */
 
+    if (comments) {
+      for (var k in comments) {
+        var commentsGroups = comments[k]
+
+        for (var k2 in commentsGroups) {
+          var comment = commentsGroups[k2]
+
+          // console.log('comment................................................................', comment)
+
+          if (notifyUsers[comment.user_id]) {
+            continue
+          }
+          notifyUsers[comment.user_id] = 1
+        }
+      }
+
+      for (var x in notifyUsers) {
+        if (x === newComment.user_id) {
+          continue
+        }
+
+        const notification = await Notification.query().upsertGraphAndFetch([{
+          type: 'ChapterComment',
+          name: 'chapter-' + data.chapter_id,
+          data: JSON.stringify(newComment),
+          user_id: x
+        }]).first()
+
+        if (notification) {
+          //
+        }
+        // console.log(notification)
+      }
+    }
     return chapterVersion
   }
 

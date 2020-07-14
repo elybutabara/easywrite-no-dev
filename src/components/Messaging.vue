@@ -190,15 +190,9 @@ export default {
         this.socket.emit('group message history', {chat_group_uuid: this.selectedGroupId})
       }
       if (this.currentGroup.unreadCount > 0) {
-        if (window.AppMain && window.AppMain.addNotificationCount) {
-          window.AppMain.addNotificationCount(this.currentGroup.unreadCount * -1)
-        }
-        if (window.AppMessageCenterPopup && window.AppMessageCenterPopup.addNotificationCount) {
-          window.AppMessageCenterPopup.addNotificationCount(this.currentGroup.unreadCount * -1)
-          window.AppMessageCenterPopup.addMessagesCount(this.currentGroup.unreadCount * -1)
-        }
         this.currentGroup.unreadCount = 0
       }
+      Vue.nextTick(this.recountUnread)
     }
   },
   methods: {
@@ -211,12 +205,13 @@ export default {
           c += gc.unreadCount
         }
       }
-      if (window.AppMain && window.AppMain.addNotificationKeyedCount) {
-        window.AppMain.addNotificationKeyedCount('Group Chat', c)
+
+      if (window.AppMain && window.AppMain.setItemCount) {
+        window.AppMain.setItemCount('Message', c)
       }
-      if (window.AppMessageCenterPopup && window.AppMessageCenterPopup.addNotificationKeyedCount) {
-        this.AppMessageCenterPopup.addNotificationKeyedCount('Group Chat', c)
-        this.AppMessageCenterPopup.addMessagesKeyedCount('Group Chat', c)
+
+      if (window.AppMessageCenterPopup && window.AppMessageCenterPopup.setItemCount) {
+        window.AppMessageCenterPopup.setItemCount('Message', c)
       }
     },
     messageSeenBy: function (msg, i) {
@@ -370,13 +365,6 @@ export default {
             scope.groupChats[data.chat_group_uuid].unreadCount = 0
           }
           scope.groupChats[data.chat_group_uuid].unreadCount++
-          if (window.AppMain && window.AppMain.addNotificationCount) {
-            window.AppMain.addNotificationCount(1)
-          }
-          if (window.AppMessageCenterPopup && window.AppMessageCenterPopup.addNotificationCount) {
-            window.AppMessageCenterPopup.addNotificationCount(1)
-            window.AppMessageCenterPopup.addMessagesCount(1)
-          }
         }
         scope.groupChats[data.chat_group_uuid].messages.push(data)
         scope.groupChats[data.chat_group_uuid].last_activity = parseInt(moment(data.last_activity).format('x'))
@@ -384,6 +372,7 @@ export default {
           scope.chatScrollBottom()
           scope.socket.emit('group seen', {chat_group_uuid: data.chat_group_uuid})
         }
+        Vue.nextTick(scope.recountUnread)
       })
 
       socket.on('group message history', function (data) {
@@ -416,6 +405,7 @@ export default {
           list[g.uuid] = g
         }
         Vue.set(scope, 'groupChats', list)
+        Vue.nextTick(scope.recountUnread)
       })
 
       socket.on('group chats update', function (groups) {
@@ -441,7 +431,18 @@ export default {
             delete g.select
           }
         }
+        Vue.nextTick(scope.recountUnread)
       })
+
+      socket.on('notify', function (notification) {
+        //
+      })
+
+      socket.on('notification reload', function (notification) {
+        //
+        window.AppMessageCenterPopup.fetch()
+      })
+
       socket.on('disconnect', function () {
         scope.socketConnected = false
       })
