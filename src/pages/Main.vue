@@ -145,9 +145,14 @@ export default {
         data: null,
         component: 'book-listing'
       },
+      itemsCounts: {
+        'All': 0,
+        'Message': 0,
+        'Notification': 0
+      },
       showMessageCenter: false,
       forceQuit: false,
-      notificationCount: 0
+      notificationCount_: 0
     }
   },
   components: {
@@ -188,6 +193,14 @@ export default {
     'webinar-listing': WebinarListing
   },
   methods: {
+    setItemCount: function (k, n) {
+      console.log('setItemCount', n)
+      this.itemsCounts[k] = n
+    },
+    addItemCount: function (k, n) {
+      console.log('addItemCount', n)
+      this.itemsCounts[k] += n
+    },
     changeComponent: function (component, data) {
       var scope = this
       scope.$delete(scope.active, 'data')
@@ -235,9 +248,6 @@ export default {
           })
         }
       }
-    },
-    addNotificationCount: function (n) {
-      this.notificationCount += n
     }
   },
   beforeMount () {
@@ -251,6 +261,9 @@ export default {
   computed: {
     tabs () {
       return this.$store.getters.getTabs
+    },
+    notificationCount: function () {
+      return this.itemsCounts['Notification'] + this.itemsCounts['Message']
     }
   },
 
@@ -321,6 +334,10 @@ export default {
           }
         }
       }, false)
+    }
+
+    if (window.AppMessaging.recountUnread) {
+      window.AppMessaging.recountUnread()
     }
   }
 }

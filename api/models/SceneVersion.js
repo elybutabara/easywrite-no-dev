@@ -15,7 +15,7 @@ class SceneVersion extends BaseModel {
       relation: BaseModel.BelongsToOneRelation,
       modelClass: path.join(__dirname, 'Scene'),
       join: {
-        from: 'book_scene_versions.scene_id',
+        from: 'book_scene_versions.book_scene_id',
         to: 'book_scenes.uuid'
       }
     }

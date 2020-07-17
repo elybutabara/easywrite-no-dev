@@ -84,7 +84,7 @@ export default {
     },
     displayTime: function (t) {
       var txt = moment(t).fromNow()
-      console.log(t)
+      // console.log(t)
       txt = txt.replace('a few seconds ago', 'just now')
       return txt
     },
@@ -216,14 +216,14 @@ export default {
 
         // cancel if not selected from within the container
         if (!scope.params.tinymce && !selectionStarted) {
-          console.log('From outside select zone')
+          // console.log('From outside select zone')
           return
         }
         selectionStarted = false
 
         // cancel if selected outside the container
         if (!scope.params.tinymce && !e.target.closest('.commentbase-container')) {
-          console.log('To outside select zone')
+          // console.log('To outside select zone')
           return
         }
 

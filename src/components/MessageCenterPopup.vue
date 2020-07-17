@@ -5,8 +5,8 @@
         <h6 class="m-0 font-weight-bold">Message Center</h6>
       </div>
       <div style="padding: 0 20px;">
-        <a href="#" v-on:click.prevent="type = 'All'">All ({{itemsCounts['All']}})</a> |
-        <a href="#" v-on:click="openMessage(null, $event)">Messages ({{messagesCount}})</a> |
+        <a href="#" v-on:click.prevent="type = 'All'">All ({{ itemsCounts['Message'] + itemsCounts['Notification']}})</a> |
+        <a href="#" v-on:click="openMessage(null, $event)">Messages ({{itemsCounts['Message']}})</a> |
         <a href="#" v-on:click.prevent="type = 'Notification'">Notifications ({{itemsCounts['Notification']}})</a>
         <div style="float: right;">
           <button v-on:click="openMessage(null, $event)" class="btn btn-default" style="height: 24px; line-height: 24px; text-transform: none;">New Message</button>
@@ -67,8 +67,7 @@ export default {
         'Notification': 0
       },
       params_: {},
-      notificationsCount: 0,
-      messagesCount: 0
+      notificationsCount: 0
     }
     if (scope.params) {
       Vue.nextTick(() => {
@@ -104,13 +103,13 @@ export default {
     }
   },
   methods: {
-    addNotificationCount: function (n) {
-      console.log('addNotificationCount', n)
-      this.notificationsCount += n
+    setItemCount: function (k, n) {
+      console.log('setItemCount', n)
+      this.itemsCounts[k] = n
     },
-    addMessagesCount: function (n) {
-      console.log('addMessagesCount', n)
-      this.messagesCount += n
+    addItemCount: function (k, n) {
+      console.log('addItemCount', n)
+      this.itemsCounts[k] += n
     },
     openMessage: function (v) {
       window.AppMessaging.open(v)
@@ -249,6 +248,9 @@ export default {
     window.AppMessageCenterPopup = scope
     scope.updateItemsCounts()
     scope.fetch()
+    if (window.AppMessaging.recountUnread) {
+      window.AppMessaging.recountUnread()
+    }
   },
   beforeDestroy: function () {
     delete window.AppMessageCenterPopup
