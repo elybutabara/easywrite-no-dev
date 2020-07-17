@@ -1,11 +1,17 @@
 <template>
     <li v-if="component.is_ready" v-bind:class="{ 'open' : $store.getters.isBookItemsFolderOpen(book) }">
         <div @click="TOGGLE_BOOK(book,'items')" class="label">
-            <span>
-                <img v-if="$store.getters.isBookItemsFolderOpen(book)" src="@/assets/img/icons/folder-open.svg">
-                <img v-else src="@/assets/img/icons/folder.svg">
-                 {{ $t('ITEMS') }}
+          <span>
+            <span v-if="$store.getters.isBookItemsFolderOpen(book)">
+              <i class="fas fa-chevron-down"></i>
+              <i class="fas fa-folder-open"></i>
             </span>
+            <span v-else>
+              <i class="fas fa-chevron-right"></i>
+              <i  class="fas fa-folder"></i>
+            </span>
+            {{ $t('ITEMS') }}
+          </span>
         </div>
         <ul class="level-3">
             <li v-bind:key="item.id" v-for="item in items" class="ellipsis-2">

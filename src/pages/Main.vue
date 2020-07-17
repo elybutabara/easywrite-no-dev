@@ -1,5 +1,5 @@
 <template>
-<div class="page-main" v-bind:class="{ 'collapsed': isCollapsed }">
+<div class="page-main" v-bind:class="{ 'collapsed': isCollapsed, 'dark': $store.getters.darkmode }">
     <div v-if="ready">
         <div @click="toggleMainSideBar()"  class="btn-sidebar-opener"><i class="las la-arrow-right"></i></div>
         <main-side-navigation></main-side-navigation>
@@ -7,6 +7,13 @@
             <div class="es-top-parent">
                <pomodoro-timer></pomodoro-timer>
                 <div class="es-top-nav" style="position: relative;">
+                    <div class="switch-wrapper">
+                      <label class="text">Dark Mode</label>
+                      <label class="switch">
+                        <input @click="$store.commit('toggleTheme')" type="checkbox">
+                        <span class="slider round"></span>
+                      </label>
+                    </div>
                     <button @click="CHANGE_COMPONENT({tabKey: 'webinar-listing', tabComponent: 'webinar-listing',  tabData: null, tabTitle: $t('WEBINARS')})"> {{ $t('WEBINARS') }}</button>
                     <button @click="CHANGE_COMPONENT({tabKey: 'note-listing', tabComponent: 'note-listing',  tabData: null, tabTitle: $t('NOTES')})"> {{ $t('NOTES') }}</button>
                     <button @click="CHANGE_COMPONENT({tabKey: 'dashboard', tabComponent: 'dashboard',  tabData: null, tabTitle: $t('DASHBOARD')})"> {{ $t('DASHBOARD') }}</button>
@@ -330,7 +337,5 @@ ipcRenderer.on('SET_TRANSLATION_DOM', function (event, data) {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.es-top-parent{ position: relative; background:#293742; border-left:1px solid #324553; border-bottom:1px solid #506d84; height:40px; line-height:40px; padding:0px 10px; text-align:right;}
-.es-top-nav { position: absolute; right: 10px;}
-.pomodoro-nav {position: absolute; left:35px; height:40px; line-height:40px; padding:0px 10px; text-align: center;}
+
 </style>

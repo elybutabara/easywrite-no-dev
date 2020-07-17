@@ -2,14 +2,23 @@
     <li v-if="component.is_ready" v-bind:class="{ 'open' : $store.getters.isBookChaptersFolderOpen(book) }">
         <div @click="TOGGLE_BOOK(book,'chapters')" class="label">
             <span>
-                <img v-if="$store.getters.isBookChaptersFolderOpen(book)" src="@/assets/img/icons/folder-open.svg">
-                <img v-else src="@/assets/img/icons/folder.svg">
+                <span v-if="$store.getters.isBookChaptersFolderOpen(book)">
+                  <i class="fas fa-chevron-down"></i>
+                  <i class="fas fa-folder-open"></i>
+                </span>
+                <span v-else>
+                  <i class="fas fa-chevron-right"></i>
+                  <i  class="fas fa-folder"></i>
+                </span>
                 {{ $t('CHAPTERS') }}
             </span>
         </div>
         <draggable tag="ul" v-model="chapters" draggable=".handle" class="level-3">
             <li v-bind:class="{ 'open' : $store.getters.isBookChaptersFolderOpen(book) }" v-bind:key="chapter.id" v-for="chapter in chapters" class="handle ellipsis-2">
-                <div @click="toggleChapter(chapter)" class="label"><span><img  src="@/assets/img/icons/chapter.svg"> {{ chapter.title }}</span></div>
+                <div @click="toggleChapter(chapter)" class="label">
+                  <img src="@/assets/img/icons/chapter.svg">
+                  <span>{{ chapter.title }}</span>
+                </div>
                 <chapter-scenes-folder v-if="chapter.is_open" :key="'tree-chapter-scenes-' + chapter.uuid" :properties="{book: book, chapter: chapter}"></chapter-scenes-folder>
             </li>
         </draggable>

@@ -1,5 +1,5 @@
 <template>
-<div class="pomodoro-nav"><h4 style="font-family:'Digital'; font-size:20px; color: white; display: inline-block">{{ setPomodoroMinutes(pmdtimer.pmd_min) }}:{{ setPomodoroSeconds(pmdtimer.pmd_sec) }}</h4></div>
+<div class="pomodoro-nav"><h4>{{ setPomodoroMinutes(pmdtimer.pmd_min) }}:{{ setPomodoroSeconds(pmdtimer.pmd_sec) }}</h4></div>
 <!-- <p>test</p> -->
 </template>
 

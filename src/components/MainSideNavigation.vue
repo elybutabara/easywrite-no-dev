@@ -1,7 +1,8 @@
 <template>
 <div class="left-side-bar no-select" :style="updateStyle()">
         <div class="header">
-            <img src="@/assets/img/EasyWrite Logo White.png">
+            <img v-if="$store.getters.darkmode" src="@/assets/img/es-logo-white.png">
+            <img v-else src="@/assets/img/es-logo-black.png">
             <i @click="$parent.toggleMainSideBar()" class="btn-sidebar-closer las la-compress-arrows-alt"></i>
         </div>
         <div style="display:none;"  class="search-box">
@@ -16,10 +17,15 @@
                 {{$t('BOOKS_I_READ').toUpperCase()}}
             </div>
         </div>
-        <div class="es-tree-view">
+        <div class="es-tree-view" id="custom-scrollbar">
             <ul v-bind:class="{'active' : tab === 'my-books' }"  class="left-sidebar-tab-content level-1">
-                <li v-bind:class="{ 'open' : book.is_open }" v-bind:key="book.id" v-for="(book)  in books">
-                    <div class="label" @click="TOGGLE_BOOK(book,'book')"><span><img src="@/assets/img/icons/book.svg"> {{ book.title || 'Untitled' }}</span></div>
+                <li v-bind:class="{ 'open' : book.is_open }" v-bind:key="book.id" v-for="(book) in books">
+                    <div class="label" @click="TOGGLE_BOOK(book,'book')">
+                      <i v-if="book.is_open" class="fas fa-chevron-down"></i>
+                      <i v-else class="fas fa-chevron-right"></i>
+                      <i class="fas fa-book"></i>
+                      <span>{{ book.title || 'Untitled' }}</span>
+                    </div>
                     <ul v-if="book.is_open" class="level-2">
                         <book-chapters-folder :key="'tree-chapters-' + book.uuid" :properties="book"></book-chapters-folder>
                         <book-items-folder :key="'tree-items-' + book.uuid" :properties="book"></book-items-folder>

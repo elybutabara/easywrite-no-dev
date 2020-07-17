@@ -32,6 +32,7 @@ import character from './stores/character'
 import item from './stores/item'
 import location from './stores/location'
 import scene from './stores/scene'
+import settings from './stores/settings'
 import book from './stores/book'
 import exportstatus from './stores/export-status'
 
@@ -134,6 +135,7 @@ const store = new Vuex.Store({
     item: item,
     location: location,
     scene: scene,
+    settings: settings,
     book: book,
     exportstatus: exportstatus
   }
