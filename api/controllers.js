@@ -1,5 +1,7 @@
 const path = require('path')
+const fs = require('fs-extra')
 
+/*
 const { BookGenreController } = require(path.join(__dirname, 'controller/BookGenreController'))
 const { RelationController } = require(path.join(__dirname, 'controller/RelationController'))
 const { ItemController } = require(path.join(__dirname, 'controller/ItemController'))
@@ -68,3 +70,21 @@ module.exports = {
   AssignmentManuscriptController
 
 }
+*/
+
+// load controllers dynamically
+var controllers = {}
+var controllerFiles = fs.readdirSync(path.join(__dirname, '/controller'), {})
+for (var i = 0; i < controllerFiles.length; i++) {
+  if (!/\.js$/.test(controllerFiles[i])) {
+    continue
+  }
+  var controllerName = controllerFiles[i].replace('.js', '')
+  var controllerFile = require.resolve('./controller/' + controllerName)
+  console.log('controllerFile ', controllerFile)
+  controllers[controllerName] = require(controllerFile)[controllerName]
+}
+
+module.exports = controllers
+
+// console.log(module.exports)

@@ -10,6 +10,7 @@ let log = require('electron-log')
 let { app } = require('electron')
 let express = initexpress()
 const fs = require('fs-extra')
+// let { watch } = require('require-watch')
 
 const path = require('path')
 
@@ -69,6 +70,7 @@ const uploadedFile = multer({
   // you might also want to set some limits: https://github.com/expressjs/multer#limits
 })
 
+/*
 express.use('/authors', require('./routes/authors'))
 express.use('/users', require('./routes/users'))
 express.use('/book-genres', require('./routes/book-genres'))
@@ -102,7 +104,22 @@ express.use('/notifications', require('./routes/notifications'))
 express.use('/lesson-documents', require('./routes/lessson-documents'))
 express.use('/assignments', require('./routes/assignments'))
 express.use('/assignment-manuscripts', require('./routes/assignment-manuscripts'))
+*/
 
+// load routes dynamically
+var routeFiles = fs.readdirSync(path.join(__dirname, '/routes'), {})
+for (var i = 0; i < routeFiles.length; i++) {
+  if (!/\.js$/.test(routeFiles[i])) {
+    continue
+  }
+  var routeName = routeFiles[i].replace('.js', '')
+  var routeFile = require.resolve('./routes/' + routeName)
+  console.log('routeFile ', routeFile)
+  // watch(require.resolve(routeFile))
+  express.use('/' + routeName, require(routeFile))
+}
+
+//
 express.post(
   '/upload/:imgOf/image',
   upload.single('single-picture-file' /* name attribute of <file> element in your form */),

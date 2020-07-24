@@ -1,4 +1,5 @@
 const path = require('path')
+const fs = require('fs-extra')
 
 const Knex = require('knex')
 const { Model } = require('objection')
@@ -7,6 +8,7 @@ const connection = require(path.join(__dirname, 'knexfile'))[process.env.NODE_EN
 const knexConnection = Knex(connection)
 global.knexConnection = knexConnection // to be use in starter.js(main.js) for update versions
 
+/*
 const { Author } = require(path.join(__dirname, 'models/Author'))
 const { AuthorName } = require(path.join(__dirname, 'models/AuthorName'))
 const { User } = require(path.join(__dirname, 'models/User'))
@@ -42,9 +44,10 @@ const { LessonDocument } = require(path.join(__dirname, 'models/LessonDocument')
 const { Notification } = require(path.join(__dirname, 'models/Notification'))
 const { Assignment } = require(path.join(__dirname, 'models/Assignment'))
 const { AssignmentManuscript } = require(path.join(__dirname, 'models/AssignmentManuscript'))
-
+*/
 Model.knex(knexConnection)
 
+/*
 module.exports = {
   Author,
   AuthorName,
@@ -82,3 +85,21 @@ module.exports = {
   Assignment,
   AssignmentManuscript
 }
+*/
+
+// load models dynamically
+var models = {}
+var modelFiles = fs.readdirSync(path.join(__dirname, '/models'), {})
+for (var i = 0; i < modelFiles.length; i++) {
+  if (!/\.js$/.test(modelFiles[i])) {
+    continue
+  }
+  var modelName = modelFiles[i].replace('.js', '')
+  var modelFile = require.resolve('./models/' + modelName)
+  console.log('modelFile ', modelFile)
+  models[modelName] = require(modelFile)[modelName]
+}
+
+module.exports = models
+
+// console.log(module.exports)
