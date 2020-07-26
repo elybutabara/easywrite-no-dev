@@ -1,6 +1,6 @@
 *:focus { outline: none; }
 
-.tox .tox-toolbar {margin-top: 30px;}
+.tox.tox-fullscreen .tox-toolbar {margin-top: 30px;}
 
 .no-select {
     user-select: none; /* standard syntax */
@@ -536,4 +536,22 @@ input:checked + .slider:before {
 .page-main.dark .es-tree-view .level-1>li.open { background: #24303a; border-bottom: 0 }
 .page-main.dark .es-tree-view .level-2>li.open { background: #324451; }
 .page-main.dark .es-tree-view .level-3 span { color: #fff; }
+
+
+.page-main.dark .tox-tinymce { border: 1px solid #3c4557 !important; }
+.page-main.dark .tox .tox-toolbar, .tox .tox-toolbar__overflow, .tox .tox-toolbar__primary { background:#2b3548 !important; border-bottom:1px solid #3c4557;}
+.page-main.dark .tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) { border-right:none !important; }
+
+.page-main.dark .tox .tox-tbtn--disabled svg, 
+.page-main.dark .tox .tox-tbtn--disabled:hover svg, 
+.page-main.dark .tox .tox-tbtn:disabled svg, 
+.page-main.dark .tox .tox-tbtn:disabled:hover svg { fill: #495469; }
+.page-main.dark .tox .tox-tbtn--enabled, .page-main.dark .tox .tox-tbtn--enabled:hover {     background: #495469; }
+
+.page-main.dark .tox .tox-tbtn svg { display: block; fill: #ccc; }
+.page-main.dark .tox .tox-tbtn--bespoke .tox-tbtn__select-label { color:#ccc; }
+.page-main.dark .tox .tox-tbtn:hover { background:#495469; }
+.page-main.dark .tox .tox-edit-area__iframe { background:#3e4b64; }
+.page-main.dark .tox .tox-tbtn__select-label { color:#fff; }
+.page-main.dark .tox .tox-tbtn svg {}
 /** ===== DARK MODE end ===== **/

@@ -35,7 +35,6 @@ export default {
         branding: false,
         autoresize_on_init: false,
         forced_root_block: false,
-
         init_instance_callback: function (editor) {
           editor.shortcuts.add('ctrl+l', 'A New Way To leftChev', function () {
             editor.insertContent('&#171;')
@@ -116,6 +115,21 @@ export default {
       }
     }
   },
+  computed: {
+    darkmode() {
+      return  this.$store.getters.darkmode
+    }
+  },
+  watch: {
+    darkmode : function() {
+      var vm = this
+      if (this.darkmode) {
+        tinymce.get(vm.$el.id).getBody().style.color = '#fff'
+      } else {
+        tinymce.get(vm.$el.id).getBody().style.color = '#000'
+      }
+    }
+  },
   methods: {
     initEditor: function () {
       var vm = this
@@ -149,5 +163,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
