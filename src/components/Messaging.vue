@@ -305,7 +305,7 @@ export default {
       }
 
       scope.axios
-        .get('http://api.pilotleser.no/live/search/authors?q=' + escape(q) + '&limit=10',
+        .get(window.API_URL + '/search/authors?q=' + escape(q) + '&limit=10',
           {
             'headers': headers
           })
@@ -326,7 +326,12 @@ export default {
       //
       var scope = this
 
-      var socket = socketIO('http://dev.kunohay.com:3030')
+      var port = 3030
+      if (window.API_URL === 'http://api.pilotleser.no/se' || window.API_URL === 'https://api.pilotleser.no/se') {
+        port = 3031
+      }
+
+      var socket = socketIO('http://dev.kunohay.com:' + port)
       socket.on('connect', function () {
         scope.socket = socket
         scope.socketConnected = true
