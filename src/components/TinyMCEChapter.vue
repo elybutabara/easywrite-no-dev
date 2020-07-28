@@ -135,12 +135,12 @@ export default {
     }
   },
   computed: {
-    darkmode() {
-      return  this.$store.getters.darkmode
+    darkmode () {
+      return this.$store.getters.darkmode
     }
   },
   watch: {
-    darkmode : function() {
+    darkmode: function () {
       var vm = this
       if (this.darkmode) {
         tinymce.get(vm.$el.id).getBody().style.color = '#fff'
