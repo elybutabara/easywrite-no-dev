@@ -129,6 +129,7 @@ const resourcePath = electron.remote.getGlobal('resourcePath')
 // const FormData = window.require('form-data')
 
 const uploadsBaseURL = 'https://www.pilotleser.no/uploads' // to do: use a production upload_base_url if the app is in production mode
+const request = window.require('request')
 
 export default {
   name: 'syncing',
@@ -484,27 +485,23 @@ export default {
             // console.log(endpoint.title + ' response.data.rows ---->\n', response.data.rows)
 
             if (response.data && response.data.rows && response.data.rows.length > 0) {
-              for (var i = 0; i < response.data.rows.length; i++) {
-                var row = response.data.rows[i]
-                var src = uploadsBaseURL + '/book-' + endpoint.title.toLowerCase() + '/' + (row.picture || row.pictures)
-                var dst = path.resolve(app.getAppPath() + '\\resources', 'resources', 'images', endpoint.title.toLowerCase(), (row.picture || row.pictures) + '')
+              for (let i = 0; i < response.data.rows.length; i++) {
+                const row = response.data.rows[i]
+                const image = (row.picture || row.pictures)
+                const allowedExt = ['.png', '.jpg', '.jpeg']
+                let imageExt = (image) ? image.split('.').pop() : null
+
+                if (!(imageExt && (allowedExt.indexOf('.' + imageExt) > -1))) {
+                  continue
+                }
 
                 // Added by mael this will create the directory if not exist
-                let dstDir = path.join(resourcePath, 'resources', 'images', endpoint.title.toLowerCase())
+                let dstDir = path.join(resourcePath, 'resources', 'images', endpoint.title.replace(/\s+/g, '-').toLowerCase())
                 fs.mkdirsSync(dstDir)
-                // console.log('src = ', src)
-                // console.log('dst = ', dst)
-                fetch(src, {
-                  method: 'GET'
-                })
-                  .then(response => response.blob())
-                  .then(blob => {
-                    var fileReader = new FileReader()
-                    fileReader.onload = function () {
-                      electronFs.writeFileSync(dst, Buffer.from(new Uint8Array(this.result)))
-                    }
-                    fileReader.readAsArrayBuffer(blob)
-                  })
+
+                const src = uploadsBaseURL + '/book-' + endpoint.title.toLowerCase() + '/' + image + ''
+                const dst = path.resolve(dstDir, image + '')
+                scope.donwloadFile({url: src, name: image}, dst)
               }
             }
           } else if (['Feedbacks', 'Chapter Versions', 'Scene Versions'].indexOf(endpoint.title) > -1) {
@@ -778,6 +775,18 @@ export default {
         { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [] }
         // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
       ]
+    },
+    donwloadFile: function (src, dst) {
+      const download = function (uri, filename, callback) {
+        // eslint-disable-next-line handle-callback-err
+        request.head(uri, function (err, res, body) {
+          request(uri).pipe(electronFs.createWriteStream(filename)).on('close', callback)
+        })
+      }
+
+      download(src.url, dst, function () {
+        console.log('done donwloadig image: ' + src.name)
+      })
     }
   },
   beforeMount () {
