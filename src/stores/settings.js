@@ -2,7 +2,7 @@ export default {
   strict: true, // make sure everything us mutated, no direct editing of state
   name: 'settings',
   state: {
-    darkmode: false
+    darkmode: true
   },
   getters: {
     darkmode: state => {

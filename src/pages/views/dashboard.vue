@@ -16,7 +16,7 @@
             </div>
         </div>
     </div>
-    <div class="es-page-content">
+    <div class="es-page-content" id="custom-scrollbar">
         <div class="es-panel">
             <h4>{{$t('REPORTS')}}</h4>
             <hr/>

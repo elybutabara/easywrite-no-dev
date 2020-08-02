@@ -5,27 +5,63 @@
         <main-side-navigation></main-side-navigation>
         <div class="es-right-side-content">
             <div class="es-top-parent">
-               <pomodoro-timer></pomodoro-timer>
-                <div class="es-top-nav" style="position: relative;">
+                <div class="es-top-nav">
+                  <div class="inner-nav">
+                      <a @click="CHANGE_COMPONENT({tabKey: 'dashboard', tabComponent: 'dashboard',  tabData: null, tabTitle: $t('DASHBOARD')})" v-bind:class="{'active' : tabs.items[0].component == 'dashboard'}" href="javascript:void(0)" class="nav-btn dashboard">
+                          <i class="fas fa-home"></i>
+                          <span>{{ $t('DASHBOARD') }}</span>
+                      </a>
+                      <a @click="CHANGE_COMPONENT({tabKey: 'webinar-listing', tabComponent: 'webinar-listing',  tabData: null, tabTitle: $t('Webinars')})" v-bind:class="{'active' : tabs.items[0].component == 'webinar-listing'}" href="javascript:void(0)" class="nav-btn webinars">
+                          <i class="fas fa-headset"></i>
+                          <span>{{ $t('Webinars') }}</span>
+                      </a>
+                      <a @click="CHANGE_COMPONENT({tabKey: 'note-listing', tabComponent: 'note-listing',  tabData: null, tabTitle: $t('NOTES')})" v-bind:class="{'active' : tabs.items[0].component == 'note-listing'}" href="javascript:void(0)" class="nav-btn notes">
+                          <i class="fas fa-sticky-note"></i>
+                          <span>{{ $t('NOTES') }}</span>
+                      </a>
+                  </div>
+                  <a @click="CHANGE_COMPONENT({tabKey: 'book-form', tabComponent: 'book-form', tabData: null, tabTitle: $t('NEW_BOOK'), newTab: true})" href="javascript:void(0)" class="nav-btn new-book">
+                      <i class="fas fa-book-open"></i>
+                      <span>{{ $t('NEW_BOOK') }}</span>
+                  </a>
+                  <a @click="CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing',  tabData: null, tabTitle: $t('SYNC_DATA'), newTab: true})" href="javascript:void(0)" class="nav-btn sync-data">
+                      <i class="fas fa-sync"></i>
+                      <span>{{ $t('SYNC_DATA') }}</span>
+                  </a>
+                  <a class="nav-toggle mr-auto" href="javascript:void(0)" style="padding-top: 8px;">
                     <div class="switch-wrapper">
-                      <label class="text">Dark Mode</label>
                       <label class="switch">
                         <input @click="$store.commit('toggleTheme')" type="checkbox">
                         <span class="slider round"></span>
                       </label>
+                      <label class="text">Dark Mode</label>
                     </div>
-                    <button @click="CHANGE_COMPONENT({tabKey: 'webinar-listing', tabComponent: 'webinar-listing',  tabData: null, tabTitle: $t('WEBINARS')})"> {{ $t('WEBINARS') }}</button>
-                    <button @click="CHANGE_COMPONENT({tabKey: 'note-listing', tabComponent: 'note-listing',  tabData: null, tabTitle: $t('NOTES')})"> {{ $t('NOTES') }}</button>
-                    <button @click="CHANGE_COMPONENT({tabKey: 'dashboard', tabComponent: 'dashboard',  tabData: null, tabTitle: $t('DASHBOARD')})"> {{ $t('DASHBOARD') }}</button>
-                    <button @click="CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing',  tabData: null, tabTitle: $t('SYNC_DATA'), newTab: true})">{{ $t('SYNC_DATA') }}</button>
-                    <button @click="CHANGE_COMPONENT({tabKey: 'book-form', tabComponent: 'book-form',  tabData: null, tabTitle: $t('NEW_BOOK'), newTab: true})">{{ $t('NEW_BOOK') }}</button>
-                    <button @click.prevent="showMessageCenter=!showMessageCenter" class="btn btn-danger" style="position: relative;">
-                      <i class="fa fa-bell"></i>
-                      <span v-if="notificationCount > 0" style="position: absolute;width: 20px;height: 20px;border-radius: 50%;background: red;color: rgb(255, 255, 255);top: -5px;right: -8px;line-height: 20px;text-align: center;font-size: 12px;">{{notificationCount}}</span>
-                    </button>
-                    <div v-show="showMessageCenter" style="position: absolute; top: 43px; right: 0px; z-index: 10000; width: 500px; text-align: left;">
-                      <message-center-popup :params="{}"></message-center-popup>
+                  </a>
+                  <a href="javascript:void(0)">
+                    <pomodoro-timer></pomodoro-timer>
+                  </a>
+                  <!-- <button @click.prevent="showMessageCenter=!showMessageCenter" class="btn btn-danger" style="position: relative;">
+                    <i class="fa fa-bell"></i>
+                    <span v-if="notificationCount > 0" style="position: absolute;width: 20px;height: 20px;border-radius: 50%;background: red;color: rgb(255, 255, 255);top: -5px;right: -8px;line-height: 20px;text-align: center;font-size: 12px;">{{notificationCount}}</span>
+                  </button> -->
+                  <a @click.prevent="showMessageCenter=!showMessageCenter; showUserSettings=false;" class="user-btn" href="javascript:void(0)" style="margin-right: 10px;">
+                    <i class="fas fa-bell"></i>
+                    <span v-if="notificationCount > 0" style="position: absolute;width: 20px;height: 20px;border-radius: 50%;background: red;color: rgb(255, 255, 255);top: -5px;right: -8px;line-height: 20px;text-align: center;font-size: 12px;">{{notificationCount}}</span>
+                  </a>
+                  <div v-show="showMessageCenter" style="position: absolute; top: 68px; right: 18px; z-index: 10000; width: 500px; text-align: left;">
+                    <message-center-popup :params="{}"></message-center-popup>
+                  </div>
+                  <a @click.prevent="showUserSettings=!showUserSettings; showMessageCenter=false;" class="user-btn" href="javascript:void(0)">
+                    <i class="las la-user"></i>
+                  </a>
+                  <div v-show="showUserSettings" style="position: absolute; top: 68px; right: 18px; z-index: 10000; width: 350px; text-align: left;">
+                    <div class="card shadow mb-4">
+                      <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold">User Settings</h6>
+                      </div>
+                      <div class="card-body"></div>
                     </div>
+                  </div>
                 </div>
             </div>
             <div class="es-tab-nav">
@@ -151,6 +187,7 @@ export default {
         'Notification': 0
       },
       showMessageCenter: false,
+      showUserSettings: false,
       forceQuit: false,
       notificationCount_: 0
     }
@@ -269,6 +306,8 @@ export default {
 
   mounted () {
     var scope = this
+    console.log('helo')
+    console.log(scope.tabs.items[0].component)
     window.AppMain = this
     var userUUID = this.$store.getters.getUserID
     var authorUUID = this.$store.getters.getAuthorID
