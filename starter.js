@@ -128,7 +128,7 @@ function createWindow () {
 
   ipcMain.on('MAC_MENU_BEHAVIOR', function () {
     const doubleClickAction = systemPreferences.getUserDefault('AppleActionOnDoubleClick', 'string');
-    console.log(doubleClickAction)
+    // console.log(doubleClickAction)
     if (doubleClickAction === 'Minimize') {
       mainWindow.minimize()
     } else if (doubleClickAction === 'Maximize') {

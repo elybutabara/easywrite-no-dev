@@ -221,7 +221,7 @@ export default {
                 if (!response.data.rows[i].data) {
                   response.data.rows[i].data = {}
                 }
-                console.log(JSON.stringify(response.data.rows[i]))
+                // console.log(JSON.stringify(response.data.rows[i]))
               }
 
               scope.items = response.data.rows

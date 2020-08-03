@@ -110,7 +110,7 @@ export default {
       scope.axios.get('http://localhost:3000/notes/' + authorID)
         .then(function (response) {
           scope.notes = response.data
-          console.log(scope.notes)
+          // console.log(scope.notes)
         })
         .catch(function (error) {
           console.log(error)

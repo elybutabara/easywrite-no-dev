@@ -23,7 +23,7 @@ router.post('/savetoscene', async function (req, res) {
 })
 
 router.get('/:sceneId/latest', async function (req, res) {
-  console.log(req.params)
+  // console.log(req.params)
   const rows = await SceneVersionController.getLatestSceneVersion(req.params.sceneId)
 
   res

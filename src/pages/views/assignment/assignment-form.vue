@@ -149,7 +149,7 @@ export default {
   methods: {
     logging () {
       var scope = this
-      console.log(scope.manuscript.is_file)
+      // console.log(scope.manuscript.is_file)
     },
     // Required for geting value from TinyMCE content
     setContent (value) {

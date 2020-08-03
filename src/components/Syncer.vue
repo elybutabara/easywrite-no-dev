@@ -78,7 +78,7 @@ export default {
       this.$http.get(window.API_URL + '/user/connect')
         .then(function (response) {
         // handle success
-          console.log(response)
+        //   console.log(response)
           setTimeout(function () {
             scope.next()
           }, 1000)

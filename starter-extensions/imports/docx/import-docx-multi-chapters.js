@@ -33,7 +33,7 @@ exports.initMainWindow = (window) => {
           mammoth.convertToHtml(data, options)
             .then(function (result) {
               // console.log('testtse')
-              console.log(book)
+              // console.log(book)
               MainWindow.webContents.send('GET-DOCX-CONTENT-MULTI-CHAPTERS-2', {book: book, html: result.value})
             })
             .done()
