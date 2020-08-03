@@ -221,12 +221,12 @@ export default {
       if (hasError) {
         return false
       }
-
+      if (scope.data.picture_src) delete scope.data.picture_src
       scope.axios
         .post('http://localhost:3000/locations', scope.data)
         .then(response => {
           if (response.data) {
-            console.log(response.data)
+            // console.log(response.data)
             window.swal.fire({
               position: 'center',
               icon: 'success',
@@ -249,36 +249,36 @@ export default {
                 scope.$store.dispatch('changeTabTitle', { key: 'location-form-' + response.data.uuid, title: this.$t('EDIT') + ' - ' + response.data.location })
               }
 
-              scope.loadLocation(response.data)
+              // scope.loadLocation(response.data)
             })
           }
         })
-    },
-    loadLocation (locationProp) {
-      var scope = this
-      let location = locationProp.location
-      scope.data.location = location.location
-      scope.data.AKA = location.AKA
-      scope.data.tags = location.tags
-      scope.data.description = location.description
-      scope.data.pictures = location.pictures
-      scope.picture_src = location.picture_src
     }
+    // loadLocation (locationProp) {
+    //   var scope = this
+    //   let location = locationProp.location
+    //   scope.data.location = location.location
+    //   scope.data.AKA = location.AKA
+    //   scope.data.tags = location.tags
+    //   scope.data.description = location.description
+    //   scope.data.pictures = location.pictures
+    //   scope.picture_src = location.picture_src
+    // }
   },
   beforeMount () {
     const scope = this
     if (scope.properties.location) {
       scope.data = scope.properties.location
+      scope.picture_src = scope.properties.location.picture_src
     }
     scope.data.book_id = scope.properties.book.uuid
   },
   mounted () {
-    var scope = this
-
-    if (scope.data.uuid) {
-      if (scope.properties.location) window.$('.page-location-form .page-title h3').html('Update ' + scope.properties.location.location)
-      scope.loadLocation(scope.data)
-    }
+    // var scope = this
+    // if (scope.data.uuid) {
+    //   if (scope.properties.location) window.$('.page-location-form .page-title h3').html('Update ' + scope.properties.location.location)
+    //   scope.loadLocation(scope.data)
+    // }
   }
 }
 </script>
