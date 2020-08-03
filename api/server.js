@@ -114,7 +114,7 @@ for (var i = 0; i < routeFiles.length; i++) {
   }
   var routeName = routeFiles[i].replace('.js', '')
   var routeFile = require.resolve('./routes/' + routeName)
-  console.log('routeFile ', routeFile)
+  // console.log('routeFile ', routeFile)
   // watch(require.resolve(routeFile))
   express.use('/' + routeName, require(routeFile))
 }

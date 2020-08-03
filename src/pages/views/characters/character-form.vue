@@ -301,7 +301,7 @@ export default {
                 scope.$store.dispatch('changeTabTitle', { key: 'character-form-' + response.data.uuid, title: this.$t('EDIT') + ' - ' + response.data.fullname })
               }
 
-              scope.loadCharacter({ character: response.data })
+              // scope.loadCharacter({ character: response.data })
             })
           }
         })

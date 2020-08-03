@@ -96,7 +96,7 @@ for (var i = 0; i < modelFiles.length; i++) {
   }
   var modelName = modelFiles[i].replace('.js', '')
   var modelFile = require.resolve('./models/' + modelName)
-  console.log('modelFile ', modelFile)
+  // console.log('modelFile ', modelFile)
   models[modelName] = require(modelFile)[modelName]
 }
 
