@@ -322,9 +322,11 @@ export default {
       scope.tempDescription = character.description
       scope.tempBio = character.bio
       scope.tempGoals = character.goals
-      if (character.picture) {
+      if (character.picture && scope.CHECK_VALID_IMAGE(character.picture)) {
         scope.$set(scope.data, 'picture', character.picture)
         scope.picture_src = character.picture_src
+      } else {
+        scope.picture_src = false
       }
     }
   },
