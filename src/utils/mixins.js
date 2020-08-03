@@ -263,6 +263,11 @@ export default {
       } else {
         return title.slice(0, 39)
       }
+    },
+    CHECK_VALID_IMAGE: function (image) {
+      const allowedExt = ['.png', '.jpg', '.jpeg']
+      let imageExt = (image) ? image.split('.').pop() : false
+      return imageExt && (allowedExt.indexOf('.' + imageExt) > -1)
     }
   }
 }
