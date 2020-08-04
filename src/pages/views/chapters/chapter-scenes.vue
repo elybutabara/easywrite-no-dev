@@ -102,7 +102,7 @@ export default {
   async mounted () {
     var scope = this
     try {
-      scope.scenes = await scope.$store.dispatch('loadScenesByChapter', scope.chapter.uuid)
+      await scope.$store.dispatch('loadScenesByChapter', scope.chapter.uuid)
     } finally {
       scope.page.is_ready = true
     }
