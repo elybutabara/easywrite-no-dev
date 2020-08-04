@@ -214,8 +214,8 @@ export default {
           const image = new Image()
           image.src = reader.result.toString()
           image.setAttribute('width', '100%')
-
-          window.$('.uploaded-file-preview').html(image)
+          scope.picture_src = image.src
+          // window.$('.uploaded-file-preview').html(image)
         }
         reader.readAsDataURL(scope.file)
       }

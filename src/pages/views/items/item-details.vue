@@ -44,7 +44,7 @@ export default {
     item: function () {
       const scope = this
       const item = scope.properties.item
-      if (!scope.CHECK_VALID_IMAGE(item.picture)) {
+      if (!scope.CHECK_VALID_IMAGE(item.pictures)) {
         item.picture_src = false
       }
       return item

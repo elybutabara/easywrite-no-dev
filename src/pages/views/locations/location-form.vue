@@ -163,8 +163,8 @@ export default {
           const image = new Image()
           image.src = reader.result.toString()
           image.setAttribute('width', '100%')
-
-          window.$('.uploaded-file-preview').html(image)
+          scope.picture_src = image.src
+          // window.$('.uploaded-file-preview').html(image)
         }
         reader.readAsDataURL(scope.file)
       }
@@ -221,7 +221,7 @@ export default {
       if (hasError) {
         return false
       }
-      if (scope.data.picture_src) delete scope.data.picture_src
+      if (scope.data.hasOwnProperty('picture_src')) delete scope.data.picture_src
       scope.axios
         .post('http://localhost:3000/locations', scope.data)
         .then(response => {
