@@ -43,8 +43,7 @@
                 <br>
                 <br>
                 <br>
-                <span>{{ removeCommentChapter(chapter.chapter_version[chapter.chapter_version.length-1].content) }}</span>
-                <div v-html="chapter_content"></div>
+                <div v-html="removeCommentChapter((chapter.chapter_version[chapter.chapter_version.length-1]) ? chapter.chapter_version[chapter.chapter_version.length-1].content : null)"></div>
 
               <div v-bind:key="scene.id" v-for="scene in chapter.scene">
                     <div class="break"></div>
@@ -52,8 +51,7 @@
                     <br>
                     <br>
                     <br>
-                    <span>{{ removeCommentScene(scene.scene_version[scene.scene_version.length-1].content) }}</span>
-                    <div v-html="scene_content"></div>
+                    <div v-html="removeCommentScene((scene.scene_version[scene.scene_version.length-1]) ? scene.scene_version[scene.scene_version.length-1].content : null)"></div>
               </div>
 
             </div>
@@ -91,13 +89,11 @@ export default {
         ipcRenderer.send('EXPORT-WORD-BOOK', {html: outerhtml, book: scope.book})
       }, 2000)
     },
-    removeCommentChapter: function (content) {
-      var scope = this
-      scope.chapter_content = content.replace(/<\/?span class="commentbase-comment-highlight".[^>]*>/g, '')
+    removeCommentChapter: function (content) { // TODO : refactor this to one method if there is no other unique process
+      return (content) ? content.replace(/<\/?span class="commentbase-comment-highlight".[^>]*>/g, '') : ''
     },
     removeCommentScene: function (content) {
-      var scope = this
-      scope.scene_content = content.replace(/<\/?span class="commentbase-comment-highlight".[^>]*>/g, '')
+      return (content) ? content.replace(/<\/?span class="commentbase-comment-highlight".[^>]*>/g, '') : ''
     },
     injectCSSBeforeExport: function () {
       // this will get the external from this window and inject it as internal css before exporting
@@ -125,19 +121,15 @@ export default {
   },
   mounted () {
     var scope = this
-    ipcRenderer.on('EXPORT-DOCX-GET-BOOK', function (event, data) {
-      scope.book = data
-
-      scope.$store.dispatch('loadChaptersWithScenesByBook', scope.book.uuid)
-
-      setTimeout(function () {
+    ipcRenderer.on('EXPORT-DOCX-GET-BOOK', async function (event, data) {
+      try {
+        scope.book = data
+        await scope.$store.dispatch('loadChaptersWithScenesByBook', scope.book.uuid)
+      } finally {
         scope.chapters = scope.$store.getters.getChaptersByBook(scope.book.uuid)
         scope.page.is_ready = true
-      }, 6000)
-
-      setTimeout(function () {
         scope.exportBook()
-      }, 6000)
+      }
     })
   }
 }
