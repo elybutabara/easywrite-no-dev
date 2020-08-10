@@ -1,9 +1,13 @@
 <template>
 <div class="left-side-bar no-select" :style="updateStyle()">
-        <div class="header">
+        <div class="header" style="display: flex; align-items: center; justify-content: center; position: relative;">
             <img v-if="$store.getters.darkmode" src="@/assets/img/es-logo-white.png">
             <img v-else src="@/assets/img/es-logo-black.png">
-            <i @click="$parent.toggleMainSideBar()" class="btn-sidebar-closer las la-compress-arrows-alt"></i>
+            <!-- <i @click="$parent.toggleMainSideBar()" class="btn-sidebar-closer las la-compress-arrows-alt"></i> -->
+            <a @click="$store.commit('toggleSideNav')" class="icon-burger-close pos-absolute" href="javascript:void(0)">
+              <i v-if="!$store.getters.collapsedSideNav" class="las la-angle-left"></i>
+              <i class="las la-bars"></i>
+            </a>
         </div>
         <div style="display:none;"  class="search-box">
             <input type="text" :placeholder = " $t('SEARCH_KEYWORD')">
@@ -11,10 +15,10 @@
         </div>
         <div class="left-sidebar-tab">
             <div v-bind:class="{'active' : tab === 'my-books' }" @click="toggleTab('my-books')" class="tab-item">
-                {{$t('MY_BOOKS').toUpperCase()}}
+                {{$t('MY_BOOKS')}}
             </div>
             <div v-bind:class="{'active' : tab === 'books-i-read' }" @click="toggleTab('books-i-read')" class="tab-item">
-                {{$t('BOOKS_I_READ').toUpperCase()}}
+                {{$t('BOOKS_I_READ')}}
             </div>
         </div>
         <div class="es-tree-view" id="custom-scrollbar">

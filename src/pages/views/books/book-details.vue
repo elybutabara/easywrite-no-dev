@@ -1,27 +1,32 @@
 <template>
 <div v-if="page.is_ready" class="page-book-details">
     <div class="es-page-head">
-        <div class="inner">
-            <div class="details">
-                <h4>{{ properties.title }}</h4>
-                <small>{{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
+        <div class="book-panel">
+            <div>
+              <div class="details">
+                  <h4>{{ properties.title }}</h4>
+                  <small>{{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
+                  <div>
+                    <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>
+                  </div>
+              </div>
             </div>
             <div class="actions">
-                <b-button class="es-button-white" :disabled="getExportBookStatus.export_book_status"  @click="exportBook()">
-                  <div v-if="getExportBookStatus.export_book_status === false"><span>{{export_book}}</span></div>
-                  <div v-else>
-                    <b-spinner small type="grow"></b-spinner>
-                    <span>{{exportLoading}}</span>
-                  </div>
-                </b-button>
-                <button class="es-button-white" @click="getImport()">{{ $t('IMPORT_MULTIPLE_CHAPTERS') }}</button>
-                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'storyboard-' + page.data.uuid, tabComponent: 'storyboard',  tabData: page.data, tabTitle: 'Story Board - ' + properties.title, newTab: true})">Story Board</button>
-                <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: $t('EDIT') + ' - ' + properties.title, newTab: true})">{{ $t('EDIT') }}</button>
-                <button class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
-                <button class="es-button-red" @click="deleteBook()">{{ $t('DELETE') }}</button>
+                  <b-button class="es-button-white" :disabled="getExportBookStatus.export_book_status"  @click="exportBook()">
+                    <div v-if="getExportBookStatus.export_book_status === false"><span>{{export_book}}</span></div>
+                    <div v-else>
+                      <b-spinner small type="grow"></b-spinner>
+                      <span>{{exportLoading}}</span>
+                    </div>
+                  </b-button>
+                  <button class="es-button-white" @click="getImport()">{{ $t('IMPORT_MULTIPLE_CHAPTERS') }}</button>
+                  <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'storyboard-' + page.data.uuid, tabComponent: 'storyboard',  tabData: page.data, tabTitle: 'Story Board - ' + properties.title, newTab: true})">Story Board</button>
+                  <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: $t('EDIT') + ' - ' + properties.title, newTab: true})">{{ $t('EDIT') }}</button>
+                  <button class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
+                  <button class="es-button-red" @click="deleteBook()">{{ $t('DELETE') }}</button>
             </div>
+
         </div>
-        <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>
     </div>
     <div class="es-page-content" style="position:relative;">
         <div class="es-panel">

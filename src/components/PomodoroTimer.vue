@@ -1,6 +1,7 @@
 <template>
-<div class="pomodoro-nav"><h4>{{ setPomodoroMinutes(pmdtimer.pmd_min) }}:{{ setPomodoroSeconds(pmdtimer.pmd_sec) }}</h4></div>
-<!-- <p>test</p> -->
+<div class="pomodoro-nav bx-shadow-1">
+  <h4>{{ setPomodoroMinutes(pmdtimer.pmd_min) }}:{{ setPomodoroSeconds(pmdtimer.pmd_sec) }}</h4>
+</div>
 </template>
 
 <script>

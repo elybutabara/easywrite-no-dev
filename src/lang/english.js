@@ -35,7 +35,7 @@ export default {
   EXPIRES_ON: 'Expires On',
   COURSES: 'Courses',
   VIEW_ALL: 'View All',
-  CONTINUE_WITH_COURSE: 'Continue with course',
+  CONTINUE_WITH_COURSE: 'Continue course',
   YES: 'Yes',
   ALL: 'All',
   DONE: 'Done',

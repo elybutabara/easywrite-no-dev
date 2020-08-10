@@ -2,25 +2,29 @@
   <div class="component-report">
     <div class="row">
       <div class="col-12 col-md-3">
-        <div style="text-align:center; padding:40px 40px; background:#f5f8fa; border:1px solid #cbd6e2;">
+        <div class="blurb-report es-wrapper">
+          <span class="day"><i class="fas fa-sun"></i></span>
           <h3>{{ numberFormat(GET_AUTHOR_PERSONAL_PROGRESS('today')) }}</h3>
           <p style="margin:0px;">{{$t('WORD_COUNT_FOR_THE_DAY')}}</p>
         </div>
       </div>
       <div class="col-12 col-md-3">
-        <div style="text-align:center; padding:40px 40px; background:#f5f8fa; border:1px solid #cbd6e2;">
+        <div class="blurb-report es-wrapper">
+          <span class="month"><i class="fas fa-calendar-alt"></i></span>
           <h3>{{ numberFormat(GET_AUTHOR_PERSONAL_PROGRESS('monthly')) }}</h3>
           <p style="margin:0px;">{{$t('WORD_COUNT_FOR_THIS_MONTH')}}</p>
         </div>
       </div>
       <div class="col-12 col-md-3">
-        <div style="text-align:center; padding:40px 40px; background:#f5f8fa; border:1px solid #cbd6e2;">
+        <div class="blurb-report es-wrapper">
+          <span class="year"><i class="fas fa-calendar-check"></i></span>
           <h3>{{ numberFormat(GET_AUTHOR_PERSONAL_PROGRESS('yearly')) }}</h3>
           <p style="margin:0px;">{{$t('WORD_COUNT_FOR_THIS_YEAR')}}</p>
         </div>
       </div>
       <div class="col-12 col-md-3">
-        <div style="text-align:center; padding:40px 40px; background:#f5f8fa; border:1px solid #cbd6e2;">
+        <div class="blurb-report es-wrapper">
+          <span class="overall"><i class="fas fa-layer-group"></i></span>
           <h3>{{ numberFormat(GET_AUTHOR_PERSONAL_PROGRESS('all_time')) }}</h3>
           <p style="margin:0px;">{{$t('OVERALL_WORD_COUNT')}}</p>
         </div>

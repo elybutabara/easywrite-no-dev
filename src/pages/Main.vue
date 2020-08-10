@@ -1,12 +1,18 @@
 <template>
-<div class="page-main" v-bind:class="{ 'collapsed': isCollapsed, 'dark': $store.getters.darkmode }">
+<div class="page-main" v-bind:class="{ 'collapsed': $store.getters.collapsedSideNav, 'dark': $store.getters.darkmode }">
     <div v-if="ready">
-        <div @click="toggleMainSideBar()"  class="btn-sidebar-opener"><i class="las la-arrow-right"></i></div>
+        <!-- <div @click="toggleMainSideBar()"  class="btn-sidebar-opener"><i class="las la-arrow-right"></i></div> -->
         <main-side-navigation></main-side-navigation>
         <div class="es-right-side-content">
             <div class="es-top-parent">
                 <div class="es-top-nav">
                   <div class="inner-nav">
+                      <a
+                        v-if="$store.getters.collapsedSideNav"
+                        @click="$store.commit('toggleSideNav')"
+                        class="icon-burger-close" href="javascript:void(0)">
+                        <i class="las la-bars"></i>
+                      </a>
                       <a @click="CHANGE_COMPONENT({tabKey: 'dashboard', tabComponent: 'dashboard',  tabData: null, tabTitle: $t('DASHBOARD')})" v-bind:class="{'active' : tabs.items[0].component == 'dashboard'}" href="javascript:void(0)" class="nav-btn dashboard">
                           <i class="fas fa-home"></i>
                           <span>{{ $t('DASHBOARD') }}</span>
@@ -20,18 +26,22 @@
                           <span>{{ $t('NOTES') }}</span>
                       </a>
                   </div>
-                  <a @click="CHANGE_COMPONENT({tabKey: 'book-form', tabComponent: 'book-form', tabData: null, tabTitle: $t('NEW_BOOK'), newTab: true})" href="javascript:void(0)" class="nav-btn new-book">
+                  <a @click="CHANGE_COMPONENT({tabKey: 'book-form', tabComponent: 'book-form', tabData: null, tabTitle: $t('NEW_BOOK'), newTab: true})" href="javascript:void(0)" class="nav-btn new-book bx-shadow-1">
                       <i class="fas fa-book-open"></i>
                       <span>{{ $t('NEW_BOOK') }}</span>
                   </a>
-                  <a @click="CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing',  tabData: null, tabTitle: $t('SYNC_DATA'), newTab: true})" href="javascript:void(0)" class="nav-btn sync-data">
+                  <a @click="CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing',  tabData: null, tabTitle: $t('SYNC_DATA'), newTab: true})" href="javascript:void(0)" class="nav-btn sync-data bx-shadow-1">
                       <i class="fas fa-sync"></i>
                       <span>{{ $t('SYNC_DATA') }}</span>
                   </a>
-                  <a class="nav-toggle mr-auto" href="javascript:void(0)" style="padding-top: 8px;">
+                  <a @click="CHANGE_COMPONENT({tabKey: 'course-list', tabComponent: 'course-listing',  tabData: {}, tabTitle: $t('COURSES'), newTab: true})" href="javascript:void(0)" class="nav-btn courses bx-shadow-1">
+                      <i class="fas fa-graduation-cap"></i>
+                      <span>{{ $t('COURSES') }}</span>
+                  </a>
+                  <a class="nav-toggle mr-auto bx-shadow-1" href="javascript:void(0)" style="padding-top: 8px;">
                     <div class="switch-wrapper">
                       <label class="switch">
-                        <input @click="$store.commit('toggleTheme')" type="checkbox">
+                        <input @click="$store.commit('toggleTheme')" type="checkbox" checked>
                         <span class="slider round"></span>
                       </label>
                       <label class="text">Dark Mode</label>
@@ -248,10 +258,6 @@ export default {
     toggleSyncer: function () {
       var scope = this
       scope.syncer.is_open = !scope.syncer.is_open
-    },
-    toggleMainSideBar: function () {
-      var scope = this
-      scope.isCollapsed = !scope.isCollapsed
     },
     checkHasUnsavedTabs: function () {
       let scope = this

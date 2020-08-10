@@ -2,10 +2,14 @@
 <div class="page-book-lising">
     <syncing v-if="syncing.open" :properties="{ fullscreen: syncing.fullscreen, autostart: syncing.autostart }"></syncing>
     <div class="es-page-head">
-        <div class="inner">
-            <div class="details">
-                <h4>{{$t('WELCOME')}}{{ getAuthorName }}!</h4>
+
+            <div class="dashboard-panel">
+                <h4 class="mr-auto">{{$t('WELCOME')}} {{ getAuthorName }}!</h4>
                 <!-- <small>Last Login: January 01, 2020</small> -->
+                <a class="hashtag" href="#hashtagCourses"><span>#</span>Courses</a>
+                <a class="hashtag" href="#hashtagAssignments"><span>#</span>Assignments</a>
+                <a class="hashtag" href="#hashtagPromodoro"><span>#</span>Promodoro</a>
+                <a class="hashtag" href="#hashtagAbout"><span>#</span>About</a>
             </div>
             <div class="actions">
                 <div style="display:none; height:30px; line-height:30px; background:red; padding:0px 10px;">
@@ -14,21 +18,26 @@
                     <span style="font-family:'Digital'; font-size:30px;">RESET</span>
                 </div>
             </div>
-        </div>
     </div>
     <div class="es-page-content" id="custom-scrollbar">
-        <div class="es-panel">
-            <h4>{{$t('REPORTS')}}</h4>
-            <hr/>
-            <report />
-        </div>
-        <div style="margin-top:10px; margin-bottom:20px; max-width: 1320px; display:flex; width:calc(100% - 40px); margin:0px auto; justify-content: space-between;">
-            <div style="background:#fff; width:calc(100% - 320px); padding:20px 20px; border: 1px solid #e0e5ee;">
-              <course-listing-dashboard />
+        <!-- <div class="es-panel"> -->
+        <div class="container-fluid">
+          <div class="row mb-4">
+            <div class="col-12">
+              <h4><i class="las la-paperclip"></i> {{$t('REPORTS')}}</h4>
+              <hr />
+              <report />
             </div>
-            <div style="width:300px;">
-                <div style="padding:0px; text-align:center; background:#fff;  border: 1px solid #e0e5ee; margin-bottom:20px;">
-                    <div style="background:#f5f8fa; font-weight:600; border-bottom:1px solid #e0e5ee; text-align:left; padding:2px 10px;">{{$t('TIME_WORKED')}}</div>
+          </div>
+          <div class="row mb-4">
+            <div class="col-8" id="hashtagCourses">
+              <div class="course-listing es-wrapper">
+                <course-listing-dashboard />
+              </div>
+            </div>
+            <div class="col-4" id="hashtagPromodoro">
+              <div style="padding:0px; text-align:center; background:#fff;  border: 1px solid #e0e5ee; margin-bottom:20px;">
+                    <div style="background:#f5f8fa; font-weight:600; border-bottom:1px solid #e0e5ee; text-align:left; padding:2px 10px; text-align:center;">{{$t('TIME_WORKED')}}</div>
                     <div style="padding:20px;">
                         <span style="font-family:'Digital'; font-size:20px;">
                             <span style="background:#e0e5ee; display:inline-block; padding:0px 5px; width:35px; text-align:center;">{{ setDefaultHours(defaulttimer.hr) }}</span> :
@@ -51,26 +60,32 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <br/>
-        <div class="es-panel">
-            <assignment-listing></assignment-listing>
-        </div>
-        <div class="es-panel">
-            <h4>Your literary family</h4>
-            <p>
-                Do you want specific feedback on your text? Pilot Reader is a unique network where you can meet people who are interested in your project and experience with your genre. The service is free, secure and you can be completely anonymous.
-            </p>
-            <br/>
-            <h4>How does this work?</h4>
-            <p>
-               Pilot Reader is a unique system where you can share your own texts for review, read and review other people's texts, or both.
-            </p>
-            <br/>
-            <h4>About Pilot Reader</h4>
-            <p>
-               Pilot reader is under the umbrella of the Writers' School, and thus part of the literary family.
-            </p>
+          </div>
+          <div class="row">
+            <div class="col-12" id="hashtagAssignments">
+              <div class="es-wrapper es-panel">
+                  <assignment-listing></assignment-listing>
+             </div>
+            </div>
+            <div class="col-12" id="hashtagAbout">
+              <div class="es-wrapper es-panel">
+                <h4>Your literary family</h4>
+                <p>
+                    Do you want specific feedback on your text? Pilot Reader is a unique network where you can meet people who are interested in your project and experience with your genre. The service is free, secure and you can be completely anonymous.
+                </p>
+                <br/>
+                <h4>How does this work?</h4>
+                <p>
+                  Pilot Reader is a unique system where you can share your own texts for review, read and review other people's texts, or both.
+                </p>
+                <br/>
+                <h4>About Pilot Reader</h4>
+                <p>
+                  Pilot reader is under the umbrella of the Writers' School, and thus part of the literary family.
+                </p>
+            </div>
+            </div>
+          </div>
         </div>
     </div>
 </div>
