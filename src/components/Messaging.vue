@@ -331,7 +331,7 @@ export default {
         port = 3031
       }
 
-      var socket = socketIO('http://dev.kunohay.com:' + port)
+      var socket = socketIO('https://dev.kunohay.com:' + port)
       socket.on('connect', function () {
         scope.socket = socket
         scope.socketConnected = true
