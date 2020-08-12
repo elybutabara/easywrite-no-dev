@@ -12,6 +12,7 @@
                 </div>
             </div>
             <div class="actions">
+                <button ref="button" class="es-button-white" :disabled="version_modal_is_open" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
                 <button v-if="data.id != null" class="es-button-white" @click="saveScene()">{{$t('SAVE_CHANGES')}}</button>
                 <button v-else class="es-button-white" @click="saveScene()">{{$t('SAVE')}}</button>
             </div>
@@ -91,7 +92,7 @@
                         </div>
                     </div>
                     <div class="content ">
-                      <button @click="getImport()">Import Docx</button>
+                        <button @click="getImport()">Import Docx</button>
                         <b-row class="margin-bottom-1rem">
                             <b-col>
                                 <div v-if="scene_history.length" class="text-right">
@@ -121,6 +122,10 @@
                                 </div>
                             </b-col>
                         </b-row>
+                        <div class="col-md-12">
+                            <small>The scene will be autosaved every ten seconds</small>
+                            <small v-if="!do_auto_save" class="text-red"> | Saving ...</small>
+                        </div>
                     </div>
                 </div>
                 <div class="item" v-bind:class="{'active': accordion['more-details'] === 'active'}">
@@ -286,6 +291,43 @@
             </div>
         </template>
     </b-overlay>
+    <b-overlay :show="version_modal_is_open" no-wrap fixed @shown="$refs.dialog.focus()" @hidden="$refs.button.focus()">
+      <template v-slot:overlay>
+        <div
+          id="version-overlay-background"
+          ref="dialog"
+          tabindex="-1"
+          role="dialog"
+          aria-modal="false"
+          aria-labelledby="form-confirm-label"
+          class="p-3"
+        >
+          <b-container class="bv-example-row">
+            <b-card-group deck>
+              <b-card :header="$t('SAVE_AS_NEW_VERSION')"  class="text-center">
+                <b-row style="margin-bottom: 1rem;" class="text-left">
+                  <b-col>
+                    <label>{{$t('DESCRIPTION')}}: </label>
+                    <tiny-editor :initValue="new_scene_version.change_description"
+                                 v-on:getEditorContent="setDescription"
+                                 class="form-control"
+                    />
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col>
+                    <div class="text-right">
+                      <b-button variant="outline-dark" class="mr-2" @click="version_modal_is_open = !version_modal_is_open">{{$t('CANCEL')}}</b-button>
+                      <b-button variant="dark" @click="saveNewVersion">{{$t('SAVE')}}</b-button>
+                    </div>
+                  </b-col>
+                </b-row>
+              </b-card>
+            </b-card-group>
+          </b-container>
+        </div>
+      </template>
+    </b-overlay>
 </div>
 </template>
 
@@ -382,8 +424,9 @@ export default {
         'locations': 'inactive',
         'items': 'inactive'
       },
+      base_scene_val: {},
       // Base content count is use to determine initial total number of words in content
-      baseContentCount: '',
+      base_content_count: '',
       // Author progress is use for saving author personal progress
       authorProgress: {
         author_id: '',
@@ -429,7 +472,16 @@ export default {
             scope.saveScene(true)
           }
         }
-      }
+      },
+      new_scene_version: {
+        book_scene_id: null,
+        change_description: null,
+        content: null
+      },
+      tempVersionDesc: '',
+      auto_save_interval: null,
+      version_modal_is_open: false,
+      do_auto_save: true
     }
   },
   components: {
@@ -468,6 +520,10 @@ export default {
     }
   },
   methods: {
+    setDescription (value) {
+      var scope = this
+      scope.tempVersionDesc = value
+    },
     getImport: function () {
       var scope = this
       ipcRenderer.send('IMPORT-DOCX', 'scene')
@@ -684,12 +740,15 @@ export default {
         return false
       }
 
+      // Set autosave to busy
+      scope.do_auto_save = false
+
       scope.axios
         .post('http://localhost:3000/scenes', scope.data)
         .then(response => {
           if (response.data) {
             scope.saveRelatedTables(response.data.uuid)
-
+            scope.$store.dispatch('updateSceneList', response.data)
             if (!noAlert) {
               window.swal.fire({
                 position: 'center',
@@ -701,7 +760,7 @@ export default {
                 scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
                 // scope.$parent.changeComponent('scene-details', { scene: response.data })
                 if (scope.data.uuid === null) {
-                  scope.$store.dispatch('updateSceneList', response.data)
+                  // scope.$store.dispatch('updateSceneList', response.data)
                   // refresh vuex to update all related records
                   // scope.$store.dispatch('loadVersionsByScene', response.data)
                   // scope.$store.dispatch('loadSceneHistory', response.data.uuid)
@@ -709,7 +768,7 @@ export default {
                   scope.CHANGE_COMPONENT({tabKey: 'scene-form-' + response.data.uuid, tabComponent: 'scene-form', tabData: { book: scope.book, chapter: scope.chapter, scene: response.data }, tabTitle: scope.$t('EDIT') + ' - ' + response.data.title, tabIndex: scope.$store.getters.getActiveTab})
                 } else {
                   // refresh vuex to update all related records
-                  scope.$store.dispatch('updateSceneList', response.data)
+                  // scope.$store.dispatch('updateSceneList', response.data)
                   // scope.$store.dispatch('loadVersionsByScene', response.data)
                   scope.$store.dispatch('changeTabTitle', {key: 'scene-form-' + response.data.uuid, title: scope.$t('EDIT') + ' - ' + response.data.title})
                   scope.$store.dispatch('changeTabTitle', {key: 'scene-details-' + response.data.uuid, title: scope.$t('VIEW') + ' - ' + response.data.title})
@@ -772,11 +831,11 @@ export default {
     saveAuthorPersonalProgress (sceneId) {
       var scope = this
       if (scope.authorProgress.uuid) {
-        scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.WORD_COUNT(scope.tempSceneVersionContent) - scope.baseContentCount)
+        scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.WORD_COUNT(scope.tempSceneVersionContent) - scope.base_content_count)
       } else {
         scope.authorProgress.author_id = scope.$store.getters.getAuthorID
         scope.authorProgress.relation_id = sceneId
-        scope.authorProgress.total_words = scope.WORD_COUNT(scope.tempSceneVersionContent) - scope.baseContentCount
+        scope.authorProgress.total_words = scope.WORD_COUNT(scope.tempSceneVersionContent) - scope.base_content_count
       }
 
       scope.axios
@@ -796,7 +855,56 @@ export default {
       scope.axios
         .post('http://localhost:3000/book-scene-history', sceneHistory)
         .then(response => {
+          scope.setBaseSceneVal(scope.data)
+
+          scope.scene_history.push(response.data)
+
+          scope.do_auto_save = true
           console.log('Scene history saved!')
+        })
+    },
+
+    newVersion: function () {
+      var scope = this
+      this.version_modal_is_open = true
+
+      scope.clear_history = false
+      scope.new_scene_version.change_description = ''
+      if (scope.new_scene_version.id) {
+        delete (scope.new_scene_version.id)
+        delete (scope.new_scene_version.uuid)
+      }
+    },
+    saveNewVersion () {
+      var scope = this
+
+      scope.new_scene_version.change_description = scope.tempVersionDesc
+      scope.new_scene_version.content = scope.tempSceneVersionContent
+      scope.new_scene_version.book_scene_id = scope.data.uuid
+
+      scope.axios.post('http://localhost:3000/scene-versions', scope.new_scene_version)
+        .then(response => {
+          if (response.data) {
+            let version = response.data
+            // TODO: Insert vuex code that will refresh the scene version
+            scope.$store.dispatch('updateSceneVersionList', version)
+
+            scope.data.scene_version.id = version.id
+            scope.data.scene_version.uuid = version.uuid
+            scope.data.scene_version.content = version.content
+            scope.data.scene_version.change_description = version.change_description
+            this.version_modal_is_open = false
+
+            if (scope.clear_history) { scope.clearSceneHistory(scope.scene.id) }
+
+            window.swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: this.$t('SCENE') + ' ' + this.$t('VERSION') + ' ' + this.$t('SUCCESSFULY_SAVED'),
+              showConfirmButton: false,
+              timer: 1500
+            })
+          }
         })
     },
     async loadScene (sceneProp) {
@@ -881,7 +989,9 @@ export default {
         // set selected item/character/location
         scope.setSelectedChild()
 
-        scope.baseContentCount = scope.WORD_COUNT(scope.tempSceneVersionContent)
+        scope.setBaseSceneVal(scope.data)
+
+        scope.base_content_count = scope.WORD_COUNT(scope.tempSceneVersionContent)
 
         // progress
         if (progress) {
@@ -893,6 +1003,34 @@ export default {
 
         scope.page.is_ready = true
       }
+    },
+    setBaseSceneVal: function (scene) {
+      let scope = this
+      scope.base_scene_val = {}
+
+      for (const key of Object.keys(scene)) {
+        if (scope.IS_OBJECT(scene[key])) {
+          scope.$set(scope.base_scene_val, key, {})
+          for (const key2 of Object.keys(scene[key])) {
+            scope.$set(scope.base_scene_val[key], key2, scene[key][key2])
+          }
+        } else {
+          scope.$set(scope.base_scene_val, key, scene[key])
+        }
+      }
+    },
+    autoSave: function () {
+      let scope = this
+
+      // If save new version modal is open skip auto save
+      // If view history modal is open skip auto save
+      // If no changes  skip auto save
+      if (scope.version_modal_is_open || scope.view_history || (scope.DEEP_EQUAL(scope.base_scene_val, scope.data) && scope.tempSceneVersionContent === scope.data.scene_version.content)) return false
+
+      // There still a ongoing autosave return false and let that autosave to finish saving
+      if (!scope.do_auto_save) return false
+
+      scope.saveScene(true)
     }
   },
   beforeMount () {
@@ -930,6 +1068,8 @@ export default {
       if (scope.data.uuid) {
         scope.loadScene(scope.properties.scene)
         scope.selected_chapter = scope.properties.chapter
+
+        scope.auto_save_interval = setInterval(scope.autoSave, 10000)
       } else {
         let chapters = scope.$store.getters.getChaptersByBook(scope.properties.book.uuid)
         var bookCharacters = scope.$store.getters.getCharactersByBook(scope.properties.book.uuid)

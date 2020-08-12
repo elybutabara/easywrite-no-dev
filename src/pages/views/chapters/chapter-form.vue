@@ -674,7 +674,7 @@ export default {
       // If save new version modal is open skip auto save
       // If view history modal is open skip auto save
       // If no changes  skip auto save
-      if (scope.view_history || (scope.DEEP_EQUAL(scope.base_chapter_val, scope.data) && scope.tempChapterVersionCont === scope.data.chapter_version.content)) return false
+      if (scope.version_modal_is_open || scope.view_history || (scope.DEEP_EQUAL(scope.base_chapter_val, scope.data) && scope.tempChapterVersionCont === scope.data.chapter_version.content)) return false
 
       // There still a ongoing autosave return false and let that autosave to finish saving
       if (!scope.do_auto_save) return false
