@@ -12,6 +12,7 @@
                 </div>
             </div>
             <div class="actions">
+                <button ref="button" class="es-button-white" :disabled="version_modal_is_open" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
                 <button v-if="data.id != null" class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
                 <button v-if="data.id != null" class="es-button-white" @click="saveChapter()">{{$t('SAVE_CHANGES')}}</button>
                 <button v-else class="es-button-white" @click="saveChapter()">{{$t('SAVE')}}</button>
@@ -96,7 +97,7 @@
                         </div>
                     </div>
                     <div class="content ">
-                      <button @click="getImport()">Import Docx</button>
+                        <button @click="getImport()">Import Docx</button>
                         <div class="row">
                             <div class="col-md-12">
                                 <div v-if="chapter_history.length" class="text-right">
@@ -124,6 +125,10 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-md-12">
+                                <small>The chapter will be autosaved every ten seconds</small>
+                                <small v-if="!do_auto_save" class="text-red"> | Saving ...</small>
                             </div>
                         </div>
                     </div>
@@ -161,7 +166,42 @@
             </div>
         </template>
     </b-overlay>
-
+    <b-overlay :show="version_modal_is_open" no-wrap fixed @shown="$refs.dialog.focus()" @hidden="$refs.button.focus()">
+      <template v-slot:overlay>
+        <div
+          id="overlay-save-version-background"
+          ref="dialog"
+          tabindex="-1"
+          role="dialog"
+          aria-modal="false"
+          aria-labelledby="form-confirm-label"
+          class="p-3"
+        >
+          <b-container class="bv-example-row">
+            <b-card-group deck>
+              <b-card :header="$t('SAVE_AS_NEW_VERSION')" class="text-center">
+                <b-row style="margin-bottom: 1rem;" class="text-left">
+                  <b-col>
+                    <label>{{$t('DESCRIPTION')}}: </label>
+                    <tiny-editor :initValue="new_chapter_version.change_description"
+                                 v-on:getEditorContent="setDescription"
+                                 class="form-control"
+                    />
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col>
+                    <div class="text-right">
+                      <b-button variant="outline-dark" class="mr-2" @click="version_modal_is_open = !version_modal_is_open">{{$t('CANCEL')}}</b-button><b-button variant="dark" @click="saveNewVersion">{{$t('SAVE')}}</b-button>
+                    </div>
+                  </b-col>
+                </b-row>
+              </b-card>
+            </b-card-group>
+          </b-container>
+        </div>
+      </template>
+    </b-overlay>
     <div v-if="save_to_scene" class="b-overlay">
       <SavetoScene :properties="{ scene_content:scene_content,chapter_id:data.uuid,book_id:data.book_id }"></SavetoScene>
     </div>
@@ -205,6 +245,7 @@ export default {
         'chapter-details': 'active',
         'content': 'inactive'
       },
+      base_chapter_val: {},
       // Base content count is use to determine initial total number of words in content
       baseContentCount: '',
       // Author progress is use for saving author personal progress
@@ -260,7 +301,16 @@ export default {
         {text: 'Subplot', value: 'Subplot'}
       ],
       save_to_scene: false,
-      scene_content: ''
+      scene_content: '',
+      tempVersionDesc: '',
+      new_chapter_version: {
+        chapter_id: null,
+        change_description: null,
+        content: null
+      },
+      auto_save_interval: null,
+      version_modal_is_open: false,
+      do_auto_save: true
     }
   },
   components: {
@@ -287,6 +337,11 @@ export default {
     }
   },
   methods: {
+    // Required for geting value from TinyMCE content
+    setDescription (value) {
+      var scope = this
+      scope.tempVersionDesc = value
+    },
     closeSaveToScene: function () {
       var scope = this
       scope.save_to_scene = false
@@ -402,12 +457,15 @@ export default {
         return false
       }
 
+      // Set autosave to busy
+      scope.do_auto_save = false
+
       scope.axios
         .post('http://localhost:3000/chapters', scope.data)
         .then(response => {
           if (response.data) {
             scope.saveRelatedTables(response.data.uuid)
-
+            scope.$store.dispatch('updateChapterList', response.data)
             if (!noAlert) {
               window.swal.fire({
                 position: 'center',
@@ -418,7 +476,6 @@ export default {
               }).then(() => {
                 scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
                 if (scope.data.uuid === null) {
-                  scope.$store.dispatch('updateChapterList', response.data)
                   // scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
                   // scope.$store.dispatch('loadChapterHistory', response.data.uuid)
                   // scope.$store.dispatch('loadTodayAuthorPersonalProgressForChapter', response.data.uuid)
@@ -431,7 +488,6 @@ export default {
                     tabIndex: scope.$store.getters.getActiveTab
                   })
                 } else {
-                  scope.$store.dispatch('updateChapterList', response.data)
                   // scope.$store.dispatch('loadVersionsByChapter', response.data.uuid)
                   // scope.$store.dispatch('loadChapterHistory', response.data.uuid)
                   // scope.$store.dispatch('loadTodayAuthorPersonalProgressForChapter', response.data.uuid)
@@ -487,7 +543,70 @@ export default {
       scope.axios
         .post('http://localhost:3000/book-chapter-history', chapterHistory)
         .then(response => {
+          scope.setBaseChapterVal(scope.data)
+
+          scope.chapter_history.push(response.data)
+
+          scope.do_auto_save = true
+
           console.log('Chapter history saved!')
+        })
+    },
+    clearChapterHistory (chapterId) {
+      let scope = this
+
+      scope.axios
+        .delete('http://localhost:3000/chapters/' + chapterId + '/history/clear')
+        .then(response => {
+          scope.do_auto_save = true
+          console.log('b4 Chapter history cleared!')
+          console.log(scope.chapter_history)
+          scope.$set(scope, 'chapter_history', [])
+          console.log(scope.chapter_history)
+          console.log('after Chapter history cleared!')
+        })
+    },
+    newVersion: function () {
+      let scope = this
+      scope.version_modal_is_open = true
+
+      scope.clear_history = false
+      scope.new_chapter_version.change_description = ''
+      if (scope.new_chapter_version.id) {
+        delete (scope.new_chapter_version.id)
+        delete (scope.new_chapter_version.uuid)
+      }
+    },
+    saveNewVersion () {
+      let scope = this
+
+      scope.new_chapter_version.change_description = scope.tempVersionDesc
+      scope.new_chapter_version.content = scope.tempChapterVersionCont
+      scope.new_chapter_version.chapter_id = scope.chapter.uuid
+
+      scope.axios.post('http://localhost:3000/chapter-versions', scope.new_chapter_version)
+        .then(function (response) {
+          if (response.data) {
+            let version = response.data
+
+            scope.$store.dispatch('updateChapterVersionList', version)
+
+            scope.data.chapter_version.id = version.id
+            scope.data.chapter_version.uuid = version.uuid
+            scope.data.chapter_version.content = version.content
+            scope.data.chapter_version.change_description = version.change_description
+            scope.version_modal_is_open = false
+
+            if (scope.clear_history) { scope.clearChapterHistory(scope.chapter.id) }
+
+            window.swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: scope.$t('CHAPTER') + ' ' + scope.$t('VERSION') + ' ' + scope.$t('SUCCESSFULY_SAVED'),
+              showConfirmButton: false,
+              timer: 1500
+            })
+          }
         })
     },
     async loadChapter (chapterProp) {
@@ -515,6 +634,8 @@ export default {
         scope.data.chapter_version.change_description = version.change_description
         scope.tempChapterVersionCont = version.content
 
+        scope.setBaseChapterVal(scope.data)
+
         scope.baseContentCount = scope.WORD_COUNT(scope.tempChapterVersionCont)
 
         // progress
@@ -531,6 +652,34 @@ export default {
     toggleFeedbacks: function () {
       let scope = this
       scope.show_feedbacks = !scope.show_feedbacks
+    },
+    setBaseChapterVal: function (chapter) {
+      let scope = this
+      scope.base_chapter_val = {}
+
+      for (const key of Object.keys(chapter)) {
+        if (scope.IS_OBJECT(chapter[key])) {
+          scope.$set(scope.base_chapter_val, key, {})
+          for (const key2 of Object.keys(chapter[key])) {
+            scope.$set(scope.base_chapter_val[key], key2, chapter[key][key2])
+          }
+        } else {
+          scope.$set(scope.base_chapter_val, key, chapter[key])
+        }
+      }
+    },
+    autoSave: function () {
+      let scope = this
+
+      // If save new version modal is open skip auto save
+      // If view history modal is open skip auto save
+      // If no changes  skip auto save
+      if (scope.view_history || (scope.DEEP_EQUAL(scope.base_chapter_val, scope.data) && scope.tempChapterVersionCont === scope.data.chapter_version.content)) return false
+
+      // There still a ongoing autosave return false and let that autosave to finish saving
+      if (!scope.do_auto_save) return false
+
+      scope.saveChapter(true)
     }
   },
   beforeMount () {
@@ -554,6 +703,8 @@ export default {
     component = scope
     if (scope.data.uuid) {
       scope.loadChapter(scope.properties.chapter)
+
+      scope.auto_save_interval = setInterval(scope.autoSave, 10000)
     } else {
       scope.page.is_ready = true
     }

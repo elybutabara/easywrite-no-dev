@@ -268,6 +268,30 @@ export default {
       const allowedExt = ['.png', '.jpg', '.jpeg']
       let imageExt = (image) ? image.split('.').pop() : false
       return imageExt && (allowedExt.indexOf('.' + imageExt) > -1)
+    },
+    IS_OBJECT (object) {
+      return object != null && typeof object === 'object'
+    },
+    DEEP_EQUAL (object1, object2) {
+      const keys1 = Object.keys(object1)
+      const keys2 = Object.keys(object2)
+
+      if (keys1.length !== keys2.length) {
+        return false
+      }
+
+      for (const key of keys1) {
+        const val1 = object1[key]
+        const val2 = object2[key]
+        const areObjects = this.IS_OBJECT(val1) && this.IS_OBJECT(val2)
+
+        // eslint-disable-next-line no-mixed-operators
+        if (areObjects && !this.DEEP_EQUAL(val1, val2) || !areObjects && val1 !== val2) {
+          return false
+        }
+      }
+
+      return true
     }
   }
 }
