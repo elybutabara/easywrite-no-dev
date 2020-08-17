@@ -1,4 +1,7 @@
 <template>
+<div>
+  <h4><i class="las la-paperclip"></i> {{$t('REPORTS')}}</h4>
+  <hr />
   <div class="component-report">
     <div class="row">
       <div class="col-12 col-md-3">
@@ -31,6 +34,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>

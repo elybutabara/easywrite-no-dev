@@ -1,26 +1,29 @@
 <template>
-  <div class="component-course-listing-dashboard" v-if="page.is_ready">
-    <div class="row">
-      <div class="col-md-6">
-        <h4 style="margin-bottom: 0">{{$t('COURSES')}}</h4>
-      </div>
-      <div class="col-md-6 text-right" v-if="courses_taken.length">
-        <a href="javascript:void(0)" class="es-button" @click="CHANGE_COMPONENT({tabKey: 'course-list', tabComponent: 'course-listing',  tabData: {}, tabTitle: $t('COURSES'), newTab: true})">
-          {{ $t('VIEW_ALL') }} <i class="fas fa-chevron-right"></i>
-        </a>
+  <div class="es-panel-2 h-100" v-if="page.is_ready">
+    <div class="es-panel-head">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <h5 class="mb-0">{{$t('COURSES')}}</h5>
+        </div>
+        <div class="col-md-6 text-right" v-if="courses_taken.length">
+          <a href="javascript:void(0)" class="es-button icon-right" @click="CHANGE_COMPONENT({tabKey: 'course-list', tabComponent: 'course-listing',  tabData: {}, tabTitle: $t('COURSES'), newTab: true})">
+            {{ $t('VIEW_ALL') }} <i class="fas fa-chevron-right"></i>
+          </a>
+        </div>
       </div>
     </div>
-    <hr/>
-    <div class="row">
-      <div class="col-md-4" v-for="course_taken in courses_taken" :key="course_taken.uuid" v-if="isNotExpired(course_taken) && course_taken.started_at!=null">
-          <div class="uploaded-file-preview mb-3" style="height: 150px;background: #d2d2d2">
-            <div class="default-preview"><i class="fa fa-image"></i></div>
-          </div>
-          <h5 class="ellipsis-2 mb-3">{{ course_taken.course.title }}</h5>
-          <span class="ellipsis-2 mb-2" v-html="REMOVE_HTML(course_taken.course.short_description)"></span>
-          <a href="javascript:void(0)" @click="CHANGE_COMPONENT({tabKey: 'course-details-' + course_taken.uuid , tabComponent: 'course-details',  tabData: {course_taken:course_taken}, tabTitle: $t('COURSE'), newTab: true})" class="es-button">
-            {{ (course_taken.started_at) ? $t('CONTINUE_WITH_COURSE') : $t('START')}} <i class="fas fa-chevron-right"></i>
-          </a>
+    <div class="es-panel-body h-100">
+      <div class="row">
+        <div class="col-md-4" v-for="course_taken in courses_taken" :key="course_taken.uuid" v-if="isNotExpired(course_taken) && course_taken.started_at!=null">
+            <div class="uploaded-file-preview mb-3" style="height: 150px;background: #d2d2d2">
+              <div class="default-preview"><i class="fa fa-image"></i></div>
+            </div>
+            <h5 class="ellipsis-2 mb-3">{{ course_taken.course.title }}</h5>
+            <span class="ellipsis-2 mb-2" v-html="REMOVE_HTML(course_taken.course.short_description)"></span>
+            <a href="javascript:void(0)" @click="CHANGE_COMPONENT({tabKey: 'course-details-' + course_taken.uuid , tabComponent: 'course-details',  tabData: {course_taken:course_taken}, tabTitle: $t('COURSE'), newTab: true})" class="es-button icon-right">
+              {{ (course_taken.started_at) ? $t('CONTINUE_WITH_COURSE') : $t('START')}} <i class="fas fa-chevron-right"></i>
+            </a>
+        </div>
       </div>
     </div>
   </div>

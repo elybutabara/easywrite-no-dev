@@ -2,89 +2,90 @@
 <div class="page-book-lising">
     <syncing v-if="syncing.open" :properties="{ fullscreen: syncing.fullscreen, autostart: syncing.autostart }"></syncing>
     <div class="es-page-head">
-
-            <div class="dashboard-panel">
-                <h4 class="mr-auto">{{$t('WELCOME')}} {{ getAuthorName }}!</h4>
-                <!-- <small>Last Login: January 01, 2020</small> -->
-                <a class="hashtag" href="#hashtagCourses"><span>#</span>Courses</a>
-                <a class="hashtag" href="#hashtagAssignments"><span>#</span>Assignments</a>
-                <a class="hashtag" href="#hashtagPromodoro"><span>#</span>Promodoro</a>
-                <a class="hashtag" href="#hashtagAbout"><span>#</span>About</a>
-            </div>
-            <div class="actions">
-                <div style="display:none; height:30px; line-height:30px; background:red; padding:0px 10px;">
-                    <span style="font-family:'Digital'; font-size:30px;">25:00</span>
-                    <span style="font-family:'Digital'; font-size:30px;">START</span>
-                    <span style="font-family:'Digital'; font-size:30px;">RESET</span>
-                </div>
-            </div>
+      <div class="dashboard-panel">
+          <h4 class="mr-auto">{{$t('WELCOME')}} {{ getAuthorName }}!</h4>
+          <!-- <small>Last Login: January 01, 2020</small> -->
+          <a class="btn-icon small" href="#hashtagCourses"><span><i class="las la-atom"></i></span>Courses</a>
+          <a class="btn-icon small" href="#hashtagAssignments"><span><i class="las la-laptop"></i></span>Assignments</a>
+          <a class="btn-icon small" href="#hashtagPromodoro"><span><i class="las la-user-clock"></i></span>Pomodoro</a>
+          <a class="btn-icon small" href="#hashtagAbout"><span><i class="las la-feather-alt"></i></span>About</a>
+      </div>
     </div>
     <div class="es-page-content" id="custom-scrollbar">
-        <!-- <div class="es-panel"> -->
         <div class="container-fluid">
           <div class="row mb-4">
             <div class="col-12">
-              <h4><i class="las la-paperclip"></i> {{$t('REPORTS')}}</h4>
-              <hr />
               <report />
             </div>
           </div>
           <div class="row mb-4">
             <div class="col-8" id="hashtagCourses">
-              <div class="course-listing es-wrapper">
-                <course-listing-dashboard />
-              </div>
+              <course-listing-dashboard />
             </div>
             <div class="col-4" id="hashtagPromodoro">
-              <div style="padding:0px; text-align:center; background:#fff;  border: 1px solid #e0e5ee; margin-bottom:20px;">
-                    <div style="background:#f5f8fa; font-weight:600; border-bottom:1px solid #e0e5ee; text-align:left; padding:2px 10px; text-align:center;">{{$t('TIME_WORKED')}}</div>
-                    <div style="padding:20px;">
-                        <span style="font-family:'Digital'; font-size:20px;">
-                            <span style="background:#e0e5ee; display:inline-block; padding:0px 5px; width:35px; text-align:center;">{{ setDefaultHours(defaulttimer.hr) }}</span> :
-                            <span style="background:#e0e5ee; display:inline-block; padding:0px 5px; width:35px; text-align:center;">{{ setDefaultMinutes(defaulttimer.min) }}</span> :
-                            <span style="background:#e0e5ee; display:inline-block; padding:0px 5px; width:35px; text-align:center;">{{ setDefaultSeconds(defaulttimer.sec) }}</span>
+              <div class="es-panel-sm mb-4">
+                    <div class="es-panel-head"><i class="las la-stopwatch"></i> {{$t('TIME_WORKED')}}</div>
+                    <div class="es-panel-body">
+                        <span class="time-worked">
+                            <span>{{ setDefaultHours(defaulttimer.hr) }}</span> :
+                            <span>{{ setDefaultMinutes(defaulttimer.min) }}</span> :
+                            <span>{{ setDefaultSeconds(defaulttimer.sec) }}</span>
                         </span>
                     </div>
                 </div>
-                <div style="padding:20px 20px; text-align:center; background:#fff;  border: 1px solid #e0e5ee;">
-                    <h4 style="margin-top:10px; margin-bottom:0px;">POMODORO TIMER</h4>
-                    <h4 style="font-family:'Digital'; font-size:80px;">{{ setPomodoroMinutes(pmdtimer.pmd_min) }}:{{ setPomodoroSeconds(pmdtimer.pmd_sec) }}</h4>
+                <div class="es-wrapper es-panel promodoro-timer">
+                    <h4>POMODORO TIMER</h4>
+                    <span class="time">{{ setPomodoroMinutes(pmdtimer.pmd_min) }}:{{ setPomodoroSeconds(pmdtimer.pmd_sec) }}</span>
                     <div>
                         <b-form-group label="Set Pomodoro:">
                             <b-form-radio-group v-model="selected" :options="options" name="radio-inline"> </b-form-radio-group>
                         </b-form-group>
                     </div>
                     <div>
-                        <button @click="togglePomodoro()" style="background:#293742; color:#fff; border:1px solid #293742; border-radius:3px; width:100px;">{{ pmdtogglestatus.pmd_toggle }}</button>
-                        <button @click="resetPomodoro()" style="background:#8a2c3a; color:#fff; border:1px solid #8a2c3a; border-radius:3px; width:100px;">RESET</button>
+                        <button @click="togglePomodoro()" class="btn-pomodoro">{{ pmdtogglestatus.pmd_toggle }}</button>
+                        <button @click="resetPomodoro()" class="btn-pomodoro red">Reset</button>
                     </div>
                 </div>
             </div>
           </div>
-          <div class="row">
+          <div class="row no-gutters">
             <div class="col-12" id="hashtagAssignments">
-              <div class="es-wrapper es-panel">
-                  <assignment-listing></assignment-listing>
-             </div>
+              <assignment-listing></assignment-listing>
             </div>
-            <div class="col-12" id="hashtagAbout">
-              <div class="es-wrapper es-panel">
-                <h4>Your literary family</h4>
-                <p>
-                    Do you want specific feedback on your text? Pilot Reader is a unique network where you can meet people who are interested in your project and experience with your genre. The service is free, secure and you can be completely anonymous.
-                </p>
-                <br/>
-                <h4>How does this work?</h4>
-                <p>
-                  Pilot Reader is a unique system where you can share your own texts for review, read and review other people's texts, or both.
-                </p>
-                <br/>
-                <h4>About Pilot Reader</h4>
-                <p>
-                  Pilot reader is under the umbrella of the Writers' School, and thus part of the literary family.
-                </p>
+          </div>
+          <div class="row es-wrapper es-panel p-0">
+            <div class="col-7" id="hashtagAbout">
+              <div class="pt-4 pr-2 pb-4 pl-2">
+                <div class="blurb-left family">
+                  <div class="icon">
+                    <i class="las la-hands-helping"></i>
+                  </div>
+                  <div class="ml-20px">
+                    <h4>Your literary family</h4>
+                    <p class="mb-0">Do you want specific feedback on your text? Pilot Reader is a unique network where you can meet people who are interested in your project and experience with your genre. The service is free, secure and you can be completely anonymous.</p>
+                  </div>
+                </div>
+                <div class="blurb-left work">
+                  <div class="icon">
+                    <i class="las la-chess-knight"></i>
+                  </div>
+                  <div class="ml-20px">
+                    <h4>How does this work?</h4>
+                    <p class="mb-0">Pilot Reader is a unique system where you can share your own texts for review, read and review other people's texts, or both.</p>
+                  </div>
+                </div>
+                <div class="blurb-left pilot mb-0">
+                  <div class="icon">
+                      <i class="las la-book-reader"></i>
+                  </div>
+                  <div class="ml-20px">
+                    <h4>About Pilot Reader</h4>
+                    <p class="mb-0">Pilot reader is under the umbrella of the Writers' School, and thus part of the literary family.</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            </div>
+            <div class="col-5 bg-girl"></div>
           </div>
         </div>
     </div>

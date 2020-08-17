@@ -1,35 +1,41 @@
 <template>
 <div v-if="page.is_ready" class="page-book-details">
-    <div class="es-page-head">
-        <div class="book-panel">
-            <div>
-              <div class="details">
-                  <h4>{{ properties.title }}</h4>
-                  <small>{{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
-                  <div>
-                    <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>
-                  </div>
-              </div>
+    <div class="" style="background: #fff; border-bottom: 1px solid #eee; padding: 20px;">        
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div class="">
+            <h4 class="mb-0" style="font-family: 'Poppins';"><i class="fas fa-book mr-1"></i> {{ properties.title }}</h4>
+
+          </div>
+          <div class="book-panel-right-test">
+            <button class="es-button btn-sm white" @click="CHANGE_COMPONENT({tabKey: 'storyboard-' + page.data.uuid, tabComponent: 'storyboard',  tabData: page.data, tabTitle: 'Story Board - ' + properties.title, newTab: true})">Story Board</button>
+            <button class="es-button btn-sm white" :disabled="getExportBookStatus.export_book_status"  @click="exportBook()">
+              <span v-if="getExportBookStatus.export_book_status === false"><span>{{export_book}}</span></span>
+              <span v-else>
+                <spinner small type="grow"></spinner>
+                <span>{{exportLoading}}</span>
+              </span>
+            </button>
+            <button class="es-button btn-sm white" @click="getImport()">{{ $t('IMPORT_MULTIPLE_CHAPTERS') }}</button>
+            <button class="es-button icon-only" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: $t('EDIT') + ' - ' + properties.title, newTab: true})"><i class="las la-highlighter"></i></button>
+            <button class="es-button icon-only danger" @click="deleteBook()"><i class="las la-trash-alt"></i></button>
+          </div>  
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+
+          <div>
+            <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>
+
+          </div>
+          
+            <div style="display: flex; align-items: center;">
+              <i class="las la-cog" style="font-size: 18px; margin-right: 4px;"></i><small> {{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
             </div>
-            <div class="actions">
-                  <b-button class="es-button-white" :disabled="getExportBookStatus.export_book_status"  @click="exportBook()">
-                    <div v-if="getExportBookStatus.export_book_status === false"><span>{{export_book}}</span></div>
-                    <div v-else>
-                      <b-spinner small type="grow"></b-spinner>
-                      <span>{{exportLoading}}</span>
-                    </div>
-                  </b-button>
-                  <button class="es-button-white" @click="getImport()">{{ $t('IMPORT_MULTIPLE_CHAPTERS') }}</button>
-                  <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'storyboard-' + page.data.uuid, tabComponent: 'storyboard',  tabData: page.data, tabTitle: 'Story Board - ' + properties.title, newTab: true})">Story Board</button>
-                  <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: $t('EDIT') + ' - ' + properties.title, newTab: true})">{{ $t('EDIT') }}</button>
-                  <button class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
-                  <button class="es-button-red" @click="deleteBook()">{{ $t('DELETE') }}</button>
-            </div>
+          
 
         </div>
     </div>
     <div class="es-page-content" style="position:relative;">
-        <div class="es-panel">
+        <div class="">
             <h4>{{ $t('ABOUT') }}</h4>
             <div v-html="properties.about"></div>
         </div>
