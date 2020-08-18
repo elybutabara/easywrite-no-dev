@@ -319,6 +319,14 @@ export default {
           state.books[authorUUID].rows.splice(i, 1)
         }
       }
+    },
+    removeBookIReadFromList (state, payload) {
+      let authorUUID = payload.author_id
+      for (var i = 0; i <= (state.books_i_read[authorUUID].rows.length - 1); i++) {
+        if (state.books_i_read[authorUUID].rows[i].uuid === payload.uuid) {
+          state.books_i_read[authorUUID].rows.splice(i, 1)
+        }
+      }
     }
   },
   actions: {
@@ -352,6 +360,9 @@ export default {
     },
     toggleBookIRead ({ commit, state }, payload) {
       commit('toggleBookIRead', payload)
+    },
+    removeBookIReadFromList ({ commit, state }, payload) {
+      commit('removeBookIReadFromList', payload)
     }
   }
 }

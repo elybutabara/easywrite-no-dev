@@ -7,11 +7,25 @@ const router = express.Router()
 const { ReaderController } = require(path.join(__dirname, '..', 'controllers'))
 
 router.post('/', async function (req, res) {
-  const character = await ReaderController.save(req.body)
+  const model = await ReaderController.save(req.body)
 
   res
     .status(200)
-    .json(character)
+    .json(model)
+})
+
+router.post('/mark-as-finished', async function (req, res) {
+  const model = await ReaderController.markAsFinished(req.body)
+  res
+    .status(200)
+    .json(model)
+})
+
+router.post('/mark-as-canceled', async function (req, res) {
+  const model = await ReaderController.markAsCanceled(req.body)
+  res
+    .status(200)
+    .json(model)
 })
 
 router.delete('/:ID', async function (req, res) {

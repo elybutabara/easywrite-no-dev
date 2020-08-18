@@ -7,6 +7,8 @@
                 <small>{{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
             </div>
             <div class="actions">
+              <button class="es-button-white" @click="markAsFinished()">{{$t('MARK_AS_FINISHED')}}</button>
+              <button class="es-button-white" @click="markAsCanceled()">{{$t('MARK_AS_CANCEL')}}</button>
               <button class="es-button-white" @click="toggleNotes()">{{$t('MY NOTES').toUpperCase()}}</button>
             </div>
         </div>
@@ -112,6 +114,99 @@ export default {
     Note
   },
   methods: {
+    reloadBookIReadPage (authorId) {
+      const scope = this
+      const remainingBooksIRead = scope.$store.getters.getBooksIReadByAuthor(authorId)
+      if (remainingBooksIRead.length) {
+        scope.TOGGLE_BOOK_I_READ(remainingBooksIRead[0], 'book', authorId)
+      } else {
+        scope.CHANGE_COMPONENT({tabKey: 'dashboard', tabComponent: 'dashboard', tabData: null, tabTitle: 'DASHBOARD'})
+      }
+    },
+    markAsFinished () {
+      const scope = this
+      window.swal.fire({
+        title: scope.$t('Mark as Finished ?'),
+        text: scope.$t("Are you sure you've done reading?"),
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33'
+      }).then((result) => {
+        if (result.value) {
+          scope.axios.post('http://localhost:3000/readers/mark-as-finished', {
+            book_id: scope.properties.uuid,
+            author_id: scope.$store.getters.getAuthorID,
+            status: 1
+          }).then(response => {
+            if (response.data) {
+              // console.log(response)
+              window.swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: scope.$tc('Finished reading this book'),
+                showConfirmButton: false,
+                timer: 1500
+              }).then(() => {
+                const data = {
+                  uuid: response.data.book.uuid,
+                  author_id: response.data.author_id
+                }
+                scope.$store.dispatch('removeBookIReadFromList', data)
+                scope.reloadBookIReadPage(scope.$store.getters.getAuthorID)
+              })
+            } else {
+              console.error(response.data.message)
+            }
+          })
+        }
+      })
+    },
+    markAsCanceled () {
+      const scope = this
+      window.swal.fire({
+        title: scope.$t('Mark as Canceled ?'),
+        text: scope.$t("Please let the author know why you weren't able to finish the book:"),
+        input: 'textarea',
+        inputValue: '',
+        showCancelButton: true,
+        inputValidator: (value) => {
+          if (!value) {
+            return 'You need to write something!'
+          }
+        },
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          scope.axios.post('http://localhost:3000/readers/mark-as-canceled', {
+            book_id: scope.properties.uuid,
+            author_id: scope.$store.getters.getAuthorID,
+            reasons: result.value,
+            status: 2
+          }).then(response => {
+            if (response.data) {
+              window.swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: scope.$tc('Successfuly canceled reading this book'),
+                showConfirmButton: false,
+                timer: 1500
+              }).then(() => {
+                const data = {
+                  uuid: response.data.book.uuid,
+                  author_id: response.data.author_id
+                }
+                scope.$store.dispatch('removeBookIReadFromList', data)
+                scope.reloadBookIReadPage(scope.$store.getters.getAuthorID)
+              })
+            } else {
+              console.error(response.data.message)
+            }
+          })
+        }
+      })
+    },
     updateBook () {
       var scope = this
       // scope.$parent.getBooks()
