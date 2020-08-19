@@ -110,6 +110,23 @@ class ReaderController {
 
     return data
   }
+
+  static async markAsFinished (param) {
+    const model = await Reader.query()
+      .findOne({author_id: param.author_id, book_id: param.book_id})
+
+    model.status = param.status
+    return this.save(model)
+  }
+
+  static async markAsCanceled (param) {
+    const model = await Reader.query()
+      .findOne({author_id: param.author_id, book_id: param.book_id})
+
+    model.status = param.status
+    model.reasons = param.reasons
+    return this.save(model)
+  }
 }
 
 module.exports = {
