@@ -147,7 +147,7 @@ export default {
     scope.axios.get('http://localhost:3000/chapter-feedbacks/' + scope.properties.chapter.uuid)
       .then(function (response) {
         scope.feedbacks = response.data
-        console.log(scope.feedbacks)
+        // console.log(scope.feedbacks)
       })
       .catch(function (error) {
         console.log(error)

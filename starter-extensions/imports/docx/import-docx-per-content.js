@@ -32,7 +32,7 @@ exports.initMainWindow = (window) => {
             .then(function (result) {
               var html = result.value // The generated HTML
               var messages = result.messages // Any messages, such as warnings during conversion
-              console.log(messages)
+              // console.log(messages)
               if (type === 'book') {
                 MainWindow.webContents.send('GET-DOCX-CONTENT-BOOK', html)
               } else if (type === 'chapter') {

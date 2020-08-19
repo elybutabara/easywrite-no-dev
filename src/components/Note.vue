@@ -73,7 +73,7 @@ export default {
       scope.axios
         .post('http://localhost:3000/notes', scope.note)
         .then(response => {
-          console.log(response.data)
+          // console.log(response.data)
           scope.note.id = response.data.id
           scope.note.uuid = response.data.uuid
           scope.toggleEdit()

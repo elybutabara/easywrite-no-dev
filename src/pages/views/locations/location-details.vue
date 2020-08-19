@@ -11,7 +11,10 @@
     </div>
     <div class="es-panel">
         <div class="es-panel-content">
-            <div class="image-container"><img :src="properties.location.picture_src" /></div>
+          <div class="image-container">
+            <div v-if="location.picture_src == false" class="default-preview"><i class="fa fa-image"></i></div>
+            <div v-else><img :src="location.picture_src"></div>
+          </div>
             <h2 class="title">{{ properties.location.location  || 'Untitled' }}</h2>
             <p class="aka">{{ properties.location.AKA || $t('AKA_NOT_SET')}}</p>
             <i class="description" v-if="properties.location.description !== '' && properties.location.description !== null" v-html="properties.location.description" ></i>
@@ -41,7 +44,12 @@ export default {
       return this.properties.book
     },
     location: function () {
-      return this.properties.location
+      const scope = this
+      const location = scope.properties.location
+      if (!scope.CHECK_VALID_IMAGE(location.pictures)) {
+        location.picture_src = false
+      }
+      return location
     }
   },
   methods: {
@@ -103,4 +111,7 @@ export default {
   .es-panel .es-panel-footer { display:flex; background:#f5f8fa; border-top:1px solid #e0e5ee; height:40px; line-height:40px; padding:0px 0px; }
   .es-panel .es-panel-footer .cta { font-weight:600; cursor:pointer; text-align:center; width:50%;}
   .es-panel .es-panel-footer .cta:first-child {  border-right:1px solid #e0e5ee; }
+
+  .default-preview { min-height: 180px; background-color: #293742; color: #fff; text-align: center; }
+  .default-preview i { font-size: 105px; line-height: 180px; opacity: 0.8; }
 </style>

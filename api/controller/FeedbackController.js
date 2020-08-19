@@ -104,7 +104,7 @@ class FeedbackController {
         user_id: book.uuid
       }]).first()
 
-      console.log(notification)
+      // console.log(notification)
     }
 
     return row

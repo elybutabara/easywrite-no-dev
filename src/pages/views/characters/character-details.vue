@@ -11,7 +11,10 @@
     </div>
     <div class="es-panel">
         <div class="es-panel-content">
-            <div class="image-container"><img :src="properties.character.picture_src" /></div>
+            <div class="image-container">
+              <div v-if="!character.picture_src" class="default-preview"><i class="fa fa-image"></i></div>
+              <div v-if="character.picture_src"><img :src="character.picture_src"></div>
+            </div>
             <h2 class="title">
                 {{ properties.character.fullname || 'No Name' }}
                 <span v-if="properties.character.shortname != ''  && properties.character.shortname !== null">
@@ -127,7 +130,13 @@ export default {
       return this.properties.book
     },
     character: function () {
-      return this.properties.character
+      const scope = this
+      const character = scope.properties.character
+      if (!scope.CHECK_VALID_IMAGE(character.picture)) {
+        character.picture = false
+        character.picture_src = false
+      }
+      return character
     }
   },
   methods: {
@@ -348,4 +357,7 @@ export default {
   .es-dialog-overlay { display:none; width:100%; height:100vh; position:fixed; top:0px; left:0px; background:rgba(41,55,66,0.9); }
   .es-dialog-overlay.open { display:block;}
   .es-dialog-overlay .es-dialog-content { padding:40px; width:600px; height:300px; position:fixed; top:calc(50vh - 200px); left:calc(50% - 300px); background:#fff; }
+
+  .default-preview { min-height: 180px; background-color: #293742; color: #fff; text-align: center; }
+  .default-preview i { font-size: 105px; line-height: 180px; opacity: 0.8; }
 </style>

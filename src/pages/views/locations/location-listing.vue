@@ -27,7 +27,7 @@
                             <div class="description text-italic display-webkit-box" v-else>{{$t('NO_DESCRIPTION')}}...</div>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-"  @click="CHANGE_COMPONENT({tabKey: 'location-details-' + location.uuid, tabComponent: 'location-details', tabData: { book: book, location: location }, tabTitle:  $t('VIEW')+ ' - ' + location.location, newTab})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
+                            <button class="btn-"  @click="CHANGE_COMPONENT({tabKey: 'location-details-' + location.uuid, tabComponent: 'location-details', tabData: { book: book, location: location }, tabTitle:  $t('VIEW')+ ' - ' + location.location, newTab: true})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
                             <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + location.uuid, tabComponent: 'location-form', tabData: { book: book, location: location }, tabTitle: $t('EDIT')+ ' - ' + location.location, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT').toUpperCase()}}</button>
                             <button class="btn-delete"  @click="deleteLocation(location)"><i class="las la-trash-alt"></i> {{$t('DELETE').toUpperCase()}}</button>
                         </div>

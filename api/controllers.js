@@ -81,7 +81,7 @@ for (var i = 0; i < controllerFiles.length; i++) {
   }
   var controllerName = controllerFiles[i].replace('.js', '')
   var controllerFile = require.resolve('./controller/' + controllerName)
-  console.log('controllerFile ', controllerFile)
+  // console.log('controllerFile ', controllerFile)
   controllers[controllerName] = require(controllerFile)[controllerName]
 }
 

@@ -214,8 +214,8 @@ export default {
           const image = new Image()
           image.src = reader.result.toString()
           image.setAttribute('width', '100%')
-
-          window.$('.uploaded-file-preview').html(image)
+          scope.picture_src = image.src
+          // window.$('.uploaded-file-preview').html(image)
         }
         reader.readAsDataURL(scope.file)
       }
@@ -301,7 +301,7 @@ export default {
                 scope.$store.dispatch('changeTabTitle', { key: 'character-form-' + response.data.uuid, title: this.$t('EDIT') + ' - ' + response.data.fullname })
               }
 
-              scope.loadCharacter({ character: response.data })
+              // scope.loadCharacter({ character: response.data })
             })
           }
         })
@@ -322,9 +322,11 @@ export default {
       scope.tempDescription = character.description
       scope.tempBio = character.bio
       scope.tempGoals = character.goals
-      if (character.picture) {
+      if (character.picture && scope.CHECK_VALID_IMAGE(character.picture)) {
         scope.$set(scope.data, 'picture', character.picture)
         scope.picture_src = character.picture_src
+      } else {
+        scope.picture_src = false
       }
     }
   },

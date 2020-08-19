@@ -1,17 +1,17 @@
 <template>
-  <div v-if="selected_comments_id" class="commentbase-comments" style="position: fixed; z-index: 5000; bottom: 0; right: 37px; width: 300px; height: calc(100% - 337px); background: #324553; border-left: 1px solid #f1f1f1; padding: 5px 15px; margin: 0;">
-    <div class="commentbase-comments-header" style="text-align: right;">
-      <a href="#" v-on:click.prevent="close($event)"><i class="fa fa-times"></i></a>
+  <div v-if="selected_comments_id" class="commentbase-comments" style="">
+    <div class="commentbase-comments-header" style="text-align: right; clear: both;">
+      <button v-on:click.prevent="close($event)" type="button" aria-label="Close" class="close" style=""><span aria-hidden="true">×</span></button>
     </div>
-    <div style="height: calc(100% - 127px); background: #fff; overflow-y: auto;">
+    <div class="commentbase-comments-body" style="">
       <div v-for="(c, k) in comments[selected_comments_id]" v-bind:key="k" v-bind:style="{'border': editingComment==k?'1px solid orange':'1px solid #f1f1f1'}" class="commentbase-comment" style="border: 0; border: 1px solid #f1f1f1; padding: 15px; margin-bottom: 0;">
         <div style="line-height: 0.8; position: relative;">
           <div v-if="c.user_id==author.uuid" class="c-pop-menu-btn" style="position: absolute; top: 0; right: 5px; border: 0 solid #c0c0c0;" v-on:click.prevent="showCommentActions=showCommentActions==k?null:k">
               <div style="text-align: right; padding: 0; font-weight: bold; cursor: pointer;">
                   <i class="fa fa-ellipsis-h"></i>
-                  <div class="c-pop-menu" v-show="showCommentActions==k" style="display: block; background: #293742; border: 1px solid #293742; padding: 3px; border-radius: 3px; margin-top: -1px; line-height: 1.2; font-size: 12px;">
-                      <div v-on:click="editComment(k, $event)" style="text-align: center; color: #fff; font-weight: normal; cursor: pointer;">Edit</div>
-                      <div v-on:click="deleteComment(k, $event)" style="text-align: center; color: #fff; font-weight: normal; cursor: pointer;">Delete</div>
+                  <div class="c-pop-menu" v-show="showCommentActions==k" style="">
+                      <div v-on:click="editComment(k, $event)" class="c-pop-menu-item" style="">Edit</div>
+                      <div v-on:click="deleteComment(k, $event)" class="c-pop-menu-item" style="">Delete</div>
                   </div>
               </div>
           </div>
@@ -25,7 +25,7 @@
       </div>
     </div>
     <div class="commentbase-comments-form" style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px;">
-      <textarea v-model="comment_message_new" class="commentbase-comment-new" style="width: 100%; border: 1px solid #f1f1f1;"></textarea>
+      <textarea v-model="comment_message_new" class="commentbase-comment-new" style="width: 100%; border: 1px solid #ced4da; border-radius: 0.25rem;"></textarea>
       <div style="text-align: right;">
         <button v-on:click="pushComment($event)" class="es-button-white">Submit</button>
         <button v-on:click="cancelCommentEdit($event)" v-if="editingComment" class="es-button-white">Cancel</button>
@@ -295,5 +295,10 @@ export default {
 </script>
 
 <style>
+.commentbase-comments {position: fixed;z-index: 5000;bottom: 0px;right: 0px;width: 300px;height: calc(100% - 315px);background: rgb(245, 248, 250);border: 1px solid rgb(227, 230, 240);padding: 5px 15px;margin: 0px;border-radius: 3px;box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;}
+.commentbase-comments-body {height: calc(100% - 127px);background: rgb(255, 255, 255);overflow-y: auto;width: 100%;border: 1px solid rgb(241, 241, 241);}
 .commentbase-comment-highlight {font-weight: inherit; background: orange; color: #fff;}
+.commentbase-comment {border: 1px solid rgb(241, 241, 241); padding: 15px; margin-bottom: 0px;}
+.c-pop-menu {background: #293742; border: 1px solid #293742; padding: 3px; border-radius: 3px; margin-top: -1px; line-height: 1.2; font-size: 12px;}
+.c-pop-menu-item {text-align: center; color: #fff; font-weight: normal; cursor: pointer;}
 </style>
