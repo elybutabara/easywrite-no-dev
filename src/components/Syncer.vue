@@ -75,7 +75,7 @@ export default {
     },
     ping: function () {
       var scope = this
-      this.$http.get(window.API_URL + '/user/connect')
+      this.$http.get(window.API.API_URL + '/user/connect')
         .then(function (response) {
         // handle success
         //   console.log(response)
@@ -98,7 +98,7 @@ export default {
     download: function (endpoint) {
       var scope = this
 
-      scope.$http.get(window.API_URL + '/' + endpoint.api,
+      scope.$http.get(window.API.API_URL + '/' + endpoint.api,
         {
           'headers': {
             'X-Requested-With': 'XMLHttpRequest',

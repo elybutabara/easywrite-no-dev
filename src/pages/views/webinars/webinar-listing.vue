@@ -16,7 +16,7 @@
     <div class="es-page-content">
         <div class="webinar-list">
             <div class="webinar-single" @click.prevent="openExternalBrowser('https://attendee.gotowebinar.com/register/' + (webinar.gtwebinar_id ? webinar.gtwebinar_id : webinar.link))"  v-for="webinar in selected" :key="webinar.id">
-                <img v-bind:src="'https://www.forfatterskolen.no/'+ webinar.image">
+                <img :src="imgSrc(webinar.image)">
                 <div class="details">
                     <strong>{{ webinar.title }}</strong>
                     <p class="ellipsis-3" v-html="webinar.description"></p>
@@ -53,6 +53,9 @@ export default {
 
   },
   methods: {
+    imgSrc: function (image) {
+      return window.API.UPLOAD_URL + '/' + image.replace('/uploads', '')
+    },
     open: function (webinar, type = 'free') {
       var scope = this
       scope.selected = webinar
@@ -72,7 +75,7 @@ export default {
     },
     loadFreeWebinars: function () {
       var scope = this
-      scope.axios.get('http://api.pilotleser.no/live/free-webinars',
+      scope.axios.get(window.API.API_URL + '/free-webinars',
         {
           'headers': {
             'X-Requested-With': 'XMLHttpRequest',
@@ -92,7 +95,7 @@ export default {
     },
     loadWebinars: function () {
       var scope = this
-      scope.axios.get('http://api.pilotleser.no/live/webinars',
+      scope.axios.get(window.API.API_URL + '/webinars',
         {
           'headers': {
             'X-Requested-With': 'XMLHttpRequest',

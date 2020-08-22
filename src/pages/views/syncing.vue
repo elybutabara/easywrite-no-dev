@@ -121,14 +121,12 @@ const fs = window.require('fs-extra')
 
 const path = window.require('path')
 
+// eslint-disable-next-line no-unused-vars
 const app = window.require('electron').remote.app
 
 const electron = window.require('electron')
 const resourcePath = electron.remote.getGlobal('resourcePath')
 
-// const FormData = window.require('form-data')
-
-const uploadsBaseURL = 'https://www.pilotleser.no/uploads' // to do: use a production upload_base_url if the app is in production mode
 const request = window.require('request')
 
 export default {
@@ -203,7 +201,9 @@ export default {
         // { title: 'Book Chapter Feedbacks', api: 'book-chapter-feedbacks', local: 'chapter-feedbacks', downloaded: [], packed: [] },
         // { title: 'Book Chapter Feedback Responses', api: 'book-chapter-feedback-responses', local: 'chapter-feedback-responses', downloaded: [], packed: [] },
         { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [] },
-        { title: 'Assignment Manuscripts', api: 'assignment-manuscripts', local: 'assignment-manuscripts', downloaded: [], packed: [] }
+        { title: 'Assignment Manuscripts', api: 'assignment-manuscripts', local: 'assignment-manuscripts', downloaded: [], packed: [] },
+        { title: 'Webinars', api: 'webinars', local: 'webinars', downloaded: [], packed: [] },
+        { title: 'WebinarPresenters', api: 'webinar-presenters', local: 'webinar-presenters', downloaded: [], packed: [] }
         // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
       ],
       bookUUID: ''
@@ -258,7 +258,7 @@ export default {
       scope.stage = 'connecting'
       scope.progress_message = scope.$t('ESTABLISHING_CONNECTION') + '...'
 
-      scope.axios.get(window.API_URL + '/user/connect')
+      scope.axios.get(window.API.API_URL + '/user/connect')
         .then(function (response) {
           // handle success
           scope.progress_message = scope.$t('CONNECTED') + '!'
@@ -348,7 +348,7 @@ export default {
       }
 
       if (['Items', 'Characters', 'Locations'].indexOf(endpoint.title) > -1) {
-        var src = path.resolve(app.getAppPath() + '\\resources', 'resources', 'images', endpoint.title.toLowerCase(), (data.picture || data.pictures) + '')
+        var src = path.join(resourcePath, 'resources', 'images', endpoint.title.replace(/\s+/g, '-').toLowerCase(), (data.picture || data.pictures))
 
         if (!electronFs.existsSync(src)) {
           console.log('local file not found: ', src)
@@ -393,7 +393,7 @@ export default {
         }
       }
 
-      scope.axios.post(window.API_URL + '/' + endpoint.api + '',
+      scope.axios.post(window.API.API_URL + '/' + endpoint.api + '',
         finalData,
         {
           'headers': headers
@@ -467,7 +467,7 @@ export default {
       //
 
       var lastSyncedDate = scope.timeConvertToUTC(scope.$store.getters.getUserSyncedDate)
-      scope.axios.get(window.API_URL + '/' + endpoint.api,
+      scope.axios.get(window.API.API_URL + '/' + endpoint.api,
         {
           params: {
             synced_at: lastSyncedDate
@@ -480,14 +480,13 @@ export default {
         .then(function (response) {
           // eslint-disable-next-line valid-typeof
           var data = response.data.rows
-
-          if (['Items', 'Characters', 'Locations'].indexOf(endpoint.title) > -1) {
+          if (['Items', 'Characters', 'Locations', 'Webinars', 'WebinarPresenters'].indexOf(endpoint.title) > -1) {
             // console.log(endpoint.title + ' response.data.rows ---->\n', response.data.rows)
 
             if (response.data && response.data.rows && response.data.rows.length > 0) {
               for (let i = 0; i < response.data.rows.length; i++) {
                 const row = response.data.rows[i]
-                const image = (row.picture || row.pictures)
+                let image = (row.picture || row.pictures || row.image)
                 const allowedExt = ['.png', '.jpg', '.jpeg']
                 let imageExt = (image) ? image.split('.').pop() : null
 
@@ -499,7 +498,16 @@ export default {
                 let dstDir = path.join(resourcePath, 'resources', 'images', endpoint.title.replace(/\s+/g, '-').toLowerCase())
                 fs.mkdirsSync(dstDir)
 
-                const src = uploadsBaseURL + '/book-' + endpoint.title.toLowerCase() + '/' + image + ''
+                var folderName = window.API.UPLOAD_URL + '/book-' + endpoint.title.toLowerCase()
+                if (['Webinars', 'WebinarPresenters'].indexOf(endpoint.title) > -1) {
+                  folderName = window.API.UPLOAD_URL + '/' + endpoint.title.toLowerCase()
+
+                  image = image.replace('/uploads/' + endpoint.api + '/', '')
+                  console.log(endpoint.api)
+                  console.log(image)
+                }
+
+                const src = folderName + '/' + image + ''
                 const dst = path.resolve(dstDir, image + '')
                 scope.donwloadFile({url: src, name: image}, dst)
               }
@@ -515,7 +523,7 @@ export default {
 
                 if (row.is_file) {
                   // eslint-disable-next-line no-redeclare
-                  var src = uploadsBaseURL + '/' + endpoint.title.replace(/\s+/g, '-').toLowerCase() + '/' + (row.content)
+                  var src = window.API.UPLOAD_URL + '/' + endpoint.title.replace(/\s+/g, '-').toLowerCase() + '/' + (row.content)
 
                   // eslint-disable-next-line no-redeclare
                   var dst = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), row.content)
@@ -598,6 +606,9 @@ export default {
       var data = endpoint.downloaded[scope.saving.index]
       data.created_at = scope.timeConvertFromUTC(data.created_at)
       data.updated_at = scope.timeConvertFromUTC(data.updated_at)
+
+      console.log('before --> http://localhost:3000/' + endpoint.local + '/sync')
+      console.log(data)
 
       scope.axios
         .post('http://localhost:3000/' + endpoint.local + '/sync', data)

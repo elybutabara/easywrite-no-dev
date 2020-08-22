@@ -94,8 +94,25 @@ window.moment = require('moment')
 window.swal = require('sweetalert2')
 window.he = require('he')
 
-// window.API_URL = (process.env.NODE_ENV === 'production') ? 'https://api.pilotleser.no/dev' : 'https://api-pilot.orosage.com/dev'
-window.API_URL = (process.env.NODE_ENV === 'production') ? 'https://api.pilotleser.no/live' : 'https://api.pilotleser.no/live'
+let API = {
+  SE_PROD: {
+    API_URL: 'https://api.pilotleser.no/se',
+    UPLOAD_URL: 'https://www.easywrite.se/uploads'
+  },
+  SE_DEV: {
+    API_URL: 'https://api.pilotleser.no/se-dev',
+    UPLOAD_URL: 'https://dev.easywrite.se/uploads'
+  },
+  NO_PROD: {
+    API_URL: 'https://api.pilotleser.no/live',
+    UPLOAD_URL: 'https://www.pilotleser.no/uploads'
+  }
+}
+
+window.API = API.SE_PROD // DEVELOPEMENT API
+if (process.env.NODE_ENV === 'production') {
+  window.API = API.NO_PROD // PRODUCTION API
+}
 
 // window.$.fn.select2.defaults.set('theme', 'bootstrap')
 
