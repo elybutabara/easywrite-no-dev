@@ -258,7 +258,7 @@ export default {
       scope.stage = 'connecting'
       scope.progress_message = scope.$t('ESTABLISHING_CONNECTION') + '...'
 
-      scope.axios.get(window.API.API_URL + '/user/connect')
+      scope.axios.get(window.APP.API.URL + '/user/connect')
         .then(function (response) {
           // handle success
           scope.progress_message = scope.$t('CONNECTED') + '!'
@@ -393,7 +393,7 @@ export default {
         }
       }
 
-      scope.axios.post(window.API.API_URL + '/' + endpoint.api + '',
+      scope.axios.post(window.APP.API.URL + '/' + endpoint.api + '',
         finalData,
         {
           'headers': headers
@@ -467,7 +467,7 @@ export default {
       //
 
       var lastSyncedDate = scope.timeConvertToUTC(scope.$store.getters.getUserSyncedDate)
-      scope.axios.get(window.API.API_URL + '/' + endpoint.api,
+      scope.axios.get(window.APP.API.URL + '/' + endpoint.api,
         {
           params: {
             synced_at: lastSyncedDate
@@ -498,9 +498,9 @@ export default {
                 let dstDir = path.join(resourcePath, 'resources', 'images', endpoint.title.replace(/\s+/g, '-').toLowerCase())
                 fs.mkdirsSync(dstDir)
 
-                var folderName = window.API.UPLOAD_URL + '/book-' + endpoint.title.toLowerCase()
+                var folderName = window.APP.API.UPLOAD_URL + '/book-' + endpoint.title.toLowerCase()
                 if (['Webinars', 'WebinarPresenters'].indexOf(endpoint.title) > -1) {
-                  folderName = window.API.UPLOAD_URL + '/' + endpoint.title.toLowerCase()
+                  folderName = window.APP.API.UPLOAD_URL + '/' + endpoint.title.toLowerCase()
 
                   image = image.replace('/uploads/' + endpoint.api + '/', '')
                   console.log(endpoint.api)
@@ -523,7 +523,7 @@ export default {
 
                 if (row.is_file) {
                   // eslint-disable-next-line no-redeclare
-                  var src = window.API.UPLOAD_URL + '/' + endpoint.title.replace(/\s+/g, '-').toLowerCase() + '/' + (row.content)
+                  var src = window.APP.API.UPLOAD_URL + '/' + endpoint.title.replace(/\s+/g, '-').toLowerCase() + '/' + (row.content)
 
                   // eslint-disable-next-line no-redeclare
                   var dst = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), row.content)

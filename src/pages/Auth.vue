@@ -109,7 +109,7 @@ export default {
     },
     authenticateAPI: function () {
       var scope = this
-      scope.axios.post(window.API.API_URL + '/login', {
+      scope.axios.post(window.APP.API.URL + '/login', {
         username: scope.username,
         password: scope.password
       })

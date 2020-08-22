@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     imgSrc: function (image) {
-      return window.API.UPLOAD_URL + '/' + image.replace('/uploads', '')
+      return window.APP.API.UPLOAD_URL + '/' + image.replace('/uploads', '')
     },
     open: function (webinar, type = 'free') {
       var scope = this
@@ -75,7 +75,7 @@ export default {
     },
     loadFreeWebinars: function () {
       var scope = this
-      scope.axios.get(window.API.API_URL + '/free-webinars',
+      scope.axios.get(window.APP.API.URL + '/free-webinars',
         {
           'headers': {
             'X-Requested-With': 'XMLHttpRequest',
@@ -95,7 +95,7 @@ export default {
     },
     loadWebinars: function () {
       var scope = this
-      scope.axios.get(window.API.API_URL + '/webinars',
+      scope.axios.get(window.APP.API.URL + '/webinars',
         {
           'headers': {
             'X-Requested-With': 'XMLHttpRequest',
