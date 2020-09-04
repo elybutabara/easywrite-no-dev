@@ -1,14 +1,11 @@
 <template>
-<div class="page-location-details" v-if="page.is_ready">
-    <div class="es-page-breadcrumbs">
-        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-        /
-        <button @click="CHANGE_COMPONENT({tabKey: 'location-listing-' + book.uuid, tabComponent: 'location-listing', tabData: book, tabTitle: $t('LOCATIONS') + ' - ' + book.title})">{{ $t('LOCATIONS') }}</button>
-        /
-        <button class="current">
-            <span>{{ location.location }}</span>
-        </button>
-    </div>
+<div class="es-page-main page-location-details" v-if="page.is_ready">
+  <div class="p-5">
+    <ul class="es-breadcrumb">
+      <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
+      <li><a @click="CHANGE_COMPONENT({tabKey: 'location-listing-' + book.uuid, tabComponent: 'location-listing', tabData: book, tabTitle: $t('LOCATIONS') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('LOCATIONS') }}</a></li>
+      <li><a href="javascript:void(0);">{{ location.location }}</a></li>
+    </ul>
     <div class="es-panel">
         <div class="es-panel-content">
             <div class="image-container"><img :src="properties.location.picture_src" /></div>
@@ -22,6 +19,7 @@
             <div class="cta" @click="deleteLocation(properties.location)">{{$t('DELETE').toUpperCase()}}</div>
         </div>
     </div>
+  </div>
 </div>
 </template>
 

@@ -1,35 +1,35 @@
 <template>
 <div>
-    <div v-if="page.is_ready" class="page-chapter-details">
-        <div class="es-page-head">
-            <div class="inner">
-                <div class="details">
-                    <div>
-                      <h4><strong>{{ chapter.title }}</strong></h4>
-                    </div>
-                </div>
-                <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + chapter.uuid, tabComponent: 'scene-form',  tabData: { book: book, chapter: chapter, scene: null }, tabTitle: 'New Scene', newTab: true})">{{$t('ADD_NEW_SCENE').toUpperCase()}}</button>
-                    <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({ tabKey: 'chapter-form-' + chapter.uuid, tabComponent: 'chapter-form',  tabData: { book: book, chapter:  chapter }, tabTitle: $t('EDIT')+ ' - ' +  chapter.title, newTab: true })">{{$t('EDIT').toUpperCase()}}</button>
-                    <button class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
-                    <button class="es-button-white" @click="deleteChapter(chapter)">{{$t('DELETE').toUpperCase()}}</button>
-                </div>
+    <div v-if="page.is_ready" class="es-page-main page-chapter-details">
+        <div class="es-page-head-2 mb-0">
+            <div class="row-head">
+              <div>
+                <h4 class="main-title"><i class="fas fa-bookmark mr-1"></i> {{ chapter.title }}</h4>
+              </div>
+              <div class="book-panel-right">
+                <button class="es-button btn-sm white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
+                <button class="es-button btn-sm white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + chapter.uuid, tabComponent: 'scene-form',  tabData: { book: book, chapter: chapter, scene: null }, tabTitle: 'New Scene', newTab: true})">{{$t('ADD_NEW_SCENE').toUpperCase()}}</button>
+                <button ref="button" class="es-button btn-sm white" :disabled="busy" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
+                <button class="es-button icon-only warning" @click="toggleFeedbacks()"><i class="las la-comments"></i><!--{{$t('FEEDBACKS').toUpperCase()}}--></button>
+                <button class="es-button icon-only" @click="CHANGE_COMPONENT({ tabKey: 'chapter-form-' + chapter.uuid, tabComponent: 'chapter-form',  tabData: { book: book, chapter:  chapter }, tabTitle: $t('EDIT')+ ' - ' +  chapter.title, newTab: true })"><i class="las la-highlighter"></i><!--{{$t('EDIT').toUpperCase()}}--></button>
+                <button class="es-button icon-only danger" @click="deleteChapter(chapter)"><i class="las la-trash-alt"></i><!-- {{$t('DELETE').toUpperCase()}} --></button>
+              </div>
             </div>
         </div>
-        <div class="es-page-breadcrumbs">
-            <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-            /
-            <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})">{{ $t('CHAPTERS') }}</button>
-            /
-            <button class="current">{{ chapter.title }}</button>
-        </div>
-        <div class="es-chapter-details-tab">
-            <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-chapter-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
-            <div v-bind:class="{ 'active' : tab.active == 'scenes' }" @click="changeTab('scenes')" class="es-chapter-details-tab-item">{{$t('SCENES').toUpperCase()}}</div>
-            <div v-bind:class="{ 'active' : tab.active == 'versions' }" @click="changeTab('versions')" class="es-chapter-details-tab-item">{{$t('VERSIONS').toUpperCase()}}</div>
-            <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-chapter-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
+        <div class="es-details-tab-wrapper">
+          <div class="es-details-tab">
+            <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
+            <div v-bind:class="{ 'active' : tab.active == 'scenes' }" @click="changeTab('scenes')" class="es-details-tab-item">{{$t('SCENES').toUpperCase()}}</div>
+            <div v-bind:class="{ 'active' : tab.active == 'versions' }" @click="changeTab('versions')" class="es-details-tab-item">{{$t('VERSIONS').toUpperCase()}}</div>
+            <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
+          </div>
+          <div>
+            <ul class="es-breadcrumb mb-0">
+              <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
+              <li><a @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('CHAPTERS') }}</a></li>
+              <li><a href="javascript:void(0);" style="padding-right: 20px;">{{ chapter.title }}</a></li>
+            </ul>
+          </div>
         </div>
         <div style="position:relative; padding-bottom:40px;">
           <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></Feedback>
@@ -363,13 +363,4 @@ export default {
 
     .image-container { text-align: center; }
     .image-container img { width:100%; max-width:250px; }
-
-    .es-chapter-details-tab { display:flex; border-bottom:1px solid #ccc; padding:0px 30px; height:70px; background:#fff; }
-    .es-chapter-details-tab .es-chapter-details-tab-item { height:30px; line-height:30px; margin-top:40px; margin-right:25px; cursor:pointer; position:relative; }
-    .es-chapter-details-tab .es-chapter-details-tab-item:after { content:''; position:absolute; bottom:0px; left:0px; height:3px;  width:100%; background:transparent;}
-    .es-chapter-details-tab .es-chapter-details-tab-item.active:after { background:#922c39;  }
-
-    .es-chapter-details-tab-content { position:relative; padding:30px; background:#fff; height:calc(100vh - 360px); overflow-y:auto; display:block; }
-    .es-chapter-details-tab-content.no-padding { padding:0px; }
-    .es-chapter-details-tab-content.active { display:block; }
 </style>

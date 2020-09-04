@@ -1,14 +1,11 @@
 <template>
-<div class="page-character-details">
-    <div class="es-page-breadcrumbs">
-        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-        /
-        <button @click="CHANGE_COMPONENT({tabKey: 'character-listing-' + book.uuid, tabComponent: 'character-listing', tabData: book, tabTitle: $t('CHARACTERS') + ' - ' + book.title})">{{ $t('CHARACTERS') }}</button>
-        /
-        <button class="current">
-            <span>{{ character.fullname }}</span>
-        </button>
-    </div>
+<div class="es-page-main page-character-details">
+  <div class="p-5">
+    <ul class="es-breadcrumb">
+      <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
+      <li><a @click="CHANGE_COMPONENT({tabKey: 'character-listing-' + book.uuid, tabComponent: 'character-listing', tabData: book, tabTitle: $t('CHARACTERS') + ' - ' + book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
+      <li><a href="javascript:void(0);">{{ character.fullname }}</a></li>
+    </ul>
     <div class="es-panel">
         <div class="es-panel-content">
             <div class="image-container"><img :src="properties.character.picture_src" /></div>
@@ -82,6 +79,7 @@
             </div>
         </div>
     </div>
+  </div>
 </div>
 </template>
 

@@ -1,18 +1,16 @@
 <template>
 <div>
-    <div v-if="page.is_ready" class="page-scene-details">
-        <div class="es-page-head">
-            <div class="inner">
-                <div class="details">
-                    <div>
-                        <h4><strong>{{ properties.scene.title  || $t('Untitled')}}</strong></h4>
-                    </div>
+    <div v-if="page.is_ready" class="es-page-main page-scene-details">
+        <div class="es-page-head-2 mb-0">
+            <div class="row-head">
+                <div>
+                    <h4 class="main-title"><i class="far fa-file-image mr-1"></i> {{ properties.scene.title  || $t('Untitled')}}</h4>
                 </div>
-                <div class="actions">
-<!--                    <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>-->
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.scene.uuid, tabComponent: 'scene-form', tabData: { book: book, scene: properties.scene, chapter: chapter }, tabTitle: $t('EDIT')+ ' - ' +  properties.scene.title, newTab: true})">{{$t('EDIT').toUpperCase()}}</button>
-                    <button class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
-                    <button class="es-button-white" @click="deleteScene(properties.scene)">{{$t('DELETE').toUpperCase()}}</button>
+                <div class="book-panel-right">
+                    <!-- <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>-->
+                    <button class="es-button icon-only warning" @click="toggleFeedbacks()"><i class="las la-comments"></i><!--{{$t('FEEDBACKS').toUpperCase()}}--></button>
+                    <button class="es-button icon-only" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.scene.uuid, tabComponent: 'scene-form', tabData: { book: book, scene: properties.scene, chapter: chapter }, tabTitle: $t('EDIT')+ ' - ' +  properties.scene.title, newTab: true})"><i class="las la-highlighter"></i><!--{{$t('EDIT').toUpperCase()}}--></button>
+                    <button class="es-button icon-only danger" @click="deleteScene(properties.scene)"><i class="las la-trash-alt"></i><!--{{$t('DELETE').toUpperCase()}}--></button>
                 </div>
             </div>
         </div>
@@ -27,23 +25,26 @@
                 <span>{{ scene.title || 'Untitled' }}</span>
             </button>
         </div>
-        <div v-else class="es-page-breadcrumbs">
-            <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-            /
-            <button @click="CHANGE_COMPONENT({tabKey: 'scene-listing-' + book.uuid, tabComponent: 'scene-listing', tabData: book, tabTitle: $t('OTHER_SCENES') + ' - ' + book.title})">{{ $t('OTHER_SCENES') }}</button>
-            /
-            <button class="current">
-                <span>{{ scene.title || 'Untitled' }}</span>
-            </button>
+
+
+        <div class="es-details-tab-wrapper">
+            <div class="es-details-tab">
+              <div v-bind:class="{ 'active' : tab.active == 'content' }" v-on:click="changeTab('content')" class="es-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
+              <div v-bind:class="{ 'active' : tab.active == 'locations' }" @click="changeTab('locations')" class="es-details-tab-item">{{$t('LOCATIONS').toUpperCase()}}</div>
+              <div v-bind:class="{ 'active' : tab.active == 'items' }" @click="changeTab('items')" class="es-details-tab-item">{{$t('ITEMS').toUpperCase()}}</div>
+              <div v-bind:class="{ 'active' : tab.active == 'characters' }" @click="changeTab('characters')" class="es-details-tab-item">{{$t('CHARACTERS').toUpperCase()}}</div>
+              <div v-bind:class="{ 'active' : tab.active == 'versions' }" @click="changeTab('versions')" class="es-details-tab-item">{{$t('VERSIONS').toUpperCase()}}</div>
+              <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
+          </div>
+          <div>
+              <ul class="es-breadcrumb mb-0">
+                <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);" style="max-width: 120px; text-overflow: ellipses; white-space: nowrap;">{{ book.title }}</a></li>
+                <li><a @click="CHANGE_COMPONENT({tabKey: 'scene-listing-' + book.uuid, tabComponent: 'scene-listing', tabData: book, tabTitle: $t('OTHER_SCENES') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('OTHER_SCENES') }}</a></li>
+                <li><a href="javascript:void(0);" style="padding-right: 20px;">{{ scene.title || 'Untitled' }}</a></li>
+              </ul>
+          </div>
         </div>
-        <div class="es-scene-details-tab">
-            <div v-bind:class="{ 'active' : tab.active == 'content' }" v-on:click="changeTab('content')" class="es-scene-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
-            <div v-bind:class="{ 'active' : tab.active == 'locations' }" @click="changeTab('locations')" class="es-scene-details-tab-item">{{$t('LOCATIONS').toUpperCase()}}</div>
-            <div v-bind:class="{ 'active' : tab.active == 'items' }" @click="changeTab('items')" class="es-scene-details-tab-item">{{$t('ITEMS').toUpperCase()}}</div>
-            <div v-bind:class="{ 'active' : tab.active == 'characters' }" @click="changeTab('characters')" class="es-scene-details-tab-item">{{$t('CHARACTERS').toUpperCase()}}</div>
-            <div v-bind:class="{ 'active' : tab.active == 'versions' }" @click="changeTab('versions')" class="es-scene-details-tab-item">{{$t('VERSIONS').toUpperCase()}}</div>
-            <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-scene-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
-        </div>
+
         <div style="position:relative;">
         <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: scene, parent_name: 'scene' }"></Feedback>
         <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">

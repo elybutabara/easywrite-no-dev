@@ -1,12 +1,11 @@
 <template>
-<div v-if="page.is_ready" class="page-book-details">
-    <div class="" style="background: #fff; border-bottom: 1px solid #eee; padding: 20px;">        
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <div class="">
-            <h4 class="mb-0" style="font-family: 'Poppins';"><i class="fas fa-book mr-1"></i> {{ properties.title }}</h4>
-
+<div v-if="page.is_ready" class="es-page-main page-book-details">
+    <div class="es-page-head-2">
+      <div class="row-head" style="margin-bottom: 10px;">
+          <div>
+            <h4 class="main-title"><i class="fas fa-book mr-1"></i> {{ properties.title }}</h4>
           </div>
-          <div class="book-panel-right-test">
+          <div class="book-panel-right">
             <button class="es-button btn-sm white" @click="CHANGE_COMPONENT({tabKey: 'storyboard-' + page.data.uuid, tabComponent: 'storyboard',  tabData: page.data, tabTitle: 'Story Board - ' + properties.title, newTab: true})">Story Board</button>
             <button class="es-button btn-sm white" :disabled="getExportBookStatus.export_book_status"  @click="exportBook()">
               <span v-if="getExportBookStatus.export_book_status === false"><span>{{export_book}}</span></span>
@@ -16,30 +15,26 @@
               </span>
             </button>
             <button class="es-button btn-sm white" @click="getImport()">{{ $t('IMPORT_MULTIPLE_CHAPTERS') }}</button>
+            <a class="es-button icon-only warning" href="#hashtagFeedbacks"><i class="las la-comments"></i><!--{{$t('FEEDBACKS').toUpperCase()}}--></a>
             <button class="es-button icon-only" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: $t('EDIT') + ' - ' + properties.title, newTab: true})"><i class="las la-highlighter"></i></button>
             <button class="es-button icon-only danger" @click="deleteBook()"><i class="las la-trash-alt"></i></button>
-          </div>  
+          </div>
       </div>
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-
+      <div class="row-head">
           <div>
             <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>
-
           </div>
-          
-            <div style="display: flex; align-items: center;">
-              <i class="las la-cog" style="font-size: 18px; margin-right: 4px;"></i><small> {{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
-            </div>
-          
-
-        </div>
+          <div class="d-flex align-items-center">
+            <i class="las la-cog" style="font-size: 18px; margin-right: 4px;"></i><small> {{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
+          </div>
+      </div>
     </div>
-    <div class="es-page-content" style="position:relative;">
-        <div class="">
+    <div class="es-page-content" id="custom-scrollbar">
+        <div>
             <h4>{{ $t('ABOUT') }}</h4>
             <div v-html="properties.about"></div>
         </div>
-        <div class="es-panel" style="margin-top:10px; border:none; padding:0px; background:transparent;">
+        <div class="es-panel" style="border: none; padding: 0px; background: transparent;">
           <div class="feedback-wrap">
           <div class="feedbacks">
           <div class="head">
@@ -86,7 +81,7 @@
                 <div v-else style="padding:10px; text-align:center;">
                   {{$t('NO_RESPONSE_FOR_THIS_FEEDBACK_YET')}}
                 </div>
-                <div class="" style="text-align:right;">
+                <div style="text-align:right;">
                   <form v-on:submit.prevent="sendReply(feedback)">
                     <textarea style="width:100%;" type="text" v-model="feedback.reponse_text"></textarea>
                     <button type="submit" class="es-button-white">{{$t('SUBMIT')}}</button>
@@ -97,7 +92,7 @@
             </div>
             </template>
           </div>
-          <div class="foot">
+          <div id="hashtagFeedbacks" class="foot">
             <textarea  type="text" v-model="message"></textarea>
             <button @click="saveFeedback()" class="es-button-white">{{$t('SUBMIT')}}</button>
           </div>

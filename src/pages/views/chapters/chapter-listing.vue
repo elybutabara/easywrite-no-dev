@@ -1,31 +1,31 @@
 <template>
-<div v-if="page.is_ready" class="page-chapter-listing">
-    <div class="es-page-head">
-        <div class="inner">
-            <div class="details">
-                <h4>{{ book.title }}</h4>
-                <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ book.title }}</small>
-            </div>
-            <div class="actions">
-              <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
-              <b-button class="es-button-white" :disabled="exportOnProgress"  @click="exportScenes(book.uuid)">
-                  <div v-if="exportOnProgress === false"><span>{{$t('EXPORT_SCENES_LIST').toUpperCase()}}</span></div>
-                  <div v-else>
-                    <b-spinner small type="grow"></b-spinner>
-                    <span>{{exportLoading}}</span>
-                  </div>
-              </b-button>
-            </div>
+<div v-if="page.is_ready" class="es-page-main page-chapter-listing">
+    <div class="es-page-head-2">
+        <div class="row-head">
+          <div>
+              <h4 class="main-title"><i class="fas fa-folder mr-1"></i> {{ book.title }}</h4>
+              <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ book.title }}</small>
+          </div>
+          <div class="book-panel-right">
+            <button class="es-button btn-sm white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
+            <b-button class="es-button btn-sm white" :disabled="exportOnProgress"  @click="exportScenes(book.uuid)">
+                <span v-if="exportOnProgress === false"><span>{{$t('EXPORT_SCENES_LIST').toUpperCase()}}</span></span>
+                <span v-else>
+                  <b-spinner small type="grow"></b-spinner>
+                  <span>{{exportLoading}}</span>
+                </span>
+            </b-button>
+          </div>
         </div>
     </div>
-    <div class="es-page-breadcrumbs">
-        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-        /
-        <button class="current">{{ $t('CHAPTERS') }}</button>
-    </div>
-    <div class="es-page-content">
-        <draggable v-model="chapters" draggable=".es-col" class="es-row">
-        <div class="es-col fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
+
+    <div class="es-page-content" id="custom-scrollbar">
+        <ul class="es-breadcrumb">
+          <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
+          <li><a href="javascript:void(0);">{{ $t('CHAPTERS') }}</a></li>
+        </ul>
+        <draggable v-model="chapters" draggable=".kj-col" class="row kj-row">
+        <div class="col-3 col-md-4 col-sm-12 kj-col fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
             <div class="es-card">
                 <div class="es-card-content">
                     <div class="es-card-actions">
@@ -158,7 +158,7 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.es-card { color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
+.es-card { color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; margin-bottom: 20px; }
 .es-card .es-card-content { position:relative; padding:20px; min-height:150px; }
 .es-card .es-card-content .title { font-size:18px; font-weight:900; margin:0px; padding-right:110px; }
 .es-card .es-card-content .description { display:inline-block; padding-top:15px; color:#4b6273; }
@@ -167,7 +167,4 @@ export default {
 .es-card .es-card-content .es-card-actions .btn-circle { background:transparent; border:1px solid #e0e5ee; border-radius:50%; width:30px; height:30px; line-height:22px; text-align:center; font-size:15px; }
 .es-card .es-card-footer { background:#f5f8fa; height:40px; line-height:40px; padding:0px 20px; border-top:1px solid #e0e5ee; }
 
-@media only screen and (max-width: 968px) {
-
-}
 </style>

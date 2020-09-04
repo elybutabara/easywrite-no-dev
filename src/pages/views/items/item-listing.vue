@@ -1,25 +1,24 @@
 <template>
-<div class="page-item-listing">
+<div class="es-page-main page-item-listing">
     <div>
-        <div class="es-page-head">
-            <div class="inner">
-                <div class="details">
-                    <h4>{{$t('ITEMS')}}</h4>
+        <div class="es-page-head-2">
+            <div class="row-head">
+                <div>
+                    <h4 class="main-title"><i class="fas fa-folder mr-1"></i> {{$t('ITEMS')}}</h4>
                     <small>{{$t('BELOW_ARE_THE_LIST_OF_ITEMS_UNDER')}} {{ properties.title }}</small>
                 </div>
-                <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'item-form', tabComponent: 'item-form', tabData: { list_index: -1, book: book, item: null }, tabTitle: $t('NEW_ITEM'), newTab: true })">{{$t('NEW_ITEM').toUpperCase()}}</button>
+                <div>
+                    <button class="es-button btn-sm" @click="CHANGE_COMPONENT({tabKey: 'item-form', tabComponent: 'item-form', tabData: { list_index: -1, book: book, item: null }, tabTitle: $t('NEW_ITEM'), newTab: true })">{{$t('NEW_ITEM').toUpperCase()}}</button>
                 </div>
             </div>
         </div>
-        <div class="es-page-breadcrumbs">
-            <button button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-            /
-            <button class="current" @click="CHANGE_COMPONENT({tabKey: 'item-listing-' + book.uuid, tabComponent: 'item-listing', tabData: book, tabTitle: $t('ITEMS') + ' - ' + book.title})">{{ $t('ITEMS') }}</button>
-        </div>
         <div class="es-page-content">
-            <div class="es-row">
-                <div class="es-col fadeIn animated" v-for="item in items" v-bind:key="item.id">
+            <ul class="es-breadcrumb">
+              <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
+              <li><a @click="CHANGE_COMPONENT({tabKey: 'item-listing-' + book.uuid, tabComponent: 'item-listing', tabData: book, tabTitle: $t('ITEMS') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('ITEMS') }}</a></li>
+            </ul>
+            <div class="row kj-row">
+                <div class="col-3 col-md-3 col-sm-12 kj-col fadeIn animated" v-for="item in items" v-bind:key="item.id">
                     <div class="es-card">
                         <div class="es-card-content">
                             <p class="title ellipsis-2">{{ item.itemname || 'Untitled' }}</p>

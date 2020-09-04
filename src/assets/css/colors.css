@@ -3,7 +3,9 @@
   --primary: #367bf5;
   --success: #2fa84f;
   --warning: #fbbc05;
-  --danger: #ea4335;
+  --danger: #c12938;
+
+  --primary-shade: #72a2f8;
 
   --faint-primary: #f2f6fa;
   --faint-success: #dcefe5;
@@ -13,6 +15,7 @@
   --es-darkblue: #496d7d;
   --es-red: #c12938;
   --es-dark: #293742;
+  --es-darkish: #354350;
 
   --whitesh: #f7f9fa;
   --whiteblueish: #f2f6fa;
