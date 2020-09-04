@@ -1,6 +1,6 @@
 <template>
 <div v-if="page.is_ready" class="page-book-details">
-    <div class="" style="background: #fff; border-bottom: 1px solid #eee; padding: 20px;">        
+    <div class="" style="background: #fff; border-bottom: 1px solid #eee; padding: 20px;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
           <div class="">
             <h4 class="mb-0" style="font-family: 'Poppins';"><i class="fas fa-book mr-1"></i> {{ properties.title }}</h4>
@@ -18,19 +18,16 @@
             <button class="es-button btn-sm white" @click="getImport()">{{ $t('IMPORT_MULTIPLE_CHAPTERS') }}</button>
             <button class="es-button icon-only" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: $t('EDIT') + ' - ' + properties.title, newTab: true})"><i class="las la-highlighter"></i></button>
             <button class="es-button icon-only danger" @click="deleteBook()"><i class="las la-trash-alt"></i></button>
-          </div>  
+          </div>
       </div>
       <div style="display: flex; justify-content: space-between; align-items: center;">
 
           <div>
             <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>
-
           </div>
-          
             <div style="display: flex; align-items: center;">
               <i class="las la-cog" style="font-size: 18px; margin-right: 4px;"></i><small> {{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
             </div>
-          
 
         </div>
     </div>
