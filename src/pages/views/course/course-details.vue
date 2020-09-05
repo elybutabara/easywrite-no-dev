@@ -118,15 +118,36 @@ export default {
         scope.lessons = response.data
 
         scope.lessons.forEach(function (lesson, index) {
-          let availabilityDate = moment(scope.data.started_at).add(lesson.delay, 'days').format('MMM D YYYY, h:mm:ss a').toString()
-          if (moment().isAfter(availabilityDate)) {
-            scope.lessons[index].is_available = true
-          } else {
-            scope.lessons[index].is_available = false
-            scope.lessons[index].availability_date = availabilityDate
-          }
+          let availableOn = scope.lessonAvailability(lesson)
+          scope.lessons[index].is_available = moment().isSameOrAfter(availableOn) || scope.hasLessonAccess(lesson)
+          scope.lessons[index].availability_date = availableOn
         })
       }
+    },
+    hasLessonAccess: function (lesson) {
+      let scope = this
+
+      let accessLesson = []
+      if (scope.course_taken.access_lessons) {
+        accessLesson = JSON.parse(scope.course_taken.access_lessons).join(',')
+      }
+
+      return accessLesson.includes(lesson.id)
+    },
+    lessonAvailability: function (lesson) {
+      let scope = this
+
+      if (!scope.course_taken.started_at) return 'Course not started'
+
+      let availableOn = moment(scope.course_taken.started_at)
+
+      if (moment(lesson.delay).isValid()) {
+        availableOn = moment(lesson.delay)
+      } else {
+        availableOn.add(lesson.delay, 'd')
+      }
+
+      return availableOn.format('ll')
     },
     async loadWebinars () {
       let scope = this
