@@ -1,8 +1,8 @@
 <template>
 <div class="page-book-form">
-    <div class="es-page-head">
-        <div class="inner">
-            <div class="details">
+    <div class="es-page-head-2">
+        <div class="row-head">
+            <div>
                 <div v-if="properties != null">
                     <h4>{{ properties.title }}</h4>
                     <small>{{$t('DATE_MODIFIED')}}: {{ properties.created_at }}</small>
@@ -11,9 +11,9 @@
                     <h4>{{$t('CREATE_NEW_BOOK')}}</h4>
                 </div>
             </div>
-            <div class="actions">
-                <button v-if="properties != null" class="es-button-white" @click="saveBook()">{{$t('SAVE_CHANGES')}}</button>
-                <button v-else class="es-button-white" @click="saveBook()">{{$t('SAVE')}}</button>
+            <div class="book-panel-right">
+                <button v-if="properties != null" class="es-button btn-sm white" @click="saveBook()">{{$t('SAVE_CHANGES')}}</button>
+                <button v-else class="es-button btn-sm white" @click="saveBook()">{{$t('SAVE')}}</button>
             </div>
         </div>
     </div>

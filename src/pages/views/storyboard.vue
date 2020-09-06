@@ -1,23 +1,31 @@
 <template>
 <div class="page-storyboard" style="position:relative; width:100%; height:calc(100vh - 77px);">
     <div v-if="page.is_ready">
-        <div class="es-page-head">
-            <div class="inner">
-                <div class="details">
+        <div class="es-page-head-2">
+            <div class="row-head">
+                <div>
                     <h4>{{ book.title }}</h4>
                     <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ book.title }}</small>
                 </div>
-                <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
-                </div>
+                <!-- <div class="book-panel-right">
+                    <button class="es-button btn-sm white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
+                </div> -->
             </div>
         </div>
-        <div class="es-page-breadcrumbs">
+        <!-- <div class="es-page-breadcrumbs">
             <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
             /
             <button class="current">Story Board</button>
-        </div>
+        </div> -->
         <div class="es-page-content" style="bcakground:#293742; padding:0px;">
+
+            <ul class="es-breadcrumb">
+              <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
+              <li><a href="javascript:void(0);" style="padding-right: 20px;">
+                  <span>Story Board</span>
+              </a></li>
+            </ul>
+
             <div class="es-storyboard-settings no-select">
                 <div style="display:inline-block; position:relative; width:50px; height:25px;">
                     <div style="position:absolute; top:8px; left:0px; ">
