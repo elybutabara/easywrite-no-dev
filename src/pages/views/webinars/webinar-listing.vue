@@ -1,17 +1,17 @@
 <template>
-<div class="page-location-form">
+<div class="es-page-main page-location-form">
     <div class="es-page-head">
-        <div class="inner">
-            <div class="details">
-                {{ page_title }}
+        <div class="row-head">
+            <div>
+              <h4 class="main-title special">{{ page_title }}</h4>
             </div>
-            <div class="actions">
+            <div>
+              <div class="btn-tabs">
+                <a class="btn-tab open-free-webinar" href="javascript:void(0);" @click="open(freeWebinars, 'free')"><i class="las la-comment"></i> <span>{{ $t('FREE_WEBINARS') }}</span></a>
+                <a class="btn-tab open-paid-webinar" href="javascript:void(0);" @click="open(webinars, 'paid')"><i class="las la-comment-dollar"></i> <span>{{ $t('PAID_WEBINARS') }}</span></a>
+              </div>
             </div>
         </div>
-    </div>
-    <div class="es-page-tabs">
-      <button class="open-free-webinar" @click="open(freeWebinars, 'free')">{{ $t('FREE_WEBINARS') }}</button>
-      <button class="open-paid-webinar" @click="open(webinars, 'paid')">{{ $t('PAID_WEBINARS') }}</button>
     </div>
     <div class="es-page-content">
         <div class="webinar-list">
@@ -57,11 +57,13 @@ export default {
       var scope = this
       scope.selected = webinar
 
-      window.$('.es-page-tabs button').removeClass('current')
+      window.$('.btn-tabs .btn-tab').removeClass('active')
 
-      let currButton = window.$('.open-' + type + '-webinar')
-      scope.page_title = currButton.html()
-      currButton.addClass('current')
+      let currButtonText = window.$('.open-' + type + '-webinar span')
+      scope.page_title = currButtonText.html()
+
+      let currButton = window.$('.btn-tab.open-' + type + '-webinar')
+      currButton.addClass('active')
     },
     close: function () {
       var scope = this
@@ -138,11 +140,4 @@ export default {
     .webinar-list .webinar-single img { width:100%; height:auto; height:200px; object-fit: cover; border-bottom:1px solid #ccc; }
     .webinar-list .webinar-single .details { padding:10px; }
     .webinar-list .webinar-single .webinar-badge { background:#ae2937; color:#fff; padding:2px 5px; border-radius:3px; margin-right:5px; font-size:12px; display:inline-block; }
-
-    .es-page-head {
-      border-bottom: 0px;
-    }
-    .es-page-content {
-      background: #fff;
-    }
 </style>

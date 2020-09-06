@@ -1,14 +1,16 @@
 <template>
-<div class="page-book-lising">
+<div class="es-page-main page-book-lising">
     <syncing v-if="syncing.open" :properties="{ fullscreen: syncing.fullscreen, autostart: syncing.autostart }"></syncing>
     <div class="es-page-head">
-      <div class="dashboard-panel">
-          <h4 class="mr-auto">{{$t('WELCOME')}} {{ getAuthorName }}!</h4>
+      <div class="row-head">
+          <h4 class="main-title">{{$t('WELCOME')}} {{ getAuthorName }}!</h4>
           <!-- <small>Last Login: January 01, 2020</small> -->
-          <a class="btn-icon small" href="#hashtagCourses"><span><i class="las la-atom"></i></span>Courses</a>
-          <a class="btn-icon small" href="#hashtagAssignments"><span><i class="las la-laptop"></i></span>Assignments</a>
-          <a class="btn-icon small" href="#hashtagPromodoro"><span><i class="las la-user-clock"></i></span>Pomodoro</a>
-          <a class="btn-icon small" href="#hashtagAbout"><span><i class="las la-feather-alt"></i></span>About</a>
+          <div class="d-flex">
+            <a class="btn-icon small" href="#hashtagCourses"><span><i class="las la-atom"></i></span>Courses</a>
+            <a class="btn-icon small" href="#hashtagAssignments"><span><i class="las la-laptop"></i></span>Assignments</a>
+            <a class="btn-icon small" href="#hashtagPromodoro"><span><i class="las la-user-clock"></i></span>Pomodoro</a>
+            <a class="btn-icon small" href="#hashtagAbout"><span><i class="las la-feather-alt"></i></span>About</a>
+          </div>
       </div>
     </div>
     <div class="es-page-content" id="custom-scrollbar">
