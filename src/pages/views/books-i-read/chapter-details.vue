@@ -1,29 +1,40 @@
 <template>
 <div>
     <div v-if="page.is_ready" class="page-chapter-details">
-        <div class="es-page-head">
-            <div class="inner">
-                <div class="details">
+        <div class="es-page-head-2 mb-0">
+            <div class="row-head">
+                <div>
                     <div>
                       <h4><strong>{{ chapter.title }}</strong></h4>
                     </div>
                 </div>
-                <div class="actions">
-                  <button class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
-                  <button class="es-button-white" @click="toggleNotes()">{{$t('MY_NOTES').toUpperCase()}}</button>
+                <div class="book-panel-right">
+                  <button class="es-button btn-sm white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
+                  <button class="es-button btn-sm white" @click="toggleNotes()">{{$t('MY_NOTES').toUpperCase()}}</button>
                 </div>
             </div>
         </div>
-        <div class="es-page-breadcrumbs">
+        <!-- <div class="es-page-breadcrumbs">
             <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'books-i-read-book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
             /
             <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'books-i-read-chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})">{{ $t('CHAPTERS') }}</button>
             /
             <button class="current">{{ chapter.title }}</button>
-        </div>
-        <div class="es-chapter-details-tab">
-            <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-chapter-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
-            <div v-bind:class="{ 'active' : tab.active == 'scenes' }" @click="changeTab('scenes')" class="es-chapter-details-tab-item">{{$t('SCENES').toUpperCase()}}</div>
+        </div> -->
+        <div class="es-details-tab-wrapper">
+              <div class="es-details-tab">
+                  <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
+                  <div v-bind:class="{ 'active' : tab.active == 'scenes' }" @click="changeTab('scenes')" class="es-details-tab-item">{{$t('SCENES').toUpperCase()}}</div>
+              </div>
+              <div>
+                    <ul class="es-breadcrumb mb-0">
+                        <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'books-i-read-book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
+                        <li><a @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'books-i-read-chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('CHAPTERS') }}</a></li>
+                        <li><a href="javascript:void(0);" style="padding-right: 20px;">
+                            <span>{{ chapter.title }}</span>
+                        </a></li>
+                    </ul>
+              </div>
         </div>
         <div style="position:relative; padding-bottom:40px;">
           <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></Feedback>

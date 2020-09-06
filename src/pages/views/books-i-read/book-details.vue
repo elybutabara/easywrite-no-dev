@@ -1,15 +1,15 @@
 <template>
 <div v-if="page.is_ready" class="page-book-details">
-    <div class="es-page-head">
-        <div class="inner">
-            <div class="details">
-                <h4>{{ properties.title }}</h4>
+    <div class="es-page-head-2">
+        <div class="row-head" style="margin-bottom: 10px;">
+            <div>
+                <h4><i class="fas fa-book mr-1"></i> {{ properties.title }}</h4>
                 <small>{{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
             </div>
-            <div class="actions">
-              <button class="es-button-white" @click="markAsFinished()">{{$t('MARK_AS_FINISHED')}}</button>
-              <button class="es-button-white" @click="markAsCanceled()">{{$t('MARK_AS_CANCEL')}}</button>
-              <button class="es-button-white" @click="toggleNotes()">{{$t('MY NOTES').toUpperCase()}}</button>
+            <div class="book-panel-right">
+              <button class="es-button btn-sm white" @click="markAsFinished()">{{$t('MARK_AS_FINISHED')}}</button>
+              <!-- <button class="es-button-white" @click="markAsCanceled()">{{$t('MARK_AS_CANCEL')}}</button> -->
+              <button class="es-button btn-sm white" @click="toggleNotes()">{{$t('MY NOTES').toUpperCase()}}</button>
             </div>
         </div>
         <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>

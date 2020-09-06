@@ -1,8 +1,8 @@
 <template>
 <div v-if="page.is_ready" class="page-chapter-form">
-    <div class="es-page-head">
-        <div class="inner">
-            <div class="details">
+    <div class="es-page-head-2 mb-0">
+        <div class="row-head">
+            <div>
                 <div v-if="data.id != null">
                     <h4>{{$t('EDIT')}}: <strong>{{ data.title }}</strong></h4>
                     <small>{{$t('DATE_MODIFIED')}}: {{ data.updated_at }}</small>
@@ -11,15 +11,15 @@
                     <h4>{{$t('CREATE_NEW_CHAPTER')}}</h4>
                 </div>
             </div>
-            <div class="actions">
-                <button ref="button" class="es-button-white" :disabled="version_modal_is_open" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
-                <button v-if="data.id != null" class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
-                <button v-if="data.id != null" class="es-button-white" @click="saveChapter()">{{$t('SAVE_CHANGES')}}</button>
-                <button v-else class="es-button-white" @click="saveChapter()">{{$t('SAVE')}}</button>
+            <div class="book-panel-right">
+                <button ref="button" class="es-button btn-sm white" :disabled="version_modal_is_open" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
+                <button v-if="data.id != null" class="es-button btn-sm white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
+                <button v-if="data.id != null" class="es-button btn-sm white" @click="saveChapter()">{{$t('SAVE_CHANGES')}}</button>
+                <button v-else class="es-button btn-sm white" @click="saveChapter()">{{$t('SAVE')}}</button>
             </div>
         </div>
     </div>
-    <div class="es-page-breadcrumbs">
+    <!-- <div class="es-page-breadcrumbs">
         <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
         /
         <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})">{{ $t('CHAPTERS') }}</button>
@@ -28,8 +28,18 @@
             <span v-if="chapter !== null">{{ chapter.title }}</span>
             <span v-else>{{$t('NEW_CHAPTER')}}</span>
         </button>
-    </div>
+    </div> -->
+
     <div class="es-page-content" style="position:relative;">
+        <ul class="es-breadcrumb">
+            <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
+            <li><a @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('CHAPTERS') }}</a></li>
+            <li><a href="javascript:void(0);" style="padding-right: 20px;">
+                <span v-if="chapter !== null">{{ chapter.title }}</span>
+                <span v-else>{{$t('NEW_CHAPTER')}}</span>
+            </a></li>
+        </ul>
+
         <div v-if="show_feedbacks" style="position:fixed; width:480px; height:calc(100vh - 247px); bottom:0px; right:18px; z-index:4000;">
           <div style="position:relative; height:100%;">
            <Feedback :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></Feedback>

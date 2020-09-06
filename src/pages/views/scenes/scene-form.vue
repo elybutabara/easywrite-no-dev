@@ -1,8 +1,8 @@
 <template>
 <div class="page-scene-form" v-if="page.is_ready" >
-    <div class="es-page-head">
-        <div class="inner">
-            <div class="details">
+    <div class="es-page-head-2 mb-0">
+        <div class="row-head">
+            <div>
                 <div  v-if="data.id != null">
                     <h4>{{$t('EDIT')}}: <strong>{{ data.title }}</strong></h4>
                     <small>{{$t('DATE_MODIFIED')}}: {{ data.updated_at }}</small>
@@ -11,14 +11,14 @@
                     <h4>{{$t('CREATE_NEW_SCENE')}}</h4>
                 </div>
             </div>
-            <div class="actions">
-                <button ref="button" class="es-button-white" :disabled="version_modal_is_open" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
-                <button v-if="data.id != null" class="es-button-white" @click="saveScene()">{{$t('SAVE_CHANGES')}}</button>
-                <button v-else class="es-button-white" @click="saveScene()">{{$t('SAVE')}}</button>
+            <div class="book-panel-right">
+                <button ref="button" class="es-button btn-sm white" :disabled="version_modal_is_open" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
+                <button v-if="data.id != null" class="es-button btn-sm white" @click="saveScene()">{{$t('SAVE_CHANGES')}}</button>
+                <button v-else class="es-button btn-sm white" @click="saveScene()">{{$t('SAVE')}}</button>
             </div>
         </div>
     </div>
-  <div v-if="chapter" class="es-page-breadcrumbs">
+  <!-- <div v-if="chapter" class="es-page-breadcrumbs">
     <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
     /
     <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})">{{ $t('CHAPTERS') }}</button>
@@ -28,8 +28,18 @@
     <button class="current">
       <span>{{ (data.id) ? data.title || $t('Untitled') : $t('NEW_SCENE')}}</span>
     </button>
-  </div>
+  </div> -->
     <div class="es-page-content">
+
+        <ul class="es-breadcrumb">
+            <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
+            <li><a @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('CHAPTERS') }}</a></li>
+            <li><a @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + book.uuid, tabComponent: 'chapter-details', tabData: { book: book, chapter: chapter }, tabTitle: 'VIEW - ' + chapter.title})" href="javascript:void(0);">{{ chapter.title || 'Untitled' }}</a></li>
+            <li><a href="javascript:void(0);" style="padding-right: 20px;">
+                <span>{{ (data.id) ? data.title || $t('Untitled') : $t('NEW_SCENE')}}</span>
+            </a></li>
+        </ul>
+
         <div class="container">
             <div class="es-accordion">
                 <div class="item" v-bind:class="{'active': accordion['scene-details'] === 'active'}">

@@ -14,7 +14,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="chapter !== null" class="es-page-breadcrumbs">
+        <!-- <div v-if="chapter !== null" class="es-page-breadcrumbs">
             <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
             /
             <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})">{{ $t('CHAPTERS') }}</button>
@@ -24,9 +24,7 @@
             <button class="current">
                 <span>{{ scene.title || 'Untitled' }}</span>
             </button>
-        </div>
-
-
+        </div> -->
         <div class="es-details-tab-wrapper">
             <div class="es-details-tab">
               <div v-bind:class="{ 'active' : tab.active == 'content' }" v-on:click="changeTab('content')" class="es-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
@@ -49,7 +47,7 @@
         <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: scene, parent_name: 'scene' }"></Feedback>
         <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">
             <div class="export-content">
-              <b-button class="es-button-white" :disabled="exportOnProgress"  @click="exportContent()">
+              <b-button class="es-button btn-sm white" :disabled="exportOnProgress"  @click="exportContent()">
                 <div v-if="exportOnProgress === false"><span>{{$t('EXPORT_CONTENT')}}</span></div>
                 <div v-else>
                   <b-spinner small type="grow"></b-spinner>

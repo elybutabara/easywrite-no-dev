@@ -1,20 +1,20 @@
 <template>
 <div>
     <div v-if="page.is_ready" class="page-scene-details">
-        <div class="es-page-head">
-            <div class="inner">
-                <div class="details">
+        <div class="es-page-head-2 mb-0">
+            <div class="row-head">
+                <div>
                     <div>
                         <h4><strong>{{ properties.scene.title }}</strong></h4>
                     </div>
                 </div>
-                <div class="actions">
-                  <button class="es-button-white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
-                  <button class="es-button-white" @click="toggleNotes()">{{$t('MY NOTES').toUpperCase()}}</button>
+                <div class="book-panel-right">
+                  <button class="es-button btn-sm white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
+                  <button class="es-button btn-sm white" @click="toggleNotes()">{{$t('MY NOTES').toUpperCase()}}</button>
                 </div>
             </div>
         </div>
-        <div v-if="chapter !== null" class="es-page-breadcrumbs">
+        <!-- <div v-if="chapter !== null" class="es-page-breadcrumbs">
             <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'books-i-read-book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
             /
             <button @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'books-i-read-chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})">{{ $t('CHAPTERS') }}</button>
@@ -24,8 +24,9 @@
             <button class="current">
                 <span>{{ scene.title || 'Untitled' }}</span>
             </button>
-        </div>
-        <div v-else class="es-page-breadcrumbs">
+        </div> -->
+
+        <!-- <div v-else class="es-page-breadcrumbs">
             <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'books-i-read-book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
             /
             <button @click="CHANGE_COMPONENT({tabKey: 'scene-listing-' + book.uuid, tabComponent: 'books-i-read-scene-listing', tabData: book, tabTitle: $t('OTHER_SCENES') + ' - ' + book.title})">{{ $t('OTHER_SCENES') }}</button>
@@ -33,10 +34,33 @@
             <button class="current">
                 <span>{{ scene.title || 'Untitled' }}</span>
             </button>
+        </div> -->
+        <div class="es-details-tab-wrapper">
+            <div class="es-details-tab">
+                <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
+            </div>
+            <div>
+        
+            <ul v-if="chapter !== null" class="es-breadcrumb">
+                <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'books-i-read-book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
+                <li><a @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'books-i-read-chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('CHAPTERS') }}</a></li>
+                <li><a @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + book.uuid, tabComponent: 'books-i-read-chapter-details', tabData: { book: book, chapter: chapter }, tabTitle: 'VIEW - ' + chapter.title})" href="javascript:void(0);">{{ chapter.title || 'Untitled' }}</a></li>
+                <li><a href="javascript:void(0);" style="padding-right: 20px;">
+                    <span>{{ scene.title || 'Untitled' }}</span>
+                </a></li>
+            </ul>
+
+            <ul v-else class="es-page-breadcrumbs">
+                <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'books-i-read-book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
+                <li><a @click="CHANGE_COMPONENT({tabKey: 'scene-listing-' + book.uuid, tabComponent: 'books-i-read-scene-listing', tabData: book, tabTitle: $t('OTHER_SCENES') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('OTHER_SCENES') }}</a></li>
+                <li><a href="javascript:void(0);" style="padding-right: 20px;">
+                    <span>{{ scene.title || 'Untitled' }}</span>
+                </a></li>
+            </ul>
+
+            </div>
         </div>
-        <div class="es-scene-details-tab">
-            <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-scene-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
-        </div>
+
         <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content" style="position:relative;">
             <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: scene, parent_name: 'scene' }"></Feedback>
             <Note v-if="show_notes" :properties="{ book: book, parent: scene, parent_name: 'scene' }"></Note>

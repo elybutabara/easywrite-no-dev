@@ -1,8 +1,8 @@
 <template>
 <div v-if="page.is_ready" class="page-item-form">
-    <div class="es-page-head">
-        <div class="inner">
-            <div class="details">
+    <div class="es-page-head-2 mb-0">
+        <div class="row-head">
+            <div>
                 <div  v-if="data.id != null">
                     <h4>{{$t('EDIT')}}: <strong>{{ data.itemname }}</strong></h4>
                     <small>{{$t('DATE_MODIFIED')}}: {{ data.updated_at }}</small>
@@ -11,13 +11,13 @@
                     <h4>{{$t('CREATE_NEW_ITEM')}}</h4>
                 </div>
             </div>
-            <div class="actions">
-                <button v-if="data.id != null" class="es-button-white" @click="uploadImage()">{{$t('SAVE_CHANGES')}}</button>
-                <button v-else class="es-button-white" @click="uploadImage()">{{$t('SAVE')}}</button>
+            <div class="book-panel-right">
+                <button v-if="data.id != null" class="es-button btn-sm white" @click="uploadImage()">{{$t('SAVE_CHANGES')}}</button>
+                <button v-else class="es-button btn-sm white" @click="uploadImage()">{{$t('SAVE')}}</button>
             </div>
         </div>
     </div>
-    <div class="es-page-breadcrumbs">
+    <!-- <div class="es-page-breadcrumbs">
         <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
         /
         <button @click="CHANGE_COMPONENT({tabKey: 'item-listing-' + book.uuid, tabComponent: 'item-listing', tabData: book, tabTitle: $t('ITEMS') + ' - ' + book.title})">{{ $t('ITEMS') }}</button>
@@ -26,8 +26,16 @@
             <span v-if="data !== null">{{ data.itemname }}</span>
             <span v-else>{{$t('NEW_ITEM')}}</span>
         </button>
-    </div>
+    </div> -->
     <div class="es-page-content">
+      <ul class="es-breadcrumb">
+            <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
+            <li><a @click="CHANGE_COMPONENT({tabKey: 'item-listing-' + book.uuid, tabComponent: 'item-listing', tabData: book, tabTitle: $t('ITEMS') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('ITEMS') }}</a></li>
+            <li><a href="javascript:void(0);" style="padding-right: 20px;">
+                  <span v-if="data !== null">{{ data.itemname }}</span>
+                  <span v-else>{{$t('NEW_ITEM')}}</span>
+            </a></li>
+        </ul>
         <div class="container">
             <div class="es-panel">
                 <div class="row">

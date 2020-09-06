@@ -43,7 +43,7 @@
           </div>
           <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
                 <div class="export-content">
-                <b-button class="es-button-white" :disabled="exportOnProgress"  @click="exportContent()">
+                <b-button class="es-button btn-sm white" :disabled="exportOnProgress"  @click="exportContent()">
                   <div v-if="exportOnProgress === false"><span>{{$t('EXPORT_CONTENT')}}</span></div>
                   <div v-else>
                     <b-spinner small type="grow"></b-spinner>
