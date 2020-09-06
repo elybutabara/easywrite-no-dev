@@ -1,25 +1,24 @@
 <template>
-<div class="page-location-listing">
+<div class="es-page-main page-location-listing">
     <div>
-        <div class="es-page-head">
-            <div class="inner">
-                <div class="details">
-                    <h4>{{$t('LOCATIONS')}}</h4>
-                    <small>{{$t('BELOW_ARE_THE_LIST_OF_LOCATIONS_UNDER')}} {{ properties.title }}</small>
+        <div class="es-page-head-2">
+            <div class="row-head">
+                <div>
+                  <h4 class="main-title"><i class="fas fa-location-arrow mr-1"></i> {{$t('LOCATIONS')}}</h4>
+                  <small>{{$t('BELOW_ARE_THE_LIST_OF_LOCATIONS_UNDER')}} {{ properties.title }}</small>
                 </div>
-                <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'location-form', tabComponent: 'location-form', tabData: { list_index: -1, book: book, location: null }, tabTitle: $t('NEW_LOCATION'), newTab: true})">{{$t('NEW_LOCATION').toUpperCase()}}</button>
+                <div>
+                  <button class="es-button btn-sm" @click="CHANGE_COMPONENT({tabKey: 'location-form', tabComponent: 'location-form', tabData: { list_index: -1, book: book, location: null }, tabTitle: $t('NEW_LOCATION'), newTab: true})">{{$t('NEW_LOCATION').toUpperCase()}}</button>
                 </div>
             </div>
         </div>
-        <div class="es-page-breadcrumbs">
-            <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-            /
-            <button class="current">{{ $t('LOCATIONS') }}</button>
-        </div>
         <div class="es-page-content">
-            <div class="es-row">
-                <div class="es-col fadeIn animated" v-for="location in locations" v-bind:key="location.id">
+            <ul class="es-breadcrumb">
+              <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
+              <li><a href="javascript:void(0);">{{ $t('LOCATIONS') }}</a></li>
+            </ul>
+            <div class="row kj-row">
+                <div class="col-3 col-md-3 col-sm-12 kj-col fadeIn animated" v-for="location in locations" v-bind:key="location.id">
                     <div class="es-card">
                         <div class="es-card-content">
                             <p class="title ellipsis-2">{{ location.location || 'Untitled' }}</p>
@@ -103,7 +102,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    .es-card { color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
+    .es-card { color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; margin-bottom: 20px; }
     .es-card .es-card-content { position:relative; padding:20px; min-height:150px; }
     .es-card .es-card-content .title { font-size:18px; font-weight:900; margin:0px; }
     .es-card .es-card-content .description { display:inline-block; padding-top:15px; color:#4b6273; }

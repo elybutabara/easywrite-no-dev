@@ -1,12 +1,11 @@
 <template>
-<div v-if="page.is_ready" class="page-item-details">
-    <div class="es-page-breadcrumbs">
-        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-        /
-        <button @click="CHANGE_COMPONENT({tabKey: 'item-listing-' + book.uuid, tabComponent: 'item-listing', tabData: book, tabTitle: $t('ITEMS') + ' - ' + book.title})">{{ $t('ITEMS') }}</button>
-        /
-        <button class="current">{{ item.itemname }}</button>
-    </div>
+<div v-if="page.is_ready" class="es-page-main page-item-details">
+  <div class="p-5">
+    <ul class="es-breadcrumb mb-0">
+      <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
+      <li><a @click="CHANGE_COMPONENT({tabKey: 'item-listing-' + book.uuid, tabComponent: 'item-listing', tabData: book, tabTitle: $t('ITEMS') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('ITEMS') }}</a></li>
+      <li><a href="javascript:void(0);">{{ item.itemname }}</a></li>
+    </ul>
     <div class="es-panel">
         <div class="es-panel-content">
             <div class="image-container">
@@ -23,6 +22,7 @@
             <div class="cta" @click="deleteItem(properties.item)">{{$t('DELETE').toUpperCase()}}</div>
         </div>
     </div>
+  </div>
 </div>
 </template>
 

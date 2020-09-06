@@ -1,32 +1,31 @@
 <template>
-<div class="page-character-listing">
+<div class="es-page-main page-character-listing">
     <div>
-        <div class="es-page-head">
-            <div class="inner">
-                <div class="details">
-                    <h4>{{$t('CHARACTERS')}}</h4>
+        <div class="es-page-head-2">
+            <div class="row-head">
+                <div>
+                    <h4 class="main-title"><i class="fas fa-user-friends mr-1"></i> {{$t('CHARACTERS')}}</h4>
                     <small>{{$t('BELOW_ARE_THE_LIST_OF_CHARACTERS_UNDER')}} {{ book.title }}</small>
                 </div>
-                <div class="actions">
-                  <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form', tabData: { list_index: -1, book: book, character: null }, tabTitle: $t('NEW_CHARACTER'), newTab: true})">{{$t('NEW_CHARACTER').toUpperCase()}}</button>
-                  <b-button :disabled="exportOnProgress" class="es-button-white" @click="exportCharacter()">
-                    <div v-if="exportOnProgress===false"><span>{{$t('EXPORT_CHARACTERS_LIST').toUpperCase()}}</span></div>
-                    <div v-else>
+                <div>
+                  <button class="es-button btn-sm white" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form', tabData: { list_index: -1, book: book, character: null }, tabTitle: $t('NEW_CHARACTER'), newTab: true})">{{$t('NEW_CHARACTER').toUpperCase()}}</button>
+                  <b-button :disabled="exportOnProgress" class="es-button btn-sm white" @click="exportCharacter()">
+                    <span v-if="exportOnProgress===false"><span>{{$t('EXPORT_CHARACTERS_LIST').toUpperCase()}}</span></span>
+                    <span v-else>
                       <b-spinner small type="grow"></b-spinner>
                       <span>{{exportLoading}}</span>
-                    </div>
+                    </span>
                   </b-button>
                 </div>
             </div>
         </div>
-        <div class="es-page-breadcrumbs">
-            <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-            /
-            <button class="current">{{ $t('CHARACTERS') }}</button>
-        </div>
         <div class="es-page-content">
-            <div class="es-row">
-                <div class="es-col fadeIn animated" v-for="character in characters" v-bind:key="character.id">
+            <ul class="es-breadcrumb special">
+              <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
+              <li><a href="javascript:void(0);">{{ $t('CHARACTERS') }}</a></li>
+            </ul>
+            <div class="row kj-row">
+                <div class="col-3 col-md-3 col-sm-12 kj-col fadeIn animated" v-for="character in characters" v-bind:key="character.id">
                     <div class="es-card">
                         <div class="es-card-content">
                             <p class="title ellipsis-2">{{ character.fullname || 'Untitled' }}</p>
@@ -120,7 +119,7 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    .es-card { color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
+    .es-card { color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; margin-bottom: 20px; }
     .es-card .es-card-content { position:relative; padding:20px; min-height:150px; }
     .es-card .es-card-content .title { font-size:18px; font-weight:900; margin:0px; padding-right:110px; }
     .es-card .es-card-content .description { display:inline-block; padding-top:15px; color:#4b6273; }

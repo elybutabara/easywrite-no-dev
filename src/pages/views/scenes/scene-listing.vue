@@ -1,25 +1,24 @@
 <template>
-<div class="page-scene-listing">
+<div class="es-page-main page-scene-listing">
     <div>
-        <div class="es-page-head">
-            <div class="inner">
-                <div class="details">
-                    <h4>{{$t('OTHER_SCENES')}}</h4>
-                    <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ properties.title }}</small>
+        <div class="es-page-head-2">
+            <div class="row-head">
+                <div>
+                  <h4 class="main-title"><i class="fas fa-photo-video mr-1"></i> {{$t('OTHER_SCENES')}}</h4>
+                  <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ properties.title }}</small>
                 </div>
-                <div class="actions">
-                    <button class="es-button-white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.uuid, tabComponent: 'scene-form', tabData: { book: book, scene: null }, tabTitle: $t('NEW_SCENE'), newTab: true})">{{$t('NEW_SCENE').toUpperCase()}}</button>
+                <div>
+                  <button class="es-button btn-sm" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.uuid, tabComponent: 'scene-form', tabData: { book: book, scene: null }, tabTitle: $t('NEW_SCENE'), newTab: true})">{{$t('NEW_SCENE').toUpperCase()}}</button>
                 </div>
             </div>
         </div>
-        <div class="es-page-breadcrumbs">
-            <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-            /
-            <button class="current">{{ $t('OTHER_SCENES') }}</button>
-        </div>
         <div class="es-page-content">
-            <draggable v-model="scenes" draggable=".es-col" class="es-row">
-                <div class="es-col fadeIn animated" v-for="scene in scenes" v-bind:key="scene.id">
+            <ul class="es-breadcrumb">
+              <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
+              <li><a href="javascript:void(0);">{{ $t('OTHER_SCENES') }}</a></li>
+            </ul>
+            <draggable v-model="scenes" draggable=".kj-col" class="row kj-row">
+                <div class="col-3 col-md-3 col-sm-12 kj-col fadeIn animated" v-for="scene in scenes" v-bind:key="scene.id">
                     <div class="es-card">
                         <div class="es-card-content">
                         <div class="es-card-actions">

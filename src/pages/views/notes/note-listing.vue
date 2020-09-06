@@ -1,13 +1,7 @@
 <template>
-<div class="page-location-form">
+<div class="es-page-main page-location-form">
     <div class="es-page-head">
-        <div class="inner">
-            <div class="details">
-                {{ $t('MY_NOTES') }}
-            </div>
-            <div class="actions">
-            </div>
-        </div>
+        <h4 class="main-title special">{{ $t('MY_NOTES') }}</h4>
     </div>
     <div class="es-page-content">
         <div class="es-row">
