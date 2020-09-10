@@ -11,14 +11,14 @@ class Package extends BaseModel {
   }
 
   static relationMappings = {
-    // book: {
-    //   relation: BaseModel.HasOneRelation,
-    //   modelClass: path.join(__dirname, 'Book'),
-    //   join: {
-    //     from: 'book_items.book_id',
-    //     to: 'books.uuid'
-    //   }
-    // },
+    course: {
+      relation: BaseModel.HasOneRelation,
+      modelClass: path.join(__dirname, 'Course'),
+      join: {
+        from: 'packages.course_id',
+        to: 'courses.uuid'
+      }
+    }
     // scene_item: {
     //   relation: BaseModel.HasManyRelation,
     //   modelClass: path.join(__dirname, 'SceneItem'),

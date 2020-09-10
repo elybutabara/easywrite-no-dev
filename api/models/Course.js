@@ -13,10 +13,19 @@ class Course extends BaseModel {
   static relationMappings = {
     lessons: {
       relation: BaseModel.HasManyRelation,
-      modelClass: path.join(__dirname, 'Lessons'),
+      modelClass: path.join(__dirname, 'Lesson'),
       join: {
         from: 'courses.uuid',
         to: 'lessons.course_id'
+      },
+      softDelete: true
+    },
+    webinars: {
+      relation: BaseModel.HasManyRelation,
+      modelClass: path.join(__dirname, 'Webinar'),
+      join: {
+        from: 'courses.uuid',
+        to: 'webinars.course_id'
       },
       softDelete: true
     }

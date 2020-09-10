@@ -1,5 +1,6 @@
 'use strict'
 const path = require('path')
+const electronFs = require('fs')
 const express = require('express')
 const router = express.Router()
 
@@ -18,7 +19,10 @@ router.get('/:courseID', async function (req, res) {
   const webinars = await WebinarController.getAllByCourseId(param)
 
   webinars.forEach(function (item, index) {
-    if (item.image) {
+    var file = path.join(resourcePath, 'resources', 'images', 'webinars', item.image.replace('/uploads/webinars/', ''))
+
+    webinars[index].image_src = 'file://' + path.resolve('src', 'assets', 'img', 'default-image.jpg')
+    if (electronFs.existsSync(file)) {
       webinars[index].image_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'webinars', item.image.replace('/uploads/webinars/', ''))
     }
   })
