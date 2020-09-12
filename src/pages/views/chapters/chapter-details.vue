@@ -41,7 +41,7 @@
               {{ $t('NEXT').toUpperCase() }} <i class="las la-angle-double-right"></i>
             </button>
           </div>
-          <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
+          <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content" id="custom-scrollbar">
                 <div class="export-content">
                 <b-button class="es-button btn-sm white" :disabled="exportOnProgress"  @click="exportContent()">
                   <div v-if="exportOnProgress === false"><span>{{$t('EXPORT_CONTENT')}}</span></div>
@@ -54,13 +54,13 @@
               <div v-html="getChapterContent" class="description" v-bind:id="commentbase_id"></div>
               <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params"></CommentBasePanel>
           </div>
-          <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
+          <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing" id="custom-scrollbar">
               <chapter-scenes :properties="{ book: book, chapter: chapter }"></chapter-scenes>
           </div>
-          <div v-if="tab.active === 'versions'"  class="es-chapter-details-tab-content">
+          <div v-if="tab.active === 'versions'"  class="es-chapter-details-tab-content" id="custom-scrollbar">
               <chapter-versions :properties="{ chapter: chapter }"></chapter-versions>
           </div>
-          <div v-if="tab.active === 'compare-versions'"  class="es-chapter-details-tab-content">
+          <div v-if="tab.active === 'compare-versions'"  class="es-chapter-details-tab-content" id="custom-scrollbar">
               <chapter-compare-versions :properties="{ chapter: chapter }"></chapter-compare-versions>
           </div>
         </div>

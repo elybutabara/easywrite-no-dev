@@ -112,22 +112,3 @@ export default {
   }
 }
 </script>
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-    .es-card { color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
-    .es-card .es-card-content { position:relative; padding:20px; min-height:150px; }
-    .es-card .es-card-content .title { font-size:18px; font-weight:900; margin:0px; padding-right:110px; }
-    .es-card .es-card-content .description { display:inline-block; padding-top:15px; color:#4b6273; }
-
-    .es-card .es-card-content .es-card-actions { position:absolute; top:20px; right:20px; text-align:right; }
-
-    .es-card .es-card-footer { position:relative; background:#f5f8fa; height:40px; line-height:40px; padding:0px 0px; border-top:1px solid #e0e5ee; }
-    .es-card .es-card-footer button { font-weight:600; background:transparent; border:none; height:40px; line-height:32px; text-align:center; font-size:14px; padding:0px 8px; }
-    .es-card .es-card-footer button:hover { background:#e0e5ee; }
-    .es-card .es-card-footer button i { font-size:18px; }
-    .es-card .es-card-footer button.btn-delete { font-weight:600; color:#8f2c39; border-left:1px solid #e0e5ee; position:absolute; top:0px; right:0px; }
-
-    .es-card .es-card-content .es-card-actions { position:absolute; top:20px; right:20px; text-align:right; }
-    .es-card .es-card-content .es-card-actions .btn-circle { background:transparent; border:1px solid #e0e5ee; border-radius:50%; width:30px; height:30px; line-height:22px; text-align:center; font-size:15px; }
-    .es-card .es-card-footer { background:#f5f8fa; height:40px; line-height:40px; padding:0px 20px; border-top:1px solid #e0e5ee; }
-</style>

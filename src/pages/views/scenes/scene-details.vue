@@ -4,7 +4,7 @@
         <div class="es-page-head-2 mb-0">
             <div class="row-head">
                 <div>
-                    <h4 class="main-title"><i class="far fa-file-image mr-1"></i> {{ properties.scene.title  || $t('Untitled')}}</h4>
+                    <h4 class="main-title"><i class="fas fa-image mr-1"></i> {{ properties.scene.title  || $t('Untitled')}}</h4>
                 </div>
                 <div class="book-panel-right">
                     <!-- <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>-->
@@ -35,14 +35,13 @@
               <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
           </div>
           <div>
-              <ul class="es-breadcrumb mb-0">
-                <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);" style="max-width: 120px; text-overflow: ellipses; white-space: nowrap;">{{ book.title }}</a></li>
-                <li><a @click="CHANGE_COMPONENT({tabKey: 'scene-listing-' + book.uuid, tabComponent: 'scene-listing', tabData: book, tabTitle: $t('OTHER_SCENES') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('OTHER_SCENES') }}</a></li>
-                <li><a href="javascript:void(0);" style="padding-right: 20px;">{{ scene.title || 'Untitled' }}</a></li>
+              <ul class="es-breadcrumb special mb-0">
+                <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);" style="max-width: 120px; text-overflow: ellipses; white-space: nowrap;"><span>{{ book.title }}</span></a></li>
+                <li><a @click="CHANGE_COMPONENT({tabKey: 'scene-listing-' + book.uuid, tabComponent: 'scene-listing', tabData: book, tabTitle: $t('OTHER_SCENES') + ' - ' + book.title})" href="javascript:void(0);"><span>{{ $t('OTHER_SCENES') }}</span></a></li>
+                <li><a href="javascript:void(0);" style="padding-right: 20px;"><span>{{ scene.title || 'Untitled' }}</span></a></li>
               </ul>
           </div>
         </div>
-
         <div style="position:relative;">
         <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: scene, parent_name: 'scene' }"></Feedback>
         <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">

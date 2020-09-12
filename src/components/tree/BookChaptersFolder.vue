@@ -15,11 +15,15 @@
         </div>
         <draggable tag="ul" v-model="chapters" draggable=".handle" class="level-3">
             <li v-bind:class="{ 'open' : $store.getters.isBookChaptersFolderOpen(book) }" v-bind:key="chapter.id" v-for="chapter in chapters" class="handle ellipsis-2">
-                <div @click="toggleChapter(chapter)" class="label">
-                  <img src="@/assets/img/icons/chapter.svg">
-                  <span>{{ chapter.title }}</span>
-                </div>
-                <chapter-scenes-folder v-if="chapter.is_open" :key="'tree-chapter-scenes-' + chapter.uuid" :properties="{book: book, chapter: chapter}"></chapter-scenes-folder>
+              <div @click="toggleChapter(chapter)" class="label">
+                <span>
+                  <span>
+                    <i class="fas fa-bookmark"></i>
+                  </span>
+                </span>
+                <span>{{ chapter.title }}</span>
+              </div>
+              <chapter-scenes-folder v-if="chapter.is_open" :key="'tree-chapter-scenes-' + chapter.uuid" :properties="{book: book, chapter: chapter}"></chapter-scenes-folder>
             </li>
         </draggable>
     </li>
