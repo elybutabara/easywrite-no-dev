@@ -12,6 +12,7 @@ class PackageCourseController {
     let courseTaken = await CoursesTaken.query()
       .where('user_id', user.uuid)
       .withGraphJoined('course')
+      .whereNotNull('course.uuid')
 
     const courseUUIDs = []
     for (let i = 0; i < courseTaken.length; i++) {
