@@ -29,8 +29,8 @@
     </div> -->
     <div class="es-page-content">
         <ul class="es-breadcrumb">
-            <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
-            <li><a @click="CHANGE_COMPONENT({tabKey: 'character-listing-' + book.uuid, tabComponent: 'character-listing', tabData: book, tabTitle: $t('CHARACTERS') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('CHARACTERS') }}</a></li>
+            <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);"><span>{{ book.title }}</span></a></li>
+            <li><a @click="CHANGE_COMPONENT({tabKey: 'character-listing-' + book.uuid, tabComponent: 'character-listing', tabData: book, tabTitle: $t('CHARACTERS') + ' - ' + book.title})" href="javascript:void(0);"><span>{{ $t('CHARACTERS') }}</span></a></li>
             <li><a href="javascript:void(0);" style="padding-right: 20px;">
                   <span v-if="character !== null">{{ data.fullname }}</span>
                   <span v-else>{{$t('NEW_CHARACTER')}}</span>

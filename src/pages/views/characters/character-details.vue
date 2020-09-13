@@ -1,6 +1,6 @@
 <template>
 <div class="es-page-main page-character-details">
-  <div class="p-5">
+  <div class="es-page-content">
     <ul class="es-breadcrumb">
       <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
       <li><a @click="CHANGE_COMPONENT({tabKey: 'character-listing-' + book.uuid, tabComponent: 'character-listing', tabData: book, tabTitle: $t('CHARACTERS') + ' - ' + book.title})" href="javascript:void(0);">{{ book.title }}</a></li>

@@ -1,6 +1,6 @@
 <template>
 <div class="es-page-main page-location-details" v-if="page.is_ready">
-  <div class="p-5">
+  <div class="es-page-content">
     <ul class="es-breadcrumb">
       <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
       <li><a @click="CHANGE_COMPONENT({tabKey: 'location-listing-' + book.uuid, tabComponent: 'location-listing', tabData: book, tabTitle: $t('LOCATIONS') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('LOCATIONS') }}</a></li>
@@ -99,8 +99,8 @@ export default {
   .image-container { text-align: center; }
   .image-container img { width:100%; max-width:250px; }
 
-  .es-panel { background:#fff; margin:0px auto; margin-top:70px; max-width:670px; border:1px solid #e0e5ee; }
-  .es-panel .es-panel-content { padding:30px 30px; }
+  .es-panel { background:#fff; margin:0px auto; margin-top: 40px; max-width:500px; border:1px solid #e0e5ee; }
+  .es-panel .es-panel-content { }
   .es-panel .es-panel-content .title { margin:0px; margin-top:20px; text-align:center;  font-size:25px; font-weight:600; color:#293742; }
   .es-panel .es-panel-content .aka { margin-top:0px; text-align:center;  font-size:16px; color:#922c39; font-weight:600; }
   .es-panel .es-panel-content .tags { text-align:center; font-size:16px; color:#293742; }

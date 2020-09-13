@@ -1,15 +1,22 @@
 <template>
-<div class="page-storyboard" style="position:relative; width:100%; height:calc(100vh - 77px);">
+<!--<div class="page-storyboard" style="position:relative; width:100%; height:calc(100vh - 77px);">-->
+  <div class="page-storyboard">
     <div v-if="page.is_ready">
-        <div class="es-page-head-2">
+        <div class="es-page-head-2" style="margin-bottom: 1px;">
             <div class="row-head">
                 <div>
                     <h4>{{ book.title }}</h4>
                     <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ book.title }}</small>
                 </div>
-                <!-- <div class="book-panel-right">
-                    <button class="es-button btn-sm white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
-                </div> -->
+                <div class="book-panel-right">
+                  <ul class="es-breadcrumb mb-0">
+                    <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);"><span>{{ book.title }}</span></a></li>
+                    <li><a href="javascript:void(0);" style="padding-right: 20px; background: var(--thin-white);">
+                        <span>Story Board</span>
+                    </a></li>
+                  </ul>
+                    <!-- <button class="es-button btn-sm white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button> -->
+                </div>
             </div>
         </div>
         <!-- <div class="es-page-breadcrumbs">
@@ -18,14 +25,6 @@
             <button class="current">Story Board</button>
         </div> -->
         <div class="es-page-content" style="bcakground:#293742; padding:0px;">
-
-            <ul class="es-breadcrumb">
-              <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
-              <li><a href="javascript:void(0);" style="padding-right: 20px;">
-                  <span>Story Board</span>
-              </a></li>
-            </ul>
-
             <div class="es-storyboard-settings no-select">
                 <div style="display:inline-block; position:relative; width:50px; height:25px;">
                     <div style="position:absolute; top:8px; left:0px; ">
@@ -35,6 +34,7 @@
                         </label>
                     </div>
                 </div>
+                <div>
                 <span class="btn-option" v-bind:class="{'active' : details.show_short_description}" @click="toggleData('short-description')">
                     <i v-if="details.show_short_description" class="las la-check"></i>
                     {{$t('SHORT_DESCRIPTION')}}
@@ -63,8 +63,9 @@
                     <i v-if="details.show_locations" class="las la-check"></i>
                     {{$t('LOCATIONS')}}
                 </span>
+                </div>
             </div>
-            <div class="es-storyboard-content">
+            <div class="es-storyboard-content" id="custom-scrollbar">
                 <draggable v-model="chapters" group="chapters" draggable=".handle-chapters" class="es-storyboard-content-inner" :empty-insert-threshold="100" :scroll-sensitivity="500" :force-fallback="true" v-bind:class="{'minify': !full }">
                     <div v-for="chapter in chapters" v-bind:key="chapter.id" group="chapters" v-bind:class="{'view-list': chapter.view === 'list', 'view-minimize': chapter.view === 'minimize'}"  class="handle-chapters chapter-wrapper">
                         <div class="title" v-b-tooltip.hover v-bind:title="displayTitle(chapter.short_description)">
@@ -356,7 +357,7 @@ export default {
 .page-storyboard { position:relative; }
 
 .es-storyboard .tooltip { position:relative; background:red; z-index:9000 !important; }
-.es-storyboard-settings { text-align:right; background:#fff; border-bottom:1px solid #ccc; height:40px; line-height:40px; padding:0px 10px; }
+.es-storyboard-settings { display: flex; justify-content: space-between; flex-direction: row-reverse; text-align:right; background:#fff; border-bottom:1px solid #ccc; height:40px; line-height:40px; padding:0px 10px; }
 
 .es-storyboard-settings .btn-option { background:#dfe5ea; margin-right:5px; padding:5px 12px; color:#293742; font-size:12px; cursor:pointer; }
 .es-storyboard-settings .btn-option.active { padding-left:8px;  background:#293742; color:#fff; }
@@ -368,7 +369,7 @@ export default {
 .btn-view.view-list { left:177px; }
 .btn-view.view-minimize { left:206px; }
 
-.es-storyboard-content { background:#3e6684; padding:10px 15px; padding-top:30px; max-height:calc(100vh - 265px); overflow-y:scroll; }
+.es-storyboard-content { background:#3e6684; padding:10px 15px; padding-top:30px; max-height:calc(100vh - 283px); overflow-y:scroll; }
 .es-storyboard-content .chapter-wrapper { margin-top:50px; margin-bottom:50px; position:relative; border:3px solid #efce4a; padding:5px; }
 .es-storyboard-content .chapter-wrapper .title { text-align:center; background:#efce4a; color:#000; position:absolute; top:-30px; left:-3px; padding:3px 15px; width:150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .es-storyboard-content .scene-draggable { padding:0px 5px;  background:transparent; display:flex; flex-wrap: wrap; }

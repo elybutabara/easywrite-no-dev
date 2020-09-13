@@ -19,16 +19,16 @@
             </ul>
             <div class="row kj-row">
                 <div class="col-3 col-md-3 col-sm-12 kj-col fadeIn animated" v-for="location in locations" v-bind:key="location.id">
-                    <div class="es-card">
+                    <div class="es-card-2">
                         <div class="es-card-content">
                             <p class="title ellipsis-2">{{ location.location || 'Untitled' }}</p>
                             <div class="description ellipsis-2 text-italic display-webkit-box" v-if="location.description !== '' && location.description !== null" v-html="location.description"></div>
                             <div class="description text-italic display-webkit-box" v-else>{{$t('NO_DESCRIPTION')}}...</div>
                         </div>
                         <div class="es-card-footer">
-                            <button class="btn-"  @click="CHANGE_COMPONENT({tabKey: 'location-details-' + location.uuid, tabComponent: 'location-details', tabData: { book: book, location: location }, tabTitle:  $t('VIEW')+ ' - ' + location.location, newTab: true})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
-                            <button class="btn-" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + location.uuid, tabComponent: 'location-form', tabData: { book: book, location: location }, tabTitle: $t('EDIT')+ ' - ' + location.location, newTab: true})"><i class="las la-pencil-alt"></i> {{$t('EDIT').toUpperCase()}}</button>
-                            <button class="btn-delete"  @click="deleteLocation(location)"><i class="las la-trash-alt"></i> {{$t('DELETE').toUpperCase()}}</button>
+                            <a class="btn-sm-rounded btn-bc-default-shade btn-bg-faint-default" @click="CHANGE_COMPONENT({tabKey: 'location-details-' + location.uuid, tabComponent: 'location-details', tabData: { book: book, location: location }, tabTitle:  $t('VIEW')+ ' - ' + location.location, newTab: true})" href="javascript:void(0);"><i class="lar la-eye"></i> {{$t('VIEW')}}</a>
+                            <a class="btn-sm-rounded btn-bc-primary-shade btn-bg-faint-primary" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + location.uuid, tabComponent: 'location-form', tabData: { book: book, location: location }, tabTitle: $t('EDIT')+ ' - ' + location.location, newTab: true})" href="javascript:void(0);"><i class="las la-pencil-alt"></i> {{$t('EDIT')}}</a>
+                            <a class="btn-sm-rounded btn-bc-danger-shade btn-bg-faint-danger" @click="deleteLocation(location)" href="javascript:void(0);"><i class="las la-trash-alt"></i> {{$t('DELETE')}}</a>
                         </div>
                     </div>
                 </div>
