@@ -1,29 +1,28 @@
 <template>
   <div>
     <div class="page-location-form" v-if="page.is_ready">
-      <div class="es-page-head">
-        <div class="inner">
-          <div class="details">
-            <h4><strong>{{ course.title }}</strong></h4>
-          </div>
-          <div class="actions">
+      <div class="es-page-head-2 mb-0">
+        <div class="row-head">
+          <div>
+            <h4 class="main-title"><i class="fas fa-graduation-cap mr-1"></i> {{ course.title }}</h4>
           </div>
         </div>
       </div>
-      <div class="es-page-breadcrumbs">
-        <button @click="CHANGE_COMPONENT({tabKey: 'courses', tabIndex: $store.getters.getActiveTab, tabComponent: 'course-listing',  tabData: null, tabTitle: 'COURSE'})">{{ $t('COURSES') }}</button>
-        /
-        <button class="current">
-          <span>{{ course.title }}</span>
-        </button>
-      </div>
-      <div class="es-course-details-tab">
-        <div v-bind:class="{ 'active' : tab.active == 'lessons' }" @click="changeTab('lessons')" class="es-course-details-tab-item">{{ $t('LESSON').toUpperCase() }}</div>
-        <div v-bind:class="{ 'active' : tab.active == 'course-plan' }" @click="changeTab('course-plan')" class="es-course-details-tab-item">{{ $t('COURSE_PLAN').toUpperCase() }}</div>
-        <div v-bind:class="{ 'active' : tab.active == 'course-webinars' }" @click="changeTab('course-webinars')" class="es-course-details-tab-item">{{ $t('WEBINARS').toUpperCase() }}</div>
+      <div class="es-details-tab-wrapper">
+        <div class="es-details-tab">
+          <div v-bind:class="{ 'active' : tab.active == 'lessons' }" @click="changeTab('lessons')" class="es-details-tab-item">{{ $t('LESSON').toUpperCase() }}</div>
+          <div v-bind:class="{ 'active' : tab.active == 'course-plan' }" @click="changeTab('course-plan')" class="es-details-tab-item">{{ $t('COURSE_PLAN').toUpperCase() }}</div>
+          <div v-bind:class="{ 'active' : tab.active == 'course-webinars' }" @click="changeTab('course-webinars')" class="es-details-tab-item">{{ $t('WEBINARS').toUpperCase() }}</div>
+        </div>
+        <div>
+          <ul class="es-breadcrumb mb-0">
+            <li><a @click="CHANGE_COMPONENT({tabKey: 'courses', tabIndex: $store.getters.getActiveTab, tabComponent: 'course-listing',  tabData: null, tabTitle: 'COURSE'})"  href="javascript:void(0);">{{ $t('COURSES') }}</a></li>
+            <li><a href="javascript:void(0);" style="padding-right: 20px;">{{ course.title }}</a></li>
+          </ul>
+        </div>
       </div>
       <div class="es-course-details-content">
-        <div v-if="tab.active === 'lessons'"  class="es-course-details-tab-content">
+        <div v-if="tab.active === 'lessons'"  class="es-course-details-tab-content"  id="custom-scrollbar">
           <div class="lesson-list" v-if="lessons">
             <div class="lesson-single" v-for="lesson in lessons" :key="lesson.uuid">
               <div v-if="isLessonAvailable(lesson) || hasLessonAccess(lesson)">
@@ -49,7 +48,7 @@
             </div>
           </div>
         </div>
-        <div v-if="tab.active === 'course-plan'"  class="es-course-details-tab-content">
+        <div v-if="tab.active === 'course-plan'"  class="es-course-details-tab-content"  id="custom-scrollbar">
           <div class="cours-plan-details">
             <div class="basic-info">
               <img :src="course.picture_src">
@@ -64,7 +63,7 @@
             </div>
           </div>
         </div>
-        <div v-if="tab.active === 'course-webinars'"  class="es-course-details-tab-content">
+        <div v-if="tab.active === 'course-webinars'"  class="es-course-details-tab-content"  id="custom-scrollbar">
           <div class="webinar-list" v-if="webinars">
             <div class="webinar-single" @click.prevent="openExternalBrowser('https://attendee.gotowebinar.com/register/' + (webinar.gtwebinar_id ? webinar.gtwebinar_id : webinar.webinar_id))"  v-for="webinar in webinars" :key="webinar.id">
               <img v-bind:src="webinar.image_src">
