@@ -7,11 +7,14 @@ class CourseTakenController {
   static async getAllByUserId (param) {
     let courseTaken = CoursesTaken.query()
       .where('user_id', param.userID)
-      .withGraphJoined('package')
-      .withGraphJoined('course')
+      .withGraphJoined('package.course.lessons')
+      .withGraphJoined('package.course.webinars.webinar_presenters')
+      // .withGraphJoined('course')
+      .groupBy('package:course.id')
     if (param.limit) {
       courseTaken.limit(param.limit)
     }
+
     return courseTaken
   }
 

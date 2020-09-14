@@ -1,5 +1,6 @@
 // Mixins are a flexible way to distribute reusable functionalities for Vue components.
 import {isNull} from 'bootstrap-vue/esm/utils/inspect'
+import moment from 'moment'
 
 const electron = window.require('electron')
 const {ipcRenderer} = electron
@@ -292,6 +293,9 @@ export default {
       }
 
       return true
+    },
+    formatDate: function (date, format) {
+      return moment(date).format(format)
     }
   }
 }
