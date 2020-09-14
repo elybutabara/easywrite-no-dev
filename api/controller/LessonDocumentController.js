@@ -12,6 +12,7 @@ class LessonDocumentController {
     const courseTaken = await CoursesTaken.query()
       .withGraphJoined('course')
       .where('user_id', user.uuid)
+      .whereNotNull('course.uuid')
     // .whereNull('books.deleted_at')
     // .where('books.updated_at', '>', user.synced_at)
 

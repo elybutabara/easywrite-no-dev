@@ -5,8 +5,8 @@
 /* Main Structure */
 .page-main.dark .es-page-main { background: var(--thin-white); }
 .page-main.dark .es-page-head,
-.page-main.dark .es-page-head-2 { margin-bottom: 0;  }
-.page-main.dark .es-page-content { margin-top: 3px }
+.page-main.dark .es-page-head-2 { margin-bottom: 1px; }
+.page-main.dark .es-page-content { padding-top: calc(20px + 2px); }
 
 
 .page-main.dark .es-top-nav .nav-btn,
@@ -120,5 +120,5 @@
 .page-main.dark .es-breadcrumb li:last-child a { background: #fff; }
 .page-main.dark .es-breadcrumb li:last-child a:after { border-left-color: #fff; }
 
-.page-main.dark .es-breadcrumb.special li:last-child a { background: var(--thin-white); }
-.page-main.dark .es-breadcrumb.special li:last-child a:after { border-left-color: var(--thin-white); }
+/* es-card */
+.page-main.dark .es-card .es-card-footer { background: #fff; }
