@@ -127,7 +127,7 @@ export default {
     },
     showManuscript: function (assignment) {
       if (assignment.assignment_manuscript.is_file) {
-        let filePath = path.join(resourcePath, 'resources', 'files', 'assignment-manuscript', assignment.assignment_manuscript.content)
+        let filePath = path.join(resourcePath, 'resources', 'files', 'assignment-manuscripts', assignment.assignment_manuscript.content)
         shell.openItem(filePath)
       } else {
         let scope = this

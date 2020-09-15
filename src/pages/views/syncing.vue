@@ -522,12 +522,15 @@ export default {
                 var row = response.data.rows[i]
 
                 if (row.is_file) {
-                  const filename = row.content.split('/').pop()
+                  const loc = '/uploads/assignment-manuscripts/' // file location from web TODO: refactor web saving of assignment ,dont include path
+                  const filename = row.content.replace(loc, '') // file location from web TODO: refactor web saving of assignment ,dont include path
                   var src = window.APP.API.UPLOAD_URL + '/' + endpoint.title.replace(/\s+/g, '-').toLowerCase() + '/' + filename
 
-                  var dst = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), filename)
+                  var dst = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), row.content)
                   // Added by mael this will create the directory if not exist
-                  let dstDir = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase())
+
+                  // file location from web TODO: refactor web saving of assignment ,dont include path
+                  let dstDir = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), loc)
                   fs.mkdirsSync(dstDir)
 
                   // console.log('src = ', src)
