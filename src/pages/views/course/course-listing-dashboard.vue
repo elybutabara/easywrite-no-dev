@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import moment from 'moment'
+
 export default {
   name: 'course-listing-dashboard',
   data: function () {

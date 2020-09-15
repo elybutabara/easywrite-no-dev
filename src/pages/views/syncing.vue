@@ -522,12 +522,10 @@ export default {
                 var row = response.data.rows[i]
 
                 if (row.is_file) {
-                  // eslint-disable-next-line no-redeclare
-                  var src = window.APP.API.UPLOAD_URL + '/' + endpoint.title.replace(/\s+/g, '-').toLowerCase() + '/' + (row.content)
+                  const filename = row.content.split('/').pop()
+                  var src = window.APP.API.UPLOAD_URL + '/' + endpoint.title.replace(/\s+/g, '-').toLowerCase() + '/' + filename
 
-                  // eslint-disable-next-line no-redeclare
-                  var dst = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), row.content)
-
+                  var dst = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), filename)
                   // Added by mael this will create the directory if not exist
                   let dstDir = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase())
                   fs.mkdirsSync(dstDir)
