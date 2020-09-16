@@ -116,11 +116,11 @@ export default {
           scope.genres = response.data
         })
     },
-    getAssignments: function () {
+    getAssignments: async function () {
       var scope = this
       var userUUID = this.$store.getters.getUserID
 
-      scope.axios
+      await scope.axios
         .get('http://localhost:3000/assignments/' + userUUID, scope.data)
         .then(response => {
           scope.assignments = response.data
@@ -171,11 +171,16 @@ export default {
       })
     }
   },
-  mounted () {
+  async mounted () {
     var scope = this
 
-    scope.getGenre()
-    scope.getAssignments()
+    await scope.getGenre()
+    await scope.getAssignments()
+
+    scope.$root.$on('loadAssignment', async () => {
+      await scope.getGenre()
+      await scope.getAssignments()
+    })
   }
 }
 </script>
