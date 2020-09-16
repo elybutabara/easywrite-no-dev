@@ -282,6 +282,7 @@ export default {
       scope.packing.error = false
       // get the current pointed endpoint
       let endpoint = scope.endpoints[scope.packing.pointer]
+      if (!endpoint) return
       scope.progress_message = scope.$t('PACKING') + endpoint.title + '...'
 
       scope.axios.get('http://localhost:3000/' + endpoint.local + '/syncable',
