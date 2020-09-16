@@ -28,6 +28,9 @@ express.use(function (req, res, next) {
   next()
 })
 
+// TODO : refactor this , this path is based on WEB '/uploads/assignment-manuscripts' , if web is change better not save the path
+let webFileLocation = null
+
 // eslint-disable-next-line handle-callback-err
 const handleError = (err, res) => {
   res
@@ -57,6 +60,10 @@ const uploadedFile = multer({
   storage: multer.diskStorage({
     destination: (req, file, callback) => {
       let fileOf = req.params.fileOf
+
+      // TODO: this path is based on WEB '/uploads/assignment-manuscripts' , if web is change better not save the path
+      if (fileOf === 'assignment-manuscripts') webFileLocation = '/uploads/assignment-manuscripts/'
+
       // eslint-disable-next-line camelcase
       let file_path = path.resolve(resourcePath, 'resources', 'files', fileOf)
       fs.mkdirsSync(file_path)
@@ -162,8 +169,9 @@ express.post(
   uploadedFile.single('single-file' /* name attribute of <file> element in your form */),
   (req, res) => {
     const tempPath = req.file.path
-    const targetPath = req.file.destination// path.join(__dirname, "/app/public/images/${req.params.imgOf}/");
+    let targetPath = req.file.destination// path.join(__dirname, "/app/public/images/${req.params.imgOf}/");
 
+    if (webFileLocation) targetPath += webFileLocation
     // eslint-disable-next-line camelcase
     const file_ext = path.extname(req.file.originalname).toLowerCase()
 
@@ -171,12 +179,16 @@ express.post(
     const allowed_ext = ['.doc', '.docx', '.odt']
 
     if (allowed_ext.includes(file_ext)) {
+      const date = new Date()
       // eslint-disable-next-line camelcase
-      var new_file_name = uuid.v4() + file_ext
+      let new_file_name = date.getTime() + file_ext
 
       const newPath = path.join(targetPath, new_file_name)
       fs.rename(tempPath, newPath, err => {
         if (err) return handleError(err, res)
+
+        // eslint-disable-next-line camelcase
+        if (webFileLocation) new_file_name = webFileLocation + new_file_name
 
         res
           .status(200)

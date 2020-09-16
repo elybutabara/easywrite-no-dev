@@ -77,17 +77,18 @@ export default {
     'assignment-form': AssignmentForm
   },
   methods: {
-    formattedContent: function (assingment, is_fommated = true) {
+    formattedContent: function (assignment, is_formmated = true) {
       let scope = this
 
-      if (assingment.assignment_manuscript.is_file) {
+      if (assignment.assignment_manuscript.is_file) {
+        let file = assignment.assignment_manuscript.content.split('.')
         // eslint-disable-next-line camelcase
-        if (!is_fommated) {
-          return assingment.assignment_manuscript.content
+        if (is_formmated) {
+          file = scope.REMOVE_HTML(assignment.assignment_manuscript.content).split('/').pop()
+        } else {
+          file = scope.REMOVE_HTML(assignment.assignment_manuscript.content)
         }
-
-        let file = assingment.assignment_manuscript.content.split('.')
-        return file[0].substring(0, 16) + '...' + file[0].substring(file[0].length - 4) + '.' + file[1]
+        return file
       }
 
       return scope.$t('DETAILS')
