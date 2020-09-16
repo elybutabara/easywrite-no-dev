@@ -162,8 +162,8 @@ export default {
         window.swal.fire({
           position: 'center',
           icon: 'error',
-          title: 'Uploading Failed!',
-          text: 'Only .png, .jpeg, .jpg files are allowed!',
+          title: scope.$tc('Uploading Failed!'),
+          text: scope.$t('APPROVE_FILE_FORMATS_ARE') + '.png, .jpg, .jpeg' + scope.$tc('ALLOWED'),
           showConfirmButton: false,
           timer: 3000
         })

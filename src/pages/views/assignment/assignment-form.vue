@@ -34,6 +34,7 @@
                     <b-form-file
                       v-model="file"
                       :state="feedback.file.state"
+                      @change="file.is_change=true"
                       aria-describedby="input-live-help input-file-feedback"
                       id="file-default"
                       accept="application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
@@ -147,7 +148,8 @@ export default {
         },
         file: {
           state: null,
-          message: null
+          message: null,
+          is_change: null
         }
       },
       join_group: false,
@@ -216,7 +218,7 @@ export default {
           let validFileTypes = ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.oasis.opendocument.text']
           if (scope.file && !validFileTypes.includes(scope.file['type'])) {
             scope.file = []
-            scope.feedback.file.message = scope.$tc('Only .doc, .docx, .odt files are allowed!')
+            scope.feedback.file.message = scope.$t('APPROVE_FILE_FORMATS_ARE') + '.doc, .docx, .odt' + scope.$tc('ALLOWED')
             scope.feedback.file.state = false
             isValid = false
           }
@@ -236,7 +238,7 @@ export default {
           position: 'center',
           icon: 'error',
           title: scope.$tc('Uploading Failed!'),
-          text: scope.$tc('Only .doc, .docx, .odt files are allowed!'),
+          text: scope.$t('APPROVE_FILE_FORMATS_ARE') + '.doc, .docx, .odt' + scope.$tc('ALLOWED'),
           showConfirmButton: false,
           timer: 3000
         })
