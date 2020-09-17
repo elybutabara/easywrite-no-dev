@@ -317,7 +317,7 @@ export default {
         join_group: 0,
         words: 0
       }
-
+      scope.file = []
       scope.$set(scope.manuscript, 'assignment_id', assignment.uuid)
       scope.$set(scope.manuscript, 'user_id', scope.$store.getters.getUserID)
 
@@ -353,7 +353,7 @@ export default {
   .card-header .card-title { font-size: 1.25rem; margin-bottom: 0; line-height: 1.5; }
   .card-header .close { padding: 1rem; margin: -1rem -1rem -1rem auto; }
 
-  .b-overlay { position: fixed; top: 0; left: 0; bottom: 0; right: 0; overflow: auto; background-color: rgba(44, 46, 47, 0.9); }
+  .b-overlay {z-index: 1; position: fixed; top: 0; left: 0; bottom: 0; right: 0; overflow: auto; background-color: rgba(44, 46, 47, 0.9); }
   .bv-example-row { margin-top: 100px; margin-bottom: 70px; }
   .is_file { width: 50%!important; }
 </style>
