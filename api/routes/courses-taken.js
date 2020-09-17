@@ -37,12 +37,12 @@ router.post('/sync', async function (req, res) {
     .json(row)
 })
 
-router.get('/:courseId', async function (req, res) {
-  const courseTaken = await CourseTakenController.getByCourseId(req.params.courseId)
+router.get('/:courseTakenId', async function (req, res) {
+  const courseTaken = await CourseTakenController.getCourseTakenById(req.params.courseTakenId)
 
-  if (courseTaken.pictures) {
-    courseTaken.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'courses', course.pictures)
-  }
+  // if (courseTaken.pictures) {
+  //   courseTaken.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'courses', courseTaken.pictures)
+  // }
 
   res
     .status(200)

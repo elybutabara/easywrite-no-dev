@@ -28,6 +28,15 @@ class Course extends BaseModel {
         to: 'webinars.course_id'
       },
       softDelete: true
+    },
+    package: {
+      relation: BaseModel.HasManyRelation,
+      modelClass: path.join(__dirname, 'Package'),
+      join: {
+        from: 'courses.uuid',
+        to: 'packages.course_id'
+      },
+      softDelete: true
     }
   }
 }

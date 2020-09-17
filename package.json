@@ -15,7 +15,7 @@
     "lint": "eslint --ext .js,.vue src test/unit test/e2e/specs",
     "build": "node build/build.js",
     "postinstall": "electron-builder install-app-deps",
-    "migration-win": "cross-env NODE_ENV=development knex migrate:make create_webinar_presenters-%npm_package_version% --knexfile=./api/knexfile.js",
+    "migration-win": "cross-env NODE_ENV=development knex migrate:make create_webinar_registrants-%npm_package_version% --knexfile=./api/knexfile.js",
     "migration-mac-linux": "cross-env NODE_ENV=development knex migrate:make [ACTION_NAME]-$npm_package_name --knexfile=./api/knexfile.js",
     "dist": "cross-env IS_UPDATE=true npm run build",
     "publisher": "cross-env IS_PUBLISH=onTagOrDraft npm run build",

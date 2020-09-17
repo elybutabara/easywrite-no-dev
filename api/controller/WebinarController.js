@@ -14,6 +14,29 @@ class WebinarController {
     return webinars
   }
 
+  static async getAllByUserId (param) {
+    let webinars = Webinar.query()
+      .select('webinars.*', 'course:package:course_taken.id as course_taken_id', 'course:package:course_taken.uuid as course_taken_uuid', 'course:package:course_taken.end_date as course_taken_end_date')
+      .withGraphJoined('[webinar_presenters, webinar_registrant, course.package.course_taken]')
+      .where('course:package:course_taken.user_id', param.userID)
+      .where('webinar_registrant.user_id', param.userID)
+      .where('set_as_replay', 0)
+      .modifyGraph('course', builder => {
+        builder.orderBy('type', 'ASC')
+      })
+      .modifyGraph('webinar_registrant', builder => {
+        builder.limit(1).first()
+      })
+      .whereNull('webinars.deleted_at')
+      .orderBy('webinars.start_date', 'ASC')
+
+    if (param.limit) {
+      webinars.limit(param.limit)
+    }
+
+    return webinars
+  }
+
   static async getSyncable (userId) {
     const user = await User.query()
       .findById(userId)

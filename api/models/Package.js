@@ -18,16 +18,16 @@ class Package extends BaseModel {
         from: 'packages.course_id',
         to: 'courses.uuid'
       }
+    },
+    course_taken: {
+      relation: BaseModel.HasOneRelation,
+      modelClass: path.join(__dirname, 'CoursesTaken'),
+      join: {
+        from: 'packages.uuid',
+        to: 'courses_taken.package_id'
+      },
+      softDelete: true
     }
-    // scene_item: {
-    //   relation: BaseModel.HasManyRelation,
-    //   modelClass: path.join(__dirname, 'SceneItem'),
-    //   join: {
-    //     from: 'book_items.uuid',
-    //     to: 'book_scene_items.book_item_id'
-    //   },
-    //   softDelete: true
-    // }
   }
 }
 

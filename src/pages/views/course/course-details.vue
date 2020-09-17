@@ -65,17 +65,27 @@
         </div>
         <div v-if="tab.active === 'course-webinars'"  class="es-course-details-tab-content"  id="custom-scrollbar">
           <div class="webinar-list" v-if="webinars">
-            <div class="webinar-single" @click.prevent="openExternalBrowser('https://attendee.gotowebinar.com/register/' + (webinar.gtwebinar_id ? webinar.gtwebinar_id : webinar.webinar_id))"  v-for="webinar in webinars" :key="webinar.id">
+            <div class="webinar-single" v-for="webinar in webinars" :key="webinar.id">
               <img v-bind:src="webinar.image_src">
               <div class="details">
-                <strong class="ellipsis-1">{{ webinar.title }}</strong>
-                <p class="ellipsis-3" v-html="webinar.description"></p>
-                <div>
-                  {{ $t('PRESENTER') }}:
-                  <span class="webinar-badge" v-for="presenter in webinar.webinar_presenters" :key="presenter.id">
-                            {{ presenter.first_name }} {{ presenter.last_name }}
-                        </span>
+                <strong>{{ webinar.title }}</strong> <br>
+                <div class="date-started"><i class="far fa-calendar-alt"></i> {{ $t('STARTED_AT') }}: {{ formatDate(webinar.start_date, 'DD.MM.YYYY') }} {{ $t('CLOCKS') }} {{ formatDate(webinar.start_date, 'HH.mm') }}
                 </div>
+                <p class="ellipsis-3" v-html="webinar.description"></p>
+                <!--<div>
+                    {{ trans("site.presenter") }}:
+                    <span class="webinar-badge" v-for="presenter in getPresenter(webinar)" :key="presenter.id">
+                        {{ presenter.first_name }} {{ presenter.last_name }}
+                    </span>
+                </div>-->
+              </div>
+              <div class="card-footer p-0">
+                <template v-if="webinar.webinar_registrant">
+                  <a class="btn site-btn-global-w-arrow w-100 rounded-0"
+                     @click.prevent="openExternalBrowser(webinar.webinar_registrant.join_url)">
+                    {{ $t('SIGN_UP_TEXT') }}
+                  </a>
+                </template>
               </div>
             </div>
           </div>
@@ -237,6 +247,8 @@ export default {
       return this.properties.courses_taken.package.course.lessons
     },
     webinars: function () {
+      console.log('this.properties.courses_taken.package.course.webinars')
+      console.log(this.properties.courses_taken.package.course.webinars)
       return this.properties.courses_taken.package.course.webinars
     }
   },
@@ -277,9 +289,9 @@ export default {
   .es-course-details-tab-content.active { display:block; }
 
   .webinar-list { width:100%; max-width:1300px; padding:10px; margin:0px auto; display:flex; flex-wrap: wrap; justify-content: left; }
-  .webinar-list .webinar-single { cursor:pointer; width:calc(33.33% - 10px); background:#fff; border:1px solid #ccc; margin:0 5px 10px; }
+  .webinar-list .webinar-single { width:calc(33.33% - 10px); background:#fff; border:1px solid #ccc; margin:0 5px 10px; }
   .webinar-list .webinar-single img { width:100%; height:auto; height:200px; object-fit: cover; border-bottom:1px solid #ccc; }
-  .webinar-list .webinar-single .details { padding:10px; }
+  .webinar-list .webinar-single .details { padding:10px; height: 180px; }
   .webinar-list .webinar-single .webinar-badge { background:#ae2937; color:#fff; padding:2px 5px; border-radius:3px; margin-right:5px; font-size:12px; display:inline-block; }
 
   .lesson-list { width:100%; max-width:1300px; padding:10px; margin:0px auto; display:flex; flex-wrap: wrap; justify-content: left; }

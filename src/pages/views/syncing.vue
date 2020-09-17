@@ -203,7 +203,8 @@ export default {
         { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [] },
         { title: 'Assignment Manuscripts', api: 'assignment-manuscripts', local: 'assignment-manuscripts', downloaded: [], packed: [] },
         { title: 'Webinars', api: 'webinars', local: 'webinars', downloaded: [], packed: [] },
-        { title: 'WebinarPresenters', api: 'webinar-presenters', local: 'webinar-presenters', downloaded: [], packed: [] }
+        { title: 'WebinarPresenters', api: 'webinar-presenters', local: 'webinar-presenters', downloaded: [], packed: [] },
+        { title: 'WebinarRegistrants', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: [], packed: [] }
         // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
       ],
       bookUUID: ''
@@ -480,7 +481,7 @@ export default {
         .then(function (response) {
           // eslint-disable-next-line valid-typeof
           var data = response.data.rows
-          if (['Items', 'Characters', 'Locations', 'Webinars', 'WebinarPresenters'].indexOf(endpoint.title) > -1) {
+          if (['Items', 'Characters', 'Locations', 'Courses', 'Webinars', 'WebinarPresenters'].indexOf(endpoint.title) > -1) {
             // console.log(endpoint.title + ' response.data.rows ---->\n', response.data.rows)
 
             if (response.data && response.data.rows && response.data.rows.length > 0) {
@@ -499,10 +500,14 @@ export default {
                 fs.mkdirsSync(dstDir)
 
                 var folderName = window.APP.API.UPLOAD_URL + '/book-' + endpoint.title.toLowerCase()
-                if (['Webinars', 'WebinarPresenters'].indexOf(endpoint.title) > -1) {
+                if (['Webinars', 'Courses', 'WebinarPresenters'].indexOf(endpoint.title) > -1) {
                   folderName = window.APP.API.UPLOAD_URL + '/' + endpoint.title.toLowerCase()
 
                   image = image.replace('/uploads/' + endpoint.api + '/', '')
+                  if (endpoint.title === 'Courses') {
+                    folderName = window.APP.API.UPLOAD_URL + '/course-images'
+                    image = image.replace('/uploads/course-images/', '')
+                  }
                   console.log(endpoint.api)
                   console.log(image)
                 }
