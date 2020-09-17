@@ -20,21 +20,20 @@
           </div>
         </div>
 
-<!--        <div class="break"></div>-->
+        <div class="break"></div>
 
-          <!--<div class ="title">© Papermoon AS 2020</div>
-          <div class ="title">www.papermoon.no</div>
+          <div class ="title">© </div>
+          <div class ="title"></div>
           <br/>
-          <div class ="title">Trykk og innbinding: Livonia Print</div>
-          <div class ="title">Sats: Type-it AS, Trondheim 2020</div>
-          <div class ="title">Coverdesign: Marius Renberg</div>
+          <div class ="title">Trykk og innbinding: </div>
+          <div class ="title">Sats: </div>
+          <div class ="title">Coverdesign: </div>
           <br/>
-          <div class ="title">ISBN 978-82-690530-6-7</div>
+          <div class ="title">ISBN </div>
           <div class ="title">1. opplag</div>
           <br/>
           <div class ="title">Det er ikke tillatt å kopiere, videreformidle eller mangfoldiggjøresider eller utdrag fra boken uten etter skriftlig avtale med forlaget.</div>
-          -->
-          <!-- <div class="break"></div> -->
+           <div class="break"></div>
 
           <div v-if="chapters" class="rows-print-as-pages">
             <div v-bind:key="chapter.id" v-for="chapter in chapters">
