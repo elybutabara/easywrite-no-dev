@@ -736,7 +736,7 @@ export default {
       var scope = this
 
       scope.data.scene_version.content = scope.tempSceneVersionContent
-      scope.data.scene_version.comments = scope.commentbase_vm.getCommentsJSON()
+      scope.data.scene_version.comments = (scope.commentbase_vm) ? scope.commentbase_vm.getCommentsJSON() : null
       scope.data.notes = scope.tempSceneNotes
       scope.data.viewpoint_description = scope.tempViewpointDescription
       scope.data.chapter_id = (scope.selected_chapter !== 'undefined' && scope.selected_chapter !== null && scope.selected_chapter.uuid !== '-1') ? scope.selected_chapter.uuid : null
@@ -862,6 +862,7 @@ export default {
         content: scope.data.scene_version.content
       }
 
+      if (sceneHistory.content === '') return
       scope.axios
         .post('http://localhost:3000/book-scene-history', sceneHistory)
         .then(response => {

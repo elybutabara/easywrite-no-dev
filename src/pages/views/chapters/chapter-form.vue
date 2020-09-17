@@ -460,7 +460,7 @@ export default {
     saveChapter (noAlert) {
       var scope = this
       scope.data.chapter_version.content = scope.tempChapterVersionCont
-      scope.data.chapter_version.comments = scope.commentbase_vm.getCommentsJSON()
+      scope.data.chapter_version.comments = (scope.commentbase_vm) ? scope.commentbase_vm.getCommentsJSON() : null
 
       // If upon validation it return error do not save character and display errors
       if (!scope.validate()) {
@@ -550,6 +550,7 @@ export default {
         content: scope.data.chapter_version.content
       }
 
+      if (chapterHistory.content === '') return
       scope.axios
         .post('http://localhost:3000/book-chapter-history', chapterHistory)
         .then(response => {
