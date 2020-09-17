@@ -96,7 +96,6 @@ router.get('/:userID/courses', async function (req, res) {
   courses.forEach(function (course, index) {
     var file = path.join(resourcePath, 'resources', 'images', 'courses', course.package.course.image.replace('/uploads/course-images/', ''))
 
-    console.log(file)
     courses[index].package.course.picture_src = 'file://' + path.resolve('src', 'assets', 'img', 'default-image.jpg')
     if (electronFs.existsSync(file)) {
       courses[index].package.course.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'courses', course.package.course.image.replace('/uploads/course-images/', ''))
