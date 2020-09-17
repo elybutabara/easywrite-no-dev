@@ -72,7 +72,7 @@
 .page-main.dark .tox .tox-tbtn:hover { background:#495469; }
 .page-main.dark .tox .tox-edit-area__iframe { background:#3e4b64; }
 .page-main.dark .tox .tox-tbtn__select-label { color:#fff; }
-.page-main.dark .tox .tox-tbtn svg {}
+.page-main.dark .tox .tox-tbtn svg { }
 
 /* btn-tabs */
 .page-main.dark .btn-tabs .btn-tab { background: var(--thin-navy); color: #fff; }
@@ -95,19 +95,35 @@
 /* es general modules */
 .page-main.dark .es-wrapper  { background: var(--whiteblue); }
 
-/*.page-main.dark .btn-icon { color: #fff; }*/
+/* btn-icon */
 .page-main.dark .btn-icon span { color: var(--es-dark); }
-
+/* es-button */
+.page-main.dark .es-button { background: var(--navy); border-color: var(--navy); }
 .page-main.dark .es-button { background: var(--navy); border-color: var(--navy) }
+
+.page-main.dark .es-button.white-special { background: #fff; border-color: #fff; color: var(--navy); }
+.page-main.dark .es-button.white-special:hover { background: var(--es-darkblue); border-color:var(--es-darkblue); color: #fff; }
+
 .page-main.dark .es-button.white { color: var(--thin-navy); background: transparent; }
 .page-main.dark .es-button:hover { background: var(--thin-white); border-color: var(--thin-white); color: var(--navy); }
 .page-main.dark .btn-icon:hover { background: var(--thin-white); }
 
+/* feedback*/
+.page-main.dark .feedback-wrap .feedbacks .es-panel-body .feedback-single.done { background: var(--whiteblue); }
+.page-main.dark .feedback-wrap .feedbacks .es-panel-body .feedback-single { border-color: #eee; }
+.page-main.dark .feedback-wrap .feedbacks .foot { background: var(--navy); border-color: var(--navy); }
+.page-main.dark .feedback-wrap .es-panel-2 .es-panel-body,
+.page-main.dark .feedback-wrap .es-panel-sm .es-panel-body { background: var(--whitesh); border-color: var(--whitesh); }
+.page-main.dark .feedback-single .feedback-single-replies-wrap .feedback-single-replies .response-single { border-color: #eee; }
+/*btn feedback*/
+.page-main.dark .feedback-single.done .btn-feedback-marks.done,
+.page-main.dark .feedback-single.seen .btn-feedback-marks.seen { background: var(--navy); border-color: var(--navy); }
+.page-main.dark .feedback-wrap .btn-close-feedback { color: #fff; }
 /* es-panels */
 .page-main.dark .es-panel-2 { background: var(--whiteblue); border-color: var(--whiteblue); }
 
 .page-main.dark .es-panel-2 .es-panel-head,
-.page-main.dark .es-panel-sm .es-panel-head { background: var(--es-darkblue); border-color: var(--es-darkblue); color: #fff; }
+.page-main.dark .es-panel-sm .es-panel-head { background: var(--navy); border-color: var(--navy); color: #fff; }
 
 .page-main.dark .es-panel-2 .es-panel-body,
 .page-main.dark .es-panel-sm .es-panel-body { background: var(--whiteblue); border-color: var(--whiteblue); }

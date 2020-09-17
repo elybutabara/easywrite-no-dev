@@ -6,7 +6,7 @@
           <h5 class="mb-0">{{$t('COURSES')}}</h5>
         </div>
         <div class="col-md-6 text-right" v-if="courses_taken.length">
-          <a href="javascript:void(0)" class="es-button icon-right" @click="CHANGE_COMPONENT({tabKey: 'course-list', tabComponent: 'course-listing',  tabData: {}, tabTitle: $t('COURSES'), newTab: true})">
+          <a href="javascript:void(0)" class="es-button white-special icon-right" @click="CHANGE_COMPONENT({tabKey: 'course-list', tabComponent: 'course-listing',  tabData: {}, tabTitle: $t('COURSES'), newTab: true})">
             {{ $t('VIEW_ALL') }} <i class="fas fa-chevron-right"></i>
           </a>
         </div>
