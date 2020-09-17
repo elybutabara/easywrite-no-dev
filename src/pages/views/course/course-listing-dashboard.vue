@@ -99,7 +99,7 @@ export default {
   .uploaded-file-preview .default-preview i { font-size: 105px; line-height: 100px; opacity: 0.8; }
 
   .course-list { width:100%; max-width:1300px; padding:10px; margin:0px auto; display:flex; flex-wrap: wrap; justify-content: left; }
-  .course-list .course-item { width:calc(33.33% - 10px); background:#fff; border:1px solid #ccc; margin:0 5px 10px; }
+  .course-list .course-item { width:calc(50% - 10px); background:#fff; border:1px solid #ccc; margin:0 5px 10px; }
   .course-list .course-item img { width:100%; height:auto; height:200px; object-fit: cover; border-bottom:1px solid #ccc; }
   .course-list .course-item .details { padding:10px; min-height: 126px }
   .course-list .course-item .details p { height:96px; }
