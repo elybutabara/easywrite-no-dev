@@ -43,7 +43,7 @@
           </div>
         </div>
         <div style="position:relative;">
-        <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: scene, parent_name: 'scene' }"></Feedback>
+        <Feedback v-bind:class="{ 'show_feedbacks' : show_feedbacks }" :properties="{ book: book, parent: scene, parent_name: 'scene', toggleType: true }"></Feedback>
         <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">
             <div class="export-content">
               <b-button class="es-button btn-sm white" :disabled="exportOnProgress"  @click="exportContent()">

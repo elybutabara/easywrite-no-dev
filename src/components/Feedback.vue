@@ -1,79 +1,115 @@
 <template>
-<div style="z-index:3000;">
-    <div class="feedback-wrap">
-      <div class="feedbacks">
-        <div class="head">
-          Feedbacks
-          <select v-model="filter" v-if="$store.getters.getAuthorID === properties.book.author_id" style="position:absolute; top:7px; right:50px;">
-            <option value="all">All</option>
-            <option value="done">Done</option>
-            <option value="undone">Undone</option>
-          </select>
-          <span @click="$parent.toggleFeedbacks()" style="cursor:pointer; width:30px; height:30px; line-height:30px; text-align:center; position:absolute; background:#922c39; color:#fff; top:2px; right:5px;">X</span>
-        </div>
-        <div class="body">
-          <template @click="openFeedback(feedback)" v-for="feedback in feedbacks" >
-          <div :key="feedback.id"  v-if="isVisible(feedback)" v-bind:class="{'done' : feedback.is_done, 'seen' : feedback.is_seen }" class="feedback-single">
-            <div class="feedback-single-header">
-              <strong class="author" >{{ feedback.author.alias }}</strong>
-              <span class="date">{{ formatDate(feedback) }}</span>
-              <div v-if="$store.getters.getAuthorID === properties.book.author_id">
-                <span @click="toggleMark(feedback)" v-if="!feedback.is_done" style="cursor:pointer; font-size:12px; border:1px solid #ccc; border-radius:3px; padding:3px 5px; background:#fff;">Mark as Done</span>
-                <span @click="toggleMark(feedback)" v-else style="cursor:pointer; font-size:12px; border:1px solid #fff; border-radius:3px; padding:3px 5px; background:#5bd05d; color:#fff;">Mark as Undone</span>
+<div class="feedback-wrap" v-bind:class="{ 'feedback-wrap-fullview' : !properties.toggleType }">
+  <div class="es-panel-2 feedbacks">
+    <div class="es-panel-head d-flex justify-content-between">
+      <div class="d-flex algin-items-center"><h5>Feedbacks</h5></div>
+      <div class="d-flex">
+        <select v-model="filter" v-if="$store.getters.getAuthorID === properties.book.author_id" class="select-feedback-view">
+          <option value="all">All</option>
+          <option value="done">Done</option>
+          <option value="undone">Undone</option>
+        </select>
+        <a @click="$parent.toggleFeedbacks()" href="javascript:void(0);" class="btn-close-feedback"><i class="las la-arrow-circle-right"></i></a>
+      </div>
+    </div>
+    <div class="es-panel-body p-0 rounded-0" id="custom-scrollbar">
+      <template @click="openFeedback(feedback)" v-for="feedback in feedbacks" >
+        <div :key="feedback.id"  v-if="isVisible(feedback)" v-bind:class="{'done' : feedback.is_done, 'seen' : feedback.is_seen }" class="feedback-single">
+          <div class="feedback-single-header">
+            <div class="left">
+              <a class="es-avatar mr-2" href="javascript:void(0);">
+                <i class="las la-user"></i>
+              </a>
+            </div>
+            <div class="right w-100">
+              <div class="d-flex justify-content-between">
+                <div v-if="properties.toggleType" class="d-flex align-items-center mb-1">
+                  <a class="es-avatar" style="margin-right: 6px;" href="javascript:void(0);"><i class="las la-user"></i></a>
+                  <strong>{{ feedback.author.alias }}</strong>
+                </div>
+                <strong v-else class="author">
+                  {{ feedback.author.alias }}
+                </strong>
 
-                <span @click="toggleSeen(feedback)" v-if="!feedback.is_seen" style="cursor:pointer; font-size:12px; border:1px solid #ccc; border-radius:3px; padding:3px 5px; background:#fff;">Mark as Seen</span>
-                <span @click="toggleSeen(feedback)" v-else style="cursor:pointer; font-size:12px; border:1px solid #fff; border-radius:3px; padding:3px 5px; background:#5bd05d; color:#fff;">Mark Unseen</span>
+                <span class="date">{{ formatDate(feedback) }}</span>
               </div>
-            </div>
-            <div class="feedback-single-content-wrap" v-bind:class="{ 'open' : feedback.expand_content }">
-              <p @click="expandFeedbackContent(feedback)" class="message" v-bind:class="{ 'ellipsis-3' : !feedback.expand_content }" v-html="feedback.message"></p>
-              <div class="feedback-modify" v-if="$store.getters.getAuthorID === feedback.author_id">
-                <span @click="modifyFeedbackContent(feedback)">{{$t('EDIT')}}</span>
-                <span @click="deleteFeedbackContent(feedback)">{{$t('DELETE')}}</span>
+            
+              <div class="feedback-single-content-wrap" v-bind:class="{ 'open' : feedback.expand_content }">
+                <p @click="expandFeedbackContent(feedback)" class="message" v-bind:class="{ 'ellipsis-3' : !feedback.expand_content }" v-html="feedback.message"></p>
               </div>
-            </div>
-            <div class="feedback-single-replies-wrap " v-bind:class="{ 'open' : feedback.show_replies }">
-              <div class="feedback-single-replies-header ">
-                <span @click="openFeedback(feedback)">{{ feedback.feedback_responses.length }} Replies</span>
-              </div>
-              <div class="feedback-single-replies">
-              <div v-if="feedback.feedback_responses.length > 0" >
-                <div v-for="response in feedback.feedback_responses" :key="response.uuid" class="response-single">
-                  <div class="feedback-single-replies-content" v-bind:class="{ 'open' : response.expand_content }">
-                    <div class="feedback-response-single-header">
-                      <strong style="font-size:14px;" class="author" >{{ response.author.alias }}</strong>
-                      <span class="date">{{ formatDate(response) }}</span>
-                    </div>
-                    <p @click="expandFeedbackResponseContent(response)" class="message"  v-bind:class="{ 'ellipsis-3' : !response.expand_content }"  v-html="response.message"  style="font-size:14px;"></p>
-                    <div class="feedback-modify" v-if="$store.getters.getAuthorID === response.author_id">
-                      <span @click="modifyFeedbackResponseContent(feedback, response)">{{$t('EDIT')}}</span>
-                      <span @click="deleteFeedbackResponseContent(response)">{{$t('DELETE')}}</span>
-                    </div>
+
+              <div class="feedback-single-replies-header">
+
+                <div v-if="properties.toggleType" class="d-flex">
+                  <div class="d-flex"><a @click="openFeedback(feedback)" class="btn-feedback-option" href="javascript:void(0);"><i class="las la-reply"></i> {{ feedback.feedback_responses.length }} Replies</a></div>
+                  <div class="d-flex" v-if="$store.getters.getAuthorID === feedback.author_id">
+                    <a @click="modifyFeedbackContent(feedback)" class="btn-feedback-option" href="javascript:void(0);"><i class="las la-pencil-alt"></i></a>
+                    <a @click="deleteFeedbackContent(feedback)" class="btn-feedback-option" href="javascript:void(0);"><i class="las la-trash-alt"></i></a>
                   </div>
                 </div>
-              </div>
-              <div v-else style="padding:10px; text-align:center;">
-                No Response for this feedback yet.
-              </div>
-              <div class="" style="text-align:right;">
-                <form v-on:submit.prevent="sendReply(feedback)">
-                  <textarea style="width:100%;" type="text" v-model="feedback.reponse_text"></textarea>
-                  <button v-if="feedback_responses_uuid != null" type="submit" class="es-button-white">Update</button>
-                  <button v-else type="submit" class="es-button-white">Submit</button>
-                </form>
-              </div>
+                <div v-else class="d-flex">
+                  <div class="d-flex"><a @click="openFeedback(feedback)" class="btn-feedback-option" href="javascript:void(0);"><i class="las la-reply"></i> {{ feedback.feedback_responses.length }} Replies</a></div>
+                  <div class="d-flex" v-if="$store.getters.getAuthorID === feedback.author_id">
+                    <a @click="modifyFeedbackContent(feedback)" class="btn-feedback-option" href="javascript:void(0);"><i class="las la-pencil-alt" style="margin-right: 2px;"></i>{{$t('EDIT')}}</a>
+                    <a @click="deleteFeedbackContent(feedback)" class="btn-feedback-option" href="javascript:void(0);"><i class="las la-trash-alt" style="margin-right: 1px;"></i>{{$t('DELETE')}}</a>
+                  </div>
+                </div>
+
+                <div class="d-flex" v-if="$store.getters.getAuthorID === properties.book.author_id">
+                  <a @click="toggleMark(feedback)" v-if="!feedback.is_done" class="btn-feedback-marks mr-1" href="javascript:void(0);"><i class="las la-check-circle mr-1"></i> Mark as Done</a>
+                  <a @click="toggleMark(feedback)" v-else class="btn-feedback-marks done mr-1" href="javascript:void(0);"><i class="las la-times-circle mr-1"></i> Mark Undone</a>
+
+                  <a @click="toggleSeen(feedback)" v-if="!feedback.is_seen" class="btn-feedback-marks" href="javascript:void(0);"><i class="las la-eye mr-1"></i> Mark as Seen</a>
+                  <a @click="toggleSeen(feedback)" v-else class="btn-feedback-marks seen" href="javascript:void(0);"><i class="las la-eye-slash mr-1"></i> Mark Unseen</a>
+                </div>
               </div>
             </div>
           </div>
-          </template>
-        </div>
-        <div class="foot">
-          <textarea  type="text" v-model="message"></textarea>
-          <button v-if="feedback_uuid != null" @click="saveFeedback()" class="es-button-white">Update</button>
-          <button v-else @click="saveFeedback()" class="es-button-white">Submit</button>
+          <div class="feedback-single-replies-wrap" v-bind:class="{ 'open' : feedback.show_replies }">
+          <div class="feedback-single-replies">
+            <div v-if="feedback.feedback_responses.length > 0">
+              <div v-for="response in feedback.feedback_responses" :key="response.uuid" class="response-single">
+                <div class="feedback-single-replies-content" v-bind:class="{ 'open' : response.expand_content }">
+                  <div class="d-flex justify-content-between">
+                    <div class="d-flex align-items-center mb-1">
+                      <a class="es-avatar" style="margin-right: 6px;" href="javascript:void(0);"><i class="las la-user"></i></a>
+                      <strong>{{ response.author.alias }}</strong>
+                    </div>
+                    <span class="date">{{ formatDate(response) }}</span>
+                  </div>
+                  <p @click="expandFeedbackResponseContent(response)" class="message"  v-bind:class="{ 'ellipsis-3' : !response.expand_content }"  v-html="response.message"></p>
+                </div>
+                <div v-if="$store.getters.getAuthorID === response.author_id" class="d-flex">
+                  <a @click="modifyFeedbackResponseContent(feedback, response)" class="btn-feedback-option" href="javascript:void(0);"><i class="las la-pencil-alt"></i>{{$t('EDIT')}}</a>
+                  <a @click="deleteFeedbackResponseContent(response)" class="btn-feedback-option" href="javascript:void(0);"><i class="las la-trash-alt"></i>{{$t('DELETE')}}</a>
+                </div>
+              </div>
+            </div>
+            <div v-else class="d-flex justify-content-center" style="padding: 10px;">
+              <div class="no-response">
+                <i class="las la-comment-slash"></i> No Response for this feedback yet.
+              </div>
+            </div>
+            <div style="padding: 15px;">
+              <form v-on:submit.prevent="sendReply(feedback)" class="textarea-wrap">
+                <textarea style="width:100%;" type="text" v-model="feedback.reponse_text" placeholder="Write a reply.."></textarea>
+                <button v-if="feedback_responses_uuid != null" type="submit" class="send-icon"><i class="las la-paper-plane"></i></button>
+                <button v-else type="submit" class="send-icon"><i class="las la-paper-plane"></i></button>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
+      </template>
     </div>
+    <div class="foot">
+      <div class="textarea-wrap">
+        <textarea type="text" v-model="message" placeholder="Write your feedback here.."></textarea>
+        <a v-if="feedback_uuid != null" @click="saveFeedback()" class="send-icon" href="javascript:void(0);"><i class="las la-paper-plane"></i></a>
+        <a v-else @click="saveFeedback()" href="javascript:void(0);" class="send-icon"><i class="las la-paper-plane"></i></a>
+      </div>
+    </div>
+  </div>
 </div>
 </template>
 
@@ -313,32 +349,3 @@ export default {
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-  .feedback-modify {text-align: right;}
-  .feedback-wrap { position:absolute; top:0px; right:0px; z-index:9999; height:100%; overflow-y:auto; border-left:1px solid #ccc; background:#efefef; z-index:3000; width:480px; }
-  .feedback-wrap .feedbacks { position:relative; height:100%;}
-  .feedback-wrap .feedbacks .head {  position:relative; height:35px; line-height:35px; padding:0px 10px; background:#fff; border-bottom:1px solid #ccc; }
-  .feedback-wrap .feedbacks .body { height:calc(100% - 125px); overflow-y:auto; }
-  .feedback-wrap .feedbacks .body .feedback-single { background:#fafafa; border-bottom:1px solid #ccc; padding:0px 0px; padding-top:5px; }
-  .feedback-wrap .feedbacks .body .feedback-single.seen { background:#fff; }
-  .feedback-wrap .feedbacks .body .feedback-single.done { background:#d3eed8 !important; }
-  .feedback-wrap .feedbacks .body .feedback-single .date { margin:0px; font-size:11px; color:#888; float:right; }
-  .feedback-wrap .feedbacks .body .feedback-single .message { margin:0px; font-style:italic;}
-  .feedback-wrap .feedbacks .foot { background:#fff; position:absolute; bottom:0px; left:0px; width:100%; height:90px; border-top:1px solid #ccc; padding:8px 5px; }
-  .feedback-wrap .feedbacks .foot  textarea { width:100%; padding:5px; font-size:12px; }
-  .feedback-wrap .feedbacks .foot  button { float:right; }
-
-  .feedback-single .feedback-single-header { padding:5px 15px; }
-  .feedback-single .feedback-single-content-wrap { cursor:pointer; padding:5px 15px; max-height:70px; overflow:hidden; margin-bottom:10px; }
-  .feedback-single .feedback-single-content-wrap.open { max-height: none !important; }
-
-  .feedback-single .feedback-single-replies-wrap { background:#efefef; }
-  .feedback-single .feedback-single-replies-wrap .feedback-single-replies-header { border-bottom:1px solid #ccc; padding:5px 10px; text-align:right; font-size:12px; }
-  .feedback-single .feedback-single-replies-wrap .feedback-single-replies-header span { cursor:pointer; }
-  .feedback-single .feedback-single-replies-wrap .feedback-single-replies { padding:5px 10px; text-align:left; font-size:12px; display:none; }
-  .feedback-single .feedback-single-replies-wrap.open .feedback-single-replies { display:block; }
-  .feedback-single .feedback-single-replies-wrap .feedback-single-replies-content { cursor:pointer; max-height:75px; overflow:hidden; margin-bottom:10px; }
-  .feedback-single .feedback-single-replies-wrap .feedback-single-replies-content.open { max-height:none !important;  }
-</style>
