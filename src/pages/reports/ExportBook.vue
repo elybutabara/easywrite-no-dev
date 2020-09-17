@@ -20,9 +20,9 @@
           </div>
         </div>
 
-        <div class="break"></div>
+<!--        <div class="break"></div>-->
 
-          <div class ="title">© Papermoon AS 2020</div>
+          <!--<div class ="title">© Papermoon AS 2020</div>
           <div class ="title">www.papermoon.no</div>
           <br/>
           <div class ="title">Trykk og innbinding: Livonia Print</div>
@@ -33,7 +33,7 @@
           <div class ="title">1. opplag</div>
           <br/>
           <div class ="title">Det er ikke tillatt å kopiere, videreformidle eller mangfoldiggjøresider eller utdrag fra boken uten etter skriftlig avtale med forlaget.</div>
-
+          -->
           <!-- <div class="break"></div> -->
 
           <div v-if="chapters" class="rows-print-as-pages">
@@ -158,12 +158,24 @@ export default {
 
 </style>
 <style type="text/css">
-  .book-title12{
+@media print {
+  .rows-print-as-pages .es-panel{
+    page-break-after: always;
+  }
+  /* include this style if you want the first row to be on the same page as whatever precedes it */
+  .rows-print-as-pages:last-child {
+    page-break-after: avoid;
+  }
+  .rows-print-as-pages:first-child {
+    page-break-before: avoid;
+  }
+}
+
+  .book-title{
     page-break-after: always !important;
     page-break-inside:avoid;
-    border: 1px solid red;
   }
-  .test1 {
+  .book-title {
     page-break-before: always;
     clear: both
   }

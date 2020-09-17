@@ -10,7 +10,7 @@
             <button class="es-button btn-sm white" :disabled="getExportBookStatus.export_book_status"  @click="exportBook()">
               <span v-if="getExportBookStatus.export_book_status === false"><span>{{export_book}}</span></span>
               <span v-else>
-                <spinner small type="grow"></spinner>
+                <b-spinner small type="grow"></b-spinner>
                 <span>{{exportLoading}}</span>
               </span>
             </button>
