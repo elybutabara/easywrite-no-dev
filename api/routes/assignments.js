@@ -56,8 +56,6 @@ router.get('/:userId', async function (req, res) {
     }
   })
 
-  console.log(result)
-
   res
     .status(200)
     .json(result)

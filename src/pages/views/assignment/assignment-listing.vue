@@ -77,17 +77,18 @@ export default {
     'assignment-form': AssignmentForm
   },
   methods: {
-    formattedContent: function (assingment, is_fommated = true) {
+    formattedContent: function (assignment, is_formmated = true) {
       let scope = this
 
-      if (assingment.assignment_manuscript.is_file) {
+      if (assignment.assignment_manuscript.is_file) {
+        let file = assignment.assignment_manuscript.content.split('.')
         // eslint-disable-next-line camelcase
-        if (!is_fommated) {
-          return assingment.assignment_manuscript.content
+        if (is_formmated) {
+          file = scope.REMOVE_HTML(assignment.assignment_manuscript.content).split('/').pop()
+        } else {
+          file = scope.REMOVE_HTML(assignment.assignment_manuscript.content)
         }
-
-        let file = assingment.assignment_manuscript.content.split('.')
-        return file[0].substring(0, 16) + '...' + file[0].substring(file[0].length - 4) + '.' + file[1]
+        return file
       }
 
       return scope.$t('DETAILS')
@@ -115,11 +116,11 @@ export default {
           scope.genres = response.data
         })
     },
-    getAssignments: function () {
+    getAssignments: async function () {
       var scope = this
       var userUUID = this.$store.getters.getUserID
 
-      scope.axios
+      await scope.axios
         .get('http://localhost:3000/assignments/' + userUUID, scope.data)
         .then(response => {
           scope.assignments = response.data
@@ -127,7 +128,7 @@ export default {
     },
     showManuscript: function (assignment) {
       if (assignment.assignment_manuscript.is_file) {
-        let filePath = path.join(resourcePath, 'resources', 'files', 'assignment-manuscript', assignment.assignment_manuscript.content)
+        let filePath = path.join(resourcePath, 'resources', 'files', 'assignment-manuscripts', assignment.assignment_manuscript.content)
         shell.openItem(filePath)
       } else {
         let scope = this
@@ -170,11 +171,16 @@ export default {
       })
     }
   },
-  mounted () {
+  async mounted () {
     var scope = this
 
-    scope.getGenre()
-    scope.getAssignments()
+    await scope.getGenre()
+    await scope.getAssignments()
+
+    scope.$root.$on('loadAssignment', async () => {
+      await scope.getGenre()
+      await scope.getAssignments()
+    })
   }
 }
 </script>
