@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import moment from 'moment'
+// import moment from 'moment'
 import axios from 'axios'
 import { mapGetters } from 'vuex'
 import Feedback from '../../../components/Feedback'
