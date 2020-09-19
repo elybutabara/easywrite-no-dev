@@ -716,7 +716,6 @@ export default {
       var isValid = true
 
       scope.setFeedbackNull()
-      h
       // Check if title is empty and return error
       if (!scope.data.title) {
         scope.feedback.title.message = this.$t('TITLE') + ' ' + this.$t('IS_REQUIRED')
