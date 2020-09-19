@@ -3,7 +3,7 @@
     <div class="es-page-head-2 mb-0">
         <div class="row-head">
             <div>
-                <div  v-if="data.id != null">
+                <div v-if="data.id != null">
                     <h4>{{$t('EDIT')}}: <strong>{{ data.title }}</strong></h4>
                     <small>{{$t('DATE_MODIFIED')}}: {{ data.updated_at }}</small>
                 </div>
@@ -33,8 +33,8 @@
 
         <ul class="es-breadcrumb">
             <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
-            <li><a @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('CHAPTERS') }}</a></li>
-            <li><a @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + book.uuid, tabComponent: 'chapter-details', tabData: { book: book, chapter: chapter }, tabTitle: 'VIEW - ' + chapter.title})" href="javascript:void(0);">{{ chapter.title || 'Untitled' }}</a></li>
+            <li v-if="chapter"><a @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('CHAPTERS') }}</a></li>
+            <li v-if="chapter"><a @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + book.uuid, tabComponent: 'chapter-details', tabData: { book: book, chapter: chapter }, tabTitle: 'VIEW - ' + chapter.title})" href="javascript:void(0);">{{ chapter.title || 'Untitled' }}</a></li>
             <li><a href="javascript:void(0);" style="padding-right: 20px;">
                 <span>{{ (data.id) ? data.title || $t('Untitled') : $t('NEW_SCENE')}}</span>
             </a></li>
@@ -716,7 +716,7 @@ export default {
       var isValid = true
 
       scope.setFeedbackNull()
-
+      h
       // Check if title is empty and return error
       if (!scope.data.title) {
         scope.feedback.title.message = this.$t('TITLE') + ' ' + this.$t('IS_REQUIRED')
