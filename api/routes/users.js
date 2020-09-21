@@ -3,7 +3,7 @@ const path = require('path')
 const electronFs = require('fs')
 const express = require('express')
 const router = express.Router()
-
+const { app } = require('electron')
 const { UserController, BookController, ReaderController, CourseTakenController, WebinarController } = require(path.join(__dirname, '..', 'controllers'))
 
 router.get('/login', async function (req, res) {
@@ -96,7 +96,7 @@ router.get('/:userID/courses', async function (req, res) {
   courses.forEach(function (course, index) {
     var file = path.join(resourcePath, 'resources', 'images', 'courses', course.package.course.image.replace('/uploads/course-images/', ''))
 
-    courses[index].package.course.picture_src = 'file://' + path.resolve('src', 'assets', 'img', 'default-image.jpg')
+    courses[index].package.course.picture_src = 'file://' + path.resolve(app.getAppPath(), '../', 'src', 'assets', 'img', 'default-image.jpg')
     if (electronFs.existsSync(file)) {
       courses[index].package.course.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'courses', course.package.course.image.replace('/uploads/course-images/', ''))
     }
@@ -104,7 +104,7 @@ router.get('/:userID/courses', async function (req, res) {
     course.package.course.webinars.forEach(function (webinar, indx) {
       var web_file = path.join(resourcePath, 'resources', 'images', 'webinars', webinar.image.replace('/uploads/webinars/', ''))
 
-      courses[index].package.course.webinars[indx].image_src = 'file://' + path.resolve('src', 'assets', 'img', 'default-image.jpg')
+      courses[index].package.course.webinars[indx].image_src = 'file://' + path.resolve(app.getAppPath(), '../', 'src', 'assets', 'img', 'default-image.jpg')
       if (electronFs.existsSync(web_file)) {
         courses[index].package.course.webinars[indx].image_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'webinars', webinar.image.replace('/uploads/webinars/', ''))
       }
@@ -130,7 +130,7 @@ router.get('/:userID/webinars', async function (req, res) {
   webinars.forEach(function (webinar, indx) {
     var web_file = path.join(resourcePath, 'resources', 'images', 'webinars', webinar.image.replace('/uploads/webinars/', ''))
 
-    webinars[indx].image_src = 'file://' + path.resolve('src', 'assets', 'img', 'default-image.jpg')
+    webinars[indx].image_src = 'file://' + path.resolve(app.getAppPath(), '../', 'src', 'assets', 'img', 'default-image.jpg')
     if (electronFs.existsSync(web_file)) {
       webinars[indx].image_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'webinars', webinar.image.replace('/uploads/webinars/', ''))
     }
