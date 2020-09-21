@@ -351,9 +351,19 @@ export default {
 
     ipcRenderer.on('SHOW-SWAL-SUCCESS-EXPORTING', function (event, data) {
       window.swal.fire({
-        icon: 'success',
         title: scope.$t('SUCCESSFULY_EXPORTED_TO'),
-        text: data
+        text: data,
+        icon: 'success',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        // cancelButtonColor: '#dd3333',
+        confirmButtonText: scope.$tc('OPEN_FILE'),
+        cancelButtonText: scope.$t('CLOSE')
+      }).then((result) => {
+        if (result.value) {
+          // data == path
+          shell.openItem(data)
+        }
       })
     })
 
