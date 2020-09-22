@@ -250,5 +250,6 @@ export default {
   YES_DELETE_IT: 'Yes, delete it!',
   YOU_WONT_BE_ABLE_TO_REVERT_THIS: 'You won\'t be able to revert this',
   YOUR_CURRENT_CONTENT_WILL_BE_OVERWRITTERN: 'Your current content will be overwritten',
-  YOUR_POMODORO_EXPIRES: 'Your Pomodoro Expires'
+  YOUR_POMODORO_EXPIRES: 'Your Pomodoro Expires',
+  OPEN_FILE: 'Open File'
 }
