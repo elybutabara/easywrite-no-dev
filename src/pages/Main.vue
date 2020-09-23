@@ -17,9 +17,9 @@
                           <i class="fas fa-home"></i>
                           <span>{{ $t('DASHBOARD') }}</span>
                       </a>
-                      <a @click="CHANGE_COMPONENT({tabKey: 'webinar-listing', tabComponent: 'webinar-listing',  tabData: null, tabTitle: $t('Webinars')})" v-bind:class="{'active' : tabs.items[0].component == 'webinar-listing'}" href="javascript:void(0)" class="nav-btn webinars">
+                      <a @click="CHANGE_COMPONENT({tabKey: 'webinar-listing', tabComponent: 'webinar-listing',  tabData: null, tabTitle: $t('WEBINARS')})" v-bind:class="{'active' : tabs.items[0].component == 'webinar-listing'}" href="javascript:void(0)" class="nav-btn webinars">
                           <i class="fas fa-headset"></i>
-                          <span>{{ $t('Webinars') }}</span>
+                          <span>{{ $t('WEBINARS') }}</span>
                       </a>
                       <a @click="CHANGE_COMPONENT({tabKey: 'note-listing', tabComponent: 'note-listing',  tabData: null, tabTitle: $t('NOTES')})" v-bind:class="{'active' : tabs.items[0].component == 'note-listing'}" href="javascript:void(0)" class="nav-btn notes">
                           <i class="fas fa-sticky-note"></i>
@@ -44,7 +44,7 @@
                         <input @click="$store.commit('toggleTheme')" type="checkbox" checked>
                         <span class="slider round"></span>
                       </label>
-                      <label class="text">Dark Mode</label>
+                      <label class="text">{{ $t('DARK_MODE') }}</label>
                     </div>
                   </a>
                   <a href="javascript:void(0)">

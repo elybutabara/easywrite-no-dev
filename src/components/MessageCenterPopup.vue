@@ -2,20 +2,20 @@
   <div>
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold">Message Center</h6>
+        <h6 class="m-0 font-weight-bold">{{$t('MESSAGE_CENTER')}}</h6>
       </div>
       <div style="padding: 0 20px;">
-        <a href="#" v-on:click.prevent="type = 'All'">All ({{ itemsCounts['Message'] + itemsCounts['Notification']}})</a> |
-        <a href="#" v-on:click="openMessage(null, $event)">Messages ({{itemsCounts['Message']}})</a> |
-        <a href="#" v-on:click.prevent="type = 'Notification'">Notifications ({{itemsCounts['Notification']}})</a>
+        <a href="#" v-on:click.prevent="type = 'All'">{{$t('ALL')}} ({{ itemsCounts['Message'] + itemsCounts['Notification']}})</a> |
+        <a href="#" v-on:click="openMessage(null, $event)">{{$t('MESSAGES')}} ({{itemsCounts['Message']}})</a> |
+        <a href="#" v-on:click.prevent="type = 'Notification'">{{$t('NOTIFICATIONS')}} ({{itemsCounts['Notification']}})</a>
         <div style="float: right;">
-          <button v-on:click="openMessage(null, $event)" class="btn btn-default" style="height: 24px; line-height: 24px; text-transform: none;">New Message</button>
+          <button v-on:click="openMessage(null, $event)" class="btn btn-default" style="height: 24px; line-height: 24px; text-transform: none;">{{$t('NEW_MESSAGE')}}</button>
         </div>
       </div>
       <div class="card-body" style="padding: 0;">
         <div style="overflow-y: auto; max-height: calc(100vh - 266px);">
           <div v-if="rows.length < 1" style="text-align: center; padding: 30px 0; opacity: 0.5;">
-            Empty
+            {{$t('EMPTY')}}
           </div>
           <div v-for="(row, i) in rows" v-bind:key="'mcp-key-'+i" style="padding: 10px; border-top: 1px solid #e3e6f0; clear: both;" v-bind:style="{backgroundColor: row.is_seen?'#fff':'rgb(245, 248, 250)'}">
             <div v-bind:style="{'background-image': 'url(@/assets/img/blank-profile-picture.png)'}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #c0c0c0; float: left;"></div>
@@ -25,19 +25,19 @@
                 <div v-html="row.data.message" v-on:click="openMessage(3)"></div>
               </div>
               <div v-if="row.type === 'SceneComment'">
-                Commented on scene <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.scene_title }}</a>
+                {{$t('COMMENTED_ON_SCENE')}} <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.scene_title }}</a>
               </div>
               <div v-if="row.type === 'ChapterComment'">
-                Commented on chapter <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.chapter_title }}</a>
+                {{$t('COMMENTED_ON_CHAPTER')}} <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.chapter_title }}</a>
               </div>
               <div v-if="row.type === 'FeedbackBook'">
-                Left a feedback on book <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.book.title }}</a>
+                {{$t('LEFT_A_FEEDBACK_ON_BOOK')}} <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.book.title }}</a>
               </div>
               <div v-if="row.type === 'FeedbackChapter'">
-                Left a feedback on chapter <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.chapter.title }}</a>
+                 {{$t('LEFT_A_FEEDBACK_ON_CHAPTER')}} <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.chapter.title }}</a>
               </div>
               <div v-if="row.type === 'FeedbackScene'">
-                Left a feedback on scene <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.scene.title }}</a>
+                {{$t('LEFT_A_FEEDBACK_ON_SCENE')}} <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.scene.title }}</a>
               </div>
               <div style="font-size: 80%; line-height: 100%; opacity: 0.5;">{{displayTime(row.created_at)}}</div>
             </div>

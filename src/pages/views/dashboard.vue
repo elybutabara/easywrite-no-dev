@@ -6,10 +6,10 @@
           <h4 class="main-title">{{$t('WELCOME')}} {{ getAuthorName }}!</h4>
           <!-- <small>Last Login: January 01, 2020</small> -->
           <div class="d-flex">
-            <a class="btn-icon small" href="#hashtagCourses"><span><i class="las la-atom"></i></span>Courses</a>
-            <a class="btn-icon small" href="#hashtagAssignments"><span><i class="las la-laptop"></i></span>Assignments</a>
+            <a class="btn-icon small" href="#hashtagCourses"><span><i class="las la-atom"></i></span>{{$t('COURSES')}}</a>
+            <a class="btn-icon small" href="#hashtagAssignments"><span><i class="las la-laptop"></i></span>{{$t('ASSIGNMENTS')}}</a>
             <a class="btn-icon small" href="#hashtagPromodoro"><span><i class="las la-user-clock"></i></span>Pomodoro</a>
-            <a class="btn-icon small" href="#hashtagAbout"><span><i class="las la-feather-alt"></i></span>About</a>
+            <a class="btn-icon small" href="#hashtagAbout"><span><i class="las la-feather-alt"></i></span>{{$t('ABOUT')}}</a>
           </div>
       </div>
     </div>
@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <div class="es-wrapper es-panel promodoro-timer">
-                    <h4>POMODORO TIMER</h4>
+                    <h4>{{ $t('POMODORO_TIMER') }}</h4>
                     <span class="time">{{ setPomodoroMinutes(pmdtimer.pmd_min) }}:{{ setPomodoroSeconds(pmdtimer.pmd_sec) }}</span>
                     <div>
                         <b-form-group label="Set Pomodoro:">
@@ -63,8 +63,8 @@
                     <i class="las la-hands-helping"></i>
                   </div>
                   <div class="ml-20px">
-                    <h4>Your literary family</h4>
-                    <p class="mb-0">Do you want specific feedback on your text? Pilot Reader is a unique network where you can meet people who are interested in your project and experience with your genre. The service is free, secure and you can be completely anonymous.</p>
+                    <h4>{{ $t('YOUR_LITERARY_FAMILY') }}</h4>
+                    <p class="mb-0">{{ $t('DO_YOU_WANT_SPECIFIC_FEEDBACK_ON_YOUR_TEXT') }} {{ $t('PILOT_READER_IS_A_UNIQUE_NETWORK_WHERE_YOU_CAN_MEET_PEOPLE_WHO_ARE_INTERESTED_IN_YOUR_PROJECT') }} {{ $t('AND_EXPERIENCE_WITH_YOUR_GENRE') }} {{ $t('THE_SERVICE_IS_FREE_SECURE_AND_YOU_CAN_BE_COMPLETELY_ANONYMOUS') }}</p>
                   </div>
                 </div>
                 <div class="blurb-left work">
@@ -72,8 +72,8 @@
                     <i class="las la-chess-knight"></i>
                   </div>
                   <div class="ml-20px">
-                    <h4>How does this work?</h4>
-                    <p class="mb-0">Pilot Reader is a unique system where you can share your own texts for review, read and review other people's texts, or both.</p>
+                    <h4>{{ $t('HOW_DOES_THIS_WORK') }}</h4>
+                    <p class="mb-0">{{ $t('PILOTREADER_IS_A_UNIQUE_SYSTEM_WHERE_YOU_CAN_SHARE_YOUR_TEXT_FOR_REVIEW') }} {{ $t('READ_AND_REVIEW_OTHER_PEOPLES_TEXTS_OR_BOTH') }}</p>
                   </div>
                 </div>
                 <div class="blurb-left pilot mb-0">
@@ -81,8 +81,8 @@
                       <i class="las la-book-reader"></i>
                   </div>
                   <div class="ml-20px">
-                    <h4>About Pilot Reader</h4>
-                    <p class="mb-0">Pilot reader is under the umbrella of the Writers' School, and thus part of the literary family.</p>
+                    <h4>{{ $t('ABOUT_PILOT_READER') }}</h4>
+                    <p class="mb-0">{{ $t('PILOT_READER_IS_UNDER_THE_UMBELLA_OF_THE_WRITERS_SCHOOL') }} {{ $t('AND_THUS_PART_OF_THE_LITERARY_FAMILY') }}</p>
                   </div>
                 </div>
               </div>
