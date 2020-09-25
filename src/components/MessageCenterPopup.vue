@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="card shadow mb-4">
-      <div class="card-header py-3">
+      <div class="card-header p-15px">
         <h6 class="m-0 font-weight-bold">Message Center</h6>
       </div>
-      <div style="padding: 0 20px;">
+      <div class="p-15px">
         <a href="#" v-on:click.prevent="type = 'All'">All ({{ itemsCounts['Message'] + itemsCounts['Notification']}})</a> |
         <a href="#" v-on:click="openMessage(null, $event)">Messages ({{itemsCounts['Message']}})</a> |
         <a href="#" v-on:click.prevent="type = 'Notification'">Notifications ({{itemsCounts['Notification']}})</a>

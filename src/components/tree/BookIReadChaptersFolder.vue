@@ -2,15 +2,28 @@
     <li v-if="component.is_ready" v-bind:class="{ 'open' : $store.getters.isBookIReadChaptersFolderOpen({author_id: authorUUID, book: book }) }">
         <div @click="TOGGLE_BOOK_I_READ(book,'chapters')" class="label">
             <span>
-                <img v-if="$store.getters.isBookIReadChaptersFolderOpen({author_id: authorUUID, book: book })" src="@/assets/img/icons/folder-open.svg">
-                <img v-else src="@/assets/img/icons/folder.svg">
-                {{ $t('CHAPTERS') }}
+              <span v-if="$store.getters.isBookIReadChaptersFolderOpen({author_id: authorUUID, book: book })">
+                  <i class="fas fa-chevron-down"></i>
+                  <i class="fas fa-folder-open"></i>
+              </span>
+              <span v-else>
+                <i class="fas fa-chevron-right"></i>
+                <i  class="fas fa-folder"></i>
+              </span>
+              {{ $t('CHAPTERS') }}
             </span>
         </div>
         <draggable tag="ul" v-model="chapters" draggable=".none" class="level-3">
             <li v-bind:class="{ 'open' : $store.getters.isBookIReadChaptersFolderOpen({author_id: authorUUID, book: book }) }" v-bind:key="chapter.id" v-for="chapter in chapters" class="handle ellipsis-2">
-                <div @click="toggleChapter(chapter)" class="label"><span><img  src="@/assets/img/icons/chapter.svg"> {{ chapter.title }}</span></div>
-                <book-i-read-chapter-scenes-folder v-if="chapter.is_open" :key="'tree-chapter-scenes-' + chapter.uuid" :properties="{book: book, chapter: chapter}"></book-i-read-chapter-scenes-folder>
+              <div @click="toggleChapter(chapter)" class="label">
+                <span>
+                  <span>
+                    <i class="fas fa-bookmark"></i>
+                  </span>
+                </span>
+                <span> {{ chapter.title }}</span>
+              </div>
+              <book-i-read-chapter-scenes-folder v-if="chapter.is_open" :key="'tree-chapter-scenes-' + chapter.uuid" :properties="{book: book, chapter: chapter}"></book-i-read-chapter-scenes-folder>
             </li>
         </draggable>
     </li>

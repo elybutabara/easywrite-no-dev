@@ -97,6 +97,12 @@
 
 /* btn-icon */
 .page-main.dark .btn-icon span { color: var(--es-dark); }
+
+/* btn-icon-2 */
+.page-main.dark .btn-icon-2   { background: var(--navy); }
+.page-main.dark .btn-icon-2 i { color: #fff; }
+.page-main.dark .btn-icon-2 span { color: #fff; }
+
 /* es-button */
 .page-main.dark .es-button { background: var(--navy); border-color: var(--navy); }
 .page-main.dark .es-button { background: var(--navy); border-color: var(--navy) }
@@ -121,6 +127,10 @@
 .page-main.dark .feedback-wrap .btn-close-feedback { color: #fff; }
 /* es-panels */
 .page-main.dark .es-panel-2 { background: var(--whiteblue); border-color: var(--whiteblue); }
+/*messaging*/
+.page-main.dark .messaging .es-panel-2 { background: transparent; }
+.page-main.dark .messaging .es-panel-2 .es-panel-head { background: var(--navy); border-color: var(--thin-navy); }
+.page-main.dark .messaging .es-panel-2 i { color: #fff; }
 
 .page-main.dark .es-panel-2 .es-panel-head,
 .page-main.dark .es-panel-sm .es-panel-head { background: var(--navy); border-color: var(--navy); color: #fff; }

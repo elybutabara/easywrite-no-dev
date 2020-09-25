@@ -15,7 +15,7 @@
               </span>
             </button>
             <button class="es-button btn-sm white" @click="getImport()">{{ $t('IMPORT_MULTIPLE_CHAPTERS') }}</button>
-            <a class="es-button icon-only warning" href="#hashtagFeedbacks"><i class="las la-comments"></i><!--{{$t('FEEDBACKS').toUpperCase()}}--></a>
+            <a class="es-button icon-only warning" href="#goToFeedbacks"><i class="las la-comments"></i><!--{{$t('FEEDBACKS').toUpperCase()}}--></a>
             <button class="es-button icon-only" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: $t('EDIT') + ' - ' + properties.title, newTab: true})"><i class="las la-highlighter"></i></button>
             <button class="es-button icon-only danger" @click="deleteBook()"><i class="las la-trash-alt"></i></button>
           </div>
@@ -30,11 +30,13 @@
       </div>
     </div>
     <div class="es-page-content" id="custom-scrollbar">
-        <div>
+        <div class="mb-5">
             <h4>{{ $t('ABOUT') }}</h4>
             <div v-html="properties.about"></div>
         </div>
-        <Feedback :properties="{ book: properties, parent: properties, parent_name: 'book', toggleType: false }"></Feedback>
+        <div id="goToFeedbacks">
+          <Feedback :properties="{ book: properties, parent: properties, parent_name: 'book', toggleType: false }"></Feedback>  
+        </div>
     </div>
 </div>
 </template>

@@ -2,15 +2,15 @@
     <li v-if="component.is_ready" v-bind:class="{ 'open' : $store.getters.isBookChaptersFolderOpen(book) }">
         <div @click="TOGGLE_BOOK(book,'chapters')" class="label">
             <span>
-                <span v-if="$store.getters.isBookChaptersFolderOpen(book)">
-                  <i class="fas fa-chevron-down"></i>
-                  <i class="fas fa-folder-open"></i>
-                </span>
-                <span v-else>
-                  <i class="fas fa-chevron-right"></i>
-                  <i  class="fas fa-folder"></i>
-                </span>
-                {{ $t('CHAPTERS') }}
+              <span v-if="$store.getters.isBookChaptersFolderOpen(book)">
+                <i class="fas fa-chevron-down"></i>
+                <i class="fas fa-folder-open"></i>
+              </span>
+              <span v-else>
+                <i class="fas fa-chevron-right"></i>
+                <i  class="fas fa-folder"></i>
+              </span>
+              {{ $t('CHAPTERS') }}
             </span>
         </div>
         <draggable tag="ul" v-model="chapters" draggable=".handle" class="level-3">

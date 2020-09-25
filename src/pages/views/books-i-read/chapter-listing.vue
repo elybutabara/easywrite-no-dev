@@ -1,10 +1,10 @@
 <template>
-<div v-if="page.is_ready" class="page-chapter-listing">
-    <div class="es-page-head">
-        <div class="inner">
-            <div class="details">
-                <h4>{{ book.title }}</h4>
-                <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ book.title }}</small>
+<div v-if="page.is_ready" class="es-page-main page-chapter-listing">
+    <div class="es-page-head-2">
+        <div class="row-head">
+            <div>
+              <h4 class="main-title"><i class="fas fa-folder mr-1"></i> {{ book.title }}</h4>
+              <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ book.title }}</small>
             </div>
         </div>
     </div>
@@ -13,16 +13,15 @@
         /
         <button class="current">{{ $t('CHAPTERS') }}</button>
     </div> -->
-    <div class="es-page-content">
+    <div class="es-page-content" id="custom-scrollbar">
+      
         <ul class="es-breadcrumb">
             <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'books-i-read-book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
-            <li><a href="javascript:void(0);" style="padding-right: 20px;">
-                <span>{{$t('CHAPTERS')}}</span>
-            </a></li>
+            <li><a href="javascript:void(0);" style="padding-right: 20px;">{{$t('CHAPTERS')}}</a></li>
         </ul>
 
-        <draggable v-model="chapters" draggable=".none" class="es-row">
-        <div class="es-col fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
+        <draggable v-model="chapters" draggable=".none" class="row kj-row">
+        <div class="col-md-4 col-sm-12 kj-col fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
             <div class="es-card">
                 <div class="es-card-content">
                     <div class="es-card-actions">
