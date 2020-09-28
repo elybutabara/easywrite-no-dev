@@ -292,5 +292,6 @@ export default {
   YES_DELETE_IT: 'Ja, radera det!',
   YOU_WONT_BE_ABLE_TO_REVERT_THIS: 'Du kommer inte att kunna återställa detta',
   YOUR_CURRENT_CONTENT_WILL_BE_OVERWRITTERN: 'Ditt nuvärande innehåll kommer att skrivas över',
-  YOUR_POMODORO_EXPIRES: 'Tiden har gått ut'
+  YOUR_POMODORO_EXPIRES: 'Tiden har gått ut',
+  OPEN_FILE: 'Öppna fil'
 }

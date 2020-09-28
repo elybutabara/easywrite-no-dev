@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="book-panel-right">
-                <button ref="button" class="es-button btn-sm white" :disabled="version_modal_is_open" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
+                <button ref="button" v-show="data.id != null" class="es-button btn-sm white" :disabled="version_modal_is_open" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
                 <button v-if="data.id != null" class="es-button btn-sm white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
                 <button v-if="data.id != null" class="es-button btn-sm white" @click="saveChapter()">{{$t('SAVE_CHANGES')}}</button>
                 <button v-else class="es-button btn-sm white" @click="saveChapter()">{{$t('SAVE')}}</button>
@@ -136,7 +136,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12" v-show="data.id != null">
                                 <small>The chapter will be autosaved every ten seconds</small>
                                 <small v-if="!do_auto_save" class="text-red"> | Saving ...</small>
                             </div>

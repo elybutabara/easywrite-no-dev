@@ -328,6 +328,7 @@ export default {
       }
 
       var endpoint = scope.endpoints[scope.upload.pointer]
+      if (!endpoint) return
       if (typeof endpoint.packed === 'undefined' || endpoint.packed.length < 1) {
         scope.upload.pointer++
         scope.upload.index = 0
@@ -464,6 +465,7 @@ export default {
 
       // get the current pointed endpoint
       let endpoint = scope.endpoints[scope.download.pointer]
+      if (!endpoint) return
       scope.progress_message = scope.$t('DOWNLOADING') + ' ' + endpoint.title + '...'
 
       //
@@ -598,6 +600,7 @@ export default {
       }
 
       var endpoint = scope.endpoints[scope.saving.pointer]
+      if (!endpoint) return
       scope.progress_message = scope.$t('SAVING') + ' ' + endpoint.title + scope.$t('DATA') + '...'
       scope.progress_message = scope.$t('SAVING') + ' ' + endpoint.title + scope.$t('DATA') + '(' + scope.saving.index + ' ' + scope.$t('OF') + ' ' + (endpoint.downloaded.length + 1) + ')...'
 

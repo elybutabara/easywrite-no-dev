@@ -1,5 +1,6 @@
 'use strict'
 const path = require('path')
+const { app } = require('electron')
 const electronFs = require('fs')
 const express = require('express')
 const router = express.Router()
@@ -43,7 +44,7 @@ router.get('/:courseTakenId', async function (req, res) {
 
   var file = path.join(resourcePath, 'resources', 'images', 'courses', courseTaken.package.course.image.replace('/uploads/course-images/', ''))
 
-  courseTaken.package.course.picture_src = 'file://' + path.resolve('src', 'assets', 'img', 'default-image.jpg')
+  courseTaken.package.course.picture_src = 'file://' + path.resolve(app.getAppPath(), '../', 'src', 'assets', 'img', 'default-image.jpg')
   if (electronFs.existsSync(file)) {
     courseTaken.package.course.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'courses', courseTaken.package.course.image.replace('/uploads/course-images/', ''))
   }
@@ -51,7 +52,7 @@ router.get('/:courseTakenId', async function (req, res) {
   courseTaken.package.course.webinars.forEach(function (webinar, indx) {
     var web_file = path.join(resourcePath, 'resources', 'images', 'webinars', webinar.image.replace('/uploads/webinars/', ''))
 
-    courseTaken.package.course.webinars[indx].image_src = 'file://' + path.resolve('src', 'assets', 'img', 'default-image.jpg')
+    courseTaken.package.course.webinars[indx].image_src = 'file://' + path.resolve(app.getAppPath(), '../', 'src', 'assets', 'img', 'default-image.jpg')
     if (electronFs.existsSync(web_file)) {
       courseTaken.package.course.webinars[indx].image_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'webinars', webinar.image.replace('/uploads/webinars/', ''))
     }
