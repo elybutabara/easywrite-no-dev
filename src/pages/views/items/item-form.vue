@@ -238,7 +238,7 @@ export default {
         return false
       }
 
-      if (scope.data.hasOwnProperty('picture_src')) delete scope.data.picture_src
+        if (scope.data.hasOwnProperty('picture_src')) delete scope.data.picture_src
       scope.axios
         .post('http://localhost:3000/items', scope.data)
         .then(response => {
@@ -284,7 +284,10 @@ export default {
   },
   beforeMount () {
     var scope = this
-    if (scope.properties.item) scope.data = scope.properties.item
+    if (scope.properties.item) {
+      scope.data = scope.properties.item
+      scope.setDescription(scope.data.description)
+    }
     scope.data.book_id = scope.properties.book.uuid
   },
   async mounted () {

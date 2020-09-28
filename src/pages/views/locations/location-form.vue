@@ -279,6 +279,7 @@ export default {
     if (scope.properties.location) {
       scope.data = scope.properties.location
       scope.picture_src = scope.properties.location.picture_src
+      scope.setDescription(scope.data.description)
     }
     scope.data.book_id = scope.properties.book.uuid
   },

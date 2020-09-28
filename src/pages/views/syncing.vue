@@ -349,7 +349,7 @@ export default {
         'Authorization': 'Bearer ' + scope.api_token
       }
 
-      if (['Items', 'Characters', 'Locations'].indexOf(endpoint.title) > -1) {
+      if (['Items', 'Characters', 'Locations'].indexOf(endpoint.title) > -1 && (data.picture || data.pictures)) {
         var src = path.join(resourcePath, 'resources', 'images', endpoint.title.replace(/\s+/g, '-').toLowerCase(), (data.picture || data.pictures))
 
         if (!electronFs.existsSync(src)) {
@@ -369,7 +369,7 @@ export default {
 
           finalData = data_
         }
-      } else if (['Assignment Manuscripts'].indexOf(endpoint.title) > -1) {
+      } else if (['Assignment Manuscripts'].indexOf(endpoint.title) > -1 && data.content) {
         if (data.is_file) {
           var file = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), data.content)
 
