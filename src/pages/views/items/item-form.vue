@@ -238,7 +238,7 @@ export default {
         return false
       }
 
-        if (scope.data.hasOwnProperty('picture_src')) delete scope.data.picture_src
+      if (scope.data.hasOwnProperty('picture_src')) delete scope.data.picture_src
       scope.axios
         .post('http://localhost:3000/items', scope.data)
         .then(response => {
