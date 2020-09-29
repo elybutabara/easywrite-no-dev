@@ -13,29 +13,14 @@
       </div>
     </div>
     <div class="es-panel-body p-0 rounded-0" id="custom-scrollbar">
-      <template @click="openFeedback(feedback)" v-for="feedback in feedbacks" >
-        <div :key="feedback.id"  v-if="isVisible(feedback)" v-bind:class="{'done' : feedback.is_done, 'seen' : feedback.is_seen }" class="feedback-single">
-          <div class="feedback-single-header">
-            <div class="left">
-              <a class="es-avatar mr-2" href="javascript:void(0);">
-                <i class="las la-user"></i>
-              </a>
-            </div>
-            <div class="right w-100">
-              <div class="d-flex justify-content-between">
-                <div v-if="properties.toggleType" class="d-flex align-items-center mb-1">
-                  <a class="es-avatar" style="margin-right: 6px;" href="javascript:void(0);"><i class="las la-user"></i></a>
-                  <strong>{{ feedback.author.alias }}</strong>
-                </div>
-                <strong v-else class="author">
-                  {{ feedback.author.alias }}
-                </strong>
-
-                <span class="date">{{ formatDate(feedback) }}</span>
-              </div>
-
-              <div class="feedback-single-content-wrap" v-bind:class="{ 'open' : feedback.expand_content }">
-                <p @click="expandFeedbackContent(feedback)" class="message" v-bind:class="{ 'ellipsis-3' : !feedback.expand_content }" v-html="feedback.message"></p>
+      <div v-if="feedbacks.length">
+        <template @click="openFeedback(feedback)" v-for="feedback in feedbacks" >
+          <div :key="feedback.id"  v-if="isVisible(feedback)" v-bind:class="{'done' : feedback.is_done, 'seen' : feedback.is_seen }" class="feedback-single">
+            <div class="feedback-single-header">
+              <div class="left">
+                <a class="es-avatar mr-2" href="javascript:void(0);">
+                  <i class="las la-user"></i>
+                </a>
               </div>
               <div class="right w-100">
                 <div class="d-flex justify-content-between">

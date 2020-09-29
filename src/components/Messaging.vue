@@ -1,20 +1,11 @@
 <template>
-<<<<<<< HEAD
-  <div v-show="show" class="messaging" style="display: none; position: fixed; z-index: 5000; bottom: 0; left: 20px; width: 600px; padding: 0; margin: 0;">
-    <div class="card shadow">
-      <div class="card-header py-3" style="padding: 5px !important;">
-        <h6 class="m-0 font-weight-bold" style="text-align: center;">{{$t('MESSAGES')}}</h6>
-        <button v-on:click.prevent="window.AppMessaging.close()" type="button" class="close" aria-label="Close" style="position: absolute; top: 4px; right: 8px;">
-          <span aria-hidden="true">&times;</span>
-=======
   <div class="messaging" v-bind:class="{ show : show }">
     <div class="es-panel-2 shadow">
       <div class="es-panel-head d-flex align-items-center justify-content-between">
-        <h5 class="mb-0 font-weight-bold">Messages</h5>
+        <h5 class="mb-0 font-weight-bold">{{ $t('MESSAGES') }}</h5>
         <button v-on:click.prevent="window.AppMessaging.close()" type="button" class="close" aria-label="Close">
           <!-- <span aria-hidden="true">&times;</span> -->
           <i class="las la-times-circle"></i>
->>>>>>> design-finishing-touch
         </button>
       </div>
       <div style="padding: 0 20px;">
@@ -26,8 +17,8 @@
                 <h6 style="margin: 0;">{{$t('NEW_MESSAGE')}}</h6>
             </div>
             <div style="padding: 15px;">
-                <div style="color: #c0c0c0; font-size: 13px;">{{$t('YOU_MAY_SELECT_1_USER_FOR_PRIVATE_MESSAGE_OR_MULTIPLE_USERS_FOR_GROUP_CHAT')}}</div>
-                <multiselect v-model="userSelect.selected" id="ajax" label="name" track-by="uuid" :placeholder="$t('SEARCH_A_USER') + '...'" open-direction="bottom" :options="userSelect.rows" :multiple="true" :searchable="true" :loading="userSelect.isLoading" :internal-search="false" :clear-on-select="false" :close-on-select="false" :options-limit="300" :limit="3" :limit-text="userSelectLimitText" :max-height="600" :show-no-results="false" :hide-selected="true" @search-change="userSelectFind">
+                <div class="mb-2" style="color: #c0c0c0; font-size: 13px;">{{ $t('YOU_MAY_SELECT_1_USER_FOR_PRIVATE_MESSAGE_OR_MULTIPLE_USERS_FOR_GROUP_CHAT') }}</div>
+                <multiselect v-model="userSelect.selected" id="ajax" label="name" track-by="uuid" :placeholder="$t('SEARCH_A_USER') + '...'" open-direction="bottom" :options="userSelect.rows" :multiple="true" :searchable="true" :loading="userSelect.isLoading" :internal-search="false" :clear-on-select="false" :close-on-select="false" :options-limit="300" :limit="3" :limit-text="userSelectLimitText" :max-height="700" :show-no-results="false" :hide-selected="true" @search-change="userSelectFind">
                   <template slot="tag" slot-scope="{ option, remove }">
                     <span class="custom__tag" style="float: left;cursor:default;background: rgb(73, 109, 125);line-height: 24px;padding: 0 8px;margin: 0;margin-left: 5px;border-radius: 5px;color: #fff;">
                       <span>{{ option.name }}</span>
@@ -59,11 +50,7 @@
                 <div style="clear: both;"></div>
               </div>
               <div style="clear: both;"></div>
-<<<<<<< HEAD
-              <div v-bind:style="{float: gm.author_uuid !== getAuthor.uuid?'left':'right'}" style="float: right;font-size: 9px;opacity: 0.4;margin-top: -9px;margin-bottom: 5px;">{{$t('SEEN_BY')}} {{messageSeenBy(gm, i)}}</div>
-=======
-              <div v-bind:style="{float: gm.author_uuid !== getAuthor.uuid?'left':'right'}" style="float: right;font-size: 9px;opacity: 0.4;margin-top: -5px;margin-bottom: 5px;">Seen by {{messageSeenBy(gm, i)}}</div>
->>>>>>> design-finishing-touch
+              <div v-bind:style="{float: gm.author_uuid !== getAuthor.uuid?'left':'right'}" style="float: right;font-size: 9px;opacity: 0.4;margin-top: -5px;margin-bottom: 5px;">{{ $t('SEEN_BY')}} {{messageSeenBy(gm, i) }}</div>
               <div style="clear: both;"></div>
             </div>
             <div v-for="(gm, i) in groupMessages" v-bind:key="'gm-'+selectedGroupId+'-'+i" style="position: relative">
@@ -100,13 +87,8 @@
           </div>
         </div>
         <div style="position: absolute; left: 0; top: 0; height: 100%; width: 200px; background: #f5f8fa; border-right: 1px solid rgb(227, 230, 240);">
-<<<<<<< HEAD
-          <div style="padding: 5px;">
-            <input v-model="groupsFilterTxt" type="text" class="form-control" :placeholder="$t('SEARCH_USER_AND_GROUPS') + '...'" />
-=======
           <div class="p-10px">
-            <input v-model="groupsFilterTxt" type="text" class="form-control es-input" placeholder="Search users &amp; groups..." />
->>>>>>> design-finishing-touch
+            <input v-model="groupsFilterTxt" type="text" class="form-control es-input" :placeholder="$t('SEARCH_USER_AND_GROUPS') + '...'" />
           </div>
           <ul class="messaging-group-nav-list">
             <li v-for="(group, i) in sortedGroupChats" v-bind:key="'group-index'+i+'-'+group.uuid">
@@ -116,13 +98,8 @@
               </div>
             </li>
           </ul>
-<<<<<<< HEAD
-          <div style="position: absolute; bottom: 0; left: 0; width: 100%; text-align: center; padding: 5px;">
-            <button class="btn es-button-white btn-secondary" v-on:click.prevent="selectedGroupId=null"><i class="fa fa-plus"></i> {{$t('NEW_MESSAGE')}}</button>
-=======
           <div class="p-10px" style="position: absolute; bottom: 0; left: 0; width: 100%; text-align: center;">
-            <a class="btn-icon-2" v-on:click.prevent="selectedGroupId=null" href="javascript:void(0);"><i class="fa fa-plus"></i> <span>New Message</span></a>
->>>>>>> design-finishing-touch
+            <a class="btn-icon-2" v-on:click.prevent="selectedGroupId=null" href="javascript:void(0);"><i class="fa fa-plus"></i> <span>{{ $t('NEW_MESSAGE') }}</span></a>
           </div>
         </div>
       </div>

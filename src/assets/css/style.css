@@ -568,7 +568,7 @@ p, a, li, span, label, button, div { font-family: "Opensans" !important; font-si
 .feedback-wrap-fullview .no-response i { font-size: 24px; }
 
 /* Messaging */
-.messaging { position: fixed; z-index: 5000; bottom: -441px; left: 20px; width: 650px; padding: 0; margin: 0; transition: .2s; }
+.messaging { position: fixed; z-index: 5000; bottom: -100vh; left: 20px; width: 650px; padding: 0; margin: 0; transition: .2s; }
 .messaging.show { bottom: 0; transition: .2s; }
 .messaging .es-panel-2 .es-panel-head h5 { font-size: 16px; }
 .messaging .es-panel-2 .es-panel-head i  { color: var(--blackish); }
