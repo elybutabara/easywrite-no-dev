@@ -36,7 +36,7 @@
 
                   <span class="date">{{ formatDate(feedback) }}</span>
                 </div>
-              
+
                 <div class="feedback-single-content-wrap" v-bind:class="{ 'open' : feedback.expand_content }">
                   <p @click="expandFeedbackContent(feedback)" class="message" v-bind:class="{ 'ellipsis-3' : !feedback.expand_content }" v-html="feedback.message"></p>
                 </div>
