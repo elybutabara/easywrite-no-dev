@@ -21,7 +21,7 @@
         </ul>
 
         <draggable v-model="chapters" draggable=".none" class="row kj-row">
-        <div class="col-md-4 col-sm-12 kj-col fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
+        <div class="col-md-3 col-sm-12 kj-col fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
             <div class="es-card">
                 <div class="es-card-content">
                     <div class="es-card-actions">
@@ -32,8 +32,9 @@
                 </div>
                 <div class="es-card-footer">
                     <small>{{$t('SCENES')}}: {{ $store.getters.getScenesByChapter(chapter.uuid).length }}</small>
-                    &nbsp; &bull; &nbsp;
+                    <span>&bull;</span>
                     <small>{{$t('VERSIONS')}}: {{ $store.getters.getChapterVersions(chapter.uuid).length }}</small>
+                    <span>&bull;</span>
                     <small style="float:right;">{{$t('WORD_COUNT')}}: {{ WORD_COUNT($store.getters.getChapterContent(chapter.uuid)) }}</small>
                 </div>
             </div>
@@ -114,19 +115,3 @@ export default {
     }, 100)
   }
 }
-</script>
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.es-card { color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
-.es-card .es-card-content { position:relative; padding:20px; min-height:150px; }
-.es-card .es-card-content .title { font-size:18px; font-weight:900; margin:0px; padding-right:110px; }
-.es-card .es-card-content .description { display:inline-block; padding-top:15px; color:#4b6273; }
-
-.es-card .es-card-content .es-card-actions { position:absolute; top:20px; right:20px; text-align:right; }
-.es-card .es-card-content .es-card-actions .btn-circle { background:transparent; border:1px solid #e0e5ee; border-radius:50%; width:30px; height:30px; line-height:22px; text-align:center; font-size:15px; }
-.es-card .es-card-footer { background:#f5f8fa; height:40px; line-height:40px; padding:0px 20px; border-top:1px solid #e0e5ee; }
-
-@media only screen and (max-width: 968px) {
-
-}
-</style>

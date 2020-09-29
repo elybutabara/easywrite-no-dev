@@ -27,7 +27,7 @@
         </ul>
         
         <draggable v-model="chapters" draggable=".kj-col" class="row kj-row">
-        <div class="col-3 col-md-4 col-sm-12 kj-col fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
+        <div class="col-md-3 col-sm-12 kj-col fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
             <div class="es-card">
                 <div class="es-card-content">
                     <div class="es-card-actions">

@@ -10,7 +10,7 @@
       </div>
       <div style="padding: 0 20px;">
       </div>
-      <div class="card-body" style="background: #fff; padding: 0; margin: 0; height: calc(100vh - 340px); position: relative;">
+      <div class="card-body" style="background: #fff; padding: 0; margin: 0; height: calc(100vh - 50vh); position: relative;">
         <div v-if="!selectedGroupId">
           <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; padding-left: 200px; padding-bottom: 40px; background: #fff;">
             <div style="padding: 15px; border-bottom: 1px solid rgb(227, 230, 240);">
@@ -68,8 +68,8 @@
             </div>
             <div style="clear: both;"></div>
           </div>
-          <div style="position: absolute; padding-left: 200px; bottom: 0; width: 100%;">
-            <div style="padding: 5px;">
+          <div style="position: absolute; bottom: 0; padding-left: 200px; padding-bottom: 10px; width: 100%;">
+            <div style="padding: 15px; padding-right: 30px;">
               <textarea v-model="chatMessage" @keydown.enter.exact.prevent @keyup.enter.exact="sendChatMessage()" @keydown.enter.shift.exact="newline()" v-bind:id="textareaId" class="form-control" style="float: left; height: 30px; width: calc(100% - 65px); padding: 0 10px;" placeholder="Type a message..."></textarea>
               <button v-on:click="sendChatMessage()" class="btn es-button-white btn-secondary" style="float: left;margin-left: 5px;width: 60px;">Send</button>
             </div>

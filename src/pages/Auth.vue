@@ -221,8 +221,8 @@ export default {
 .remember-me {color:ghostwhite;}
 body { background:#293742 !important; }
 .es-login-wrapper {background:#293742 !important; display: table; position: absolute;  top: 0; left: 0; height: 100%; width: 100%; }
-.es-login-wrapper .es-login { display: table-cell; vertical-align: middle; }
-.es-login-wrapper .es-login  .inner { margin-left: auto; margin-right: auto; width: 350px; min-height:90vh;  }
+.es-login-wrapper .es-login { display: flex; align-items: center; justify-content: center; height: 100%; }
+.es-login-wrapper .es-login  .inner { width: 350px;  }
 .es-login-wrapper .es-login  .inner .heading { text-align:center; margin-bottom:30px;  }
 .es-login-wrapper .es-login  .inner .heading img { width:150px;  }
 .es-login-wrapper .es-login  .inner .welcome { text-align:left; color:#fff; }
