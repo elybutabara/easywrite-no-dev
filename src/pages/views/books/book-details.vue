@@ -35,7 +35,7 @@
             <div v-html="properties.about"></div>
         </div>
         <div id="goToFeedbacks">
-          <Feedback :properties="{ book: properties, parent: properties, parent_name: 'book', toggleType: false }"></Feedback>  
+          <Feedback :properties="{ book: properties, parent: properties, parent_name: 'book', toggleType: false }"></Feedback>
         </div>
     </div>
 </div>

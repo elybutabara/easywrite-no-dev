@@ -14,7 +14,7 @@
         </div>
         <div class="row-head">
           <div>
-            <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>        
+            <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>
           </div>
           <div class="d-flex align-items-center">
             <i class="las la-cog" style="font-size: 18px; margin-right: 4px;"></i><small> {{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
@@ -28,7 +28,7 @@
             <div v-html="properties.about"></div>
         </div>
         <div id="goToFeedbacks">
-          <Feedback :properties="{ book: properties, parent: properties, parent_name: 'book', toggleType: false }"></Feedback>  
+          <Feedback :properties="{ book: properties, parent: properties, parent_name: 'book', toggleType: false }"></Feedback>
         </div>
     </div>
 </div>
@@ -56,7 +56,7 @@ export default {
       response: '',
       show_feedbacks: false,
       show_notes: false,
-      export_book: this.$t('EXPORT').toUpperCase() + ' ' + this.$t('BOOK').toUpperCase(),
+      export_book: this.$t('EXPORT').toUpperCase() + ' ' + this.$t('BOOK').toUpperCase()
     }
   },
   computed: {

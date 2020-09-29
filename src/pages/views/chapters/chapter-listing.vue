@@ -25,7 +25,7 @@
           <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
           <li><a href="javascript:void(0);" style="padding-right: 20px;">{{ $t('CHAPTERS') }}</a></li>
         </ul>
-        
+
         <draggable v-model="chapters" draggable=".kj-col" class="row kj-row">
         <div class="col-md-3 col-sm-12 kj-col fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
             <div class="es-card">
