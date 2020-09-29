@@ -1,16 +1,14 @@
 <template>
 <div>
-    <div v-if="page.is_ready" class="page-chapter-details">
+    <div v-if="page.is_ready" class="es-page-main page-chapter-details">
         <div class="es-page-head-2 mb-0">
             <div class="row-head">
                 <div>
-                    <div>
-                      <h4><strong>{{ chapter.title }}</strong></h4>
-                    </div>
+                  <h4 class="main-title"><i class="fas fa-bookmark mr-1"></i> {{ chapter.title }}</h4>
                 </div>
                 <div class="book-panel-right">
-                  <button class="es-button btn-sm white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
                   <button class="es-button btn-sm white" @click="toggleNotes()">{{$t('MY_NOTES').toUpperCase()}}</button>
+                  <a class="es-button btn-sm w-icon icon-left warning" @click="toggleFeedbacks()"><i class="las la-comments"></i> {{$t('FEEDBACKS')}}</a>
                 </div>
             </div>
         </div>
@@ -27,17 +25,15 @@
                   <div v-bind:class="{ 'active' : tab.active == 'scenes' }" @click="changeTab('scenes')" class="es-details-tab-item">{{$t('SCENES').toUpperCase()}}</div>
               </div>
               <div>
-                    <ul class="es-breadcrumb mb-0">
-                        <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'books-i-read-book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
-                        <li><a @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'books-i-read-chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('CHAPTERS') }}</a></li>
-                        <li><a href="javascript:void(0);" style="padding-right: 20px;">
-                            <span>{{ chapter.title }}</span>
-                        </a></li>
-                    </ul>
+                  <ul class="es-breadcrumb mb-0">
+                      <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'books-i-read-book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
+                      <li><a @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'books-i-read-chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('CHAPTERS') }}</a></li>
+                      <li><a href="javascript:void(0);" style="padding-right: 20px;"> {{ chapter.title }}</a></li>
+                  </ul>
               </div>
         </div>
-        <div style="position:relative; padding-bottom:40px;">
-          <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></Feedback>
+        <div style="position:relative; padding-bottom:40px; overflow: hidden;">
+          <Feedback v-bind:class="{ 'show_feedbacks' : show_feedbacks }" :properties="{ book: book, parent: chapter, parent_name: 'chapter', toggleType: true }"></Feedback>
           <Note v-if="show_notes" :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></Note>
           <div style="border-top:1px solid #ccc; z-index:2000; background:#fff; height:50px; padding:0px 20px; line-height:50px; width:100%; position:absolute; bottom:0px; left:0px;">
             <button v-if="prevChapter !== null" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + prevChapter.uuid, tabComponent: 'books-i-read-chapter-details',  tabData: { book: book, chapter: prevChapter }, tabTitle: $t('VIEW')+ ' - ' + prevChapter.title})" style="float:left; background:transparent; border:none;">
@@ -268,8 +264,4 @@ export default {
     .es-chapter-details-tab .es-chapter-details-tab-item { height:30px; line-height:30px; margin-top:40px; margin-right:25px; cursor:pointer; position:relative; }
     .es-chapter-details-tab .es-chapter-details-tab-item:after { content:''; position:absolute; bottom:0px; left:0px; height:3px;  width:100%; background:transparent;}
     .es-chapter-details-tab .es-chapter-details-tab-item.active:after { background:#922c39;  }
-
-    .es-chapter-details-tab-content { position:relative; padding:30px; background:#fff; height:calc(100vh - 360px); overflow-y:auto; display:block; }
-    .es-chapter-details-tab-content.no-padding { padding:0px; }
-    .es-chapter-details-tab-content.active { display:block; }
 </style>

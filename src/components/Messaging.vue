@@ -1,15 +1,25 @@
 <template>
+<<<<<<< HEAD
   <div v-show="show" class="messaging" style="display: none; position: fixed; z-index: 5000; bottom: 0; left: 20px; width: 600px; padding: 0; margin: 0;">
     <div class="card shadow">
       <div class="card-header py-3" style="padding: 5px !important;">
         <h6 class="m-0 font-weight-bold" style="text-align: center;">{{$t('MESSAGES')}}</h6>
         <button v-on:click.prevent="window.AppMessaging.close()" type="button" class="close" aria-label="Close" style="position: absolute; top: 4px; right: 8px;">
           <span aria-hidden="true">&times;</span>
+=======
+  <div class="messaging" v-bind:class="{ show : show }">
+    <div class="es-panel-2 shadow">
+      <div class="es-panel-head d-flex align-items-center justify-content-between">
+        <h5 class="mb-0 font-weight-bold">Messages</h5>
+        <button v-on:click.prevent="window.AppMessaging.close()" type="button" class="close" aria-label="Close">
+          <!-- <span aria-hidden="true">&times;</span> -->
+          <i class="las la-times-circle"></i>
+>>>>>>> design-finishing-touch
         </button>
       </div>
       <div style="padding: 0 20px;">
       </div>
-      <div class="card-body" style="padding: 0; margin: 0; height: calc(100vh - 400px); position: relative;">
+      <div class="card-body" style="background: #fff; padding: 0; margin: 0; height: calc(100vh - 50vh); position: relative;">
         <div v-if="!selectedGroupId">
           <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; padding-left: 200px; padding-bottom: 40px; background: #fff;">
             <div style="padding: 15px; border-bottom: 1px solid rgb(227, 230, 240);">
@@ -49,7 +59,11 @@
                 <div style="clear: both;"></div>
               </div>
               <div style="clear: both;"></div>
+<<<<<<< HEAD
               <div v-bind:style="{float: gm.author_uuid !== getAuthor.uuid?'left':'right'}" style="float: right;font-size: 9px;opacity: 0.4;margin-top: -9px;margin-bottom: 5px;">{{$t('SEEN_BY')}} {{messageSeenBy(gm, i)}}</div>
+=======
+              <div v-bind:style="{float: gm.author_uuid !== getAuthor.uuid?'left':'right'}" style="float: right;font-size: 9px;opacity: 0.4;margin-top: -5px;margin-bottom: 5px;">Seen by {{messageSeenBy(gm, i)}}</div>
+>>>>>>> design-finishing-touch
               <div style="clear: both;"></div>
             </div>
             <div v-for="(gm, i) in groupMessages" v-bind:key="'gm-'+selectedGroupId+'-'+i" style="position: relative">
@@ -67,8 +81,8 @@
             </div>
             <div style="clear: both;"></div>
           </div>
-          <div style="position: absolute; padding-left: 200px; bottom: 0; width: 100%;">
-            <div style="padding: 5px;">
+          <div style="position: absolute; bottom: 0; padding-left: 200px; padding-bottom: 10px; width: 100%;">
+            <div style="padding: 15px; padding-right: 30px;">
               <textarea v-model="chatMessage" @keydown.enter.exact.prevent @keyup.enter.exact="sendChatMessage()" @keydown.enter.shift.exact="newline()" v-bind:id="textareaId" class="form-control" style="float: left; height: 30px; width: calc(100% - 65px); padding: 0 10px;" placeholder="Type a message..."></textarea>
               <button v-on:click="sendChatMessage()" class="btn es-button-white btn-secondary" style="float: left;margin-left: 5px;width: 60px;">{{$t('SEND')}}</button>
             </div>
@@ -76,7 +90,7 @@
           <div v-show="!showMembers" style="position: absolute; left: 210px; top: 10px; background: #000; color: #fff; width: 16px; height: 16px; border-radius: 50%; text-align: center; line-height: 16px; font-size: 10px;">
             <i v-on:click.prevent="showMembers=true" class="fa fa-users" title="View Members" style="cursor: pointer;"></i>
           </div>
-          <div v-show="showMembers" style="position: absolute; left: 210px; top: 10px; background: rgb(245, 248, 250); color: #000; width: 200px; min-height: 200px; padding: 10px; border: 1px solid rgb(227, 230, 240);">
+          <div v-show="showMembers" class="p-10px" style="position: absolute; left: 210px; top: 10px; background: rgb(245, 248, 250); color: #000; width: 200px; min-height: 200px; border: 1px solid rgb(227, 230, 240);">
             <ul style="padding: 0; margin: 0;">
               <li v-for="m in currentGroup.members" v-bind:key="'gc-m-'+m.uuid" style="padding: 0; margin: 0; font-size: 12px; cursor: default;">
                 {{m.author_alias}}
@@ -86,8 +100,13 @@
           </div>
         </div>
         <div style="position: absolute; left: 0; top: 0; height: 100%; width: 200px; background: #f5f8fa; border-right: 1px solid rgb(227, 230, 240);">
+<<<<<<< HEAD
           <div style="padding: 5px;">
             <input v-model="groupsFilterTxt" type="text" class="form-control" :placeholder="$t('SEARCH_USER_AND_GROUPS') + '...'" />
+=======
+          <div class="p-10px">
+            <input v-model="groupsFilterTxt" type="text" class="form-control es-input" placeholder="Search users &amp; groups..." />
+>>>>>>> design-finishing-touch
           </div>
           <ul class="messaging-group-nav-list">
             <li v-for="(group, i) in sortedGroupChats" v-bind:key="'group-index'+i+'-'+group.uuid">
@@ -97,8 +116,13 @@
               </div>
             </li>
           </ul>
+<<<<<<< HEAD
           <div style="position: absolute; bottom: 0; left: 0; width: 100%; text-align: center; padding: 5px;">
             <button class="btn es-button-white btn-secondary" v-on:click.prevent="selectedGroupId=null"><i class="fa fa-plus"></i> {{$t('NEW_MESSAGE')}}</button>
+=======
+          <div class="p-10px" style="position: absolute; bottom: 0; left: 0; width: 100%; text-align: center;">
+            <a class="btn-icon-2" v-on:click.prevent="selectedGroupId=null" href="javascript:void(0);"><i class="fa fa-plus"></i> <span>New Message</span></a>
+>>>>>>> design-finishing-touch
           </div>
         </div>
       </div>
@@ -483,16 +507,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.messaging-group-nav-list{padding: 0px;margin: 0px;overflow: auto;height: calc(100% - 85px);position: absolute;width: 100%;}
-.messaging-group-nav-list > li{padding: 0; margin: 0;}
-.messaging-group-nav{cursor: pointer; font-size: 12px; padding: 8px 15px; position: relative;}
-.messaging-group-nav.active{background-color: rgb(227, 230, 240);}
-.messaging-group-nav:hover{opacity: 0.5;}
-.messaging-group-nav.active{background-color: rgb(227, 230, 240);}
-.messaging-msg{float: left; clear: both; color: #fff; border-radius: 10px; background: #496d7d; font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px; white-space: pre-line;}
-.messaging-msg.own{float: right; clear: both; color: #000; border-radius: 10px; background: rgb(227, 230, 240); font-size: 13px; padding: 5px 15px; margin-bottom: 10px; margin-top: 20px; white-space: pre-line;}
-.messaging-msg-name{position: absolute; left: 0; top: 5px; opacity: 0.3; font-size: 90%; color: #000;}
-.messaging-msg-name.own{position: absolute; left: initial; right: 0; top: 5px; opacity: 0.3; font-size: 90%;}
-</style>

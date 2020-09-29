@@ -119,7 +119,7 @@ let APP = {
 
 window.APP = APP.SE_DEV // DEVELOPEMENT APP
 if (process.env.NODE_ENV === 'production') {
-  window.APP = APP.NO_PROD // PRODUCTION APP
+  window.APP = APP.SE_PROD // PRODUCTION APP
 }
 
 // window.$.fn.select2.defaults.set('theme', 'bootstrap')

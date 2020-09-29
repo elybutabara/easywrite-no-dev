@@ -40,8 +40,13 @@
                 </li>
             </ul>
             <ul v-bind:class="{'active' : tab === 'books-i-read' }"  class="left-sidebar-tab-content level-1">
-                <li v-bind:class="{ 'open' : book.is_open }" v-bind:key="book.id" v-for="(book)  in books_i_read">
-                    <div class="label" @click="TOGGLE_BOOK_I_READ(book,'book')"><span><img src="@/assets/img/icons/book.svg"> {{ book.title || 'Untitled' }}</span></div>
+                <li v-bind:class="{ 'open' : book.is_open }" v-bind:key="book.id" v-for="(book) in books_i_read">
+                    <div class="label" @click="TOGGLE_BOOK_I_READ(book,'book')">
+                      <i v-if="book.is_open" class="fas fa-chevron-down"></i>
+                      <i v-else class="fas fa-chevron-right"></i>
+                      <i class="fas fa-book"></i>
+                      <span>{{ book.title || 'Untitled' }}</span>
+                    </div>
                     <ul v-if="book.is_open" class="level-2">
                         <book-i-read-chapters-folder :key="'tree-chapters-' + book.uuid" :properties="book"></book-i-read-chapters-folder>
                         <!-- <book-i-read-scenes-folder :key="'tree-scenes-' + book.uuid" :properties="book"></book-i-read-scenes-folder> -->

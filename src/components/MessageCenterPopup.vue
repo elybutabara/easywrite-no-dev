@@ -1,13 +1,14 @@
 <template>
   <div>
     <div class="card shadow mb-4">
-      <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold">{{$t('MESSAGE_CENTER')}}</h6>
+      <div class="card-header p-15px">
+        <h6 class="m-0 font-weight-bold">Message Center</h6>
       </div>
-      <div style="padding: 0 20px;">
+      <div class="p-15px">
         <a href="#" v-on:click.prevent="type = 'All'">{{$t('ALL')}} ({{ itemsCounts['Message'] + itemsCounts['Notification']}})</a> |
         <a href="#" v-on:click="openMessage(null, $event)">{{$t('MESSAGES')}} ({{itemsCounts['Message']}})</a> |
         <a href="#" v-on:click.prevent="type = 'Notification'">{{$t('NOTIFICATIONS')}} ({{itemsCounts['Notification']}})</a>
+
         <div style="float: right;">
           <button v-on:click="openMessage(null, $event)" class="btn btn-default" style="height: 24px; line-height: 24px; text-transform: none;">{{$t('NEW_MESSAGE')}}</button>
         </div>

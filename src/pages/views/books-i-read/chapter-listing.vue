@@ -1,10 +1,10 @@
 <template>
-<div v-if="page.is_ready" class="page-chapter-listing">
-    <div class="es-page-head">
-        <div class="inner">
-            <div class="details">
-                <h4>{{ book.title }}</h4>
-                <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ book.title }}</small>
+<div v-if="page.is_ready" class="es-page-main page-chapter-listing">
+    <div class="es-page-head-2">
+        <div class="row-head">
+            <div>
+              <h4 class="main-title"><i class="fas fa-folder mr-1"></i> {{ book.title }}</h4>
+              <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ book.title }}</small>
             </div>
         </div>
     </div>
@@ -13,16 +13,15 @@
         /
         <button class="current">{{ $t('CHAPTERS') }}</button>
     </div> -->
-    <div class="es-page-content">
+    <div class="es-page-content" id="custom-scrollbar">
+      
         <ul class="es-breadcrumb">
             <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'books-i-read-book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
-            <li><a href="javascript:void(0);" style="padding-right: 20px;">
-                <span>{{$t('CHAPTERS')}}</span>
-            </a></li>
+            <li><a href="javascript:void(0);" style="padding-right: 20px;">{{$t('CHAPTERS')}}</a></li>
         </ul>
 
-        <draggable v-model="chapters" draggable=".none" class="es-row">
-        <div class="es-col fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
+        <draggable v-model="chapters" draggable=".none" class="row kj-row">
+        <div class="col-md-3 col-sm-12 kj-col fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
             <div class="es-card">
                 <div class="es-card-content">
                     <div class="es-card-actions">
@@ -33,8 +32,9 @@
                 </div>
                 <div class="es-card-footer">
                     <small>{{$t('SCENES')}}: {{ $store.getters.getScenesByChapter(chapter.uuid).length }}</small>
-                    &nbsp; &bull; &nbsp;
+                    <span>&bull;</span>
                     <small>{{$t('VERSIONS')}}: {{ $store.getters.getChapterVersions(chapter.uuid).length }}</small>
+                    <span>&bull;</span>
                     <small style="float:right;">{{$t('WORD_COUNT')}}: {{ WORD_COUNT($store.getters.getChapterContent(chapter.uuid)) }}</small>
                 </div>
             </div>
@@ -115,19 +115,3 @@ export default {
     }, 100)
   }
 }
-</script>
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.es-card { color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
-.es-card .es-card-content { position:relative; padding:20px; min-height:150px; }
-.es-card .es-card-content .title { font-size:18px; font-weight:900; margin:0px; padding-right:110px; }
-.es-card .es-card-content .description { display:inline-block; padding-top:15px; color:#4b6273; }
-
-.es-card .es-card-content .es-card-actions { position:absolute; top:20px; right:20px; text-align:right; }
-.es-card .es-card-content .es-card-actions .btn-circle { background:transparent; border:1px solid #e0e5ee; border-radius:50%; width:30px; height:30px; line-height:22px; text-align:center; font-size:15px; }
-.es-card .es-card-footer { background:#f5f8fa; height:40px; line-height:40px; padding:0px 20px; border-top:1px solid #e0e5ee; }
-
-@media only screen and (max-width: 968px) {
-
-}
-</style>
