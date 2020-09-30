@@ -1,4 +1,5 @@
 export default {
+  SELECT_TYPE_OF_SCENE: 'Velg type scene',
   MESSAGE_CENTER: 'Meldingssenter',
   MESSAGES: 'Meldinger',
   NOTIFICATIONS: 'Varsler',
