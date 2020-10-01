@@ -327,10 +327,7 @@ export default {
       //
       var scope = this
 
-      var port = 3030
-      if (window.APP.API.URL === 'http://api.pilotleser.no/se' || window.APP.API.URL === 'https://api.pilotleser.no/se') {
-        port = 3031
-      }
+      var port = window.APP.CHAT.PORT
 
       var socket = socketIO('https://dev.kunohay.com:' + port)
       socket.on('connect', function () {
