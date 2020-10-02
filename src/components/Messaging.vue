@@ -10,9 +10,9 @@
       </div>
       <div style="padding: 0 20px;">
       </div>
-      <div class="card-body" style="background: #fff; padding: 0; margin: 0; height: calc(100vh - 50vh); position: relative;">
+      <div class="card-body" style="background: #fff; padding: 0; margin: 0; height: 420px; position: relative;">
         <div v-if="!selectedGroupId">
-          <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; padding-left: 200px; padding-bottom: 40px; background: #fff;">
+          <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; padding-left: 200px; padding-bottom: 40px; background: #fff; border-right: 1px solid var(--whiteblue);">
             <div style="padding: 15px; border-bottom: 1px solid rgb(227, 230, 240);">
                 <h6 style="margin: 0;">New Message</h6>
             </div>
@@ -39,7 +39,7 @@
           </div>
         </div>
         <div v-if="selectedGroupId">
-          <div v-bind:id="chatContentId" style="position: absolute; right: 0; top: 0; width: calc(100% - 200px); height: calc(100% - 40px); padding: 15px; background: #fff; overflow-y: auto;">
+          <div v-bind:id="chatContentId" class="content-wrap">
             <div v-for="(gm, i) in messagesHistory" v-bind:key="'gmh-'+selectedGroupId+'-'+i" style="position: relative;">
               <div v-if="gm.author_uuid !== getAuthor.uuid" class="messaging-msg">{{gm.message}}
                 <div class="messaging-msg-name">{{gm.author_alias}}, {{displayChatTime(gm.created_at)}}</div>
@@ -68,10 +68,10 @@
             </div>
             <div style="clear: both;"></div>
           </div>
-          <div style="position: absolute; bottom: 0; padding-left: 200px; padding-bottom: 10px; width: 100%;">
-            <div style="padding: 15px; padding-right: 30px;">
-              <textarea v-model="chatMessage" @keydown.enter.exact.prevent @keyup.enter.exact="sendChatMessage()" @keydown.enter.shift.exact="newline()" v-bind:id="textareaId" class="form-control" style="float: left; height: 30px; width: calc(100% - 65px); padding: 0 10px;" placeholder="Type a message..."></textarea>
-              <button v-on:click="sendChatMessage()" class="btn es-button-white btn-secondary" style="float: left;margin-left: 5px;width: 60px;">Send</button>
+          <div class="textarea-wrap">
+            <div class="textarea-group">
+              <input v-model="chatMessage" @keydown.enter.exact.prevent @keyup.enter.exact="sendChatMessage()" @keydown.enter.shift.exact="newline()" v-bind:id="textareaId" class="form-control" placeholder="Type a message...">
+              <a v-on:click="sendChatMessage()" class="send-icon" href="javascript:void(0);"><i class="las la-paper-plane"></i></a>
             </div>
           </div>
           <div v-show="!showMembers" style="position: absolute; left: 210px; top: 10px; background: #000; color: #fff; width: 16px; height: 16px; border-radius: 50%; text-align: center; line-height: 16px; font-size: 10px;">
@@ -86,8 +86,8 @@
             <button v-on:click.prevent="showMembers=false" type="button" aria-label="Close" class="close" style="position: absolute; top: 5px; right: 10px;"><span aria-hidden="true">×</span></button>
           </div>
         </div>
-        <div style="position: absolute; left: 0; top: 0; height: 100%; width: 200px; background: #f5f8fa; border-right: 1px solid rgb(227, 230, 240);">
-          <div class="p-10px">
+        <div style="position: absolute; left: 0; top: 0; height: 100%; width: 200px; background: #f5f8fa; border-right: 1px solid rgb(227, 230, 240); border-left: 1px solid var(--whiteblue);">
+          <div class="p-7px">
             <input v-model="groupsFilterTxt" type="text" class="form-control es-input" placeholder="Search users &amp; groups..." />
           </div>
           <ul class="messaging-group-nav-list">

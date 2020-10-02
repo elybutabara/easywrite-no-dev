@@ -1,34 +1,34 @@
 <template>
-  <div v-if="selected_comments_id" class="commentbase-comments" style="">
-    <div class="commentbase-comments-header" style="text-align: right; clear: both;">
-      <button v-on:click.prevent="close($event)" type="button" aria-label="Close" class="close" style=""><span aria-hidden="true">×</span></button>
+  <div v-if="selected_comments_id" class="commentbase-comments es-panel-2">
+    <div class="es-panel-head">
+      <h5>Comments</h5>
+      <button v-on:click.prevent="close($event)" type="button" aria-label="Close" class="close"><i class="las la-times-circle"></i></button>
     </div>
-    <div class="commentbase-comments-body" style="">
-      <div v-for="(c, k) in comments[selected_comments_id]" v-bind:key="k" v-bind:style="{'border': editingComment==k?'1px solid orange':'1px solid #f1f1f1'}" class="commentbase-comment" style="border: 0; border: 1px solid #f1f1f1; padding: 15px; margin-bottom: 0;">
-        <div style="line-height: 0.8; position: relative;">
+    <div class="es-panel-body" id="custom-scrollbar">
+      <div v-for="(c, k) in comments[selected_comments_id]" v-bind:key="k" v-bind:style="{'border': editingComment==k?'1px solid orange':''}" class="commentbase-comment">
+        <div class="position-relative mb-2">
           <div v-if="c.user_id==author.uuid" class="c-pop-menu-btn" style="position: absolute; top: 0; right: 5px; border: 0 solid #c0c0c0;" v-on:click.prevent="showCommentActions=showCommentActions==k?null:k">
               <div style="text-align: right; padding: 0; font-weight: bold; cursor: pointer;">
                   <i class="fa fa-ellipsis-h"></i>
-                  <div class="c-pop-menu" v-show="showCommentActions==k" style="">
-                      <div v-on:click="editComment(k, $event)" class="c-pop-menu-item" style="">Edit</div>
-                      <div v-on:click="deleteComment(k, $event)" class="c-pop-menu-item" style="">Delete</div>
+                  <div class="c-pop-menu" v-show="showCommentActions==k">
+                      <div v-on:click="editComment(k, $event)" class="c-pop-menu-item">Edit</div>
+                      <div v-on:click="deleteComment(k, $event)" class="c-pop-menu-item">Delete</div>
                   </div>
               </div>
           </div>
-          <span style="font-size: 11px; font-weight: bold;"> {{ c.user_name }}</span>
-          <br/>
-          <span style="font-size: 11px;"> {{ displayTime(c.created_at) }}</span>
+          <span class="name">{{ c.user_name }}</span>
+          <span class="time">{{ displayTime(c.created_at) }}</span>
         </div>
-        <div style="margin-top: 8px; color: #c0c0c0;">
+        <div class="message">
           {{ c.message }}
         </div>
       </div>
     </div>
-    <div class="commentbase-comments-form" style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px;">
-      <textarea v-model="comment_message_new" class="commentbase-comment-new" style="width: 100%; border: 1px solid #ced4da; border-radius: 0.25rem;"></textarea>
+    <div class="commentbase-comments-form">
+      <textarea v-model="comment_message_new" class="commentbase-comment-new" placeholder="Write your comment here.."></textarea>
       <div style="text-align: right;">
-        <button v-on:click="pushComment($event)" class="es-button-white">Submit</button>
-        <button v-on:click="cancelCommentEdit($event)" v-if="editingComment" class="es-button-white">Cancel</button>
+        <button v-on:click="pushComment($event)" class="es-button btn-sm btn-block esdarkblue-special">Save Comment</button>
+        <button v-on:click="cancelCommentEdit($event)" v-if="editingComment" class="es-button btn-sm btn-block danger esred-special">Cancel</button>
       </div>
     </div>
   </div>
@@ -295,10 +295,20 @@ export default {
 </script>
 
 <style>
-.commentbase-comments {position: fixed;z-index: 5000;bottom: 0px;right: 0px;width: 300px;height: calc(100% - 315px);background: rgb(245, 248, 250);border: 1px solid rgb(227, 230, 240);padding: 5px 15px;margin: 0px;border-radius: 3px;box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;}
-.commentbase-comments-body {height: calc(100% - 127px);background: rgb(255, 255, 255);overflow-y: auto;width: 100%;border: 1px solid rgb(241, 241, 241);}
+.commentbase-comments { position: fixed; z-index: 5000; bottom: 0;right: 10px;width: 350px; background: rgb(245, 248, 250); margin: 0px; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;}
+.commentbase-comments .es-panel-head { display: flex; justify-content: space-between; background: var(--thin-white); }
+.commentbase-comments .es-panel-head h5 { font-size: 14px; line-height: unset; margin: 0; }
+.commentbase-comments .es-panel-body { height: 30vh; overflow-y: auto; padding: 0; margin-bottom: 122px; border-radius: 0; }
+.commentbase-comments .es-panel-body .name { font-size: 11px; font-weight: bold; }
+.commentbase-comments .es-panel-body .time { font-size: 11px; color: #888; }
+.commentbase-comments .es-panel-body .message { font-size: 13px; }
+
+.commentbase-comments-form { position: absolute; bottom: 0; left: 0; width: 100%; padding: 13px; background: var(--thin-white); border: 1px solid var(--whiteblue); }
+.commentbase-comments-form textarea.commentbase-comment-new { width: 100%; border: 1px solid #ced4da; border-radius: 0.25rem; padding: 10px; font-size: 13px; margin-bottom: 4px; }
+
 .commentbase-comment-highlight {font-weight: inherit; background: orange; color: #fff;}
-.commentbase-comment {border: 1px solid rgb(241, 241, 241); padding: 15px; margin-bottom: 0px;}
-.c-pop-menu {background: #293742; border: 1px solid #293742; padding: 3px; border-radius: 3px; margin-top: -1px; line-height: 1.2; font-size: 12px;}
-.c-pop-menu-item {text-align: center; color: #fff; font-weight: normal; cursor: pointer;}
+.commentbase-comment { background: #fff; padding: 15px; margin-bottom: 0px; border-bottom: 1px solid var(--whiteblue); }
+.c-pop-menu { background: #293742; border: 1px solid #293742; padding: 7px; border-radius: 3px; margin-top: -1px; line-height: 1.2; font-size: 12px;}
+.c-pop-menu-item { text-align: center; color: #fff; font-weight: normal; cursor: pointer; font-size: 12px; }
+.c-pop-menu-item:first-child { margin-bottom: 5px; }
 </style>

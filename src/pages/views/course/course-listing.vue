@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="page.is_ready" class="es-page-main page-chapter-details">
+    <div v-if="page.is_ready" class="es-page-main page-course-details">
       <div class="es-page-head">
         <div class="inner">
           <div class="details">

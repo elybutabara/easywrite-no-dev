@@ -58,7 +58,7 @@
 
 
 .page-main.dark .tox-tinymce { border: 1px solid #3c4557 !important; }
-.page-main.dark .tox .tox-toolbar, .tox .tox-toolbar__overflow, .tox .tox-toolbar__primary { background:#2b3548 !important; border-bottom:1px solid #3c4557;}
+.page-main.dark .tox .tox-toolbar, .tox .tox-toolbar__overflow, .tox .tox-toolbar__primary { background:#2b3548 !important; border-bottom: 1px solid #3c4557;}
 .page-main.dark .tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) { border-right:none !important; }
 
 .page-main.dark .tox .tox-tbtn--disabled svg, 
@@ -107,8 +107,14 @@
 .page-main.dark .es-button { background: var(--navy); border-color: var(--navy); }
 .page-main.dark .es-button { background: var(--navy); border-color: var(--navy) }
 
+/*on darkmode turn..ie: bg-white*/
 .page-main.dark .es-button.white-special { background: #fff; border-color: #fff; color: var(--navy); }
 .page-main.dark .es-button.white-special:hover { background: var(--es-darkblue); border-color:var(--es-darkblue); color: #fff; }
+
+.page-main.dark .es-button.esdarkblue-special { background: var(--es-darkblue); border-color:var(--es-darkblue); }
+.page-main.dark .es-button.esdarkblue-special:hover { background: var(--thin-navy); border-color:var(--thin-navy); color: #fff; }
+
+.page-main.dark .es-button.esred-special { background: var(--es-red); border-color:var(--es-red); }
 
 .page-main.dark .es-button.white { color: var(--thin-navy); background: transparent; }
 .page-main.dark .es-button:hover { background: var(--thin-white); border-color: var(--thin-white); color: var(--navy); }
@@ -130,8 +136,14 @@
 /*messaging*/
 .page-main.dark .messaging .es-panel-2 { background: transparent; }
 .page-main.dark .messaging .es-panel-2 .es-panel-head { background: var(--navy); border-color: var(--thin-navy); }
-.page-main.dark .messaging .es-panel-2 i { color: #fff; }
-
+.page-main.dark .messaging .es-panel-2 .es-panel-head i { color: #fff; }
+.page-main.dark .messaging .textarea-wrap { background: var(--navy); }
+/*commentbase-comments*/
+.page-main.dark .commentbase-comments.es-panel-2 .es-panel-head i { color: #fff !important; }
+.page-main.dark .commentbase-comments.es-panel-2 .es-panel-head { border-color: var(--thin-navy); }
+.page-main.dark .commentbase-comments.es-panel-2 .es-panel-body { background: var(--whitesh); }
+.page-main.dark .commentbase-comments-form { background: var(--navy); border-color: var(--thin-navy); }
+/*es-panel-2*/
 .page-main.dark .es-panel-2 .es-panel-head,
 .page-main.dark .es-panel-sm .es-panel-head { background: var(--navy); border-color: var(--navy); color: #fff; }
 

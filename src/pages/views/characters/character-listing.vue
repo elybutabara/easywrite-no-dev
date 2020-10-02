@@ -25,7 +25,7 @@
               <li><a href="javascript:void(0);">{{ $t('CHARACTERS') }}</a></li>
             </ul>
             <div class="row kj-row">
-                <div class="col-3 col-md-3 col-sm-12 kj-col fadeIn animated" v-for="character in characters" v-bind:key="character.id">
+                <div class="col-lg-3 col-md-3 col-sm-12 kj-col fadeIn animated" v-for="character in characters" v-bind:key="character.id">
                     <div class="es-card-2">
                         <div class="es-card-content">
                             <p class="title ellipsis-2">{{ character.fullname || 'Untitled' }}</p>
