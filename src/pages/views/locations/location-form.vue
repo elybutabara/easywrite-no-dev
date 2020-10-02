@@ -162,8 +162,8 @@ export default {
         window.swal.fire({
           position: 'center',
           icon: 'error',
-          title: 'Uploading Failed!',
-          text: 'Only .png, .jpeg, .jpg files are allowed!',
+          title: scope.$tc('Uploading Failed!'),
+          text: scope.$t('APPROVE_FILE_FORMATS_ARE') + '.png, .jpg, .jpeg' + scope.$tc('ALLOWED'),
           showConfirmButton: false,
           timer: 3000
         })
@@ -279,6 +279,7 @@ export default {
     if (scope.properties.location) {
       scope.data = scope.properties.location
       scope.picture_src = scope.properties.location.picture_src
+      scope.setDescription(scope.data.description)
     }
     scope.data.book_id = scope.properties.book.uuid
   },

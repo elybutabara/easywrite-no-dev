@@ -8,8 +8,8 @@
           </div>
           <div class="book-panel-right">
             <button class="es-button btn-sm white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
-            <b-button class="es-button btn-sm white" :disabled="exportOnProgress"  @click="exportScenes(book.uuid)">
-                <span v-if="exportOnProgress === false"><span>{{$t('EXPORT_SCENES_LIST').toUpperCase()}}</span></span>
+            <b-button class="es-button btn-sm white" :disabled="getExportCharactersStatus.status == true"  @click="exportScenes(book.uuid)">
+                <span v-if="getExportCharactersStatus.status === false"><span>{{$t('EXPORT_SCENES_LIST').toUpperCase()}}</span></span>
                 <span v-else>
                   <b-spinner small type="grow"></b-spinner>
                   <span>{{exportLoading}}</span>
@@ -25,7 +25,7 @@
           <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
           <li><a href="javascript:void(0);" style="padding-right: 20px;">{{ $t('CHAPTERS') }}</a></li>
         </ul>
-        
+
         <draggable v-model="chapters" draggable=".kj-col" class="row kj-row">
         <div class="col-md-3 col-sm-12 kj-col fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
             <div class="es-card">
@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import draggable from 'vuedraggable'
 const {ipcRenderer} = window.require('electron')
 export default {
@@ -72,6 +73,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({ getExportCharactersStatus: 'getExportCharactersStatus' }),
     book: function () {
       return this.properties
     },
@@ -142,7 +144,7 @@ export default {
     },
     exportScenes: function () {
       const scope = this
-      scope.exportOnProgress = true
+      scope.$store.commit('exportCharactersStatusOpen')
       ipcRenderer.send('EXPORT_PDF_SHOW_SCENE', {bookUUID: scope.bookUUID, title: scope.properties.title})
     }
   },
@@ -150,7 +152,7 @@ export default {
     var scope = this
     scope.bookUUID = scope.properties.uuid
     ipcRenderer.on('EXPORT_PDF_ENABLE_BUTTON', function () {
-      scope.exportOnProgress = false
+      scope.$store.commit('exportCharactersStatusClose')
     })
     setTimeout(function () {
       scope.page.is_ready = true

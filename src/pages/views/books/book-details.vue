@@ -10,7 +10,7 @@
             <button class="es-button btn-sm white" :disabled="getExportBookStatus.export_book_status"  @click="exportBook()">
               <span v-if="getExportBookStatus.export_book_status === false"><span>{{export_book}}</span></span>
               <span v-else>
-                <spinner small type="grow"></spinner>
+                <b-spinner small type="grow"></b-spinner>
                 <span>{{exportLoading}}</span>
               </span>
             </button>
@@ -35,14 +35,14 @@
             <div v-html="properties.about"></div>
         </div>
         <div id="goToFeedbacks">
-          <Feedback :properties="{ book: properties, parent: properties, parent_name: 'book', toggleType: false }"></Feedback>  
+          <Feedback :properties="{ book: properties, parent: properties, parent_name: 'book', toggleType: false }"></Feedback>
         </div>
     </div>
 </div>
 </template>
 
 <script>
-import moment from 'moment'
+// import moment from 'moment'
 import axios from 'axios'
 import { mapGetters } from 'vuex'
 import Feedback from '../../../components/Feedback'

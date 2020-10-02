@@ -29,9 +29,21 @@
               </b-row>
               <b-row v-show="manuscript.is_file==1" style="margin-bottom: 1rem;" class="text-left">
                 <b-col>
-                  <label>{{$t('APPROVE_FILE_FORMATS_ARE')}} DOC, DOCX og ODT: </label>
-                  <b-form-file  v-model="file" @input="displayFile" id="file-default" accept="application/msword,
-                            application/vnd.openxmlformats-officedocument.wordprocessingml.document"></b-form-file>
+                  <b-form>
+                    <label>{{$t('APPROVE_FILE_FORMATS_ARE')}} DOC, DOCX og ODT: </label>
+                    <b-form-file
+                      v-model="file"
+                      :state="feedback.file.state"
+                      @change="file.is_change=true"
+                      aria-describedby="input-live-help input-file-feedback"
+                      id="file-default"
+                      accept="application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                    </b-form-file>
+                    <!-- This will only be shown if the preceding input has an invalid state -->
+                    <b-form-invalid-feedback :state="feedback.file.state">
+                      {{ feedback.file.message }}
+                    </b-form-invalid-feedback>
+                  </b-form>
                 </b-col>
               </b-row>
               <b-row v-show="manuscript.is_file==0" style="margin-bottom: 1rem;" class="text-left">
@@ -133,6 +145,11 @@ export default {
         genre: {
           state: null,
           message: null
+        },
+        file: {
+          state: null,
+          message: null,
+          is_change: null
         }
       },
       join_group: false,
@@ -174,6 +191,7 @@ export default {
     setFeedbackNull () {
       var scope = this
       scope.setAll(scope.feedback.genre, null)
+      scope.setAll(scope.feedback.file, null)
     },
     validate () {
       var scope = this
@@ -185,6 +203,26 @@ export default {
         scope.feedback.genre.message = this.$t('GENRE_IS_REQUIRED')
         scope.feedback.genre.state = false
         isValid = false
+      }
+
+      if (scope.manuscript.is_file && scope.file) {
+        if (scope.file.length < 1) {
+          scope.feedback.file.message = scope.$tc('FILE_IS_REQUIRED')
+          scope.feedback.file.state = false
+          isValid = false
+        } else if (scope.file.size < 1) {
+          scope.feedback.file.message = scope.$tc('FILE_IS_EMPTY')
+          scope.feedback.file.state = false
+          isValid = false
+        } else {
+          let validFileTypes = ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.oasis.opendocument.text']
+          if (scope.file && !validFileTypes.includes(scope.file['type'])) {
+            scope.file = []
+            scope.feedback.file.message = scope.$t('APPROVE_FILE_FORMATS_ARE') + '.doc, .docx, .odt' + scope.$tc('ALLOWED')
+            scope.feedback.file.state = false
+            isValid = false
+          }
+        }
       }
 
       return isValid
@@ -199,8 +237,8 @@ export default {
         window.swal.fire({
           position: 'center',
           icon: 'error',
-          title: 'Uploading Failed!',
-          text: 'Only .doc, .docx, .odt files are allowed!',
+          title: scope.$tc('Uploading Failed!'),
+          text: scope.$t('APPROVE_FILE_FORMATS_ARE') + '.doc, .docx, .odt' + scope.$tc('ALLOWED'),
           showConfirmButton: false,
           timer: 3000
         })
@@ -208,7 +246,16 @@ export default {
     },
     uploadFile () {
       var scope = this
-      if (scope.manuscript.is_file === 1 && scope.file.length) {
+
+      scope.manuscript.join_group = (scope.join_group) ? 1 : 0
+      scope.manuscript.is_file = parseInt(scope.manuscript.is_file)
+      scope.manuscript.genre = scope.selected_genre
+
+      if (!scope.validate()) {
+        return false
+      }
+
+      if (scope.manuscript.is_file === 1) {
         let formData = new FormData()
         formData.append('single-file', scope.file)
 
@@ -231,18 +278,10 @@ export default {
     saveManuscript () {
       let scope = this
 
-      scope.manuscript.join_group = (scope.join_group) ? 1 : 0
-      scope.manuscript.is_file = parseInt(scope.manuscript.is_file)
-      scope.manuscript.genre = scope.selected_genre
-
       if (!scope.manuscript.is_file) {
         scope.manuscript.content = scope.tempContent
       }
-
-      if (!scope.validate()) {
-        return false
-      }
-
+      scope.validate()
       scope.axios
         .post('http://localhost:3000/assignment-manuscripts', scope.manuscript)
         .then(response => {
@@ -264,7 +303,7 @@ export default {
     },
     loadManuscript: function (assignment) {
       let scope = this
-
+      scope.setFeedbackNull()
       scope.manuscript = {
         id: null,
         assignment_id: '',
@@ -278,7 +317,7 @@ export default {
         join_group: 0,
         words: 0
       }
-
+      scope.file = []
       scope.$set(scope.manuscript, 'assignment_id', assignment.uuid)
       scope.$set(scope.manuscript, 'user_id', scope.$store.getters.getUserID)
 
@@ -314,7 +353,7 @@ export default {
   .card-header .card-title { font-size: 1.25rem; margin-bottom: 0; line-height: 1.5; }
   .card-header .close { padding: 1rem; margin: -1rem -1rem -1rem auto; }
 
-  .b-overlay { position: fixed; top: 0; left: 0; bottom: 0; right: 0; overflow: auto; background-color: rgba(44, 46, 47, 0.9); }
+  .b-overlay {z-index: 1; position: fixed; top: 0; left: 0; bottom: 0; right: 0; overflow: auto; background-color: rgba(44, 46, 47, 0.9); }
   .bv-example-row { margin-top: 100px; margin-bottom: 70px; }
   .is_file { width: 50%!important; }
 </style>

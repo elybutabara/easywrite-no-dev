@@ -203,7 +203,8 @@ export default {
         { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [] },
         { title: 'Assignment Manuscripts', api: 'assignment-manuscripts', local: 'assignment-manuscripts', downloaded: [], packed: [] },
         { title: 'Webinars', api: 'webinars', local: 'webinars', downloaded: [], packed: [] },
-        { title: 'WebinarPresenters', api: 'webinar-presenters', local: 'webinar-presenters', downloaded: [], packed: [] }
+        { title: 'WebinarPresenters', api: 'webinar-presenters', local: 'webinar-presenters', downloaded: [], packed: [] },
+        { title: 'WebinarRegistrants', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: [], packed: [] }
         // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
       ],
       bookUUID: ''
@@ -282,6 +283,7 @@ export default {
       scope.packing.error = false
       // get the current pointed endpoint
       let endpoint = scope.endpoints[scope.packing.pointer]
+      if (!endpoint) return
       scope.progress_message = scope.$t('PACKING') + endpoint.title + '...'
 
       scope.axios.get('http://localhost:3000/' + endpoint.local + '/syncable',
@@ -326,6 +328,7 @@ export default {
       }
 
       var endpoint = scope.endpoints[scope.upload.pointer]
+      if (!endpoint) return
       if (typeof endpoint.packed === 'undefined' || endpoint.packed.length < 1) {
         scope.upload.pointer++
         scope.upload.index = 0
@@ -347,7 +350,7 @@ export default {
         'Authorization': 'Bearer ' + scope.api_token
       }
 
-      if (['Items', 'Characters', 'Locations'].indexOf(endpoint.title) > -1) {
+      if (['Items', 'Characters', 'Locations'].indexOf(endpoint.title) > -1 && (data.picture || data.pictures)) {
         var src = path.join(resourcePath, 'resources', 'images', endpoint.title.replace(/\s+/g, '-').toLowerCase(), (data.picture || data.pictures))
 
         if (!electronFs.existsSync(src)) {
@@ -367,7 +370,7 @@ export default {
 
           finalData = data_
         }
-      } else if (['Assignment Manuscripts'].indexOf(endpoint.title) > -1) {
+      } else if (['Assignment Manuscripts'].indexOf(endpoint.title) > -1 && data.content) {
         if (data.is_file) {
           var file = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), data.content)
 
@@ -462,6 +465,7 @@ export default {
 
       // get the current pointed endpoint
       let endpoint = scope.endpoints[scope.download.pointer]
+      if (!endpoint) return
       scope.progress_message = scope.$t('DOWNLOADING') + ' ' + endpoint.title + '...'
 
       //
@@ -480,7 +484,7 @@ export default {
         .then(function (response) {
           // eslint-disable-next-line valid-typeof
           var data = response.data.rows
-          if (['Items', 'Characters', 'Locations', 'Webinars', 'WebinarPresenters'].indexOf(endpoint.title) > -1) {
+          if (['Items', 'Characters', 'Locations', 'Courses', 'Webinars', 'WebinarPresenters'].indexOf(endpoint.title) > -1) {
             // console.log(endpoint.title + ' response.data.rows ---->\n', response.data.rows)
 
             if (response.data && response.data.rows && response.data.rows.length > 0) {
@@ -499,10 +503,14 @@ export default {
                 fs.mkdirsSync(dstDir)
 
                 var folderName = window.APP.API.UPLOAD_URL + '/book-' + endpoint.title.toLowerCase()
-                if (['Webinars', 'WebinarPresenters'].indexOf(endpoint.title) > -1) {
+                if (['Webinars', 'Courses', 'WebinarPresenters'].indexOf(endpoint.title) > -1) {
                   folderName = window.APP.API.UPLOAD_URL + '/' + endpoint.title.toLowerCase()
 
                   image = image.replace('/uploads/' + endpoint.api + '/', '')
+                  if (endpoint.title === 'Courses') {
+                    folderName = window.APP.API.UPLOAD_URL + '/course-images'
+                    image = image.replace('/uploads/course-images/', '')
+                  }
                   console.log(endpoint.api)
                   console.log(image)
                 }
@@ -522,14 +530,15 @@ export default {
                 var row = response.data.rows[i]
 
                 if (row.is_file) {
-                  // eslint-disable-next-line no-redeclare
-                  var src = window.APP.API.UPLOAD_URL + '/' + endpoint.title.replace(/\s+/g, '-').toLowerCase() + '/' + (row.content)
+                  const loc = '/uploads/assignment-manuscripts/' // file location from web TODO: refactor web saving of assignment ,dont include path
+                  const filename = row.content.replace(loc, '') // file location from web TODO: refactor web saving of assignment ,dont include path
+                  var src = window.APP.API.UPLOAD_URL + '/' + endpoint.title.replace(/\s+/g, '-').toLowerCase() + '/' + filename
 
-                  // eslint-disable-next-line no-redeclare
                   var dst = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), row.content)
-
                   // Added by mael this will create the directory if not exist
-                  let dstDir = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase())
+
+                  // file location from web TODO: refactor web saving of assignment ,dont include path
+                  let dstDir = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), loc)
                   fs.mkdirsSync(dstDir)
 
                   // console.log('src = ', src)
@@ -591,6 +600,7 @@ export default {
       }
 
       var endpoint = scope.endpoints[scope.saving.pointer]
+      if (!endpoint) return
       scope.progress_message = scope.$t('SAVING') + ' ' + endpoint.title + scope.$t('DATA') + '...'
       scope.progress_message = scope.$t('SAVING') + ' ' + endpoint.title + scope.$t('DATA') + '(' + scope.saving.index + ' ' + scope.$t('OF') + ' ' + (endpoint.downloaded.length + 1) + ')...'
 
@@ -670,6 +680,7 @@ export default {
       const authorUUID = this.$store.getters.getAuthorID
       scope.$store.dispatch('reloadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
       scope.$root.$emit('loadCourses')
+      scope.$root.$emit('loadAssignment')
       // var userID = this.$store.getters.getUserID
       // scope.$store.dispatch('getBooksByAuthorID', userID)
     },

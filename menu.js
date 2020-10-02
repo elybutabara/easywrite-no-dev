@@ -59,6 +59,8 @@ const mainMenuTemplate = [
        checked: true,
         click: function (menuItem, currentWindow) {
           // currentWindow.webContents.send('REFRESH_MENU', ControlState(0)) // main.js then to starter to refresh menu
+          // ControlState2(0)
+          
           currentWindow.webContents.send('TRANSLATE','en') //main.js
           currentWindow.webContents.send('SET_TRANSLATION_DOM','en') // Main.vue
         }
@@ -69,7 +71,8 @@ const mainMenuTemplate = [
         click: function (menuItem, currentWindow) {
           currentWindow.webContents.send('TRANSLATE','da')
           currentWindow.webContents.send('SET_TRANSLATION_DOM','da')
-
+          mainMenuTemplate.label= "Fileeeess"
+          // ControlState2(1)
         },
       },
       {label: "Finnish",
@@ -78,6 +81,7 @@ const mainMenuTemplate = [
         click: function (menuItem, currentWindow) {
           currentWindow.webContents.send('TRANSLATE','fi')
           currentWindow.webContents.send('SET_TRANSLATION_DOM','fi')
+          // ControlState2(2)
         }
       },
       {label: "Icelandic",
@@ -133,6 +137,25 @@ const mainMenuTemplate = [
   }
 ];
 
+// function ControlState2(val) {
+//   let menuCount = mainMenuTemplate.length - 1
+//   mainMenuTemplate[1] = 'Tessst'
+//   console.log('asdsadsadsdasad')
+//   console.log(mainMenuTemplate)
+//   // if(process.env.NODE_ENV!=='production') menuCount -= 1
+
+//   // mainMenuTemplate[menuCount].submenu.forEach(function (item, index) {
+//   //   if (index===val) {
+//   //     mainMenuTemplate[menuCount].submenu[val].checked = true
+//   //   }
+//   //   else {
+//   //     mainMenuTemplate[menuCount].submenu[index].checked = false
+//   //   }
+//   // })
+
+//    return Menu.buildFromTemplate(mainMenuTemplate)
+// }
+
 // Ismael: i dont think we still need this if were using the custom menu
 function ControlState(val) {
   let menuCount = mainMenuTemplate.length - 1
@@ -149,6 +172,8 @@ function ControlState(val) {
 
   return Menu.buildFromTemplate(mainMenuTemplate)
 }
+
+
 
 // If mac, add empty object on menu
 if(process.platform == "darwin") {

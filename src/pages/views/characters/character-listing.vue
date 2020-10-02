@@ -9,8 +9,8 @@
                 </div>
                 <div>
                   <button class="es-button btn-sm white" @click="CHANGE_COMPONENT({tabKey: 'character-form', tabComponent: 'character-form', tabData: { list_index: -1, book: book, character: null }, tabTitle: $t('NEW_CHARACTER'), newTab: true})">{{$t('NEW_CHARACTER').toUpperCase()}}</button>
-                  <b-button :disabled="exportOnProgress" class="es-button btn-sm white" @click="exportCharacter()">
-                    <span v-if="exportOnProgress===false"><span>{{$t('EXPORT_CHARACTERS_LIST').toUpperCase()}}</span></span>
+                  <b-button :disabled="getExportCharactersStatus.status == true" class="es-button btn-sm white" @click="exportCharacter()">
+                    <span v-if="getExportCharactersStatus.status === false"><span>{{$t('EXPORT_CHARACTERS_LIST').toUpperCase()}}</span></span>
                     <span v-else>
                       <b-spinner small type="grow"></b-spinner>
                       <span>{{exportLoading}}</span>
@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 const {ipcRenderer} = window.require('electron')
 export default {
   name: 'character-listing',
@@ -58,6 +59,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({ getExportCharactersStatus: 'getExportCharactersStatus' }),
     book: function () {
       return this.properties
     },
@@ -103,7 +105,7 @@ export default {
         bookUUID: scope.bookUUID,
         title: scope.properties.title
       }
-      scope.exportOnProgress = true
+      scope.$store.commit('exportCharactersStatusOpen')
       ipcRenderer.send('EXPORT_PDF_SHOW_CHARACTERS', {book: book})
     }
   },
@@ -112,7 +114,7 @@ export default {
     // scope.getCharacters(scope.properties.id)
     scope.bookUUID = scope.properties.uuid
     ipcRenderer.on('EXPORT_PDF_ENABLE_BUTTON', function () {
-      scope.exportOnProgress = false
+      scope.$store.commit('exportCharactersStatusClose')
     })
   }
 }

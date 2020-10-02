@@ -1,60 +1,25 @@
 <template>
   <div>
     <div v-if="page.is_ready" class="page-chapter-details">
-      <div class="es-page-head">
-        <div class="inner">
-          <div class="details">
-            <div>
-              <h4><strong>{{ lesson.title }}</strong></h4>
-            </div>
+      <div class="es-page-head-2 mb-0">
+        <div class="row-head">
+          <div>
+            <h4 class="main-title"><i class="fas fa-chalkboard-teacher mr-1"></i> {{ lesson.title }}</h4>
           </div>
         </div>
       </div>
-      <div class="es-chapter-details-tab">
-        <div v-bind:class="{ 'active' : tab.active == 'content' }" @click="changeTab('content')" class="es-chapter-details-tab-item">{{$t('CONTENT').toUpperCase()}}</div>
-<!--        <div v-bind:class="{ 'active' : tab.active == 'document' }" @click="changeTab('document')" class="es-chapter-details-tab-item">{{$tc('DOCUMENT', 2).toUpperCase()}}</div>-->
-      </div>
-      <div style="position:relative; padding-bottom:40px;">
-        <div v-if="tab.active === 'lesson'"  class="">
-<!--          <div class="es-page-content">-->
-<!--            <div class="es-row">-->
-<!--              <div class="es-col fadeIn animated" v-for="lesson in lessons" v-bind:key="lesson.uuid">-->
-<!--                <div class="es-card" v-bind:style="{ opacity: lesson.is_available ? '100%' : '50%' }">-->
-<!--                  <div class="es-card-content">-->
-<!--                    <div class="es-card-actions" v-if="lesson.is_available">-->
-<!--                      <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'lesson-details-' + lesson.uuid, tabComponent: 'lesson-details',  tabData: { lesson: lesson, course_taken: course_taken ,data: data}, tabTitle: $t('VIEW')+ ' - ' + lesson.title, newTab: true})"><i class="lar la-eye"></i></button>-->
-<!--                    </div>-->
-<!--                    <h3 class="title ellipsis-2">{{ DISPLAY_TITLE(lesson.title) }}</h3>-->
-<!--                    <i class="description ellipsis-3"><span v-html="lesson.content"></span></i>-->
-<!--                  </div>-->
-<!--                  <div class="es-card-footer">-->
-<!--                    <small style="float:right;">{{ lesson.is_available ? $tc('AVAILABLE') : $tc('AVAILABLE_AT') + ' : ' + lesson.availability_date}}</small>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
+      <div class="es-page-content" id="custom-scrollbar">
+        <ul class="es-breadcrumb">
+          <li><a @click="CHANGE_COMPONENT({tabKey: 'courses', tabIndex: $store.getters.getActiveTab, tabComponent: 'course-listing',  tabData: null, tabTitle: 'COURSE'})" href="javascript:void(0);">{{ $t('COURSES') }}</a></li>
+          <li><a @click="CHANGE_COMPONENT({tabKey: 'course-details-' + course.uuid , tabIndex: $store.getters.getActiveTab, tabComponent: 'course-details',  tabData: {courses_taken:course_taken}, tabTitle: $t('COURSES') })" href="javascript:void(0);">{{ course.title }}</a></li>
+          <li><a href="javascript:void(0);">{{ lesson.title }}</a></li>
+        </ul>
+        <div class="basic-info">
+          <div class="date-started"><i class="far fa-calendar-alt"></i> {{ $t('DATE_STARTED') }}: {{ formatDate(course_taken.started_at, 'll hh.mma') }}</div>
+          <div class="date-started"><i class="far fa-calendar-times"></i> {{ $t('EXPIRES_ON') }}: {{ displayExpiryDate() }}</div>
         </div>
-        <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content scene-listing">
-<!--          <div class="row">-->
-<!--            <div class="col-md-4">-->
-<!--              <div class="uploaded-file-preview" style="height: 150px;background: #d2d2d2">-->
-<!--                <div class="default-preview"><i class="fa fa-image"></i></div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-4">-->
-<!--              <h4>{{ $t('TITLE')}}: {{course_taken.course.title }}</h4>-->
-<!--              <div>{{ $tc('DATE_STARTED')}} - {{ data.started_at  }}</div>-->
-<!--              <div>{{ $tc('EXPIRES_ON')}} - {{ data.expired_at  }}</div>-->
-<!--            </div>-->
-<!--          </div>-->
-          <div class="text-right">
-            <b-badge href="#" variant="dark" class="p-2">{{ $t('DATE_STARTED') }}: <i class="fa fa-calendar-check" aria-hidden="true"></i> {{ data.started_at }}</b-badge>
-            <b-badge href="#" variant="dark" class="p-2">{{ $t('EXPIRES_ON') }}: <i class="fa fa-calendar-times" aria-hidden="true"></i> {{ data.expired_at }}</b-badge>
-          </div>
-          <div class="row mt-2">
-            <div class="col-md-12" v-html="lesson.content"></div>
-          </div>
+        <div class="lesson-details">
+          <p v-html="lesson.content"></p>
         </div>
       </div>
     </div>
@@ -67,64 +32,46 @@ export default {
   props: ['properties'],
   data: function () {
     return {
-      course_taken: [],
-      lessons: [],
-      data: {
-        started_at: '',
-        expired_at: ''
-      },
       page: {
         is_ready: false
-      },
-      tab: {
-        active: 'content'
       }
     }
   },
-  methods: {
-    numberFormat: function (number) {
-      return number.toLocaleString()
+  computed: {
+    course: function () {
+      return this.properties.course_taken.package.course
     },
-    changeTab: function (active) {
-      var scope = this
-      scope.tab.active = active
+    course_taken: function () {
+      return this.properties.course_taken
+    },
+    lesson: function () {
+      return this.properties.lesson
     }
   },
-  computed: {},
-  beforeMount () {},
-  async mounted () {
-    const scope = this
-    try {
-      scope.course_taken = scope.properties.course_taken
-      scope.lesson = scope.properties.lesson
-      scope.data = scope.properties.data
-    } finally {
-      scope.page.is_ready = true
+  methods: {
+    displayExpiryDate: function () {
+      let scope = this
+      if (scope.end_date) {
+        return scope.formatDate(scope.course_taken.end_date, 'll ') + scope.formatDate(scope.course_taken.started_at, 'hh.mma')
+      }
+      return scope.formatDate(scope.course_taken.started_at, 'll hh.mma')
     }
+  },
+  beforeMount () {},
+  mounted () {
+    const scope = this
+    console.log(this.properties)
+    // try {
+    //   scope.course_taken = scope.properties.course_taken
+    //   scope.lesson = scope.properties.lesson
+    //   scope.data = scope.properties.data
+    // } finally {
+    scope.page.is_ready = true
+    // }
   }
 }
 </script>
 
 <style scoped>
-  .es-chapter-details-tab { display:flex; border-bottom:1px solid #ccc; padding:0px 30px; height:70px; background:#fff; }
-  .es-chapter-details-tab .es-chapter-details-tab-item { height:30px; line-height:30px; margin-top:40px; margin-right:25px; cursor:pointer; position:relative; }
-  .es-chapter-details-tab .es-chapter-details-tab-item:after { content:''; position:absolute; bottom:0px; left:0px; height:3px;  width:100%; background:transparent;}
-  .es-chapter-details-tab .es-chapter-details-tab-item.active:after { background:#922c39;  }
-
-  .es-chapter-details-tab-content { position:relative; padding:30px; background:#fff; height:calc(100vh - 360px); overflow-y:auto; display:block; }
-  .es-chapter-details-tab-content.no-padding { padding:0px; }
-  .es-chapter-details-tab-content.active { display:block; }
-
-  .uploaded-file-preview { width:100%; cursor: pointer; }
-  .uploaded-file-preview img { width:100%; }
-  .uploaded-file-preview .default-preview { min-height: 150px; background-color: #293742; color: #fff; text-align: center; }
-  .uploaded-file-preview .default-preview i { font-size: 105px; line-height: 100px; opacity: 0.8; }
-
-  .es-card { color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
-  .es-card .es-card-content { position:relative; padding:20px; min-height:150px; }
-  /*.es-card .es-card-content .title { font-size:18px; font-weight:900; margin:0px; padding-right:110px; }*/
-
-  .es-card .es-card-content .es-card-actions { position:absolute; top:20px; right:20px; text-align:right; }
-  .es-card .es-card-content .es-card-actions .btn-circle { background:transparent; border:1px solid #e0e5ee; border-radius:50%; width:30px; height:30px; line-height:22px; text-align:center; font-size:15px; }
-  .es-card .es-card-footer { background:#f5f8fa; height:40px; line-height:40px; padding:0px 20px; border-top:1px solid #e0e5ee; }
+.basic-info { float: right }
 </style>

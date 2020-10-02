@@ -27,16 +27,18 @@
                   <div v-if="properties.toggleType" class="d-flex align-items-center mb-1">
                     <a class="es-avatar" style="margin-right: 6px;" href="javascript:void(0);"><i class="las la-user"></i></a>
                       <strong v-if="feedback.author.alias">{{ feedback.author.alias }}</strong>
-                      <strong v-else>{{ feedback.author.first_name }} {{ feedback.author.last_name }}</strong>
+                      <!--<strong v-else>{{ feedback.author.first_name }} {{ feedback.author.last_name }}</strong>-->
+                      <strong v-else>{{ $t('Anonymous') }}</strong>
                   </div>
                   <strong v-else class="author">
                       <span v-if="feedback.author.alias">{{ feedback.author.alias }}</span>
-                      <span v-else>{{ feedback.author.first_name }} {{ feedback.author.last_name }}</span>
+                      <!--<span v-else>{{ feedback.author.first_name }} {{ feedback.author.last_name }}</span>-->
+                      <strong v-else>{{ $t('Anonymous') }}</strong>
                   </strong>
 
                   <span class="date">{{ formatDate(feedback) }}</span>
                 </div>
-              
+
                 <div class="feedback-single-content-wrap" v-bind:class="{ 'open' : feedback.expand_content }">
                   <p @click="expandFeedbackContent(feedback)" class="message" v-bind:class="{ 'ellipsis-3' : !feedback.expand_content }" v-html="feedback.message"></p>
                 </div>
@@ -76,7 +78,8 @@
                     <div class="d-flex justify-content-between">
                       <div class="d-flex align-items-center mb-1">
                         <a class="es-avatar" style="margin-right: 6px;" href="javascript:void(0);"><i class="las la-user"></i></a>
-                        <strong>{{ response.author.alias }}</strong>
+                        <strong v-if="response.author.alias">{{ response.author.alias }}</strong>
+                        <strong v-else>{{ $t('Anonymous') }}</strong>
                       </div>
                       <span class="date">{{ formatDate(response) }}</span>
                     </div>

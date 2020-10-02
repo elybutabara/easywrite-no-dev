@@ -14,7 +14,7 @@
         <button class="current">{{ $t('CHAPTERS') }}</button>
     </div> -->
     <div class="es-page-content" id="custom-scrollbar">
-      
+
         <ul class="es-breadcrumb">
             <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'books-i-read-book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
             <li><a href="javascript:void(0);" style="padding-right: 20px;">{{$t('CHAPTERS')}}</a></li>
@@ -115,3 +115,4 @@ export default {
     }, 100)
   }
 }
+</script>

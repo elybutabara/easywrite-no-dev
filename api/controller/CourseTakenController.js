@@ -6,12 +6,26 @@ const { CoursesTaken, Course, User } = require(path.join(__dirname, '..', 'model
 class CourseTakenController {
   static async getAllByUserId (param) {
     let courseTaken = CoursesTaken.query()
-      .where('user_id', param.userID)
-      .withGraphJoined('package')
-      .withGraphJoined('course')
+      .where('courses_taken.user_id', param.userID)
+      .where('package:course:webinars:webinar_registrant.user_id', param.userID)
+      .withGraphJoined('package.course.[lessons, webinars.[webinar_registrant, webinar_presenters]]')
+      .modifyGraph('package.course.lessons', builder => {
+        builder.orderBy('order', 'asc')
+      })
+      .modifyGraph('package.course', builder => {
+        builder.groupBy('id')
+      })
+      .modifyGraph('package.course.webinars', builder => {
+        builder.whereNull('deleted_at')
+      })
+      .modifyGraph('package.course.webinars.webinar_registrant', builder => {
+        builder.limit(1).first()
+      })
+
     if (param.limit) {
       courseTaken.limit(param.limit)
     }
+
     return courseTaken
   }
 
@@ -24,11 +38,16 @@ class CourseTakenController {
     return course
   }
 
-  static getByCourseId (courseId) {
+  static getCourseTakenById (courseTakenId) {
     let courseTaken = CoursesTaken.query()
-      .withGraphJoined('package')
-      .withGraphJoined('course')
-      .where('course_id', courseId)
+      .withGraphJoined('package.course.[lessons, webinars.webinar_presenters]')
+      .modifyGraph('package.course', builder => {
+        builder.groupBy('id')
+      })
+      .modifyGraph('package.course.webinars', builder => {
+        builder.whereNull('deleted_at')
+      })
+      .findById(courseTakenId)
     return courseTaken
   }
 

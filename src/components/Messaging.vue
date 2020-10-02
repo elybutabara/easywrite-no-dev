@@ -2,7 +2,7 @@
   <div class="messaging" v-bind:class="{ show : show }">
     <div class="es-panel-2 shadow">
       <div class="es-panel-head d-flex align-items-center justify-content-between">
-        <h5 class="mb-0 font-weight-bold">Messages</h5>
+        <h5 class="mb-0 font-weight-bold">{{ $t('MESSAGES') }}</h5>
         <button v-on:click.prevent="window.AppMessaging.close()" type="button" class="close" aria-label="Close">
           <!-- <span aria-hidden="true">&times;</span> -->
           <i class="las la-times-circle"></i>
@@ -14,11 +14,11 @@
         <div v-if="!selectedGroupId">
           <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; padding-left: 200px; padding-bottom: 40px; background: #fff; border-right: 1px solid var(--whiteblue);">
             <div style="padding: 15px; border-bottom: 1px solid rgb(227, 230, 240);">
-                <h6 style="margin: 0;">New Message</h6>
+                <h6 style="margin: 0;">{{$t('NEW_MESSAGE')}}</h6>
             </div>
             <div style="padding: 15px;">
-                <div class="mb-2" style="color: #c0c0c0; font-size: 13px;">You may select 1 user for private message or multiple users for group chat.</div>
-                <multiselect v-model="userSelect.selected" id="ajax" label="name" track-by="uuid" placeholder="Select a user..." open-direction="bottom" :options="userSelect.rows" :multiple="true" :searchable="true" :loading="userSelect.isLoading" :internal-search="false" :clear-on-select="false" :close-on-select="false" :options-limit="300" :limit="3" :limit-text="userSelectLimitText" :max-height="700" :show-no-results="false" :hide-selected="true" @search-change="userSelectFind">
+                <div class="mb-2" style="color: #c0c0c0; font-size: 13px;">{{ $t('YOU_MAY_SELECT_1_USER_FOR_PRIVATE_MESSAGE_OR_MULTIPLE_USERS_FOR_GROUP_CHAT') }}</div>
+                <multiselect v-model="userSelect.selected" id="ajax" label="name" track-by="uuid" :placeholder="$t('SEARCH_A_USER') + '...'" open-direction="bottom" :options="userSelect.rows" :multiple="true" :searchable="true" :loading="userSelect.isLoading" :internal-search="false" :clear-on-select="false" :close-on-select="false" :options-limit="300" :limit="3" :limit-text="userSelectLimitText" :max-height="700" :show-no-results="false" :hide-selected="true" @search-change="userSelectFind">
                   <template slot="tag" slot-scope="{ option, remove }">
                     <span class="custom__tag" style="float: left;cursor:default;background: rgb(73, 109, 125);line-height: 24px;padding: 0 8px;margin: 0;margin-left: 5px;border-radius: 5px;color: #fff;">
                       <span>{{ option.name }}</span>
@@ -27,13 +27,13 @@
                   </template>
                   <template slot="clear" slot-scope="props">
                     <div class="multiselect__clear" v-if="userSelect.selected.length" @mousedown.prevent.stop="userSelectClearAll(props.search)"></div>
-                  </template><span slot="noResult">Oops! No elements found. Consider changing the search query.</span>
+                  </template><span slot="noResult">{{$t('NO_USERS_FOUND')}}</span>
                 </multiselect>
                 <div v-if="userSelect.selected.length > 1" style="margin-top: 15px;">
-                  <input v-model="userSelect.groupName" type="text" placeholder="Group Name" class="form-control" />
+                  <input v-model="userSelect.groupName" type="text" :placeholder="t('GROUP_NAME')" class="form-control" />
                 </div>
                 <div v-if="userSelect.selected.length > 0" style="margin-top: 15px;">
-                  <button v-on:click="createGroupChat($event)" class="btn es-button-white btn-secondary">Next <i class="fa fa-arrow-right"></i></button>
+                  <button v-on:click="createGroupChat($event)" class="btn es-button-white btn-secondary">{{$t('NEXT')}} <i class="fa fa-arrow-right"></i></button>
                 </div>
             </div>
           </div>
@@ -50,7 +50,7 @@
                 <div style="clear: both;"></div>
               </div>
               <div style="clear: both;"></div>
-              <div v-bind:style="{float: gm.author_uuid !== getAuthor.uuid?'left':'right'}" style="float: right;font-size: 9px;opacity: 0.4;margin-top: -5px;margin-bottom: 5px;">Seen by {{messageSeenBy(gm, i)}}</div>
+              <div v-bind:style="{float: gm.author_uuid !== getAuthor.uuid?'left':'right'}" style="float: right;font-size: 9px;opacity: 0.4;margin-top: -5px;margin-bottom: 5px;">{{ $t('SEEN_BY')}} {{messageSeenBy(gm, i) }}</div>
               <div style="clear: both;"></div>
             </div>
             <div v-for="(gm, i) in groupMessages" v-bind:key="'gm-'+selectedGroupId+'-'+i" style="position: relative">
@@ -63,7 +63,7 @@
                 <div style="clear: both;"></div>
               </div>
               <div style="clear: both;"></div>
-              <div v-bind:style="{float: gm.author_uuid !== getAuthor.uuid?'left':'right'}" style="float: right;font-size: 9px;opacity: 0.4;margin-top: -9px;margin-bottom: 5px;">Seen by {{messageSeenBy(gm, i)}}</div>
+              <div v-bind:style="{float: gm.author_uuid !== getAuthor.uuid?'left':'right'}" style="float: right;font-size: 9px;opacity: 0.4;margin-top: -9px;margin-bottom: 5px;">{{$t('SEEN_BY')}} {{messageSeenBy(gm, i)}}</div>
               <div style="clear: both;"></div>
             </div>
             <div style="clear: both;"></div>
@@ -88,7 +88,7 @@
         </div>
         <div style="position: absolute; left: 0; top: 0; height: 100%; width: 200px; background: #f5f8fa; border-right: 1px solid rgb(227, 230, 240); border-left: 1px solid var(--whiteblue);">
           <div class="p-7px">
-            <input v-model="groupsFilterTxt" type="text" class="form-control es-input" placeholder="Search users &amp; groups..." />
+            <input v-model="groupsFilterTxt" type="text" class="form-control es-input" :placeholder="$t('SEARCH_USER_AND_GROUPS') + '...'" />
           </div>
           <ul class="messaging-group-nav-list">
             <li v-for="(group, i) in sortedGroupChats" v-bind:key="'group-index'+i+'-'+group.uuid">
@@ -99,7 +99,7 @@
             </li>
           </ul>
           <div class="p-10px" style="position: absolute; bottom: 0; left: 0; width: 100%; text-align: center;">
-            <a class="btn-icon-2" v-on:click.prevent="selectedGroupId=null" href="javascript:void(0);"><i class="fa fa-plus"></i> <span>New Message</span></a>
+            <a class="btn-icon-2" v-on:click.prevent="selectedGroupId=null" href="javascript:void(0);"><i class="fa fa-plus"></i> <span>{{ $t('NEW_MESSAGE') }}</span></a>
           </div>
         </div>
       </div>
@@ -327,10 +327,7 @@ export default {
       //
       var scope = this
 
-      var port = 3030
-      if (window.APP.API.URL === 'http://api.pilotleser.no/se' || window.APP.API.URL === 'https://api.pilotleser.no/se') {
-        port = 3031
-      }
+      var port = window.APP.CHAT.PORT
 
       var socket = socketIO('https://dev.kunohay.com:' + port)
       socket.on('connect', function () {

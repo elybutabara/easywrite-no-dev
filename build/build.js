@@ -31,6 +31,13 @@ let buildOptions = {
       "filter": [
         "**/*"
       ]
+    },
+    {
+      "from": "./src/assets/img/default-image.jpg",
+      "to": "./src/assets/img/default-image.jpg",
+      "filter": [
+        "**/*"
+      ]
     }
   ],
   "files": [

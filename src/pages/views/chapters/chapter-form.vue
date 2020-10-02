@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="book-panel-right">
-                <button ref="button" class="es-button btn-sm white" :disabled="version_modal_is_open" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
+                <button ref="button" v-show="data.id != null" class="es-button btn-sm white" :disabled="version_modal_is_open" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
                 <button v-if="data.id != null" class="es-button btn-sm white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
                 <button v-if="data.id != null" class="es-button btn-sm white" @click="saveChapter()">{{$t('SAVE_CHANGES')}}</button>
                 <button v-else class="es-button btn-sm white" @click="saveChapter()">{{$t('SAVE')}}</button>
@@ -136,7 +136,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12" v-show="data.id != null">
                                 <small>The chapter will be autosaved every ten seconds</small>
                                 <small v-if="!do_auto_save" class="text-red"> | Saving ...</small>
                             </div>
@@ -460,7 +460,7 @@ export default {
     saveChapter (noAlert) {
       var scope = this
       scope.data.chapter_version.content = scope.tempChapterVersionCont
-      scope.data.chapter_version.comments = scope.commentbase_vm.getCommentsJSON()
+      scope.data.chapter_version.comments = (scope.commentbase_vm) ? scope.commentbase_vm.getCommentsJSON() : null
 
       // If upon validation it return error do not save character and display errors
       if (!scope.validate()) {
@@ -550,6 +550,7 @@ export default {
         content: scope.data.chapter_version.content
       }
 
+      if (chapterHistory.content === '') return
       scope.axios
         .post('http://localhost:3000/book-chapter-history', chapterHistory)
         .then(response => {

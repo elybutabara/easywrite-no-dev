@@ -26,7 +26,7 @@
                             <div class="description text-italic display-webkit-box" v-else>{{$t('NO_DESCRIPTION')}}...</div>
                         </div>
                         <div class="es-card-footer">
-                            <a class="btn-sm-rounded btn-bc-default-shade btn-bg-faint-default" @click="CHANGE_COMPONENT({tabKey: 'location-details-' + location.uuid, tabComponent: 'location-details', tabData: { book: book, location: location }, tabTitle:  $t('VIEW')+ ' - ' + location.location, newTab: true})" href="javascript:void(0);"><i class="lar la-eye"></i> {{$t('VIEW')}}</a>
+                            <a class="btn-sm-rounded btn-bc-default-shade btn-bg-faint-default" @click="CHANGE_COMPONENT({tabKey: 'location-details-' + location.uuid, tabComponent: 'location-details', tabData: { book: book, location: location }, tabTitle:  $t('VIEW')+ ' - ' + location.location})" href="javascript:void(0);"><i class="lar la-eye"></i> {{$t('VIEW')}}</a>
                             <a class="btn-sm-rounded btn-bc-primary-shade btn-bg-faint-primary" @click="CHANGE_COMPONENT({tabKey: 'location-form-' + location.uuid, tabComponent: 'location-form', tabData: { book: book, location: location }, tabTitle: $t('EDIT')+ ' - ' + location.location, newTab: true})" href="javascript:void(0);"><i class="las la-pencil-alt"></i> {{$t('EDIT')}}</a>
                             <a class="btn-sm-rounded btn-bc-danger-shade btn-bg-faint-danger" @click="deleteLocation(location)" href="javascript:void(0);"><i class="las la-trash-alt"></i> {{$t('DELETE')}}</a>
                         </div>

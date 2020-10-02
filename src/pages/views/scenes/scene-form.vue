@@ -3,7 +3,7 @@
     <div class="es-page-head-2 mb-0">
         <div class="row-head">
             <div>
-                <div  v-if="data.id != null">
+                <div v-if="data.id != null">
                     <h4>{{$t('EDIT')}}: <strong>{{ data.title }}</strong></h4>
                     <small>{{$t('DATE_MODIFIED')}}: {{ data.updated_at }}</small>
                 </div>
@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="book-panel-right">
-                <button ref="button" class="es-button btn-sm white" :disabled="version_modal_is_open" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
+                <button ref="button" v-show="data.id!=null" class="es-button btn-sm white" :disabled="version_modal_is_open" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
                 <button v-if="data.id != null" class="es-button btn-sm white" @click="saveScene()">{{$t('SAVE_CHANGES')}}</button>
                 <button v-else class="es-button btn-sm white" @click="saveScene()">{{$t('SAVE')}}</button>
             </div>
@@ -33,8 +33,8 @@
 
         <ul class="es-breadcrumb">
             <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
-            <li><a @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('CHAPTERS') }}</a></li>
-            <li><a @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + book.uuid, tabComponent: 'chapter-details', tabData: { book: book, chapter: chapter }, tabTitle: 'VIEW - ' + chapter.title})" href="javascript:void(0);">{{ chapter.title || 'Untitled' }}</a></li>
+            <li v-if="chapter"><a @click="CHANGE_COMPONENT({tabKey: 'chapter-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})" href="javascript:void(0);">{{ $t('CHAPTERS') }}</a></li>
+            <li v-if="chapter"><a @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + book.uuid, tabComponent: 'chapter-details', tabData: { book: book, chapter: chapter }, tabTitle: 'VIEW - ' + chapter.title})" href="javascript:void(0);">{{ chapter.title || 'Untitled' }}</a></li>
             <li><a href="javascript:void(0);" style="padding-right: 20px;">
                 <span>{{ (data.id) ? data.title || $t('Untitled') : $t('NEW_SCENE')}}</span>
             </a></li>
@@ -132,7 +132,7 @@
                                 </div>
                             </b-col>
                         </b-row>
-                        <div class="col-md-12">
+                        <div class="col-md-12" v-show="data.id != null">
                             <small>The scene will be autosaved every ten seconds</small>
                             <small v-if="!do_auto_save" class="text-red"> | Saving ...</small>
                         </div>
@@ -716,7 +716,6 @@ export default {
       var isValid = true
 
       scope.setFeedbackNull()
-
       // Check if title is empty and return error
       if (!scope.data.title) {
         scope.feedback.title.message = this.$t('TITLE') + ' ' + this.$t('IS_REQUIRED')
@@ -736,7 +735,7 @@ export default {
       var scope = this
 
       scope.data.scene_version.content = scope.tempSceneVersionContent
-      scope.data.scene_version.comments = scope.commentbase_vm.getCommentsJSON()
+      scope.data.scene_version.comments = (scope.commentbase_vm) ? scope.commentbase_vm.getCommentsJSON() : null
       scope.data.notes = scope.tempSceneNotes
       scope.data.viewpoint_description = scope.tempViewpointDescription
       scope.data.chapter_id = (scope.selected_chapter !== 'undefined' && scope.selected_chapter !== null && scope.selected_chapter.uuid !== '-1') ? scope.selected_chapter.uuid : null
@@ -862,6 +861,7 @@ export default {
         content: scope.data.scene_version.content
       }
 
+      if (sceneHistory.content === '') return
       scope.axios
         .post('http://localhost:3000/book-scene-history', sceneHistory)
         .then(response => {

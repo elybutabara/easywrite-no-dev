@@ -19,6 +19,15 @@ class Lesson extends BaseModel {
         to: 'lesson_documents.lesson_id'
       },
       softDelete: true
+    },
+    course: {
+      relation: BaseModel.HasOneRelation,
+      modelClass: path.join(__dirname, 'Course'),
+      join: {
+        from: 'lessons.course_id',
+        to: 'cources.uuid'
+      },
+      softDelete: true
     }
   }
 }

@@ -250,5 +250,6 @@ export default {
   YES_DELETE_IT: 'Ja, slett det',
   YOU_WONT_BE_ABLE_TO_REVERT_THIS: 'Du kan ikke angre dette',
   YOUR_CURRENT_CONTENT_WILL_BE_OVERWRITTERN: 'ditt nåværende innhold blir overskrevet',
-  YOUR_POMODORO_EXPIRES: 'Pomodoro utløper'
+  YOUR_POMODORO_EXPIRES: 'Pomodoro utløper',
+  OPEN_FILE: 'Åpen fil'
 }

@@ -1,10 +1,10 @@
 'use strict'
 const path = require('path')
-
+const electronFs = require('fs')
 const express = require('express')
 const router = express.Router()
-
-const { UserController, BookController, ReaderController } = require(path.join(__dirname, '..', 'controllers'))
+const { app } = require('electron')
+const { UserController, BookController, ReaderController, CourseTakenController, WebinarController } = require(path.join(__dirname, '..', 'controllers'))
 
 router.get('/login', async function (req, res) {
   const user = await UserController.authenticate(req.query.username, req.query.password)
@@ -80,6 +80,65 @@ router.get('/:userId/books', async function (req, res) {
   res
     .status(200)
     .json(books)
+})
+
+router.get('/:userID/courses', async function (req, res) {
+  const param = {
+    userID: req.params.userID,
+    search: ''
+  }
+
+  if (req.query.search) {
+    param.search = req.query.search
+  }
+
+  const courses = await CourseTakenController.getAllByUserId(param)
+  courses.forEach(function (course, index) {
+    var file = path.join(resourcePath, 'resources', 'images', 'courses', course.package.course.image.replace('/uploads/course-images/', ''))
+
+    courses[index].package.course.picture_src = 'file://' + path.resolve(app.getAppPath(), '../', 'src', 'assets', 'img', 'default-image.jpg')
+    if (electronFs.existsSync(file)) {
+      courses[index].package.course.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'courses', course.package.course.image.replace('/uploads/course-images/', ''))
+    }
+
+    course.package.course.webinars.forEach(function (webinar, indx) {
+      var web_file = path.join(resourcePath, 'resources', 'images', 'webinars', webinar.image.replace('/uploads/webinars/', ''))
+
+      courses[index].package.course.webinars[indx].image_src = 'file://' + path.resolve(app.getAppPath(), '../', 'src', 'assets', 'img', 'default-image.jpg')
+      if (electronFs.existsSync(web_file)) {
+        courses[index].package.course.webinars[indx].image_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'webinars', webinar.image.replace('/uploads/webinars/', ''))
+      }
+    })
+  })
+
+  res
+    .status(200)
+    .json(courses)
+})
+
+router.get('/:userID/webinars', async function (req, res) {
+  const param = {
+    userID: req.params.userID,
+    search: ''
+  }
+
+  if (req.query.search) {
+    param.search = req.query.search
+  }
+
+  const webinars = await WebinarController.getAllByUserId(param)
+  webinars.forEach(function (webinar, indx) {
+    var web_file = path.join(resourcePath, 'resources', 'images', 'webinars', webinar.image.replace('/uploads/webinars/', ''))
+
+    webinars[indx].image_src = 'file://' + path.resolve(app.getAppPath(), '../', 'src', 'assets', 'img', 'default-image.jpg')
+    if (electronFs.existsSync(web_file)) {
+      webinars[indx].image_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'webinars', webinar.image.replace('/uploads/webinars/', ''))
+    }
+  })
+
+  res
+    .status(200)
+    .json(webinars)
 })
 
 module.exports = router

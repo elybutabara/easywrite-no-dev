@@ -100,24 +100,33 @@ let APP = {
   SE_PROD: {
     API: {
       URL: 'https://api.pilotleser.no/se',
-      UPLOAD_URL: 'https://www.easywrite.se/uploads'
+      UPLOAD_URL: 'https://www.easywrite.se/uploads',
+    },
+    CHAT: {
+      PORT: 3031
     }
   },
   SE_DEV: {
     API: {
       URL: 'https://api.pilotleser.no/se-dev',
-      UPLOAD_URL: 'https://dev.easywrite.se/uploads'
+      UPLOAD_URL: 'https://dev.easywrite.se/uploads',
+    },
+    CHAT: {
+      PORT: 3032
     }
   },
   NO_PROD: {
     API: {
       URL: 'https://api.pilotleser.no/live',
-      UPLOAD_URL: 'https://www.pilotleser.no/uploads'
+      UPLOAD_URL: 'https://www.pilotleser.no/uploads',
+    },
+    CHAT: {
+      PORT: 3030
     }
   }
 }
 
-window.APP = APP.SE_PROD // DEVELOPEMENT APP
+window.APP = APP.SE_DEV // DEVELOPEMENT APP
 if (process.env.NODE_ENV === 'production') {
   window.APP = APP.SE_PROD // PRODUCTION APP
 }
