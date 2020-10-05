@@ -4,7 +4,7 @@ const path = require('path')
 const express = require('express')
 const router = express.Router()
 
-const { AuthorPersonalProgressController } = require(path.join(__dirname, '..', 'controllers'))
+const { AuthorPersonalProgressController, AuthorController } = require(path.join(__dirname, '..', 'controllers'))
 
 router.get('/:authorId/:isFor/:relationId/personal-progress/:date', async function (req, res) {
   let data = {
@@ -52,6 +52,14 @@ router.get('/:authorId/personal-progress', async function (req, res) {
   res
     .status(200)
     .json(personalProgress)
+})
+
+router.post('/sync', async function (req, res) {
+  const row = await AuthorController.sync(req.body)
+
+  res
+    .status(200)
+    .json(row)
 })
 
 module.exports = router

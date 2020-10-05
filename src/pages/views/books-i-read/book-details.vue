@@ -14,6 +14,7 @@
         </div>
         <div class="row-head">
           <div>
+            <small>{{ $tc('BY') }}: <strong>{{ properties.author.alias }}</strong></small>
             <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>
           </div>
           <div class="d-flex align-items-center">

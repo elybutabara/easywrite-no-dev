@@ -27,8 +27,7 @@ class ReaderController {
     // console.log(bookUUIDs)
 
     const books = Book.query()
-      .withGraphJoined('book_genre_collection')
-      .withGraphJoined('genre')
+      .withGraphJoined('[book_genre_collection,genre,author]')
       .whereIn('books.uuid', bookUUIDs)
       .whereNull('books.deleted_at')
       .whereNull('book_genre_collection.deleted_at')
