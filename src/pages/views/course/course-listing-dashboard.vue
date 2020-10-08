@@ -29,13 +29,13 @@
             <img v-bind:src="course.package.course.picture_src">
             <div class="details">
               <strong class="ellipsis-1">{{ course.package.course.title }}</strong>
-              <p class="ellipsis-4" v-html="course.package.course.short_description"></p>
+              <p class="ellipsis-4 mb-0" v-html="course.package.course.short_description"></p>
             </div>
             <div class="footer">
               {{ course.hasStarted }}
               <div v-if="course.has_started">
                 <button class="btn disabled" v-if="course.has_ended">{{ $tc('RENEW_SUBSCRIPTION') }}</button>
-                <button class="btn" @click="viewDetail(course)" v-else>{{ $tc('CONTINUE_WITH_COURSE') }}</button>
+                <button class="es-button btn-block" @click="viewDetail(course)" v-else>{{ $tc('CONTINUE_WITH_COURSE') }}</button>
               </div>
             </div>
           </div>
