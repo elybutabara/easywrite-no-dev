@@ -92,7 +92,7 @@
           </div>
           <ul class="messaging-group-nav-list">
             <li v-for="(group, i) in sortedGroupChats" v-bind:key="'group-index'+i+'-'+group.uuid">
-              <div v-bind:class="{active: selectedGroupId==group.uuid}" v-on:click.prevent="selectedGroupId=group.uuid" class="messaging-group-nav" style="">
+              <div v-bind:class="{active: selectedGroupId==group.uuid,  unread: group.unreadCount }" v-on:click.prevent="selectedGroupId=group.uuid" class="messaging-group-nav">
                 {{(group.uuid.indexOf('pm-')!==0?'[Group] ':'') + group.name}} {{group.unreadCount1}}
                 <div v-if="group.unreadCount && group.unreadCount>0" style="position: absolute; top: 8px; right: 10px; background: red; width: 16px; height: 16px; line-height: 16px; text-align: center; color: #fff; border-radius: 50%; font-size: 10px;">{{group.unreadCount}}</div>
               </div>
@@ -172,7 +172,7 @@ export default {
       filtered.sort(function (a, b) {
         return b.last_activity - a.last_activity
       })
-
+      console.log('this is ',filtered)
       return filtered
     }
   },
