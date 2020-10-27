@@ -1,32 +1,32 @@
 <template>
   <div>
-    <div v-if="page.is_ready" class="es-page-main page-course-details">
+    <div v-if="page.is_ready" class="es-page-main page-course-listing">
       <div class="es-page-head">
-        <div class="inner">
+        <div class="row-head">
           <div class="details">
-            <h4><strong>{{ $t('COURSES') }}</strong></h4>
-          </div>
-          <div class="actions">
+            <h4 class="main-title">{{ $t('COURSES') }}</h4>
           </div>
         </div>
       </div>
-      <div class="es-page-content">
-        <div class="course-list">
-          <div class="course-item" v-for="course in courses_taken" :key="course.id">
-            <img v-bind:src="course.package.course.picture_src">
-            <div class="details">
-              <strong class="ellipsis-1">{{ course.package.course.title }}</strong>
-              <p class="ellipsis-4" v-html="course.package.course.short_description"></p>
-            </div>
-            <div class="footer">
-              {{ course.hasStarted }}
-              <div v-if="course.has_started">
-                <button class="btn disabled" v-if="course.has_ended">{{ $tc('RENEW_SUBSCRIPTION') }}</button>
-                <button class="btn" @click="viewDetail(course)" v-else>{{ $tc('CONTINUE_WITH_COURSE') }}</button>
+      <div class="es-page-content" id="custom-scrollbar">
+          <div class="row">
+            <div class="col-md-3 col-sm-12" v-for="course in courses_taken" :key="course.id">
+              <div class="course-item">
+                <img v-bind:src="course.package.course.picture_src">
+                <div class="details">
+                  <strong class="ellipsis-1">{{ course.package.course.title }}</strong>
+                  <p class="ellipsis-4 mb-0" v-html="course.package.course.short_description"></p>
+                </div>
+                <div class="footer">
+                  {{ course.hasStarted }}
+                  <div v-if="course.has_started">
+                    <button class="btn disabled" v-if="course.has_ended">{{ $tc('RENEW_SUBSCRIPTION') }}</button>
+                    <button class="es-button btn-block" @click="viewDetail(course)" v-else>{{ $tc('CONTINUE_WITH_COURSE') }}</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
       </div>
     </div>
 <!--    <div v-if="page.is_ready" class="page-chapter-details">-->
@@ -132,16 +132,9 @@ export default {
 </script>
 
 <style scoped>
-  .es-page-content {
-    background: #fff;
-    position: relative;
-  }
-  .course-list { width:100%; max-width:1300px; padding:10px; margin:0px auto; display:flex; flex-wrap: wrap; justify-content: left; }
-  .course-list .course-item { width:calc(33.33% - 10px); background:#fff; border:1px solid #ccc; margin:0 5px 10px; }
-  .course-list .course-item img { width:100%; height:auto; height:200px; object-fit: cover; border-bottom:1px solid #ccc; }
-  .course-list .course-item .details { padding:10px; min-height: 126px }
-  .course-list .course-item .details p { height:96px; }
-  .course-list .course-item .details strong { font-size: 20px }
-  .course-list .course-item .footer { padding:10px; }
-  .course-list .course-item .footer .btn { width: 100%; color: #fff; background-color: #852635 }
+.course-item { background:#fff; }
+.course-item img { width:100%; height:auto; height:200px; object-fit: cover; border-top-right-radius: 4px; border-top-left-radius: 4px; }
+.course-item .details { padding:15px; min-height: 120px; border: 1px solid var(--whiteblue); border-bottom: none; border-top: none; }
+.course-item .details strong { font-size: 18px; margin-bottom: 10px; }
+.course-item .footer { padding:15px; border:1px solid var(--whiteblue); border-top: none; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; }
 </style>

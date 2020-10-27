@@ -256,7 +256,5 @@ export default {
 .updateVersion{ padding-left:5px;width:325px;background: #324553;position: fixed;bottom: 0;left: 0;text-align: center;margin-left: -5px;}
 .updateVersion span{ font-family: 'Crimson Roman'; color:#abc4d7; font-size: 14px; cursor: pointer }
 .updateVersion span:hover  { color:#fff; }
-.es-tree-view {
-  margin-bottom: 64px;
-}
+/*.es-tree-view { margin-bottom: 64px; }*/
 </style>

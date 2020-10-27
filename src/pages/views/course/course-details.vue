@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="page-location-form" v-if="page.is_ready">
+    <div class="es-page-main page-course-details" v-if="page.is_ready">
       <div class="es-page-head-2 mb-0">
         <div class="row-head">
           <div>
@@ -22,28 +22,33 @@
         </div>
       </div>
       <div class="es-course-details-content">
-        <div v-if="tab.active === 'lessons'"  class="es-course-details-tab-content"  id="custom-scrollbar">
-          <div class="lesson-list" v-if="lessons">
-            <div class="lesson-single" v-for="lesson in lessons" :key="lesson.uuid">
+        <div v-if="tab.active === 'lessons'"  class="es-page-content" id="custom-scrollbar">
+          <div class="lesson-list row" v-if="lessons">
+            <div class="col-md-3" v-for="lesson in lessons" :key="lesson.uuid">
+
+              <div class="lesson-single ">
               <div v-if="isLessonAvailable(lesson) || hasLessonAccess(lesson)">
                 <div style="cursor: pointer" @click="openLesson(lesson)">
                   <div class="details">
                     <strong>{{ lesson.title }}</strong>
                   </div>
                   <div class="footer">
-                    {{ $t('AVAILABLE') }}
+                    <span>{{ $t('AVAILABLE') }}</span>
                   </div>
                 </div>
               </div>
+              
+
               <div v-else>
                 <div class="text-muted">
                   <div class="details">
                     <strong>{{ lesson.title }}</strong>
                   </div>
                   <div class="footer">
-                    {{ $t('AVAILABLE_AT') }} {{ lessonAvailability(lesson) }}
+                    <span>{{ $t('AVAILABLE_AT') }} {{ lessonAvailability(lesson) }}</span>
                   </div>
                 </div>
+              </div>
               </div>
             </div>
           </div>
@@ -277,8 +282,6 @@ export default {
 </script>
 
 <style scoped>
-  .es-course-details-content {  height:calc(100vh - 200px)!important; }
-
   .es-course-details-tab { display:flex; border-bottom:1px solid #ccc; padding:0px 30px; height:70px; background:#fff; }
   .es-course-details-tab .es-course-details-tab-item { height:30px; line-height:30px; margin-top:40px; margin-right:25px; cursor:pointer; position:relative; }
   .es-course-details-tab .es-course-details-tab-item:after { content:''; position:absolute; bottom:0px; left:0px; height:3px;  width:100%; background:transparent;}
@@ -294,10 +297,11 @@ export default {
   .webinar-list .webinar-single .details { padding:10px; height: 180px; }
   .webinar-list .webinar-single .webinar-badge { background:#ae2937; color:#fff; padding:2px 5px; border-radius:3px; margin-right:5px; font-size:12px; display:inline-block; }
 
-  .lesson-list { width:100%; max-width:1300px; padding:10px; margin:0px auto; display:flex; flex-wrap: wrap; justify-content: left; }
-  .lesson-list .lesson-single { width:calc(33.33% - 10px); background:#fff; border:1px solid #ccc; margin:0 5px 10px; }
-  .lesson-list .lesson-single .details { padding:10px; height: 120px }
-  .lesson-list .lesson-single .footer { padding:10px; background-color: #f5f8fa; border-top: 1px solid #ccc; text-align: right }
+
+  .lesson-list .lesson-single { background:#fff; margin-bottom: 25px;  }
+  .lesson-list .lesson-single .details { padding:10px; height: 120px; border-top-left-radius: 4px; border-top-right-radius: 4px; border :1px solid var(--whiteblue); border-bottom: 0; }
+  .lesson-list .lesson-single .footer { padding:10px; background-color: #f5f8fa; border: 1px solid var(--whiteblue); text-align: center; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; }
+  .lesson-list .lesson-single .footer span { font-size: 13px; }
 
   .cours-plan-details .basic-info { width: 40%; margin-right: 20px; margin-bottom: 0px; padding: 10px; border: 1px solid rgb(203, 214, 226); float: left }
   .cours-plan-details .basic-info img { width: 100%; }

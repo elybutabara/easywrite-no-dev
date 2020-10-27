@@ -44,13 +44,15 @@
 .page-main.dark .left-side-bar { background: var(--navy); }
 .page-main.dark .es-top-parent { background: var(--navy); border-color: var(--navy); }
 .page-main.dark .es-tab-nav { background: var(--navy); } /* 2b3548, 293742, var(--thin-navy) nice color too*/
-.page-main.dark .es-tree-view li { color: #fff; }
 
 .page-main.dark .es-tab-nav .es-tab-nav-item { border-color: var(--thin-navy); }
 .page-main.dark .es-tab-nav .es-tab-nav-item.active { border-color: #fff; }
 .page-main.dark .es-tab-nav .es-tab-nav-item        .es-tab-title { color: #bdc1c6; }
 .page-main.dark .es-tab-nav .es-tab-nav-item.active .es-tab-title { font-weight: 600; color: #324553; }
 
+/*es-tree-view*/
+.page-main.dark .es-tree-view { border-right: 0; }
+.page-main.dark .es-tree-view li { color: #fff; }
 .page-main.dark .es-tree-view .level-1>li { border-bottom: 1px solid var(--thin-navy); }
 .page-main.dark .es-tree-view .level-1>li.open { background: #24303a; border-bottom: 0 }
 .page-main.dark .es-tree-view .level-2>li.open { background: var(--thin-navy); }
@@ -125,7 +127,7 @@
 .page-main.dark .feedback-wrap .feedbacks .es-panel-body .feedback-single { border-color: #eee; }
 .page-main.dark .feedback-wrap .feedbacks .foot { background: var(--navy); border-color: var(--navy); }
 .page-main.dark .feedback-wrap .es-panel-2 .es-panel-body,
-.page-main.dark .feedback-wrap .es-panel-sm .es-panel-body { background: var(--whitesh); border-color: var(--whitesh); }
+.page-main.dark .feedback-wrap .es-panel-sm .es-panel-body { background: var(--whitesh); border-color: var(--whiteblue); }
 .page-main.dark .feedback-single .feedback-single-replies-wrap .feedback-single-replies .response-single { border-color: #eee; }
 /*btn feedback*/
 .page-main.dark .feedback-single.done .btn-feedback-marks.done,
@@ -160,3 +162,11 @@
 
 /* es-card */
 .page-main.dark .es-card .es-card-footer { background: #fff; }
+
+
+
+
+/*page course details*/
+.page-main.dark .es-course-details-content .es-page-content { background: #fff; padding-top: 20px; }
+.page-main.dark .lesson-list .lesson-single .footer { background: var(--navy); border-color: var(--navy); }
+.page-main.dark .lesson-list .lesson-single .footer span { color: #fff; }
