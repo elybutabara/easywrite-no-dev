@@ -172,6 +172,7 @@ export default {
         error: false
       },
       endpoints: [
+        { title: 'Authors', api: 'authors', local: 'authors', downloaded: [], packed: [], error: [] },
         { title: 'Genres', api: 'book-genres', local: 'book-genres', downloaded: [], packed: [], error: [] },
         { title: 'Relations', api: 'book-relations', local: 'relations', downloaded: [], packed: [], error: [] },
         { title: 'Books', api: 'books', local: 'books', downloaded: [], packed: [], error: [] },

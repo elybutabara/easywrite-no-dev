@@ -31,6 +31,15 @@ class Book extends BaseModel {
         },
         to: 'book_genres.uuid'
       }
+    },
+    author: {
+      relation: BaseModel.HasOneRelation,
+      modelClass: path.join(__dirname, 'Author'),
+      join: {
+        from: 'books.author_id',
+        to: 'authors.uuid'
+      },
+      softDelete: true
     }
   }
 }

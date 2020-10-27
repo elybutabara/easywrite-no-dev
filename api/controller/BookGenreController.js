@@ -1,13 +1,24 @@
 'use strict'
 const path = require('path')
 
-const { BookGenre } = require(path.join(__dirname, '..', 'models'))
+const { BookGenre, User } = require(path.join(__dirname, '..', 'models'))
 
 class BookGenreController {
   static async save (data) {
     const saveGenre = await BookGenre.query().upsertGraph([data]).first()
 
     return saveGenre
+  }
+
+  static async getSyncable (userId) {
+    const user = await User.query()
+      .findById(userId)
+      .withGraphJoined('author', { maxBatchSize: 1 })
+
+    const rows = BookGenre.query()
+      .where('updated_at', '>', user.synced_at)
+
+    return rows
   }
 
   static async sync (row) {
