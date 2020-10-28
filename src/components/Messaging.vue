@@ -172,7 +172,7 @@ export default {
       filtered.sort(function (a, b) {
         return b.last_activity - a.last_activity
       })
-      
+
       return filtered
     }
   },

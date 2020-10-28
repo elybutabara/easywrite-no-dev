@@ -37,7 +37,6 @@
                   </div>
                 </div>
               </div>
-              
 
               <div v-else>
                 <div class="text-muted">
@@ -296,7 +295,6 @@ export default {
   .webinar-list .webinar-single img { width:100%; height:auto; height:200px; object-fit: cover; border-bottom:1px solid #ccc; }
   .webinar-list .webinar-single .details { padding:10px; height: 180px; }
   .webinar-list .webinar-single .webinar-badge { background:#ae2937; color:#fff; padding:2px 5px; border-radius:3px; margin-right:5px; font-size:12px; display:inline-block; }
-
 
   .lesson-list .lesson-single { background:#fff; margin-bottom: 25px;  }
   .lesson-list .lesson-single .details { padding:10px; height: 120px; border-top-left-radius: 4px; border-top-right-radius: 4px; border :1px solid var(--whiteblue); border-bottom: 0; }
