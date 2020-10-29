@@ -172,8 +172,8 @@ export default {
         error: false
       },
       endpoints: [
-        { title: 'Genres', api: 'book-genres', local: 'book-genres', downloaded: [], packed: [], error: [] },
         { title: 'Authors', api: 'authors', local: 'authors', downloaded: [], packed: [], error: [] },
+        { title: 'Genres', api: 'book-genres', local: 'book-genres', downloaded: [], packed: [], error: [] },
         { title: 'Relations', api: 'book-relations', local: 'relations', downloaded: [], packed: [], error: [] },
         { title: 'Books', api: 'books', local: 'books', downloaded: [], packed: [], error: [] },
         { title: 'Items', api: 'book-items', local: 'items', downloaded: [], packed: [], error: [] },
@@ -768,6 +768,7 @@ export default {
       scope.saving.total = 0
       scope.saving.error = false
       scope.endpoints = [
+        { title: 'Authors', api: 'authors', local: 'authors', downloaded: [], packed: [], error: [] },
         { title: 'Genres', api: 'book-genres', local: 'book-genres', downloaded: [], packed: [], error: [] },
         { title: 'Relations', api: 'book-relations', local: 'relations', downloaded: [], packed: [], error: [] },
         { title: 'Books', api: 'books', local: 'books', downloaded: [], packed: [], error: [] },
