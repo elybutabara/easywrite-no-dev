@@ -19,6 +19,7 @@ exports.up = async function (knex) {
     await knex.schema.createTable('notifications', function (t) {
       t.increments('id')
       t.string('uuid')
+      t.string('book_id')
       t.integer('from')
       t.integer('to')
       t.integer('parent_id')
