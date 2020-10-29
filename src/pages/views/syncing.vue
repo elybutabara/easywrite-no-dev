@@ -172,8 +172,8 @@ export default {
         error: false
       },
       endpoints: [
-        { title: 'Authors', api: 'authors', local: 'authors', downloaded: [], packed: [], error: [] },
         { title: 'Genres', api: 'book-genres', local: 'book-genres', downloaded: [], packed: [], error: [] },
+        { title: 'Authors', api: 'authors', local: 'authors', downloaded: [], packed: [], error: [] },
         { title: 'Relations', api: 'book-relations', local: 'relations', downloaded: [], packed: [], error: [] },
         { title: 'Books', api: 'books', local: 'books', downloaded: [], packed: [], error: [] },
         { title: 'Items', api: 'book-items', local: 'items', downloaded: [], packed: [], error: [] },
@@ -205,8 +205,9 @@ export default {
         { title: 'Assignment Manuscripts', api: 'assignment-manuscripts', local: 'assignment-manuscripts', downloaded: [], packed: [] },
         { title: 'Webinars', api: 'webinars', local: 'webinars', downloaded: [], packed: [] },
         { title: 'WebinarPresenters', api: 'webinar-presenters', local: 'webinar-presenters', downloaded: [], packed: [] },
-        { title: 'WebinarRegistrants', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: [], packed: [] }
+        { title: 'WebinarRegistrants', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: [], packed: [] },
         // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
+        { title: 'Notification', api: 'notifications', local: 'notifications', downloaded: [], packed: [] }
       ],
       bookUUID: ''
     }
@@ -330,7 +331,7 @@ export default {
 
       var endpoint = scope.endpoints[scope.upload.pointer]
       if (!endpoint) return
-      if (typeof endpoint.packed === 'undefined' || endpoint.packed.length < 1) {
+      if (typeof endpoint.packed === 'undefined' || typeof endpoint.packed.length === 'undefined' || endpoint.packed.length < 1) {
         scope.upload.pointer++
         scope.upload.index = 0
         scope.startUploadData()
@@ -795,7 +796,8 @@ export default {
         // { title: 'Book Feedbacks', api: 'book-feedbacks', local: 'feedbacks', downloaded: [], packed: [] },
         // { title: 'Book Chapter Feedbacks', api: 'book-chapter-feedbacks', local: 'chapter-feedbacks', downloaded: [], packed: [] },
         // { title: 'Book Chapter Feedback Responses', api: 'book-chapter-feedback-responses', local: 'chapter-feedback-responses', downloaded: [], packed: [] },
-        { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [] }
+        { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [] },
+        { title: 'Notification', api: 'notifications', local: 'notifications', downloaded: [], packed: [] }
         // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
       ]
     },

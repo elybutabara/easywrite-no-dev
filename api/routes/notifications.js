@@ -9,7 +9,7 @@ const { NotificationController } = require(path.join(__dirname, '..', 'controlle
 router.get('/:authorUuid', async function (req, res) {
   const data = await NotificationController.getAll(req.params.authorUuid)
   const response = {
-    'count': data.length,
+    // 'count': data.length,
     'rows': data
   }
   res
@@ -32,4 +32,19 @@ router.get('/read/:notificationId', async function (req, res) {
     .json(row)
 })
 
+router.get('/syncable', async function (req, res) {
+  const rows = await NotificationController.getSyncable(req.query.userID)
+
+  res
+    .status(200)
+    .json(rows)
+})
+router.post('/sync', async function (req, res) {
+  const row = await NotificationController.sync(req.body)
+  console.clear()
+  console.log(row)
+  res
+    .status(200)
+    .json(row)
+})
 module.exports = router

@@ -1,53 +1,53 @@
 <template>
-  <div>
-    <div class="card shadow mb-4">
-      <div class="card-header p-15px">
-        <h6 class="m-0 font-weight-bold">Message Center</h6>
-      </div>
-      <div class="p-15px">
-        <a href="#" v-on:click.prevent="type = 'All'">{{$t('ALL')}} ({{ itemsCounts['Message'] + itemsCounts['Notification']}})</a> |
-        <a href="#" v-on:click="openMessage(null, $event)">{{$t('MESSAGES')}} ({{itemsCounts['Message']}})</a> |
-        <a href="#" v-on:click.prevent="type = 'Notification'">{{$t('NOTIFICATIONS')}} ({{itemsCounts['Notification']}})</a>
-
-        <div style="float: right;">
-          <button v-on:click="openMessage(null, $event)" class="btn btn-default" style="height: 24px; line-height: 24px; text-transform: none;">{{$t('NEW_MESSAGE')}}</button>
-        </div>
-      </div>
-      <div class="card-body" style="padding: 0;">
-        <div style="overflow-y: auto; max-height: calc(100vh - 266px);">
-          <div v-if="rows.length < 1" style="text-align: center; padding: 30px 0; opacity: 0.5;">
-            {{$t('EMPTY')}}
-          </div>
-          <div v-for="(row, i) in rows" v-bind:key="'mcp-key-'+i" style="padding: 10px; border-top: 1px solid #e3e6f0; clear: both;" v-bind:style="{backgroundColor: row.is_seen?'#fff':'rgb(245, 248, 250)'}">
-            <div v-bind:style="{'background-image': 'url(@/assets/img/blank-profile-picture.png)'}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #c0c0c0; float: left;"></div>
-            <div style="float: left; margin-left: 10px;">
-              <div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{ row.data.user_name || 'Null'}}</div>
-              <div v-if="row.type=='Message'" style="cursor: pointer;">
-                <div v-html="row.data.message" v-on:click="openMessage(3)"></div>
-              </div>
-              <div v-if="row.type === 'SceneComment'">
-                {{$t('COMMENTED_ON_SCENE')}} <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.scene_title }}</a>
-              </div>
-              <div v-if="row.type === 'ChapterComment'">
-                {{$t('COMMENTED_ON_CHAPTER')}} <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.chapter_title }}</a>
-              </div>
-              <div v-if="row.type === 'FeedbackBook'">
-                {{$t('LEFT_A_FEEDBACK_ON_BOOK')}} <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.book.title }}</a>
-              </div>
-              <div v-if="row.type === 'FeedbackChapter'">
-                 {{$t('LEFT_A_FEEDBACK_ON_CHAPTER')}} <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.chapter.title }}</a>
-              </div>
-              <div v-if="row.type === 'FeedbackScene'">
-                {{$t('LEFT_A_FEEDBACK_ON_SCENE')}} <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.scene.title }}</a>
-              </div>
-              <div style="font-size: 80%; line-height: 100%; opacity: 0.5;">{{displayTime(row.created_at)}}</div>
+    <div>
+        <div class="card shadow mb-4">
+            <div class="card-header p-15px">
+                <h6 class="m-0 font-weight-bold">Message Center</h6>
             </div>
-            <div style="clear: both;"></div>
-          </div>
+            <div class="p-15px">
+                <a href="#" v-on:click.prevent="type = 'All'">{{$t('ALL')}} ({{ itemsCounts['Message'] + itemsCounts['Notification']}})</a> |
+                <a href="#" v-on:click="openMessage(null, $event)">{{$t('MESSAGES')}} ({{itemsCounts['Message']}})</a> |
+                <a href="#" v-on:click.prevent="type = 'Notification'">{{$t('NOTIFICATIONS')}} ({{itemsCounts['Notification']}})</a>
+
+                <div style="float: right;">
+                    <button v-on:click="openMessage(null, $event)" class="btn btn-default" style="height: 24px; line-height: 24px; text-transform: none;">{{$t('NEW_MESSAGE')}}</button>
+                </div>
+            </div>
+            <div class="card-body" style="padding: 0;">
+                <div style="overflow-y: auto; max-height: calc(100vh - 266px);">
+                    <div v-if="rows.length < 1" style="text-align: center; padding: 30px 0; opacity: 0.5;">
+                        {{$t('EMPTY')}}
+                    </div>
+                    <div v-for="(row, i) in rows" v-bind:key="'mcp-key-'+i" style="padding: 10px; border-top: 1px solid #e3e6f0; clear: both;" v-bind:style="{backgroundColor: row.is_seen?'#fff':'rgb(245, 248, 250)'}">
+                        <div v-bind:style="{'background-image': 'url(@/assets/img/blank-profile-picture.png)'}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #c0c0c0; float: left;"></div>
+                        <div style="float: left; margin-left: 10px;">
+                            <div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{ row.data.user_name || 'Null'}}</div>
+                            <div v-if="row.type=='Message'" style="cursor: pointer;">
+                                <div v-html="row.data.message" v-on:click="openMessage(3)"></div>
+                            </div>
+                            <!--<div v-if="row.type === 'SceneComment'">
+                              {{$t('COMMENTED_ON_SCENE')}} <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.scene_title }}</a>
+                            </div>
+                            <div v-if="row.type === 'ChapterComment'">
+                              {{$t('COMMENTED_ON_CHAPTER')}} <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.chapter_title }}</a>
+                            </div>
+                            <div v-if="row.type === 'FeedbackBook'">
+                              {{$t('LEFT_A_FEEDBACK_ON_BOOK')}} <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.book.title }}</a>
+                            </div>
+                            <div v-if="row.type === 'FeedbackChapter'">
+                               {{$t('LEFT_A_FEEDBACK_ON_CHAPTER')}} <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.chapter.title }}</a>
+                            </div>
+                            <div v-if="row.type === 'FeedbackScene'">
+                              {{$t('LEFT_A_FEEDBACK_ON_SCENE')}} <a v-bind:href="'#'" @click.prevent="openLink(row)">{{ row.data.scene.title }}</a>
+                            </div>-->
+                            <div style="font-size: 80%; line-height: 100%; opacity: 0.5;">{{displayTime(row.created_at)}}</div>
+                        </div>
+                        <div style="clear: both;"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -203,40 +203,41 @@ export default {
         })
     },
     fetch: function () {
-      var scope = this
-      scope.axios
-        .get('http://localhost:3000/notifications/' + scope.getAuthor.uuid)
-        .then(async function (response) {
-          if (response.data) {
-            try {
-              //
-
-              for (var i = 0; i < response.data.rows.length; i++) {
-                try {
-                  if (typeof response.data.rows[i].data === 'string') {
-                    response.data.rows[i].data = JSON.parse(response.data.rows[i].data)
-                  }
-                } catch (ex2) {
-                  response.data.rows[i].data = {}
-                }
-                if (!response.data.rows[i].data) {
-                  response.data.rows[i].data = {}
-                }
-                // console.log(JSON.stringify(response.data.rows[i]))
-              }
-
-              scope.items = response.data.rows
-
-              Vue.nextTick(function () {
-                scope.updateItemsCounts()
-              })
-            } catch (ex) {
-              console.log('Failed to load data')
-            } finally {
-              //
-            }
-          }
-        })
+      // var scope = this
+      // scope.axios
+      //   .get('http://localhost:3000/notifications/' + scope.getAuthor.uuid)
+      //   .then(async function (response) {
+      //     console.log(response)
+      //     // if (response.data) {
+      //     //   try {
+      //     //     //
+      //     //
+      //     //     for (var i = 0; i < response.data.rows.length; i++) {
+      //     //       try {
+      //     //         if (typeof response.data.rows[i].data === 'string') {
+      //     //           response.data.rows[i].data = JSON.parse(response.data.rows[i].data)
+      //     //         }
+      //     //       } catch (ex2) {
+      //     //         response.data.rows[i].data = {}
+      //     //       }
+      //     //       if (!response.data.rows[i].data) {
+      //     //         response.data.rows[i].data = {}
+      //     //       }
+      //     //       // console.log(JSON.stringify(response.data.rows[i]))
+      //     //     }
+      //     //
+      //     //     scope.items = response.data.rows
+      //     //
+      //     //     Vue.nextTick(function () {
+      //     //       scope.updateItemsCounts()
+      //     //     })
+      //     //   } catch (ex) {
+      //     //     console.log('Failed to load data')
+      //     //   } finally {
+      //     //     //
+      //     //   }
+      //     // }
+      //   })
     },
     displayTime: function (t) {
       var txt = moment(t).fromNow()
