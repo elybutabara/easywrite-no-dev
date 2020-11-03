@@ -2,7 +2,7 @@
 const path = require('path')
 const moment = require('moment')
 
-const { Book, Note, Chapter, Scene, Reader, User } = require(path.join(__dirname, '..', 'models'))
+const { Book, Note, Chapter, Scene, Reader, User, Author, BookGenre, BookGenreCollection} = require(path.join(__dirname, '..', 'models'))
 
 class NoteController {
   static getAllNotesByBookId (authorId, bookId) {
@@ -40,7 +40,7 @@ class NoteController {
 
   static async getAllNotesByAuthor (authorId) {
     var notes = await Note.query()
-      .where('notes.message', '!=', '')
+      .where('notes.message', '!=', '') 
       .where('notes.author_id', authorId)
       .withGraphJoined('author', {maxBatchSize: 1})
       .orderBy('id', 'asc')
@@ -61,6 +61,19 @@ class NoteController {
         notes[i].chapter = null
         notes[i].scene = null
         notes[i].book = await Book.query().findById(parentID)
+        var genreUUIDs = []
+        var genreC = await BookGenreCollection.query().select('genre_id').where('book_id',parentID)
+        for (let i = 0; i < genreC.length; i++) {
+          genreUUIDs.push(genreC[i].genre_id)
+        }
+        notes[i].book.genre = await BookGenre.query().select('id','name').whereIn('uuid',genreUUIDs)
+        
+        // await BookGenreCollection.query()
+        //                         .select('book_genres.id','book_genres.name')
+        //                         .leftJoin('book_genres')
+        //                         .where('book_genre_collections.genre_id','=','book_genres.uuid')
+        //                         .where('book_genre_collections.book_id',parentID)
+        notes[i].book.author = await Author.query().findById(notes[i].book.author_id)
       }
     }
 
