@@ -293,5 +293,12 @@ export default {
   YOU_WONT_BE_ABLE_TO_REVERT_THIS: 'You won\'t be able to revert this',
   YOUR_CURRENT_CONTENT_WILL_BE_OVERWRITTERN: 'Your current content will be overwritten',
   YOUR_POMODORO_EXPIRES: 'Your Pomodoro Expires',
-  OPEN_FILE: 'Open File'
+  OPEN_FILE: 'Open File',
+  site: {
+    'message-center': 'Message Center',
+    'all': 'All',
+    'notifications': 'Notifications',
+    'messages': 'Messages',
+    'invitations': 'Invitations'
+  }
 }

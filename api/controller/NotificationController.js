@@ -5,20 +5,34 @@ const { User, Notification } = require(path.join(__dirname, '..', 'models'))
 
 class NotificationController {
   static async getAll (authorUuid) {
-    // console.log(authorUuid)
-    // var notification = Notification.query()
-    //   .where('to', authorUuid)
-    //   .whereNull('deleted_at').orderBy('created_at', 'desc')
-    //
-    // for (var i = 0; i < notification.length; i++) {
-    //   try {
-    //     notification[i]['data'] = JSON.parse(notification[i]['data'])
-    //   } catch (e) {
-    //     notification[i]['data'] = {}
-    //   }
-    // }
-    //
-    // return notification
+    const notification = this.notifications(authorUuid)
+    const invitations = this.invitations(authorUuid)
+    return {
+      'notifications': notification,
+      'invitations': invitations
+    }
+  }
+
+  static async notifications (authorUuid) {
+    // const notificationType = ['feedback', 'personalize-notification', 'reader-directory', 'book', 'book-directory', 'book_invite_decision', 'notif', 'chapter_comment', 'scene_comment']
+    var notification = Notification.query()
+      .where('to', authorUuid)
+      // .whereIn('type', notificationType)
+      // .whereNotIn('action', ['invite'])
+      .orderBy('created_at', 'desc')
+
+    return notification
+  }
+
+  static async invitations (authorUuid) {
+    var notification = Notification.query()
+      .where('to', authorUuid)
+      .where('status', 0)
+      .whereIn('type', ['book', 'book_re_read', 'book_invite_decision', 'book_reader'])
+      .where('action', 'invite')
+      .orderBy('created_at', 'desc')
+
+    return notification
   }
 
   static async sync (row) {

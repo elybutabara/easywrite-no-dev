@@ -9,8 +9,8 @@ const { NotificationController } = require(path.join(__dirname, '..', 'controlle
 router.get('/:authorUuid', async function (req, res) {
   const data = await NotificationController.getAll(req.params.authorUuid)
   const response = {
-    // 'count': data.length,
-    'rows': data
+    // 'count': data.notification.length + data.notification.length,
+    'data': data
   }
   res
     .status(200)

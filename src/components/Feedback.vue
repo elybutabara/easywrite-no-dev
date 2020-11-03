@@ -1,13 +1,13 @@
 <template>
-<div class="feedback-wrap" v-bind:class="{ 'feedback-wrap-fullview' : !properties.toggleType }">
+  <div style="z-index:3000;" v-bind:class="{'book-feedback': properties.parent_name == 'book','chapter-and-scene-feedback': ['scene','chapter'].indexOf(properties.parent_name) != -1}" v-if="page.is_ready">
   <div class="es-panel-2 feedbacks">
     <div class="es-panel-head d-flex justify-content-between">
       <div class="d-flex algin-items-center"><h5>Feedbacks</h5></div>
       <div class="d-flex">
         <select v-model="filter" v-if="$store.getters.getAuthorID === properties.book.author_id" class="select-feedback-view">
-          <option value="all">All</option>
-          <option value="done">Done</option>
-          <option value="undone">Undone</option>
+          <option value="all">{{ $t('all') }}</option>
+          <option value="done">{{ $t('done') }}</option>
+          <option value="undone">{{ $t('undone') }}</option>
         </select>
         <a @click="$parent.toggleFeedbacks()" href="javascript:void(0);" class="btn-close-feedback close"><i class="las la-arrow-circle-right"></i></a>
       </div>

@@ -192,9 +192,10 @@ export default {
         component: 'book-listing'
       },
       itemsCounts: {
-        'All': 0,
-        'Message': 0,
-        'Notification': 0
+        'all': 0,
+        'messages': 0,
+        'notifications': 0,
+        'invitations': 0
       },
       showMessageCenter: false,
       showUserSettings: false,
@@ -291,6 +292,13 @@ export default {
           })
         }
       }
+    },
+    countNotificationItemTotal: function () {
+      var scope = this
+      scope.itemsCounts['all'] = scope.itemsCounts['messages'] + scope.itemsCounts['invitations'] + scope.itemsCounts['notifications']
+      scope.notification.count = scope.itemsCounts['all']
+      // console.log(scope.itemsCounts)
+      return scope.itemsCounts['all']
     }
   },
   beforeMount () {
