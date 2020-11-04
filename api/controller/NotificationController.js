@@ -41,6 +41,7 @@ class NotificationController {
       from: row.from,
       to: row.to,
       parent_id: row.parent_id,
+      book_id: row.book_id,
       parent_name: row.parent_name,
       status: row.status,
       type: row.type,

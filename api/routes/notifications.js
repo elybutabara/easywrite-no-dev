@@ -39,10 +39,9 @@ router.get('/syncable', async function (req, res) {
     .status(200)
     .json(rows)
 })
+
 router.post('/sync', async function (req, res) {
   const row = await NotificationController.sync(req.body)
-  console.clear()
-  console.log(row)
   res
     .status(200)
     .json(row)
