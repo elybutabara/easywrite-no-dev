@@ -142,6 +142,9 @@ export default {
       stage: 'intro',
       current: 0,
       authorUUID: null,
+      notifications: {
+        authors: []
+      },
       progress_message: 'Initializing...',
       download: {
         pointer: 0,
@@ -207,7 +210,7 @@ export default {
         { title: 'WebinarPresenters', api: 'webinar-presenters', local: 'webinar-presenters', downloaded: [], packed: [] },
         { title: 'WebinarRegistrants', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: [], packed: [] },
         // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
-        { title: 'Notification', api: 'notifications', local: 'notifications', downloaded: [], packed: [] }
+        { title: 'Notifications', api: 'notifications', local: 'notifications', downloaded: [], packed: [] }
       ],
       bookUUID: ''
     }
@@ -559,6 +562,12 @@ export default {
                 }
               }
             }
+          } else if (['Notifications'].indexOf(endpoint.title) > -1) {
+            /*
+            * this is for saving authors of notifications
+            * AFTER the syncing of Authors Table
+            * */
+            scope.notifications.authors = response.data.authors
           }
 
           scope.endpoints[scope.download.pointer].downloaded = data
@@ -596,6 +605,7 @@ export default {
 
       // done going through tables
       if (scope.saving.pointer >= scope.endpoints.length) {
+        scope.saveAuthorFromNotifications() // save notifications Author after all sync is done
         scope.saveUserSyncedDate()
         scope.showLogs()
         return
@@ -660,6 +670,27 @@ export default {
         scope.axios
           .post('http://localhost:3000/users/connections', rows[i])
           .then(function (response) {
+            // console.log(response)
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error)
+          })
+          .finally(function () {
+            // always executed
+          })
+      }
+    },
+    saveAuthorFromNotifications: async function () {
+      /*
+      * This will save the author from the notifications
+      * */
+      var scope = this
+      for (let i = 0; i < scope.notifications.authors.length; i++) {
+        await scope.axios
+          .post('http://localhost:3000/authors/sync', scope.notifications.authors[i])
+          .then(function (response) {
+            console.log('save notification author')
             // console.log(response)
           })
           .catch(function (error) {
@@ -798,7 +829,7 @@ export default {
         // { title: 'Book Chapter Feedbacks', api: 'book-chapter-feedbacks', local: 'chapter-feedbacks', downloaded: [], packed: [] },
         // { title: 'Book Chapter Feedback Responses', api: 'book-chapter-feedback-responses', local: 'chapter-feedback-responses', downloaded: [], packed: [] },
         { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [] },
-        { title: 'Notification', api: 'notifications', local: 'notifications', downloaded: [], packed: [] }
+        { title: 'Notifications', api: 'notifications', local: 'notifications', downloaded: [], packed: [] }
         // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
       ]
     },
