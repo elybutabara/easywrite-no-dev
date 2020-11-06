@@ -105,7 +105,7 @@
                   <div style="clear: both;"></div>
                 </div>
                 <!-- NOTIFICATION AREA -->
-                <div v-else-if="model.type == 'book' && model.action =='query'" class="row ml-0 mr-0">
+                <div v-else-if="model.type == 'book' && modelaction =='query'" class="row ml-0 mr-0">
                   <div class="col-md-2">
                     <div v-bind:style="{'background-image': 'url(images/avatars/icons8-source-code-100.png)','background-size':'cover'}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #c0c0c0;"></div>
                   </div>
@@ -451,7 +451,7 @@
 </template>
 
 <script>
-import moment from 'moment'
+// import moment from 'moment'
 import Vue from 'vue'
 
 export default {
@@ -460,8 +460,16 @@ export default {
   data: function () {
     var scope = this
     var data = {
-      items: [],
-      allItems: [],
+      items: {
+        'messages': [],
+        'notifications': [],
+        'invitations': []
+      },
+      allItems: {
+        'messages': [],
+        'notifications': [],
+        'invitations': []
+      },
       itemsLength: 0,
       defaultType: 'all',
       itemType: 'all',
@@ -511,119 +519,145 @@ export default {
     }
   },
   methods: {
-    setItemCount: function (k, n) {
-      console.log('setItemCount', n)
-      this.itemsCounts[k] = n
-    },
-    addItemCount: function (k, n) {
-      console.log('addItemCount', n)
-      this.itemsCounts[k] += n
-    },
-    openMessage: function (v) {
-      window.AppMessaging.open(v)
-      window.AppMain.showMessageCenter = false
-    },
-    openLink: function (row) {
-      var type = row.type
-      var data = row.data
-      var scope = this
-      var url = ''
-
-      if (type === 'ChapterComment') {
-        url = 'chapters/' + data.chapter_id + '/book'
-      } else if (type === 'SceneComment') {
-        url = 'scenes/' + data.scene_id + '/book-chapter'
-      } else if (type === 'FeedbackChapter') {
-        url = 'chapters/' + data.parent_id + '/book'
-      } else if (type === 'FeedbackScene') {
-        url = 'scenes/' + data.parent_id + '/book-chapter'
-      } else if (type === 'FeedbackBook') {
-        scope.CHANGE_COMPONENT(
-          {
-            tabKey: 'book-details-' + data.book.uuid,
-            tabComponent: 'books-i-read-book-details',
-            tabData: { book: data.book },
-            tabTitle: scope.$t('VIEW') + ' - ' + data.book.title,
-            newTab: true
-          })
-        return
+    // setItemCount: function (k, n) {
+    //   console.log('setItemCount', n)
+    //   this.itemsCounts[k] = n
+    // },
+    // addItemCount: function (k, n) {
+    //   console.log('addItemCount', n)
+    //   this.itemsCounts[k] += n
+    // },
+    // openMessage: function (v) {
+    //   window.AppMessaging.open(v)
+    //   window.AppMain.showMessageCenter = false
+    // },
+    // openLink: function (row) {
+    //   var type = row.type
+    //   var data = row.data
+    //   var scope = this
+    //   var url = ''
+    //
+    //   if (type === 'ChapterComment') {
+    //     url = 'chapters/' + data.chapter_id + '/book'
+    //   } else if (type === 'SceneComment') {
+    //     url = 'scenes/' + data.scene_id + '/book-chapter'
+    //   } else if (type === 'FeedbackChapter') {
+    //     url = 'chapters/' + data.parent_id + '/book'
+    //   } else if (type === 'FeedbackScene') {
+    //     url = 'scenes/' + data.parent_id + '/book-chapter'
+    //   } else if (type === 'FeedbackBook') {
+    //     scope.CHANGE_COMPONENT(
+    //       {
+    //         tabKey: 'book-details-' + data.book.uuid,
+    //         tabComponent: 'books-i-read-book-details',
+    //         tabData: { book: data.book },
+    //         tabTitle: scope.$t('VIEW') + ' - ' + data.book.title,
+    //         newTab: true
+    //       })
+    //     return
+    //   }
+    //
+    //   scope.getData(url).then(res => {
+    //     if (type === 'ChapterComment' || type === 'FeedbackChapter') {
+    //       let chapter = res.data
+    //       let book = chapter.book
+    //
+    //       scope.CHANGE_COMPONENT(
+    //         {
+    //           tabKey: 'chapter-details-' + chapter.uuid,
+    //           tabComponent: 'books-i-read-chapter-details',
+    //           tabData: { book: book, chapter: chapter },
+    //           tabTitle: scope.$t('VIEW') + ' - ' + chapter.title,
+    //           newTab: true
+    //         })
+    //     } else if (type === 'SceneComment' || type === 'FeedbackScene') {
+    //       let scene = res.data
+    //       let book = scene.book
+    //       let chapter = scene.chapter
+    //
+    //       scope.CHANGE_COMPONENT(
+    //         {
+    //           tabKey: 'scene-details-' + scene.uuid,
+    //           tabComponent: 'books-i-read-scene-details',
+    //           tabData: { book: book, chapter: chapter, scene: scene },
+    //           tabTitle: scope.$t('VIEW') + ' - ' + scene.title,
+    //           newTab: true
+    //         })
+    //     }
+    //   })
+    //
+    //   row.is_seen = 1
+    //   scope.getData('notifications/read/' + row.uuid).then(res => {
+    //     //
+    //   })
+    // },
+    // updateItemsCounts: function () {
+    //   var scope = this
+    //   for (var x in scope.itemsCounts) {
+    //     scope.itemsCounts[x] = 0
+    //   }
+    //   for (var i = 0; i < scope.items.length; i++) {
+    //     var item = scope.items[i]
+    //     scope.itemsCounts[item.type]++
+    //     scope.itemsCounts['All']++
+    //     if (item.type !== 'Message') {
+    //       scope.itemsCounts['Notification']++
+    //     }
+    //   }
+    // },
+    // getData: function (url) {
+    //   var scope = this
+    //   // scope.credentials.error = null
+    //   return scope.axios
+    //     .get('http://localhost:3000' + '/' + url)
+    //     .then(response => {
+    //       return response
+    //     })
+    //     .catch(function (error) {
+    //       return error
+    //     })
+    // },
+    // displayTime: function (t) {
+    //   var txt = moment(t).fromNow()
+    //   txt = txt.replace('a few seconds ago', 'just now')
+    //   return txt
+    // },
+    setItem: function (itemType, id) {
+      const scope = this
+      scope.itemType = itemType
+      if (itemType == scope.defaultType) {
+        let arr = []
+        scope.items = arr.concat(scope.allItems['notifications'], scope.allItems['invitations'])
+      } else {
+        scope.items = scope.allItems[itemType]
       }
-
-      scope.getData(url).then(res => {
-        if (type === 'ChapterComment' || type === 'FeedbackChapter') {
-          let chapter = res.data
-          let book = chapter.book
-
-          scope.CHANGE_COMPONENT(
-            {
-              tabKey: 'chapter-details-' + chapter.uuid,
-              tabComponent: 'books-i-read-chapter-details',
-              tabData: { book: book, chapter: chapter },
-              tabTitle: scope.$t('VIEW') + ' - ' + chapter.title,
-              newTab: true
-            })
-        } else if (type === 'SceneComment' || type === 'FeedbackScene') {
-          let scene = res.data
-          let book = scene.book
-          let chapter = scene.chapter
-
-          scope.CHANGE_COMPONENT(
-            {
-              tabKey: 'scene-details-' + scene.uuid,
-              tabComponent: 'books-i-read-scene-details',
-              tabData: { book: book, chapter: chapter, scene: scene },
-              tabTitle: scope.$t('VIEW') + ' - ' + scene.title,
-              newTab: true
-            })
-        }
-      })
-
-      row.is_seen = 1
-      scope.getData('notifications/read/' + row.uuid).then(res => {
-        //
-      })
     },
-    updateItemsCounts: function () {
-      var scope = this
-      for (var x in scope.itemsCounts) {
-        scope.itemsCounts[x] = 0
-      }
-      for (var i = 0; i < scope.items.length; i++) {
-        var item = scope.items[i]
-        scope.itemsCounts[item.type]++
-        scope.itemsCounts['All']++
-        if (item.type !== 'Message') {
-          scope.itemsCounts['Notification']++
-        }
-      }
-    },
-    getData: function (url) {
-      var scope = this
-      // scope.credentials.error = null
-      return scope.axios
-        .get('http://localhost:3000' + '/' + url)
-        .then(response => {
-          return response
-        })
-        .catch(function (error) {
-          return error
-        })
-    },
+    // getData: function (url) {
+    //   var scope = this
+    //   // scope.credentials.error = null
+    //   return scope.axios
+    //     .get('http://localhost:3000' + '/' + url)
+    //     .then(response => {
+    //       return response
+    //     })
+    //     .catch(function (error) {
+    //       return error
+    //     })
+    // },
     fetch: function () {
       const scope = this
       scope.axios
-        .get('http://localhost:3000/notifications/' + scope.getAuthor.uuid)
+        .get('http://localhost:3000/message-center/' + scope.getAuthor.uuid)
         .then(async function (response) {
-          console.clear()
-          console.log('sulod')
-          console.log('resposonmse NOTIFICATIOM')
-          console.log(response.data)
           if (response.data) {
             try {
-              scope.allItems = response.data.rows
-              scope.messageCenterCounter()
-              console.log('allItems ----------------')
-              console.log(scope.allItems)
+              // console.clear()
+              // window.$.each(response.data, function (i, node) {
+              //   scope.allItems[i] = node
+              // })
+              // scope.messageCenterCounter()
+              // console.log('allItems ----------------')
+              // console.log(scope.allItems)
               // /*
               // * This is for fetching realtime data for Message Center
               // * */
@@ -663,11 +697,11 @@ export default {
           }
         })
     },
-    displayTime: function (t) {
-      var txt = moment(t).fromNow()
-      txt = txt.replace('a few seconds ago', 'just now')
-      return txt
-    },
+    // displayTime: function (t) {
+    //   var txt = moment(t).fromNow()
+    //   txt = txt.replace('a few seconds ago', 'just now')
+    //   return txt
+    // },
     messageCenterCounter () {
       const scope = this
       scope.itemsCounts['notifications'] = scope.allItems['notifications'].filter(model => {

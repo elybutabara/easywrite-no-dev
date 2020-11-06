@@ -134,6 +134,9 @@ export default {
   props: ['properties'],
   data () {
     return {
+      page: {
+        is_ready: false
+      },
       filter: 'all',
       feedbacks: null,
       selected: false,
@@ -154,6 +157,7 @@ export default {
         .then(function (response) {
           scope.feedbacks = response.data
           console.log(scope.feedbacks)
+          scope.page.is_ready = true
         })
         .catch(function (error) {
           console.log(error)
