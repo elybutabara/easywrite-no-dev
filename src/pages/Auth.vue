@@ -71,7 +71,8 @@ export default {
       menuval: 0,
       translation: '',
       status: 'not_accepted',
-      networkConnected: false
+      networkConnected: false,
+      language: ''
     }
   },
   methods: {
@@ -87,34 +88,18 @@ export default {
         .then(function (response) {
           scope.networkConnected = true
           console.log('has network')
-        }).finally(function () {
+        })
+        .finally(function () {
           scope.axios
             .get('http://localhost:3000/users/login?username=' + scope.username + '&password=' + scope.password)
-            .then(response => {
+            .then(async function (response) {
               if (scope.networkConnected) {
                 scope.authenticateAPI()
                 return
               }
 
               console.log('authenticate with no net')
-              scope.$store.commit('authenticate', {
-                user: response.data.user,
-                author: response.data.author
-              })
-              setTimeout(function () {
-                console.log('login with net no connection')
-                ipcRenderer.send('RESIZE_MAIN_WINDOW', { lang: scope.menuval })
-                // start time worked counter
-                scope.actionmutateTimer()
-                // set local storage
-                localStorage.setItem('username', scope.username)
-                localStorage.setItem('password', scope.password)
-                if (scope.status === 'accepted') {
-                  localStorage.setItem('remember_me', 'remember')
-                }
-
-                scope.$router.push({name: 'Main'})
-              }, 100)
+              scope.prepareLoadWindow(response)
             })
             .catch(error => {
               if (error.response.status === 401) {
@@ -130,6 +115,7 @@ export default {
         password: scope.password
       })
         .then(function (response) {
+          console.log('login with net connection')
           delete response.data.user.id
           delete response.data.author.id
           // set local storage
@@ -168,24 +154,51 @@ export default {
             }).then(() => {
               // console.log('SAVE USER RESPONSE:')
               // console.log(response.data)
-              scope.$store.commit('authenticate', {
-                user: response.data,
-                author: response.data.author
-              })
-              setTimeout(function () {
-                ipcRenderer.send('RESIZE_MAIN_WINDOW', { lang: scope.menuval })
-                // start time worked counter
-                scope.actionmutateTimer()
-                scope.$router.push({name: 'Main'})
-              }, 100)
+              scope.prepareLoadWindow(response)
             })
           }
         })
     },
+    prepareLoadWindow: async function (response) {
+      const scope = this
+      scope.$store.commit('authenticate', {
+        user: response.data,
+        author: response.data.author
+      })
+      scope.user = response.data.user
 
+      let settigs = {
+        app_version: scope.version,
+        language: scope.language,
+        user_id: response.data.uuid
+      }
+      // save app settings
+      await scope.axios
+        .post('http://localhost:3000/app-settings', settigs).then(response => {
+          console.log('Sucecss app settings!!')
+          console.log(response)
+        }).catch(function () {
+          console.log('FAILURE app settings!!')
+        })
+
+      setTimeout(function () {
+        console.log('login with net no connection')
+        ipcRenderer.send('RESIZE_MAIN_WINDOW', { lang: scope.menuval })
+        // start time worked counter
+        scope.actionmutateTimer()
+        // set local storage
+        localStorage.setItem('username', scope.username)
+        localStorage.setItem('password', scope.password)
+        if (scope.status === 'accepted') {
+          localStorage.setItem('remember_me', 'remember')
+        }
+
+        scope.$router.push({name: 'Main'})
+      }, 100)
+    },
     getMenuLang: function (data) {
       var scope = this
-
+      scope.language = data
       if (data === 'en') {
         scope.menuval = 0
       } else if (data === 'da') {
