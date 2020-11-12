@@ -205,9 +205,9 @@ export default {
         { title: 'Assignment Manuscripts', api: 'assignment-manuscripts', local: 'assignment-manuscripts', downloaded: [], packed: [] },
         { title: 'Webinars', api: 'webinars', local: 'webinars', downloaded: [], packed: [] },
         { title: 'WebinarPresenters', api: 'webinar-presenters', local: 'webinar-presenters', downloaded: [], packed: [] },
-        { title: 'WebinarRegistrants', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: [], packed: [] },
+        { title: 'WebinarRegistrants', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: [], packed: [] }
         // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
-        { title: 'Notification', api: 'notifications', local: 'notifications', downloaded: [], packed: [] }
+        // { title: 'Notification', api: 'notifications', local: 'notifications', downloaded: [], packed: [] } // TODO: uncomment this if notification is good to go
       ],
       bookUUID: ''
     }

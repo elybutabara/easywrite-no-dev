@@ -54,10 +54,11 @@
                     <i class="fa fa-bell"></i>
                     <span v-if="notificationCount > 0" style="position: absolute;width: 20px;height: 20px;border-radius: 50%;background: red;color: rgb(255, 255, 255);top: -5px;right: -8px;line-height: 20px;text-align: center;font-size: 12px;">{{notificationCount}}</span>
                   </button> -->
-                  <a @click.prevent="showMessageCenter=!showMessageCenter; showUserSettings=false;" class="user-btn position-relative" href="javascript:void(0)" style="margin-right: 10px;">
+                  <!--TODO: remove this comment if message center is good to go with sync-->
+                  <!--<a @click.prevent="showMessageCenter=!showMessageCenter; showUserSettings=false;" class="user-btn position-relative" href="javascript:void(0)" style="margin-right: 10px;">
                     <i class="fas fa-bell"></i>
                     <span v-if="notificationCount > 0" style="position: absolute;width: 20px;height: 20px;border-radius: 50%;background: red;color: rgb(255, 255, 255);top: -5px;right: -8px;line-height: 20px;text-align: center;font-size: 12px;">{{notificationCount}}</span>
-                  </a>
+                  </a>-->
                   <div v-show="showMessageCenter" style="position: absolute; top: 68px; right: 18px; z-index: 10000; width: 500px; text-align: left;">
                     <message-center-popup :params="{}"></message-center-popup>
                   </div>
