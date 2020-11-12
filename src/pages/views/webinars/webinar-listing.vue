@@ -122,7 +122,8 @@ export default {
         {
           'headers': {
             'X-Requested-With': 'XMLHttpRequest',
-            'Authorization': 'Bearer ' + scope.api_token
+            'Authorization': 'Bearer ' + scope.api_token,
+            'X-Authorization': 'Bearer ' + scope.api_token
           }
         })
         .then(function (response) {

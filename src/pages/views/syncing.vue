@@ -349,7 +349,8 @@ export default {
       var finalData = data
       var headers = {
         'X-Requested-With': 'XMLHttpRequest',
-        'Authorization': 'Bearer ' + scope.api_token
+        'Authorization': 'Bearer ' + scope.api_token,
+        'X-Authorization': 'Bearer ' + scope.api_token
       }
 
       if (['Items', 'Characters', 'Locations'].indexOf(endpoint.title) > -1 && (data.picture || data.pictures)) {
@@ -480,7 +481,8 @@ export default {
           },
           'headers': {
             'X-Requested-With': 'XMLHttpRequest',
-            'Authorization': 'Bearer ' + scope.api_token
+            'Authorization': 'Bearer ' + scope.api_token,
+            'X-Authorization': 'Bearer ' + scope.api_token
           }
         })
         .then(function (response) {

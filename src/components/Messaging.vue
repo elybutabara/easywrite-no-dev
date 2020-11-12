@@ -302,7 +302,8 @@ export default {
 
       var headers = {
         'X-Requested-With': 'XMLHttpRequest',
-        'Authorization': 'Bearer ' + scope.$store.getters.getUserToken
+        'Authorization': 'Bearer ' + scope.$store.getters.getUserToken,
+        'X-Authorization': 'Bearer ' + scope.$store.getters.getUserToken
       }
 
       scope.axios
