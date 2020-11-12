@@ -70,7 +70,8 @@ export default {
       version: remote.app.getVersion(),
       menuval: 0,
       translation: '',
-      status: 'not_accepted'
+      status: 'not_accepted',
+      networkConnected: false
     }
   },
   methods: {
@@ -78,33 +79,48 @@ export default {
     closeForm () {
       this.window.close()
     },
-    authenticate: function (event) {
-      var scope = this
-      scope.axios
-        .get('http://localhost:3000/users/login?username=' + scope.username + '&password=' + scope.password)
-        .then(response => {
-          scope.$store.commit('authenticate', {
-            user: response.data.user,
-            author: response.data.author
-          })
-          setTimeout(function () {
-            ipcRenderer.send('RESIZE_MAIN_WINDOW', { lang: scope.menuval })
-            // start time worked counter
-            scope.actionmutateTimer()
-            // set local storage
-            localStorage.setItem('username', scope.username)
-            localStorage.setItem('password', scope.password)
-            if (scope.status === 'accepted') {
-              localStorage.setItem('remember_me', 'remember')
-            }
+    authenticate: async function (event) {
+      const scope = this
+      // electron.remote.app.getVersion()
+      // check network then user Api connect to get new data
+      await scope.axios.get(window.APP.API.URL + '/user/connect')
+        .then(function (response) {
+          scope.networkConnected = true
+          console.log('has network')
+        }).finally(function () {
+          scope.axios
+            .get('http://localhost:3000/users/login?username=' + scope.username + '&password=' + scope.password)
+            .then(response => {
+              if (scope.networkConnected) {
+                scope.authenticateAPI()
+                return
+              }
 
-            scope.$router.push({name: 'Main'})
-          }, 100)
-        })
-        .catch(error => {
-          if (error.response.status === 401) {
-            scope.authenticateAPI()
-          }
+              console.log('authenticate with no net')
+              scope.$store.commit('authenticate', {
+                user: response.data.user,
+                author: response.data.author
+              })
+              setTimeout(function () {
+                console.log('login with net no connection')
+                ipcRenderer.send('RESIZE_MAIN_WINDOW', { lang: scope.menuval })
+                // start time worked counter
+                scope.actionmutateTimer()
+                // set local storage
+                localStorage.setItem('username', scope.username)
+                localStorage.setItem('password', scope.password)
+                if (scope.status === 'accepted') {
+                  localStorage.setItem('remember_me', 'remember')
+                }
+
+                scope.$router.push({name: 'Main'})
+              }, 100)
+            })
+            .catch(error => {
+              if (error.response.status === 401) {
+                scope.authenticateAPI()
+              }
+            })
         })
     },
     authenticateAPI: function () {
