@@ -116,7 +116,6 @@ export default {
   mounted () {
     var scope = this
     scope.loadNotes()
-    
   }
 }
 </script>
