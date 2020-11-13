@@ -108,7 +108,7 @@ export default {
             }
           })
 
-          editor.on('change', function (e) {
+          editor.on('keyup', function (e) {
             window.jQuery('#' + this.id).val(editor.getContent()).click()
           })
         }

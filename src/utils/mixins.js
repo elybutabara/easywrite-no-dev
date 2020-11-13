@@ -135,6 +135,9 @@ export default {
       var scope = this
       scope.$store.dispatch('unmarkTabAsModified', index)
     },
+    IS_TAB_AS_MODIFIED: function () {
+      return this.$store.getters.tabIsModified(this.$store.getters.getActiveTab)
+    },
     GET_BOOKS_BY_AUTHOR: function (uuid = '') {
       return this.$store.getters.getBooks
     },
