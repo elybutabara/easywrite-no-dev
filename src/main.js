@@ -100,7 +100,8 @@ let APP = {
   SE_PROD: {
     API: {
       URL: 'https://api.pilotleser.no/se',
-      UPLOAD_URL: 'https://www.easywrite.se/uploads'
+      UPLOAD_URL: 'https://www.easywrite.se/uploads',
+      SITE: 'se-live'
     },
     CHAT: {
       PORT: 3031
@@ -109,7 +110,8 @@ let APP = {
   SE_DEV: {
     API: {
       URL: 'https://api.pilotleser.no/se-dev',
-      UPLOAD_URL: 'https://dev.easywrite.se/uploads'
+      UPLOAD_URL: 'https://dev.easywrite.se/uploads',
+      SITE: 'se-dev'
     },
     CHAT: {
       PORT: 3032
@@ -118,7 +120,18 @@ let APP = {
   NO_PROD: {
     API: {
       URL: 'https://api.pilotleser.no/live',
-      UPLOAD_URL: 'https://www.pilotleser.no/uploads'
+      UPLOAD_URL: 'https://www.pilotleser.no/uploads',
+      SITE: 'no-live'
+    },
+    CHAT: {
+      PORT: 3030
+    }
+  },
+  NO_DEV: {
+    API: {
+      URL: 'https://api.pilotleser.no/no-live',
+      UPLOAD_URL: 'https://dev.pilotleser.no/uploads',
+      SITE: 'no-dev'
     },
     CHAT: {
       PORT: 3030

@@ -308,7 +308,7 @@ export default {
 
       // TODO: make site be flexible using the .env file
       scope.axios
-        .get(window.APP.API.URL + '/search/authors?q=' + escape(q) + '&limit=10' + '&site=no-dev',
+        .get(window.APP.API.URL + '/search/authors?q=' + escape(q) + '&limit=10' + '&site=' + window.APP.API.SITE,
           {
             'headers': headers
           })
