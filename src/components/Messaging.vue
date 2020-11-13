@@ -306,8 +306,9 @@ export default {
         'X-Authorization': 'Bearer ' + scope.$store.getters.getUserToken
       }
 
+      // TODO: make site be flexible using the .env file
       scope.axios
-        .get(window.APP.API.URL + '/search/authors?q=' + escape(q) + '&limit=10',
+        .get(window.APP.API.URL + '/search/authors?q=' + escape(q) + '&limit=10' + '&site=no-dev',
           {
             'headers': headers
           })

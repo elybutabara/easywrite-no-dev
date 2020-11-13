@@ -16,7 +16,8 @@
             <div class="card-body" style="padding: 0;">
                 <div style="overflow-y: auto; max-height: calc(100vh - 266px);">
                     <div v-if="rows.length < 1" style="text-align: center; padding: 30px 0; opacity: 0.5;">
-                        {{$t('EMPTY')}}
+                        <!--{{$t('EMPTY')}}-->
+                      <i>Notification Available Soon..</i>
                     </div>
                     <div v-for="(row, i) in rows" v-bind:key="'mcp-key-'+i" style="padding: 10px; border-top: 1px solid #e3e6f0; clear: both;" v-bind:style="{backgroundColor: row.is_seen?'#fff':'rgb(245, 248, 250)'}">
                         <div v-bind:style="{'background-image': 'url(@/assets/img/blank-profile-picture.png)'}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #c0c0c0; float: left;"></div>
