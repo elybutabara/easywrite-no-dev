@@ -130,7 +130,8 @@ class ChapterVersionController {
       created_at: row.created_at,
       updated_at: row.updated_at,
       deleted_at: row.deleted_at,
-      from_local: row.from_local
+      from_local: row.from_local,
+      is_current_version: row.is_current_version
     }
 
     var data = await ChapterVersion.query()
