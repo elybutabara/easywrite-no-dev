@@ -13,6 +13,11 @@ class ChapterVersionController {
   }
 
   static async save (data) {
+    var version = await ChapterVersion.query()
+        .patch({ 'is_current_version': 0 })
+        .where('is_current_version', '=', true)
+        .where('chapter_id', '=', data.chapter_id)
+  
     const chapterVersion = await ChapterVersion.query().upsertGraphAndFetch([data]).first()
     return chapterVersion
   }

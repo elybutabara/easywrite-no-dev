@@ -12,7 +12,7 @@ exports.up = async function (knex) {
     }
   })
 
-is_current_version
+
   await knex.schema.hasColumn('book_scene_versions', 'is_current_version').then(async (exists) => {
     if (!exists) {
       await knex.schema.table('book_scene_versions', function (table) {

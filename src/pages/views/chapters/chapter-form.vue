@@ -316,7 +316,8 @@ export default {
       new_chapter_version: {
         chapter_id: null,
         change_description: null,
-        content: null
+        content: null,
+        is_current_version: true
       },
       auto_save_chapter_interval: null,
       chapter_version_modal_is_open: false,
@@ -600,6 +601,8 @@ export default {
       scope.new_chapter_version.change_description = scope.tempVersionDesc
       scope.new_chapter_version.content = scope.data.chapter_version.content
       scope.new_chapter_version.chapter_id = scope.chapter.uuid
+      scope.new_chapter_version.chapter_id = scope.chapter.uuid
+      scope.new_chapter_version.is_current_version = true
 
       scope.axios.post('http://localhost:3000/chapter-versions', scope.new_chapter_version)
         .then(function (response) {
