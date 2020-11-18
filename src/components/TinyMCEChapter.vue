@@ -157,7 +157,15 @@ export default {
     initEditor: function () {
       var vm = this
 
+      if (this.darkmode) {
+         this.initConfig.content_style = "body { color: #fff;  }"
+      } else {
+        this.initConfig.content_style = "body { color: #000;  }"
+      }
+
       tinymce.init(vm.initConfig)
+
+      
 
       if (vm.$attrs.value) {
         var editor = tinymce.get(vm.$attrs.id)
