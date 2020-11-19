@@ -22,6 +22,14 @@ router.get('/syncable', async function (req, res) {
     .json(rows)
 })
 
+router.post('/:versionUuid/set-as-current', async function (req, res) {
+  const rows = await ChapterVersionController.setAsCurrentVersion(req.params.versionUuid)
+
+  res
+    .status(200)
+    .json(rows)
+})
+
 router.post('/sync', async function (req, res) {
   const row = await ChapterVersionController.sync(req.body)
 
