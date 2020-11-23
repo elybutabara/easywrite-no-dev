@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="es-page-content">
-            <ul class="es-breadcrumb special">
+            <ul class="es-breadcrumb">
               <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
               <li><a href="javascript:void(0);">{{ $t('CHARACTERS') }}</a></li>
             </ul>
