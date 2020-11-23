@@ -205,8 +205,8 @@ export default {
         { title: 'Assignment Manuscripts', api: 'assignment-manuscripts', local: 'assignment-manuscripts', downloaded: [], packed: [] },
         { title: 'Webinars', api: 'webinars', local: 'webinars', downloaded: [], packed: [] },
         { title: 'WebinarPresenters', api: 'webinar-presenters', local: 'webinar-presenters', downloaded: [], packed: [] },
-        { title: 'WebinarRegistrants', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: [], packed: [] }
-        // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
+        { title: 'WebinarRegistrants', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: [], packed: [] },
+        { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
         // { title: 'Notification', api: 'notifications', local: 'notifications', downloaded: [], packed: [] } // TODO: uncomment this if notification is good to go
       ],
       bookUUID: ''
@@ -525,7 +525,7 @@ export default {
               }
             }
           } else if (['Feedbacks', 'Chapter Versions', 'Scene Versions'].indexOf(endpoint.title) > -1) {
-            scope.saveAuthorDetails(response.data.authors)
+            if (response.data.authors) scope.saveAuthorDetails(response.data.authors)
           } else if (['Assignment Manuscripts'].indexOf(endpoint.title) > -1) {
             if (response.data && response.data.rows && response.data.rows.length > 0) {
               // eslint-disable-next-line no-redeclare
@@ -769,40 +769,11 @@ export default {
       scope.saving.progress = 0
       scope.saving.total = 0
       scope.saving.error = false
-      scope.endpoints = [
-        { title: 'Authors', api: 'authors', local: 'authors', downloaded: [], packed: [], error: [] },
-        { title: 'Genres', api: 'book-genres', local: 'book-genres', downloaded: [], packed: [], error: [] },
-        { title: 'Relations', api: 'book-relations', local: 'relations', downloaded: [], packed: [], error: [] },
-        { title: 'Books', api: 'books', local: 'books', downloaded: [], packed: [], error: [] },
-        { title: 'Items', api: 'book-items', local: 'items', downloaded: [], packed: [], error: [] },
-        { title: 'Locations', api: 'book-locations', local: 'locations', downloaded: [], packed: [], error: [] },
-        { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: [], packed: [], error: [] },
-        { title: 'Chapters', api: 'book-chapters', local: 'chapters', downloaded: [], packed: [] },
-        { title: 'Chapter Versions', api: 'book-chapter-versions', local: 'chapter-versions', downloaded: [], packed: [] },
-        { title: 'Characters', api: 'book-characters', local: 'characters', downloaded: [], packed: [] },
-        { title: 'Relationships', api: 'book-relation-details', local: 'relation-details', downloaded: [], packed: [] },
-        { title: 'Scenes', api: 'book-scenes', local: 'scenes', downloaded: [], packed: [] },
-        { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: [], packed: [] },
-        { title: 'Scene Items', api: 'book-scene-items', local: 'scene-items', downloaded: [], packed: [] },
-        { title: 'Scene Locations', api: 'book-scene-locations', local: 'scene-locations', downloaded: [], packed: [] },
-        { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: [], packed: [] },
-        { title: 'Book Readers', api: 'book-readers', local: 'readers', downloaded: [], packed: [], error: [] },
-        { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: [], packed: [], error: [] },
-        { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: [], packed: [], error: [] },
-        { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], error: [] },
-        { title: 'Courses', api: 'courses', local: 'courses', downloaded: [], packed: [], error: [] },
-        { title: 'Courses Taken', api: 'courses-taken', local: 'courses-taken', downloaded: [], packed: [], error: [] },
-        { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], error: [] },
-        { title: 'Package Courses', api: 'package-courses', local: 'package-courses', downloaded: [], packed: [], error: [] },
-        { title: 'Lessons', api: 'lessons', local: 'lessons', downloaded: [], packed: [], error: [] },
-        { title: 'Lesson Documents', api: 'lesson-documents', local: 'lesson-documents', downloaded: [], packed: [], error: [] },
-        // { title: 'Book Feedbacks', api: 'book-feedbacks', local: 'feedbacks', downloaded: [], packed: [] },
-        // { title: 'Book Chapter Feedbacks', api: 'book-chapter-feedbacks', local: 'chapter-feedbacks', downloaded: [], packed: [] },
-        // { title: 'Book Chapter Feedback Responses', api: 'book-chapter-feedback-responses', local: 'chapter-feedback-responses', downloaded: [], packed: [] },
-        { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [] },
-        { title: 'Notification', api: 'notifications', local: 'notifications', downloaded: [], packed: [] }
-        // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] }
-      ]
+      scope.endpoints.forEach(function (endpoint, index) {
+        scope.endpoints[index].downloaded = []
+        scope.endpoints[index].packed = []
+        scope.endpoints[index].error = []
+      })
     },
     donwloadFile: function (src, dst) {
       const download = function (uri, filename, callback) {

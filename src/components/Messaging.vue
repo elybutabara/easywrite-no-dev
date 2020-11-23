@@ -329,14 +329,15 @@ export default {
       //
       var scope = this
 
-      var port = window.APP.CHAT.PORT
+      var port = 3040
 
       var socket = socketIO('https://dev.kunohay.com:' + port)
       socket.on('connect', function () {
         scope.socket = socket
         scope.socketConnected = true
         socket.emit('authenticate', {
-          token: scope.$store.getters.getUserToken
+          token: scope.$store.getters.getUserToken,
+          env_: window.APP.API.CHAT
         })
       })
 
