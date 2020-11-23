@@ -2,6 +2,9 @@
 <div>
     <div v-if="page.is_ready" class="page-chapter-versions">
         <div class="switch-version">
+            <button class="es-button-white mr-2" @click="setDefaultVersion()" v-if="isDefaultVersion">
+                Mark as current version
+            </button>
             <select @change="changeChapterVersion()" v-model="version.uuid" style="padding:5px 7px;">
                 <option value="null">{{$t('SELECT_A_VERSION').toUpperCase()}}</option>
                 <option :value="version.uuid"  v-for="(version, index) in versions" v-bind:key="index">{{$t('VERSION')}} {{ index + 1 }}</option>
@@ -46,6 +49,19 @@ export default {
     TinyMCE
   },
   computed: {
+    defaultVersion: {
+      get () {
+        return this.$store.getters.findLatestChapterVersionByChapter(this.chapter)
+      },
+      set (version) {
+        return version
+      }
+    },
+    isDefaultVersion: function () {
+      if (this.versions.length > 1 && (typeof (this.defaultVersion) === 'undefined' || this.defaultVersion.id !== this.version.id)) {
+        return true
+      }
+    }
   },
   methods: {
     changeChapterVersion: function () {
@@ -77,6 +93,21 @@ export default {
         scope.version.change_description = null
         scope.version.content = null
       }
+    },
+    setDefaultVersion: async function () {
+      var scope = this
+      await scope.axios.post('http://localhost:3000/chapter-versions/' + scope.version.uuid + '/set-as-current')
+        .then(response => {
+          scope.$store.dispatch('loadVersionsByChapter', response.data.chapter_id)
+          scope.versions = scope.$store.getters.getChapterVersions(response.data.chapter_id)
+          window.swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: scope.$t('SUCCESS MESSAGE'),
+            showConfirmButton: false,
+            timer: 1500
+          })
+        })
     }
   },
   beforeUpdate () {
