@@ -15,7 +15,7 @@ class FeedbackController {
         builder.orderBy('feedback_responses.id', 'asc')
       })
       .withGraphJoined('author', {maxBatchSize: 1})
-      .orderBy('id', 'DESC')
+      .orderBy('created_at', 'ASC')
 
     return feedbacks
   }
@@ -89,23 +89,23 @@ class FeedbackController {
       row.book = book
     }
 
-    if (row.author_id !== book.author_id) {
-      var parent = data.parent.replace(/\b[a-z]/g, function (letter) {
-        return letter.toUpperCase()
-      })
-
-      // append alias
-      row['author_alias'] = row.author.alias
-
-      const notification = await Notification.query().upsertGraphAndFetch([{
-        type: 'Feedback' + parent,
-        name: 'feeback-' + row.uuid,
-        data: JSON.stringify(row),
-        user_id: book.uuid
-      }]).first()
-
-      // console.log(notification)
-    }
+    // if (row.author_id !== book.author_id) {
+    //   var parent = data.parent.replace(/\b[a-z]/g, function (letter) {
+    //     return letter.toUpperCase()
+    //   })
+    //
+    //   // append alias
+    //   row['author_alias'] = row.author.alias
+    //
+    //   const notification = await Notification.query().upsertGraphAndFetch([{
+    //     type: 'Feedback' + parent,
+    //     name: 'feeback-' + row.uuid,
+    //     // data: JSON.stringify(row),
+    //     user_id: book.uuid
+    //   }]).first()
+    //
+    //   // console.log(notification)
+    // }
 
     return row
   }
