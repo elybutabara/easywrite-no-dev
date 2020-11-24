@@ -15,6 +15,7 @@ class SceneLocationController {
   }
 
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     const save = await SceneLocation.query().upsertGraph([data])
       .withGraphFetched('scene')
       .withGraphFetched('location')

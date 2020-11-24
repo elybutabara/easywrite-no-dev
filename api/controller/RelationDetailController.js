@@ -17,6 +17,7 @@ class RelationDetailController {
   }
 
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     const save = await RelationDetail.query().upsertGraph([data])
       .withGraphFetched('character_relation')
       .withGraphFetched('relation')

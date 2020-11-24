@@ -22,12 +22,13 @@ class ChapterVersionController {
 
     const currentVersion = await version.$query()
       .patchAndFetch({ is_current_version: 1 })
-        .first()
+      .first()
 
     return currentVersion
   }
 
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     var version = await ChapterVersion.query()
       .patch({ 'is_current_version': 0 })
       .where('is_current_version', '=', true)

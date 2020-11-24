@@ -13,6 +13,7 @@ class BookSceneHistoryController {
     return sceneHistory
   }
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     const saveBookSceneHistory = await BookSceneHistory.query().upsertGraph([data]).first()
 
     return saveBookSceneHistory

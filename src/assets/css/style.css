@@ -1217,7 +1217,7 @@ input:checked + .slider:before {
 /* special case */
 .es-breadcrumb.special { max-width: 375px }
 .es-breadcrumb.special li a      { padding-left: 45px }
-.es-breadcrumb.special li a span { font-size: 13px; max-width: 95px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; }
+.es-breadcrumb.special li a span { font-size: 13px; max-width: 85px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; }
 .es-breadcrumb.special.tabs-4 li a span { max-width: 50px; }
 .es-breadcrumb.special li:first-child a      { padding-left: 10px; }
 /*.es-breadcrumb.special li:first-child a span {*/

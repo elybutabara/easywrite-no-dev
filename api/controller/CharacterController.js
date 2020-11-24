@@ -24,6 +24,7 @@ class CharacterController {
   }
 
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     const saveCharacters = await Character.query().upsertGraph([data]).first()
 
     const character = Character.query()

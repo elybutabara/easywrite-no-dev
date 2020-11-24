@@ -60,6 +60,7 @@ class CourseTakenController {
   }
 
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     const saveCourseTaken = await CoursesTaken.query().upsertGraph([data]).first()
     return this.getByCourseUUID(saveCourseTaken.uuid)
   }

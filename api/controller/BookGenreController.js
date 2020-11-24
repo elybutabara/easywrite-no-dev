@@ -5,6 +5,7 @@ const { BookGenre, User } = require(path.join(__dirname, '..', 'models'))
 
 class BookGenreController {
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     const saveGenre = await BookGenre.query().upsertGraph([data]).first()
 
     return saveGenre

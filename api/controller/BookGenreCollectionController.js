@@ -5,6 +5,7 @@ const { Book, BookGenreCollection, User } = require(path.join(__dirname, '..', '
 
 class BookGenreCollectionController {
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     const save = await BookGenreCollection.query().upsertGraph([data]).first()
     return save
   }

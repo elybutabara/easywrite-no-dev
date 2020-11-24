@@ -42,10 +42,7 @@ class AuthorPersonalProgressController {
   }
 
   static async save (data) {
-    if (data.updated_at !== 'undefined' && data.updated_at !== null) {
-      data.updated_at = moment().format('YYYY-MM-DD HH:mm:ss').toString()
-    }
-
+    if (data.updated_at) delete data.updated_at
     const saveAuthorPersonalProgress = await AuthorPersonalProgress.query().upsertGraph([data]).first()
 
     return saveAuthorPersonalProgress

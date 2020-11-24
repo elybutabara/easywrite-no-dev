@@ -40,7 +40,7 @@ class NoteController {
 
   static async getAllNotesByAuthor (authorId) {
     var notes = await Note.query()
-      .where('notes.message', '!=', '') 
+      .where('notes.message', '!=', '')
       .where('notes.author_id', authorId)
       .withGraphJoined('author', {maxBatchSize: 1})
       .orderBy('id', 'asc')
@@ -62,12 +62,12 @@ class NoteController {
         notes[i].scene = null
         notes[i].book = await Book.query().findById(parentID)
         var genreUUIDs = []
-        var genreC = await BookGenreCollection.query().select('genre_id').where('book_id',parentID)
+        var genreC = await BookGenreCollection.query().select('genre_id').where('book_id', parentID)
         for (let i = 0; i < genreC.length; i++) {
           genreUUIDs.push(genreC[i].genre_id)
         }
-        notes[i].book.genre = await BookGenre.query().select('id','name').whereIn('uuid',genreUUIDs)
-        
+        notes[i].book.genre = await BookGenre.query().select('id', 'name').whereIn('uuid', genreUUIDs)
+
         // await BookGenreCollection.query()
         //                         .select('book_genres.id','book_genres.name')
         //                         .leftJoin('book_genres')
@@ -93,6 +93,7 @@ class NoteController {
   }
 
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     const note = await Note.query().upsertGraph([data]).first()
 
     var row = Note.query()

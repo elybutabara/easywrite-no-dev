@@ -24,9 +24,7 @@ class SceneVersionController {
   }
 
   static async save (data) {
-    if (data.updated_at !== 'undefined' && data.updated_at !== null) {
-      delete data.updated_at
-    }
+    if (data.updated_at) delete data.updated_at
 
     const sceneVersion = await SceneVersion.query().upsertGraphAndFetch([data]).first()
     return sceneVersion
