@@ -23,6 +23,7 @@ src/assets/base.db
 *.njsproj
 *.sln
 *.db
+*.lock
 output/
 private/
 *.diff
