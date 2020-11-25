@@ -145,11 +145,13 @@ export default {
     // Required for geting value from TinyMCE content
     setDescription (value) {
       var scope = this
+      console.log('setDescription')
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       scope.tempDescription = value
     },
     displayImage: function () {
       var scope = this
+      console.log('displayImage')
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       let reader = new FileReader()
 
@@ -243,36 +245,23 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
               if (scope.data.uuid === null) {
-                scope.$set(scope.data, 'id', response.data.id)
-                scope.$set(scope.data, 'uuid', response.data.uuid)
-                scope.$set(scope.data, 'updated_at', response.data.updated_at)
-                scope.$store.dispatch('updateLocationList', response.data)
-                scope.CHANGE_COMPONENT({tabKey: 'location-form-' + response.data.uuid, tabComponent: 'location-form', tabData: { book: scope.book, location: response.data }, tabTitle: this.$t('EDIT') + ' - ' + response.data.location, tabIndex: scope.$store.getters.getActiveTab})
+                scope.properties.location = response.data
+                scope.$store.dispatch('changeTabTitle', { key: 'location-form', title: this.$t('EDIT') + ' - ' + response.data.location })
               } else {
-                scope.$set(scope.data, 'id', response.data.id)
-                scope.$set(scope.data, 'uuid', response.data.uuid)
-                scope.$set(scope.data, 'updated_at', response.data.updated_at)
-                scope.$store.dispatch('updateLocationList', response.data)
                 scope.$store.dispatch('changeTabTitle', { key: 'location-form-' + response.data.uuid, title: this.$t('EDIT') + ' - ' + response.data.location })
               }
 
-              // scope.loadLocation(response.data)
+              scope.$set(scope.data, 'id', response.data.id)
+              scope.$set(scope.data, 'uuid', response.data.uuid)
+              scope.$set(scope.data, 'updated_at', response.data.updated_at)
+              scope.$store.dispatch('updateLocationList', response.data)
+
+              scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
             })
           }
         })
     }
-    // loadLocation (locationProp) {
-    //   var scope = this
-    //   let location = locationProp.location
-    //   scope.data.location = location.location
-    //   scope.data.AKA = location.AKA
-    //   scope.data.tags = location.tags
-    //   scope.data.description = location.description
-    //   scope.data.pictures = location.pictures
-    //   scope.picture_src = location.picture_src
-    // }
   },
   beforeMount () {
     const scope = this
