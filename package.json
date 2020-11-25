@@ -1,7 +1,7 @@
 {
   "name": "EasyWrite",
   "main": "starter.js",
-  "version": "0.1.28",
+  "version": "0.1.30-beta.1",
   "description": "Easy Write Application , The best app for writer!",
   "author": "EayWriteDeveloper",
   "private": true,
