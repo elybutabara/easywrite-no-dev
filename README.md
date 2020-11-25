@@ -39,3 +39,7 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 ```
 "migration-mac-linux" : "cross-env NODE_ENV=development knex migrate:make $npm_package_name --knexfile=./api/knexfile.js"
 ```
+## Build Scripts - Tips and Helps
+```
+"download-electron-for-build": "electron-download --mirror=https://npm.taobao.org/mirrors/electron/ --version=1.5.0"
+```

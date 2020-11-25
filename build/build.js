@@ -110,7 +110,11 @@ let buildOptions = {
     "title": app.name + ' ' + app.version + ' Setup',
     "sign": false
   },
-  "afterSign": "build/scripts/notarize.js"
+  "afterSign": "build/scripts/notarize.js",
+  "electronDownload": {
+    "mirror": "https://npm.taobao.org/mirrors/electron/",
+    "isVerifyChecksum": false
+  },
 }
 
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
