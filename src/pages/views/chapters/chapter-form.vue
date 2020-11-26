@@ -290,7 +290,7 @@ export default {
           // console.log('ed init----->', ed, ed.contentDocument, ed.getDoc())
           scope.commentbase_editor = ed
           scope.commentbase_dom = ed.getDoc()
-          console.log('onEditorInit',ed.getDoc())
+          // console.log('onEditorInit',ed.getDoc())
         }
       }, 
       commentbase_dom: null,
@@ -371,8 +371,10 @@ export default {
       var scope = this
       ipcRenderer.send('IMPORT-DOCX', 'chapter') 
 
+      // ipcRenderer.once instead of 'on' to prevent multiple executions. 
       ipcRenderer.once('GET-DOCX-CONTENT-CHAPTER', function (event, data) {
-        // console.log(data)
+
+        // Add the imported contents where mouse cursor is located. 
         scope.tinyEditorAccess.execCommand('mceInsertContent', false, data)
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
         // console.log('scope.tinyEditorAccess.getDoc()',scope.tinyEditorAccess.getDoc())
