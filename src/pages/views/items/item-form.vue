@@ -32,7 +32,7 @@
             <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);"><span>{{ book.title }}</span></a></li>
             <li><a @click="CHANGE_COMPONENT({tabKey: 'item-listing-' + book.uuid, tabComponent: 'item-listing', tabData: book, tabTitle: $t('ITEMS') + ' - ' + book.title})" href="javascript:void(0);"><span>{{ $t('ITEMS') }}</span></a></li>
             <li><a href="javascript:void(0);" style="padding-right: 20px;">
-                  <span v-if="data !== null">{{ data.itemname }}</span>
+                  <span v-if="data.id !== null">{{ data.itemname }}</span>
                   <span v-else>{{$t('NEW_ITEM')}}</span>
             </a></li>
         </ul>
@@ -250,20 +250,18 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
               if (scope.data.uuid === null) {
-                scope.$set(scope.data, 'id', response.data.id)
-                scope.$set(scope.data, 'uuid', response.data.uuid)
-                scope.$set(scope.data, 'updated_at', response.data.updated_at)
-                scope.$store.dispatch('updateItemList', response.data)
-                scope.CHANGE_COMPONENT({tabKey: 'item-form-' + response.data.uuid, tabComponent: 'item-form', tabData: { book: response.data.book, item: response.data }, tabTitle: this.$t('EDIT') + ' - ' + response.data.itemname, tabIndex: scope.$store.getters.getActiveTab})
+                scope.properties.item = response.data
+                scope.$store.dispatch('changeTabTitle', { key: 'item-form', title: this.$t('EDIT') + ' - ' + response.data.itemname })
               } else {
-                scope.$set(scope.data, 'id', response.data.id)
-                scope.$set(scope.data, 'uuid', response.data.uuid)
-                scope.$set(scope.data, 'updated_at', response.data.updated_at)
-                scope.$store.dispatch('updateItemList', response.data)
                 scope.$store.dispatch('changeTabTitle', { key: 'item-form-' + response.data.uuid, title: this.$t('EDIT') + ' - ' + response.data.itemname })
               }
+              scope.$set(scope.data, 'id', response.data.id)
+              scope.$set(scope.data, 'uuid', response.data.uuid)
+              scope.$set(scope.data, 'updated_at', response.data.updated_at)
+              scope.$store.dispatch('updateItemList', response.data)
+
+              scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
             })
           }
         })
