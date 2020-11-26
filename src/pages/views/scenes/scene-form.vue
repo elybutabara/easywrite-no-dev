@@ -55,7 +55,7 @@
                             <b-col>
                                 <label for="input-title">{{$t('TITLE')}}: </label>
                                 <b-form-input
-                                    id="input-title"
+                                    id="input-title" 
                                     v-model="data.title"
                                     :state="feedback.title.state"
                                     aria-describedby="input-live-help input-live-feedback"
@@ -99,17 +99,17 @@
                         <div class="icon">
                             <i v-if="accordion['content'] === 'active'" class="fas fa-chevron-down"></i>
                             <i v-if="accordion['content'] !== 'active'" class="fas fa-chevron-right"></i>
-                        </div>
+                        </div> 
                     </div>
                     <div class="content ">
                         <button @click="getImport()">Import Docx</button>
                         <b-row class="margin-bottom-1rem">
                             <b-col>
-                                <div v-if="scene_history.length" class="text-right">
+                                <div v-if="scene_history.length" class="text-right"> 
                                     <button class="es-button-white margin-bottom-1rem" @click="show_history = !show_history">{{$t('SHOW_HISTORY')}}</button>
                                 </div>
-                                <div class="form-group">
-                                    <tiny-editor :params="tiny_editor_params" :initValue="baseSceneVersionContent" v-on:getEditorContent="setContent" class="form-control" />
+                                <div class="form-group testtest">
+                                    <tiny-editor ref="tmc" :params="tiny_editor_params" :initValue="baseSceneVersionContent" v-on:getEditorContent="setContent" class="form-control" />
                                     <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params()"></CommentBasePanel>
                                 </div>
                                 <div v-if="show_history" class="scene-history-items slideInRight animated">
@@ -459,8 +459,10 @@ export default {
       show_history: false,
       view_history: false,
       historyContent: '',
+      tinyEditorAccess: null,
       tiny_editor_params: {
         onEditorSetup: function (ed) {
+          scope.tinyEditorAccess = ed
           // console.log('ed setup----->', ed, ed.contentDocument)
         },
         onEditorInit: function (ed) {
@@ -536,12 +538,18 @@ export default {
     },
     getImport: function () {
       var scope = this
+      // console.log('scope.$refs.tmc', tinymce.get(scope.$refs.tmc.$el.id).execCommand('mceInsertContent', false, 'bianca'))
+      
       ipcRenderer.send('IMPORT-DOCX', 'scene')
 
-      ipcRenderer.on('GET-DOCX-CONTENT-SCENE', function (event, data) {
-        scope.data.scene_version.content = data
+      // ipcRenderer.once instead of 'on' to prevent multiple executions. 
+      ipcRenderer.once('GET-DOCX-CONTENT-SCENE', function (event, data) {
+        // scope.data.scene_version.content = data
+         // scope.baseSceneVersionContent = data
+        // Add the imported contents where mouse cursor is located. 
+        tinymce.get(scope.$refs.tmc.$el.id).execCommand('mceInsertContent', false, data)
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
-        scope.baseSceneVersionContent = data
+       
       })
     },
     toggleAccordion: function (key) {
