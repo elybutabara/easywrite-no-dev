@@ -12,21 +12,11 @@
                 </div>
             </div>
             <div class="book-panel-right">
-                <button v-if="data.id != null" class="es-button btn-sm white" @click="uploadImage()">{{$t('SAVE_CHANGES')}}</button>
-                <button v-else class="es-button btn-sm white" @click="uploadImage()">{{$t('SAVE')}}</button>
+                <button v-if="!savingInProgress" class="es-button btn-sm white" @click="uploadImage()">{{ (data.id!=null) ? $t('SAVE_CHANGES') : $t('SAVE') }}</button>
+                <button v-else class="es-button btn-sm white" disabled>{{ (data.id!=null) ? $t('SAVE_CHANGES') : $t('SAVE') }} <b-spinner small label="Small Spinner"></b-spinner></button>
             </div>
         </div>
     </div>
-    <!-- <div class="es-page-breadcrumbs">
-        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-        /
-        <button @click="CHANGE_COMPONENT({tabKey: 'item-listing-' + book.uuid, tabComponent: 'item-listing', tabData: book, tabTitle: $t('ITEMS') + ' - ' + book.title})">{{ $t('ITEMS') }}</button>
-        /
-        <button class="current">
-            <span v-if="data !== null">{{ data.itemname }}</span>
-            <span v-else>{{$t('NEW_ITEM')}}</span>
-        </button>
-    </div> -->
     <div class="es-page-content">
       <ul class="es-breadcrumb">
             <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);"><span>{{ book.title }}</span></a></li>
@@ -129,7 +119,8 @@ export default {
           state: null,
           message: null
         }
-      }
+      },
+      savingInProgress: false
     }
   },
   components: {
@@ -184,6 +175,11 @@ export default {
     uploadImage () {
       var scope = this
 
+      // Skip saving if there is still saving in progress
+      if (scope.savingInProgress) return
+
+      scope.savingInProgress = true
+
       if (scope.file) {
         let formData = new FormData()
         formData.append('single-picture-file', scope.file)
@@ -200,6 +196,7 @@ export default {
             scope.data.pictures = response.data.file.name
             scope.saveItem()
           }).catch(function () {
+            scope.savingInProgress = false
             scope.$notify({
               group: 'notification',
               type: 'error',
@@ -222,6 +219,7 @@ export default {
     },
     saveItem () {
       var scope = this
+
       var hasError = false
       scope.data.description = scope.tempDescription
 
@@ -262,7 +260,18 @@ export default {
               scope.$store.dispatch('updateItemList', response.data)
 
               scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+              scope.savingInProgress = false
+            }).catch(function () {
+              scope.savingInProgress = false
+              scope.$notify({
+                group: 'notification',
+                type: 'error',
+                title: 'Failed',
+                text: 'An error occur while processing...'
+              })
             })
+          } else {
+            scope.savingInProgress = false
           }
         })
     },
