@@ -114,7 +114,7 @@
                                     <button class="es-button-white margin-bottom-1rem" @click="show_history = !show_history">{{$t('SHOW_HISTORY')}}</button>
                                 </div>
                                 <div class="form-group">
-                                  <tiny-editor-chapter  :chapterData="data" :params="tiny_editor_params" :initValue="baseChapterVersionCont" v-on:showOverlay="viewOverlay" v-on:getEditorContent="setContent" @getShowScene="save_to_scene=$event" class="form-control" />
+                                  <tiny-editor-chapter ref="tmc" :chapterData="data" :params="tiny_editor_params" :initValue="baseChapterVersionCont" v-on:showOverlay="viewOverlay" v-on:getEditorContent="setContent" @getShowScene="save_to_scene=$event" class="form-control" />
                                     <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params()"></CommentBasePanel>
                                 </div>
                                 <div v-if="show_history" class="chapter-history-items slideInRight animated">
@@ -280,16 +280,19 @@ export default {
       show_history: false,
       view_history: false,
       historyContent: '',
+      tinyEditorAccess: null,
       tiny_editor_params: {
         onEditorSetup: function (ed) {
+          scope.tinyEditorAccess = ed
           // console.log('ed setup----->', ed, ed.contentDocument)
         },
         onEditorInit: function (ed) {
           // console.log('ed init----->', ed, ed.contentDocument, ed.getDoc())
           scope.commentbase_editor = ed
           scope.commentbase_dom = ed.getDoc()
+          // console.log('onEditorInit',ed.getDoc())
         }
-      },
+      }, 
       commentbase_dom: null,
       commentbase_params: function () {
         return {
@@ -361,13 +364,23 @@ export default {
       this.save_to_scene = false
     },
     getImport: function () {
+      // var scope = this
+      // console.log('heys', scope.$refs.tmc.activeEditor)
+      // scope.$refs.tmc.activeEditor.execCommand('mceInsertContent', false, 'bianca')
+      // scope.$refs.tmc.ed.execCommand('mceInsertContent', false, 'bianca')
       var scope = this
-      ipcRenderer.send('IMPORT-DOCX', 'chapter')
+      ipcRenderer.send('IMPORT-DOCX', 'chapter') 
 
-      ipcRenderer.on('GET-DOCX-CONTENT-CHAPTER', function (event, data) {
-        scope.data.chapter_version.content = data
+      // ipcRenderer.once instead of 'on' to prevent multiple executions. 
+      ipcRenderer.once('GET-DOCX-CONTENT-CHAPTER', function (event, data) {
+
+        // Add the imported contents where mouse cursor is located. 
+        scope.tinyEditorAccess.execCommand('mceInsertContent', false, data)
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
-        scope.baseChapterVersionCont = data
+        // console.log('scope.tinyEditorAccess.getDoc()',scope.tinyEditorAccess.getDoc())
+        // scope.data.chapter_version.content = scope.tinyEditorAccess.getContent()
+        // console.log(scope.data.chapter_version.content)
+        // scope.baseChapterVersionCont = 'test'
       })
     },
     toggleAccordion: function (key) {
@@ -409,6 +422,7 @@ export default {
     },
     // Required for geting value from TinyMCE content
     setContent (value) {
+      // console.log('set content', value)
       var scope = this
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       scope.data.chapter_version.content = value
