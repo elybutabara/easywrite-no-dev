@@ -12,21 +12,11 @@
                 </div>
             </div>
             <div class="book-panel-right">
-                <button v-if="data.id != null" class="es-button btn-sm white" @click="uploadImage()">{{$t('SAVE_CHANGES')}}</button>
-                <button v-else class="es-button btn-sm white" @click="uploadImage()">{{$t('SAVE')}}</button>
+                <button v-if="!savingInProgress" class="es-button btn-sm white" @click="uploadImage()">{{ (data.id!=null) ? $t('SAVE_CHANGES') : $t('SAVE') }}</button>
+                <button v-else class="es-button btn-sm white" disabled>{{ (data.id!=null) ? $t('SAVE_CHANGES') : $t('SAVE') }} <b-spinner small label="Small Spinner"></b-spinner></button>
             </div>
         </div>
     </div>
-    <!-- <div class="es-page-breadcrumbs">
-        <button @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})">{{ book.title }}</button>
-        /
-        <button @click="CHANGE_COMPONENT({tabKey: 'location-listing-' + book.uuid, tabComponent: 'location-listing', tabData: book, tabTitle: $t('LOCATIONS') + ' - ' + book.title})">{{ $t('LOCATIONS') }}</button>
-        /
-        <button class="current">
-            <span v-if="location !== null">{{ location.location }}</span>
-            <span v-else>New Location</span>
-        </button>
-    </div> -->
     <div class="es-page-content">
         <ul class="es-breadcrumb">
             <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);"><span>{{ book.title }}</span></a></li>
@@ -36,7 +26,6 @@
                 <span v-else>New Location</span>
             </a></li>
         </ul>
-
         <div class="container">
             <div class="es-panel">
                 <div class="row">
@@ -127,7 +116,8 @@ export default {
           state: null,
           message: null
         }
-      }
+      },
+      savingInProgress: false
     }
   },
   components: {
@@ -183,6 +173,11 @@ export default {
     uploadImage () {
       var scope = this
 
+      // Skip saving if there is still saving in progress
+      if (scope.savingInProgress) return
+
+      scope.savingInProgress = true
+
       if (scope.file) {
         let formData = new FormData()
         formData.append('single-picture-file', scope.file)
@@ -199,7 +194,13 @@ export default {
             scope.data.pictures = response.data.file.name
             scope.saveLocation()
           }).catch(function () {
-            console.log('FAILURE!!')
+            scope.savingInProgress = false
+            scope.$notify({
+              group: 'notification',
+              type: 'error',
+              title: 'Failed',
+              text: 'An error occur while processing...'
+            })
           })
       } else {
         scope.saveLocation()
@@ -258,7 +259,18 @@ export default {
               scope.$store.dispatch('updateLocationList', response.data)
 
               scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+              scope.savingInProgress = false
+            }).catch(function () {
+              scope.savingInProgress = false
+              scope.$notify({
+                group: 'notification',
+                type: 'error',
+                title: 'Failed',
+                text: 'An error occur while processing...'
+              })
             })
+          } else {
+            scope.savingInProgress = false
           }
         })
     }
