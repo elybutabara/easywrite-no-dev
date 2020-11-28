@@ -7,11 +7,17 @@ export default {
       items: [
         { key: 'dashboard', title: 'DASHBOARD', component: 'dashboard', data: { autosync: true }, refresh: false, modified: false }
       ]
+    },
+    mainSideNavTab:{
+      active_tab: 'my-books'
     }
   },
   getters: {
     getTabs: state => {
       return state.tabs
+    },
+    getActiveMainSideNavTab: state => {
+      return state.mainSideNavTab.active_tab
     },
     getModifiedTabs: state => {
       var tabs = []
@@ -52,7 +58,7 @@ export default {
           state.tabs.active_index = (state.tabs.items.length - 1)
           state.tabs.active_key = payload.key
           break
-        }
+        } 
       }
     },
     changeTab (state, payload) {
@@ -103,13 +109,18 @@ export default {
         state.tabs.active_index = next
       }
     },
-    markTabAsModified (state, payload) {
+    markTabAsModified (state, payload) { 
       // payload = tab index only
       state.tabs.items[payload].modified = true
     },
     unmarkTabAsModified (state, payload) {
       // payload = tab index only
       state.tabs.items[payload].modified = false
+    },
+    setActiveMainSideNavTab (state, payload) {
+      // payload = tab index only
+      if(payload == null) state.mainSideNavTab.active_index = 'my-books'
+      state.mainSideNavTab.active_tab = payload
     }
   },
   actions: {
@@ -133,6 +144,9 @@ export default {
     },
     unmarkTabAsModified ({ commit, state }, payload) {
       commit('unmarkTabAsModified', payload)
+    },
+    setActiveMainSideNavTab ({ commit, state }, payload) {
+      commit('setActiveMainSideNavTab', payload)
     }
   }
 }
