@@ -12,6 +12,7 @@ class ChapterController {
       .withGraphJoined('chapter_version', {maxBatchSize: 1})
       .whereNull('book_chapters.deleted_at')
       .orderBy('order')
+      .orderBy('created_at')
 
     return chapters
   }
