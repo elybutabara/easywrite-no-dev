@@ -292,7 +292,7 @@ export default {
           scope.commentbase_dom = ed.getDoc()
           // console.log('onEditorInit',ed.getDoc())
         }
-      }, 
+      },
       commentbase_dom: null,
       commentbase_params: function () {
         return {
@@ -369,12 +369,11 @@ export default {
       // scope.$refs.tmc.activeEditor.execCommand('mceInsertContent', false, 'bianca')
       // scope.$refs.tmc.ed.execCommand('mceInsertContent', false, 'bianca')
       var scope = this
-      ipcRenderer.send('IMPORT-DOCX', 'chapter') 
+      ipcRenderer.send('IMPORT-DOCX', 'chapter')
 
-      // ipcRenderer.once instead of 'on' to prevent multiple executions. 
+      // ipcRenderer.once instead of 'on' to prevent multiple executions.
       ipcRenderer.once('GET-DOCX-CONTENT-CHAPTER', function (event, data) {
-
-        // Add the imported contents where mouse cursor is located. 
+        // Add the imported contents where mouse cursor is located.
         scope.tinyEditorAccess.execCommand('mceInsertContent', false, data)
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
         // console.log('scope.tinyEditorAccess.getDoc()',scope.tinyEditorAccess.getDoc())

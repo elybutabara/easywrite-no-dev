@@ -8,7 +8,7 @@ export default {
         { key: 'dashboard', title: 'DASHBOARD', component: 'dashboard', data: { autosync: true }, refresh: false, modified: false }
       ]
     },
-    mainSideNavTab:{
+    mainSideNavTab: {
       active_tab: 'my-books'
     }
   },
@@ -58,7 +58,7 @@ export default {
           state.tabs.active_index = (state.tabs.items.length - 1)
           state.tabs.active_key = payload.key
           break
-        } 
+        }
       }
     },
     changeTab (state, payload) {
@@ -109,7 +109,7 @@ export default {
         state.tabs.active_index = next
       }
     },
-    markTabAsModified (state, payload) { 
+    markTabAsModified (state, payload) {
       // payload = tab index only
       state.tabs.items[payload].modified = true
     },
@@ -119,7 +119,7 @@ export default {
     },
     setActiveMainSideNavTab (state, payload) {
       // payload = tab index only
-      if(payload == null) state.mainSideNavTab.active_index = 'my-books'
+      if (payload == null) state.mainSideNavTab.active_index = 'my-books'
       state.mainSideNavTab.active_tab = payload
     }
   },
