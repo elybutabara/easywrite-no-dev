@@ -37,8 +37,20 @@ export default {
     },
     getChapterContent: state => (chapterUUID) => {
       if (state.chapter_versions[chapterUUID] && state.chapter_versions[chapterUUID].rows.length > 0) {
+        var count = state.chapter_versions[chapterUUID].rows.length
+        for (let i = 0; i < count; i++) {
+          var current = state.chapter_versions[chapterUUID].rows[i]
+
+          if (current.is_current_version === 1 || current.is_current_version === '1' || i === (count - 1)) {
+            return current.content
+          }
+        }
+
+        return ''
+        /*
         var index = state.chapter_versions[chapterUUID].rows.length - 1
         return state.chapter_versions[chapterUUID].rows[index].content
+        */
       } else {
         return ''
       }
@@ -71,8 +83,17 @@ export default {
       let chapterUUID = payload.uuid
 
       if (state.chapter_versions[chapterUUID] !== 'undefined' && state.chapter_versions[chapterUUID].rows.length > 0) {
-        var index = state.chapter_versions[chapterUUID].rows.length - 1
-        return state.chapter_versions[chapterUUID].rows[index]
+        var count = state.chapter_versions[chapterUUID].rows.length
+        for (let i = 0; i < count; i++) {
+          var current = state.chapter_versions[chapterUUID].rows[i]
+
+          if (current.is_current_version === 1 || current.is_current_version === '1' || i === (count - 1)) {
+            return current
+          }
+        }
+
+        // var index = state.chapter_versions[chapterUUID].rows.length - 1
+        // return state.chapter_versions[chapterUUID].rows[index]
       }
       return null
     },

@@ -15,6 +15,7 @@ class SceneCharacterController {
   }
 
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     const save = await SceneCharacter.query().upsertGraph([data])
       .withGraphFetched('scene')
       .withGraphFetched('character')

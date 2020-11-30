@@ -14,6 +14,7 @@ class FeedbackResponseController {
   }
 
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     const response = await FeedbackResponse.query().upsertGraphAndFetch([data]).first()
 
     var row = FeedbackResponse.query()

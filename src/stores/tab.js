@@ -5,13 +5,19 @@ export default {
     tabs: {
       active_index: 0,
       items: [
-        { key: 'dashboard', title: 'DASHBOARD', component: 'dashboard', data: { autosync: true }, refresh: false, modified: false }
+        { key: 'dashboard', title: 'DASHBOARD', component: 'dashboard', data: { autosync: !true }, refresh: false, modified: false }
       ]
+    },
+    mainSideNavTab: {
+      active_tab: 'my-books'
     }
   },
   getters: {
     getTabs: state => {
       return state.tabs
+    },
+    getActiveMainSideNavTab: state => {
+      return state.mainSideNavTab.active_tab
     },
     getModifiedTabs: state => {
       var tabs = []
@@ -110,6 +116,11 @@ export default {
     unmarkTabAsModified (state, payload) {
       // payload = tab index only
       state.tabs.items[payload].modified = false
+    },
+    setActiveMainSideNavTab (state, payload) {
+      // payload = tab index only
+      if (payload == null) state.mainSideNavTab.active_index = 'my-books'
+      state.mainSideNavTab.active_tab = payload
     }
   },
   actions: {
@@ -133,6 +144,9 @@ export default {
     },
     unmarkTabAsModified ({ commit, state }, payload) {
       commit('unmarkTabAsModified', payload)
+    },
+    setActiveMainSideNavTab ({ commit, state }, payload) {
+      commit('setActiveMainSideNavTab', payload)
     }
   }
 }

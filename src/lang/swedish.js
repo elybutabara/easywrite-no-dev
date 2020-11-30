@@ -1,4 +1,5 @@
 export default {
+  SELECT_TYPE_OF_SCENE: 'Välj typ av scen',
   MESSAGE_CENTER: 'Meddelandecenter',
   MESSAGES: 'Meddelanden',
   NOTIFICATIONS: 'Meddelanden',

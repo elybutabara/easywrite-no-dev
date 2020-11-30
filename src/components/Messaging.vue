@@ -302,11 +302,13 @@ export default {
 
       var headers = {
         'X-Requested-With': 'XMLHttpRequest',
-        'Authorization': 'Bearer ' + scope.$store.getters.getUserToken
+        'Authorization': 'Bearer ' + scope.$store.getters.getUserToken,
+        'X-Authorization': 'Bearer ' + scope.$store.getters.getUserToken
       }
 
+      // TODO: make site be flexible using the .env file
       scope.axios
-        .get(window.APP.API.URL + '/search/authors?q=' + escape(q) + '&limit=10',
+        .get(window.APP.API.URL + '/search/authors?q=' + escape(q) + '&limit=10' + '&site=' + window.APP.API.SITE,
           {
             'headers': headers
           })
@@ -327,14 +329,15 @@ export default {
       //
       var scope = this
 
-      var port = window.APP.CHAT.PORT
+      var port = 3040
 
       var socket = socketIO('https://dev.kunohay.com:' + port)
       socket.on('connect', function () {
         scope.socket = socket
         scope.socketConnected = true
         socket.emit('authenticate', {
-          token: scope.$store.getters.getUserToken
+          token: scope.$store.getters.getUserToken,
+          env_: window.APP.API.CHAT
         })
       })
 

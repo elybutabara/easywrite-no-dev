@@ -35,9 +35,11 @@
               <div v-bind:class="{ 'active' : tab.active == 'compare-versions' }" @click="changeTab('compare-versions')" class="es-details-tab-item">{{$t('COMPARE_VERSIONS').toUpperCase()}}</div>
           </div>
           <div>
-              <ul class="es-breadcrumb special mb-0">
+              <ul class="es-breadcrumb special mb-0" v-bind:class="{ 'tabs-4' : chapter }">
                 <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);" style="max-width: 120px; text-overflow: ellipses; white-space: nowrap;"><span>{{ book.title }}</span></a></li>
-                <li><a @click="CHANGE_COMPONENT({tabKey: 'scene-listing-' + book.uuid, tabComponent: 'scene-listing', tabData: book, tabTitle: $t('OTHER_SCENES') + ' - ' + book.title})" href="javascript:void(0);"><span>{{ $t('OTHER_SCENES') }}</span></a></li>
+                <li v-if="chapter"><a @click="CHANGE_COMPONENT({tabKey: 'scene-listing-' + book.uuid, tabComponent: 'chapter-listing', tabData: book, tabTitle: $t('CHAPTERS') + ' - ' + book.title})" href="javascript:void(0);"><span>{{ $t('CHAPTERS') }}</span></a></li>
+                <li v-if="chapter"><a @click="CHANGE_COMPONENT({tabKey: 'scene-listing-' + book.uuid, tabComponent: 'chapter-details', tabData: { book: book, chapter: chapter }, tabTitle: chapter.title + ' - ' + book.title})" href="javascript:void(0);"><span>{{ chapter.title }}</span></a></li>
+                <li v-else><a @click="CHANGE_COMPONENT({tabKey: 'scene-listing-' + book.uuid, tabComponent: 'scene-listing', tabData: book, tabTitle: $t('OTHER_SCENES') + ' - ' + book.title})" href="javascript:void(0);"><span>{{ $t('OTHER_SCENES') }}</span></a></li>
                 <li><a href="javascript:void(0);" style="padding-right: 20px;"><span>{{ scene.title || 'Untitled' }}</span></a></li>
               </ul>
           </div>

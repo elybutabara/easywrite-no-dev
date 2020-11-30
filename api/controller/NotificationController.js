@@ -75,6 +75,7 @@ class NotificationController {
   }
 
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     const notification = await Notification.query().upsertGraphAndFetch([data]).first()
 
     return notification

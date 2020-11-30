@@ -13,6 +13,7 @@ class RelationController {
   }
 
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     const save = await Relation.query().upsertGraph([data]).first()
     return save
   }

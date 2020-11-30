@@ -62,7 +62,10 @@ let buildOptions = {
       "private": true,
       "token": "dfd1c61fcb090ecba24909875e177c5326ad449d",
       "owner": "rancorfloydz",
-      "repo": "easywrite-mac"
+      "repo": "easywrite-se-dev",
+      // "repo": "easywrite-se-live"
+      // "repo": "easywrite-no-dev"
+      // "repo": "easywrite-no-live"
     }],
     "provisioningProfile": path.resolve('build/certificate/EasyWrite.provisionprofile'),
     "hardenedRuntime" : true,
@@ -86,8 +89,10 @@ let buildOptions = {
       "private": true,
       "token": "dfd1c61fcb090ecba24909875e177c5326ad449d",
       "owner": "rancorfloydz",
-      //"repo": "easywrite-v2-updater"
-      "repo": "easywrite"
+      "repo": "easywrite-se-dev",
+      // "repo": "easywrite-se-live"
+      // "repo": "easywrite-no-dev"
+      // "repo": "easywrite-no-live"
     }],
     "certificateFile" : "build/certificate/easywrite.pfx",
     "verifyUpdateCodeSignature" : true,
@@ -105,7 +110,11 @@ let buildOptions = {
     "title": app.name + ' ' + app.version + ' Setup',
     "sign": false
   },
-  "afterSign": "build/scripts/notarize.js"
+  "afterSign": "build/scripts/notarize.js",
+  "electronDownload": {
+    "mirror": "https://npm.taobao.org/mirrors/electron/",
+    "isVerifyChecksum": false
+  },
 }
 
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {

@@ -92,7 +92,7 @@ export default {
       items: [],
       locations: [],
       other_scenes: [],
-      tab: 'my-books',
+      // tab: 'my-books',
       platform: '',
       auto_update: {
         version: '',
@@ -120,6 +120,10 @@ export default {
     books_i_read: function () {
       var authorUUID = this.$store.getters.getAuthorID
       return this.$store.getters.getBooksIReadByAuthor(authorUUID)
+    },
+    tab: function () {
+      const scope = this
+      return scope.$store.getters.getActiveMainSideNavTab
     }
   },
   methods: {
@@ -144,8 +148,10 @@ export default {
       scope.$set(data, 'is_open', isOpen)
     },
     toggleTab: function (tab) {
+      // var scope = this
+      // scope.tab = tab
       var scope = this
-      scope.tab = tab
+      scope.$store.dispatch('setActiveMainSideNavTab', tab)
     },
     installNewVersion: function () {
       const scope = this

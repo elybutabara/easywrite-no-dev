@@ -18,9 +18,9 @@
                     </div>
                     <div class="es-card-footer">
                         <button @click="open(note)"><i class="las la-sticky-note"></i> {{ $t('OPEN').toUpperCase() }}</button>
-                        <button v-if="note.parent === 'chapter'" class="btn-"  @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + note.chapter.uuid, tabComponent: 'books-i-read-chapter-details', tabData: { book: note.book, chapter: note.chapter }, tabTitle:  $t('VIEW')+ ' - ' + note.chapter.title, newTab: true})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
-                        <button v-if="note.parent === 'scene'" class="btn-"  @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + note.scene.uuid, tabComponent: 'books-i-read-scene-details', tabData: { book: note.book, scene: note.scene, chapter: null }, tabTitle:  $t('VIEW')+ ' - ' + note.scene.title, newTab: true})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
-                        <button v-if="note.parent === 'book'" class="btn-"  @click="CHANGE_COMPONENT({tabKey: 'book-details-' + note.book.uuid, tabComponent: 'books-i-read-book-details', tabData: { book: note.book }, tabTitle:  $t('VIEW')+ ' - ' + note.book.title, newTab: true})"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
+                        <button v-if="note.parent === 'chapter'" class="btn-"  @click="viewChapter(note)"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
+                        <button v-if="note.parent === 'scene'" class="btn-"  @click="viewScene(note)"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
+                        <button v-if="note.parent === 'book'" class="btn-"  @click="viewBook(note)"><i class="lar la-eye"></i> {{$t('VIEW').toUpperCase()}}</button>
                         <button class="btn-delete" @click="deleteNote(note)"><i class="las la-trash-alt"></i> {{ $t('DELETE') }}</button>
                     </div>
                 </div>
@@ -44,6 +44,9 @@
 </template>
 
 <script>
+// import BookIReadChaptersFolder from '@/components/tree/BookIReadChaptersFolder'
+// import BookIReadScenesFolder from '@/components/tree/BookIReadScenesFolder'
+
 export default {
   name: 'note-listing',
   props: ['properties'],
@@ -103,8 +106,8 @@ export default {
       var authorID = scope.$store.getters.getAuthorID
       scope.axios.get('http://localhost:3000/notes/' + authorID)
         .then(function (response) {
+          console.log('notes', response.data)
           scope.notes = response.data
-          // console.log(scope.notes)
         })
         .catch(function (error) {
           console.log(error)
@@ -112,6 +115,51 @@ export default {
         .finally(function () {
         // always executed
         })
+    },
+    viewChapter: async function (note) {
+      var scope = this
+
+      try {
+        await scope.$store.dispatch('setActiveMainSideNavTab', 'books-i-read')
+        await scope.TOGGLE_BOOK_I_READ(note.book, 'book')
+        await scope.TOGGLE_BOOK_I_READ(note.book, 'chapters')
+      } finally {
+        scope.CHANGE_COMPONENT({
+          tabKey: 'chapter-details-' + note.chapter.uuid,
+          tabComponent: 'books-i-read-chapter-details',
+          tabData: { book: note.book, chapter: note.chapter },
+          tabTitle: scope.$t('VIEW') + ' - ' + note.chapter.title,
+          newTab: true
+        })
+      }
+    },
+    viewScene: async function (note) {
+      var scope = this
+
+      try {
+        await scope.$store.dispatch('setActiveMainSideNavTab', 'books-i-read')
+        await scope.TOGGLE_BOOK_I_READ(note.book, 'book')
+        await scope.TOGGLE_BOOK_I_READ(note.book, 'chapters')
+        // await scope.TOGGLE_BOOK_I_READ(note.book,'scenes')
+      } finally {
+        scope.CHANGE_COMPONENT({
+          tabKey: 'scene-details-' + note.scene.uuid,
+          tabComponent: 'books-i-read-scene-details',
+          tabData: { book: note.book, scene: note.scene, chapter: null },
+          tabTitle: scope.$t('VIEW') + ' - ' + note.scene.title,
+          newTab: true
+        })
+      }
+    },
+    viewBook: async function (note) {
+      var scope = this
+
+      try {
+        await scope.$store.dispatch('setActiveMainSideNavTab', 'books-i-read')
+        await scope.TOGGLE_BOOK_I_READ(note.book, 'book')
+      } finally {
+        scope.CHANGE_COMPONENT({tabKey: 'book-details-' + note.book.uuid, tabComponent: 'books-i-read-book-details', tabData: {book: note.book, author: note.book.author, genre: note.book.genre, about: note.book.about, uuid: note.parent_id, title: note.book.title, created_at: note.book.created_at}, tabTitle: scope.$t('VIEW') + ' - ' + note.book.title, newTab: true})
+      }
     }
   },
   mounted () {

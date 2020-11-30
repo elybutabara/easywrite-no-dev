@@ -74,6 +74,9 @@ class ChapterController {
       update: ['chapter_version']
     }
 
+    if (data.updated_at) delete data.updated_at
+    if (data.chapter_version.updated_at) delete data.chapter_version.updated_at
+
     const saveChapter = await Chapter.query().upsertGraphAndFetch([data], upsertGraphOptions).first()
 
     const chapter = Chapter.query()

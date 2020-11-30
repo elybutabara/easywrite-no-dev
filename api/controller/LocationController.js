@@ -23,6 +23,7 @@ class LocationController {
   }
 
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     const saveLocation = await Location.query().upsertGraph([data]).first()
 
     const location = Location.query()

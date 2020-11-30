@@ -1,4 +1,5 @@
 export default {
+  SELECT_TYPE_OF_SCENE: 'Select type of scene',
   MESSAGE_CENTER: 'Message Center',
   MESSAGES: 'Messages',
   NOTIFICATIONS: 'Notifications',

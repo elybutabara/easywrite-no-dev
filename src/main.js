@@ -58,7 +58,7 @@ import 'vue-multiselect/dist/vue-multiselect.min.css'
 
 import 'tinymce/tinymce'
 import 'tinymce/themes/silver'
-
+import 'tinymce/icons/default'
 import 'tinymce/skins/ui/oxide/skin.min.css'
 import 'tinymce/skins/ui/oxide/content.min.css'
 import 'tinymce/skins/content/default/content.min.css'
@@ -100,28 +100,33 @@ let APP = {
   SE_PROD: {
     API: {
       URL: 'https://api.pilotleser.no/se',
-      UPLOAD_URL: 'https://www.easywrite.se/uploads'
-    },
-    CHAT: {
-      PORT: 3031
+      UPLOAD_URL: 'https://www.easywrite.se/uploads',
+      SITE: 'se-live',
+      CHAT: 'se'
     }
   },
   SE_DEV: {
     API: {
       URL: 'https://api.pilotleser.no/se-dev',
-      UPLOAD_URL: 'https://dev.easywrite.se/uploads'
-    },
-    CHAT: {
-      PORT: 3032
+      UPLOAD_URL: 'https://dev.easywrite.se/uploads',
+      SITE: 'se-dev',
+      CHAT: 'se-dev'
     }
   },
   NO_PROD: {
     API: {
-      URL: 'https://api.pilotleser.no/live',
-      UPLOAD_URL: 'https://www.pilotleser.no/uploads'
-    },
-    CHAT: {
-      PORT: 3030
+      URL: 'https://api.pilotleser.no/no',
+      UPLOAD_URL: 'https://www.pilotleser.no/uploads',
+      SITE: 'no-live',
+      CHAT: 'no'
+    }
+  },
+  NO_DEV: {
+    API: {
+      URL: 'https://api.pilotleser.no/no-dev',
+      UPLOAD_URL: 'https://dev.pilotleser.no/uploads',
+      SITE: 'no-dev',
+      CHAT: 'no-dev'
     }
   }
 }

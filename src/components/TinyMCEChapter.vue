@@ -127,7 +127,7 @@ export default {
             }
           })
 
-          editor.on('change', function (e) {
+          editor.on('keyup', function (e) {
             window.jQuery('#' + this.id).val(editor.getContent()).click()
           })
         }
@@ -156,6 +156,12 @@ export default {
     },
     initEditor: function () {
       var vm = this
+
+      if (this.darkmode) {
+        this.initConfig.content_style = 'body { color: #fff;  }'
+      } else {
+        this.initConfig.content_style = 'body { color: #000;  }'
+      }
 
       tinymce.init(vm.initConfig)
 

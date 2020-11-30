@@ -12,7 +12,28 @@ class ChapterVersionController {
     return version
   }
 
+  static async setAsCurrentVersion (versionUuid) {
+    const version = await ChapterVersion.query()
+      .findById(versionUuid)
+
+    await ChapterVersion.query()
+      .update({ is_current_version: 0 })
+      .where('chapter_id', version.chapter_id)
+
+    const currentVersion = await version.$query()
+      .patchAndFetch({ is_current_version: 1 })
+      .first()
+
+    return currentVersion
+  }
+
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
+    var version = await ChapterVersion.query()
+      .patch({ 'is_current_version': 0 })
+      .where('is_current_version', '=', true)
+      .where('chapter_id', '=', data.chapter_id)
+
     const chapterVersion = await ChapterVersion.query().upsertGraphAndFetch([data]).first()
     return chapterVersion
   }
@@ -130,7 +151,8 @@ class ChapterVersionController {
       created_at: row.created_at,
       updated_at: row.updated_at,
       deleted_at: row.deleted_at,
-      from_local: row.from_local
+      from_local: row.from_local,
+      is_current_version: row.is_current_version
     }
 
     var data = await ChapterVersion.query()

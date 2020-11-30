@@ -38,13 +38,8 @@ class SceneController {
       update: ['scene_version']
     }
 
-    if (data.updated_at !== 'undefined' && data.updated_at !== null) {
-      data.updated_at = moment().format('YYYY-MM-DD HH:mm:ss').toString()
-    }
-
-    if (data.scene_version.updated_at !== 'undefined' && data.scene_version.updated_at !== null) {
-      data.scene_version.updated_at = moment().format('YYYY-MM-DD HH:mm:ss').toString()
-    }
+    if (data.updated_at) delete data.updated_at
+    if (data.scene_version.updated_at) delete data.scene_version.updated_at
 
     const saveScene = await Scene.query().upsertGraph([data], upsertGraphOptions).first()
 

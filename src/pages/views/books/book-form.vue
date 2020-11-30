@@ -148,18 +148,18 @@ export default {
               */
               scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
               scope.$store.dispatch('updateBookList', response.data)
-              if (scope.data.id !== null) {
+              if (scope.data.id !== null) { // update book
                 scope.$store.dispatch('changeTabTitle', {
                   key: 'book-form-' + response.data.uuid,
                   title: this.$t('EDIT') + ' - ' + response.data.title
                 })
-              } else {
+              } else { // save new book
                 scope.data.id = response.data.id
                 scope.data.uuid = response.data.uuid
                 scope.CHANGE_COMPONENT({
                   tabKey: 'book-details-' + response.data.uuid,
                   tabComponent: 'book-details',
-                  tabData: response,
+                  tabData: response.data,
                   tabTitle: response.data.title,
                   tabIndex: scope.$store.getters.getActiveTab
                 })

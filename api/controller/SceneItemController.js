@@ -20,6 +20,7 @@ class SceneItemController {
   }
 
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     const save = await SceneItem.query().upsertGraph([data])
       .withGraphFetched('scene')
       .withGraphFetched('item')

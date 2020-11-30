@@ -13,6 +13,7 @@ class BookChapterHistoryController {
     return chapterHistory
   }
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     const saveBookChapterHistory = await BookChapterHistory.query().upsertGraph([data]).first()
 
     return saveBookChapterHistory

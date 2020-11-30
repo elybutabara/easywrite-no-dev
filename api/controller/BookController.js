@@ -44,6 +44,7 @@ class BookController {
   }
 
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     const saveBook = await Book.query().upsertGraph([data]).first()
 
     /*

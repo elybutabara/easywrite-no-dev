@@ -23,6 +23,7 @@ class ItemController {
   }
 
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     const saveItem = await Item.query().upsertGraph([data]).first()
 
     const item = Item.query()

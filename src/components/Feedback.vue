@@ -1,5 +1,5 @@
 <template>
-  <div style="z-index:3000;" v-bind:class="{'book-feedback': properties.parent_name == 'book','chapter-and-scene-feedback': ['scene','chapter'].indexOf(properties.parent_name) != -1}" v-if="page.is_ready">
+<div class="feedback-wrap" v-bind:class="{ 'feedback-wrap-fullview' : !properties.toggleType }" v-if="page.is_ready">
   <div class="es-panel-2 feedbacks">
     <div class="es-panel-head d-flex justify-content-between">
       <div class="d-flex algin-items-center"><h5>Feedbacks</h5></div>
@@ -156,7 +156,6 @@ export default {
       scope.axios.get('http://localhost:3000/feedbacks/' + scope.properties.parent_name + '/' + scope.properties.parent.uuid)
         .then(function (response) {
           scope.feedbacks = response.data
-          console.log(scope.feedbacks)
           scope.page.is_ready = true
         })
         .catch(function (error) {
@@ -359,9 +358,9 @@ export default {
         })
     }
   },
-  mounted () {
+  async mounted () {
     var scope = this
-    scope.initFeedbacks()
+    await scope.initFeedbacks()
   }
 }
 </script>

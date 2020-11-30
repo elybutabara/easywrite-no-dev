@@ -54,6 +54,7 @@ class ReaderController {
   }
 
   static async save (data) {
+    if (data.updated_at) delete data.updated_at
     const saveReaders = await Reader.query().upsertGraph([data]).first()
 
     const reader = Reader.query()

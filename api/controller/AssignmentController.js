@@ -14,6 +14,7 @@ class AssignmentController {
       .join('packages', 'packages.course_id', 'courses.uuid')
       .join('courses_taken', 'courses_taken.package_id', 'packages.uuid')
       .where('courses_taken.user_id', data.userId)
+      .where('assignments.is_treadlinable', 0)
       .whereRaw("available_date <= '" + moment().format('YYYY-MM-DD').toString() + "' OR available_date IS NULL")
       .groupBy('assignments.id')
 
@@ -39,7 +40,8 @@ class AssignmentController {
       show_join_group_question: row.show_join_group_question,
       created_at: row.created_at,
       updated_at: row.updated_at,
-      deleted_at: null
+      deleted_at: null,
+      is_treadlinable: row.is_treadlinable
     }
 
     var data = await Assignment.query()
