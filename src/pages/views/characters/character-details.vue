@@ -275,7 +275,7 @@ export default {
                   timer: 1500
                 }).then(() => {
                   scope.$store.dispatch('removeCharacterFromList', character)
-                  scope.CHANGE_COMPONENT({tabKey: 'character-listing-' + character.book_id, tabComponent: 'character-listing', tabData: { uuid: character.book_id }, tabTitle: this.$t('CHARACTERS') + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
+                  scope.CHANGE_COMPONENT({tabKey: 'character-listing-' + character.book_id, tabComponent: 'character-listing', tabData: scope.book, tabTitle: this.$t('CHARACTERS') + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
                 })
               }
             })

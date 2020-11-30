@@ -121,9 +121,9 @@ export default {
       var authorUUID = this.$store.getters.getAuthorID
       return this.$store.getters.getBooksIReadByAuthor(authorUUID)
     },
-    tab: function (){
-        const scope = this
-        return scope.$store.getters.getActiveMainSideNavTab
+    tab: function () {
+      const scope = this
+      return scope.$store.getters.getActiveMainSideNavTab
     }
   },
   methods: {
