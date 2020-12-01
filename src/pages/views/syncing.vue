@@ -667,7 +667,7 @@ export default {
     saveAuthorDetails: function (rows) {
       // a function to save details about the author (book readers) and commenter
       var scope = this
-
+      if (!rows) return
       for (let i = 0; i < rows.length; i++) {
         scope.axios
           .post('http://localhost:3000/users/connections', rows[i])

@@ -242,6 +242,11 @@ export default {
     'webinar-listing': WebinarListing
   },
   methods: {
+    toggleMessageCenter: function () {
+      const scope = this
+      scope.notification.show = !scope.notification.show
+      scope.showUserSettings = false
+    },
     setItemCount: function (k, n) {
       console.log('setItemCount', n)
       this.itemsCounts[k] = n
