@@ -57,6 +57,7 @@ class SceneController {
       .where('book_scenes.chapter_id', chapterId)
       .whereNull('book_scenes.deleted_at')
       .orderBy('order')
+      .orderBy('created_at')
 
     return scenes
   }
