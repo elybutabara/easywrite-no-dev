@@ -10,8 +10,8 @@ class NotificationController {
     const notification = await this.notifications(authorUuid)
     const invitations = await this.invitations(authorUuid)
     return {
-      'notifications': notification,
-      'invitations': invitations
+      'notifications': notification ? notification : [],
+      'invitations': invitations ? invitations : []
     }
   }
 
@@ -124,7 +124,6 @@ class NotificationController {
       .whereIn('type', ['book', 'book_re_read', 'book_invite_decision', 'book_reader'])
       .where('action', 'invite')
       .orderBy('created_at', 'desc')
-
     return notification
   }
 

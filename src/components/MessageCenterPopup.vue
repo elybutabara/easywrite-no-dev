@@ -458,7 +458,7 @@ export default {
         for (var i = 0; i < scope.items.length; i++) {
           var item = scope.items[i]
 
-          if (scope.type === 'Notification') {
+          if (scope.type === 'Notification') { 
             if (item.type !== 'Message') {
               rows.push(item)
             }
@@ -576,8 +576,29 @@ export default {
         })
       }
     },
-    fetch: function () {
-      // const scope = this
+    fetch: async function () {
+      
+      const scope = this;
+      var authorUUID = this.$store.getters.getAuthorID ;
+ 
+      /**
+       * Get notifications | feedback and comments only
+       */
+      console.log('authorUUID', authorUUID)
+      await scope.axios
+        .get('http://localhost:3000/notifications/' + authorUUID)
+        .then(response => {
+          scope.allItems = response.data.data
+          // scope.allItems['notifications'] = response.data.data['notifications']
+        })
+        .catch(error => {
+          console.log('error', error)
+        })
+ 
+      scope.messageCenterCounter()
+
+
+      // const scope = this 
       // scope.axios
       //   .get('api/message-center')
       //   .then(async function (response) {
@@ -637,7 +658,8 @@ export default {
       //   })
     },
     messageCenterCounter () {
-      const scope = this
+      const scope = this 
+
       scope.itemsCounts['notifications'] = scope.allItems['notifications'].filter(model => {
         return model && model.status == 0
       }).length
@@ -680,9 +702,9 @@ export default {
       scope.itemType = itemType
       if (itemType == scope.defaultType) {
         let arr = []
-        scope.items = arr.concat(scope.allItems['notifications'], scope.allItems['invitations'])
+        scope.items = arr.concat(scope.allItems['notifications'], scope.allItems['invitations']) ? arr.concat(scope.allItems['notifications'], scope.allItems['invitations']) : []
       } else {
-        scope.items = scope.allItems[itemType]
+        scope.items = scope.allItems[itemType] ? scope.allItems[itemType] : []
       }
     },
     acceptInvite (model) {
@@ -709,6 +731,7 @@ export default {
     }
   },
   mounted: async function () {
+   
     let scope = this
     try {
       await scope.fetch()
