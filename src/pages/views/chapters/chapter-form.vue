@@ -376,6 +376,8 @@ export default {
         // Add the imported contents where mouse cursor is located.
         scope.tinyEditorAccess.execCommand('mceInsertContent', false, data)
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+        scope.data.chapter_version.content = scope.tinyEditorAccess.getContent()
+        scope.baseChapterVersionCont = scope.tinyEditorAccess.getContent()
         // console.log('scope.tinyEditorAccess.getDoc()',scope.tinyEditorAccess.getDoc())
         // scope.data.chapter_version.content = scope.tinyEditorAccess.getContent()
         // console.log(scope.data.chapter_version.content)
