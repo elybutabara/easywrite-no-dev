@@ -487,24 +487,23 @@ export default {
     },
     async openBookIReadBookDetails (model) {
 
-      // console.log('openBookIReadBookDetails', model)
-      // const scope = this
-      // scope.$store.dispatch('setActiveMainSideNavTab', 'books-i-read')
-      // try {
-      //   await scope.$store.dispatch('loadBooksIReadByAuthor', {authorID: scope.user.author.id, userID: scope.user.id})
-      // } finally {
-      //   scope.CHANGE_COMPONENT({tabKey: 'book-details-' + model.book.id, tabComponent: 'books-i-read-book-details', tabData: model.book, tabTitle: model.book.title})
-      // }
+      const scope = this
+      scope.$store.dispatch('setActiveMainSideNavTab', 'books-i-read')
+      try {
+        await scope.$store.dispatch('loadBooksIReadByAuthor', {authorID: scope.params.author.id, userID: scope.params.id})
+      } finally {
+        scope.CHANGE_COMPONENT({tabKey: 'book-details-' + model.book.id, tabComponent: 'books-i-read-book-details', tabData: model.book, tabTitle: model.book.title})
+      }
 
     },
     async openBookIReadChapterDetails (model, action = '') {
       const scope = this
       scope.$store.dispatch('setActiveMainSideNavTab', 'books-i-read')
       try {
-        await scope.$store.dispatch('loadBooksIReadByAuthor', {authorID: scope.user.author.id, userID: scope.user.id})
+        await scope.$store.dispatch('loadBooksIReadByAuthor', {authorID: scope.params.author.id, userID: scope.params.id})
       } finally {
-        await scope.TOGGLE_BOOK_I_READ(model.book, 'books', scope.user.author.id)
-        await scope.TOGGLE_BOOK_I_READ(model.book, 'chapters', scope.user.author.id)
+        await scope.TOGGLE_BOOK_I_READ(model.book, 'books', scope.params.author.id)
+        await scope.TOGGLE_BOOK_I_READ(model.book, 'chapters', scope.params.author.id)
 
         var openfeedback = (action == 'open-feedback')
 
@@ -567,7 +566,7 @@ export default {
         await scope.TOGGLE_BOOK_I_READ(model.book, 'book')
         await scope.TOGGLE_BOOK_I_READ(model.book, 'chapters')
 
-        await scope.TOGGLE_BOOK_I_READ(model.book, 'scenes', scope.user.author.id)
+        await scope.TOGGLE_BOOK_I_READ(model.book, 'scenes', scope.params.author.id)
         // TODO: how to open scene Tree
       } finally {
         var openfeedback = (action == 'open-feedback')
@@ -586,7 +585,7 @@ export default {
  
       /**
        * Get notifications | feedback and comments only
-       */
+       */ 
       console.log('authorUUID', authorUUID)
       await scope.axios
         .get('http://localhost:3000/notifications/' + authorUUID)
@@ -762,6 +761,29 @@ export default {
     delete window.AppMessageCenterPopup
 
     console.log('window.AppMessageCenterPopup destroyed')
+  },
+  created(){
+    const scope = this
+    window.addEventListener('click', function(e){
+
+        console.log('sss', scope.$parent.showMessageCenter)
+        /*
+        * This will trigger close MessageCenter if click oustside MessageCenter
+        * */
+        if(scope.$parent.showMessageCenter  && document.getElementById('message-centerr').contains(e.target) == false && document.getElementById('message-center').contains(e.target) == false){
+            console.log("here")
+            scope.$parent.showMessageCenter=false
+        }
+
+        /*
+        * Trigger <a> tag ang button as close MessageCenter
+        * */
+        document.querySelectorAll('#message-centerr a:not(.actionLink) , #message-centerr .actionLink_message , #message-centerr button, #right-menu-actions a:not(.actionLink)').forEach(link =>{
+            link.onclick  = () => {
+                scope.$parent.showMessageCenter=false
+            }
+        });
+    })
   }
 }
 </script>
