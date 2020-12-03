@@ -55,11 +55,11 @@
                     <span v-if="notificationCount > 0" style="position: absolute;width: 20px;height: 20px;border-radius: 50%;background: red;color: rgb(255, 255, 255);top: -5px;right: -8px;line-height: 20px;text-align: center;font-size: 12px;">{{notificationCount}}</span>
                   </button> -->
                   <!--TODO: remove this comment if message center is good to go with sync-->
-                  <a @click.prevent="showMessageCenter=!showMessageCenter; showUserSettings=false;" class="user-btn position-relative" href="javascript:void(0)" style="margin-right: 10px;">
+                  <a @click.prevent="showMessageCenter=!showMessageCenter; showUserSettings=false;" id="message-center" class="user-btn position-relative" href="javascript:void(0)" style="margin-right: 10px;">
                     <i class="fas fa-bell"></i>
                     <span v-if="notificationCount > 0" style="position: absolute;width: 20px;height: 20px;border-radius: 50%;background: red;color: rgb(255, 255, 255);top: -5px;right: -8px;line-height: 20px;text-align: center;font-size: 12px;">{{notificationCount}}</span>
                   </a>
-                  <div v-show="showMessageCenter" style="position: absolute; top: 68px; right: 18px; z-index: 10000; width: 500px; text-align: left;">
+                  <div id="message-centerr" v-show="showMessageCenter" style="position: absolute; top: 68px; right: 18px; z-index: 10000; width: 500px; text-align: left;">
                     <message-center-popup :params="{}"></message-center-popup>
                   </div>
                   <a @click.prevent="showUserSettings=!showUserSettings; showMessageCenter=false;" class="user-btn" href="javascript:void(0)">
@@ -244,8 +244,8 @@ export default {
   methods: {
     toggleMessageCenter: function () {
       const scope = this
-      scope.notification.show = !scope.notification.show
-      scope.showUserSettings = false
+      // scope.notification.show = !scope.notification.show
+      // scope.showUserSettings = false
     },
     setItemCount: function (k, n) {
       console.log('setItemCount', n)
