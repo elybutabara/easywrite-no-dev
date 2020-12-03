@@ -486,13 +486,16 @@ export default {
       }
     },
     async openBookIReadBookDetails (model) {
-      const scope = this
-      scope.$store.dispatch('setActiveMainSideNavTab', 'books-i-read')
-      try {
-        await scope.$store.dispatch('loadBooksIReadByAuthor', {authorID: scope.user.author.id, userID: scope.user.id})
-      } finally {
-        scope.CHANGE_COMPONENT({tabKey: 'book-details-' + model.book.id, tabComponent: 'books-i-read-book-details', tabData: model.book, tabTitle: model.book.title})
-      }
+
+      // console.log('openBookIReadBookDetails', model)
+      // const scope = this
+      // scope.$store.dispatch('setActiveMainSideNavTab', 'books-i-read')
+      // try {
+      //   await scope.$store.dispatch('loadBooksIReadByAuthor', {authorID: scope.user.author.id, userID: scope.user.id})
+      // } finally {
+      //   scope.CHANGE_COMPONENT({tabKey: 'book-details-' + model.book.id, tabComponent: 'books-i-read-book-details', tabData: model.book, tabTitle: model.book.title})
+      // }
+
     },
     async openBookIReadChapterDetails (model, action = '') {
       const scope = this
@@ -579,7 +582,7 @@ export default {
     fetch: async function () {
       
       const scope = this;
-      var authorUUID = this.$store.getters.getAuthorID ;
+      var authorUUID = this.$store.getters.getAuthorID;
  
       /**
        * Get notifications | feedback and comments only
@@ -681,10 +684,22 @@ export default {
       scope.$parent.countNotificationItemTotal()
     },
     updateNotificationStatus (model) {
+
+      console.log("update notification status")
+
+
       const scope = this
       if (model.status == 1) return // only un-read status
       if (model.action == 'invite') return // only notifications , dont include invites
-      scope.axios.post('/api/message-center/update-notification-status', model).then(response => {
+
+      var params = {
+        model: model,
+        authorUUID:  this.$store.getters.getAuthorID
+      }
+
+      scope.axios.post('http://localhost:3000/notifications/update-notification-status', params)
+      .then(response => {
+        console.log('updateNotificationStatus response',response.data)
         scope.items = response.data
         const itemType = 'notifications'
         scope.allItems[itemType] = response.data
@@ -692,10 +707,14 @@ export default {
         // // scope.$parent.notification.count = scope.itemsCounts['all']
         // scope.itemsCounts[itemType] = 0;
         //
-        // scope.$parent.itemsCounts[itemType] = 0;
+        // scope.$parent.itemsCounts[itemType] = 0; 
         scope.messageCenterCounter()
         scope.$parent.countNotificationItemTotal()
       })
+      .catch(error => {
+        console.log(error)
+      })
+
     },
     setItem: function (itemType, id) {
       const scope = this

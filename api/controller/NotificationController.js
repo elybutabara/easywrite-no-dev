@@ -34,7 +34,6 @@ class NotificationController {
       // get sender
       const from = await Author.query() 
                   .findById(notification[i].from)
-      console.log('alias', from)
       const alias = from ? from.alias : 'Anonymous'
       
       notification[i].alias = alias;
@@ -47,7 +46,7 @@ class NotificationController {
 
       if(notification[i].type === 'feedback' && (notification[i].action == 'post' || notification[i].action === 'response')){
 
-        if(notification[i].parent_name == 'chapter'){
+        if(notification[i].parent_name == 'chapter'){ 
 
           const chapter = await Chapter.query()
                         .withGraphJoined('chapter_version')
@@ -115,6 +114,11 @@ class NotificationController {
     
     return notification
 
+  }
+
+  static async updateNotificationStatus (row) {
+    var data = await Notification.query().patch({status: 1}).where('uuid', row.model.uuid)
+    return this.notifications(row.authorUUID);
   }
 
   static async invitations (authorUuid) {
