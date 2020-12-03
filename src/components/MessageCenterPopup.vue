@@ -99,7 +99,7 @@
                   <div><div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{ model.alias }}</div>
                     <div class="mt-2" style="font-size: 14px; line-height: 100%;">
                       {{ model.alias +' '+$t('site.commented-on-chapter')+' '+ model.chapter.title+'.'}}
-                      <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openChapterDetails(model, 'open-comment'):openBookIReadChapterDetails(model, 'open-comment')">
+                      <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openChapterDetails(model, 'open-feedback'):openBookIReadChapterDetails(model, 'open-feedback')">
                         {{ capitalizeFirstLetter($t('site.click-here')) }}
                       </a> {{ $t('site.to-view') }}
                     </div>
@@ -121,7 +121,7 @@
                     <div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{ model.alias }}</div>
                     <div class="mt-2" style="font-size: 14px; line-height: 100%;">
                       {{ model.alias +' '+$t('site.commented-on-scene')+' '+ model.scene.title+'.'}}
-                      <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openSceneDetails(model, 'open-comment'):openBookIReadSceneDetails(model, 'open-comment')">
+                      <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openSceneDetails(model, 'open-feedback'):openBookIReadSceneDetails(model, 'open-feedback')">
                         {{ capitalizeFirstLetter($t('site.click-here')) }}
                       </a> {{ $t('site.to-view') }}
                     </div>
@@ -220,21 +220,21 @@
                       <!--SCENE FEEDBACK-->
                       <span v-if="model.parent_id && model.parent_name == 'scene' ">
                                                 {{ model.alias +' '+$t('site.has-replied-to-your-feedback')+' '+ model.book.title +'-'+model.chapter.title+' ('+model.scene.title+' Scene).'}}
-                                                <a href='javascript:void(0)' @click="(model.from==model.to)?openSceneDetails(model, 'open-feedback'):openBookIReadSceneDetails(model, 'open-feedback')">
+                                                <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openSceneDetails(model, 'open-feedback'):openBookIReadSceneDetails(model, 'open-feedback')">
                                                     {{ capitalizeFirstLetter($t('site.click-here')) }}
                                                 </a> {{ $t('site.to-view')  }}
                                             </span>
                       <!--CHAPTER FEEDBACK-->
                       <span v-else-if="model.chapter_id">
                                                 {{ model.alias +' '+$t('site.has-replied-to-your-feedback')+' '+ model.book.title +'-'+model.chapter.title+'.'}}
-                                                <a href='javascript:void(0)' @click="(model.from==model.to)?openChapterDetails(model, 'open-feedback'):openBookIReadChapterDetails(model, 'open-feedback')">
+                                                <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openChapterDetails(model, 'open-feedback'):openBookIReadChapterDetails(model, 'open-feedback')">
                                                     {{ capitalizeFirstLetter($t('site.click-here')) }}
                                                 </a> {{ $t('site.to-view')  }}
                                             </span>
                       <!--BOOK FEEDBACK-->
                       <span v-else>
                                                 {{ model.alias +' '+$t('site.has-replied-to-your-feedback')+' '+ model.book.title+'.'}}
-                                                <a href='javascript:void(0)' @click="(model.from==model.to)?openBookDetails(model):openBookIReadBookDetails(model)">
+                                                <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openBookDetails(model):openBookIReadBookDetails(model)">
                                                     {{ capitalizeFirstLetter($t('site.click-here')) }}
                                                 </a> {{ $t('site.to-view') }}
                                             </span>
@@ -486,11 +486,10 @@ export default {
       }
     },
     async openBookIReadBookDetails (model) {
-
       const scope = this
       scope.$store.dispatch('setActiveMainSideNavTab', 'books-i-read')
       try {
-        await scope.$store.dispatch('loadBooksIReadByAuthor', {authorID: scope.params.author.id, userID: scope.params.id})
+        await scope.$store.dispatch('loadBooksIReadByAuthor', {authorID: scope.params.author.id, userID: scope.params.data.id})
       } finally {
         scope.CHANGE_COMPONENT({tabKey: 'book-details-' + model.book.id, tabComponent: 'books-i-read-book-details', tabData: model.book, tabTitle: model.book.title})
       }
@@ -500,12 +499,12 @@ export default {
       const scope = this
       scope.$store.dispatch('setActiveMainSideNavTab', 'books-i-read')
       try {
-        await scope.$store.dispatch('loadBooksIReadByAuthor', {authorID: scope.params.author.id, userID: scope.params.id})
+        await scope.$store.dispatch('loadBooksIReadByAuthor', {authorID: scope.params.author.id, userID: scope.params.data.id})
       } finally {
         await scope.TOGGLE_BOOK_I_READ(model.book, 'books', scope.params.author.id)
         await scope.TOGGLE_BOOK_I_READ(model.book, 'chapters', scope.params.author.id)
 
-        var openfeedback = (action == 'open-feedback')
+        var openfeedback = (action == 'open-feedback') ? true : false;
 
         let config = {
           tabKey: 'books-i-read-chapter-details-' + model.chapter.id,
@@ -518,6 +517,7 @@ export default {
       }
     },
     async openChapterDetails (model, action = '') {
+      
       const scope = this
       scope.$store.dispatch('setActiveMainSideNavTab', 'my-books')
       try {
@@ -530,8 +530,7 @@ export default {
         //     openfeedback = true
         // }
 
-        var openfeedback = (action == 'open-feedback')
-
+        var openfeedback = (action == 'open-feedback') ? true : false;
         scope.CHANGE_COMPONENT({
           tabKey: 'chapter-details-' + model.chapter.uuid,
           tabComponent: 'chapter-details',
@@ -549,7 +548,7 @@ export default {
         await scope.TOGGLE_BOOK(model.book, 'scenes')
         // TODO: how to open scene Tree
       } finally {
-        var openfeedback = (action == 'open-feedback')
+        var openfeedback = (action == 'open-feedback')? true : false;
         scope.CHANGE_COMPONENT({
           tabKey: 'scene-details-' + model.scene.uuid,
           tabComponent: 'scene-details',
@@ -569,7 +568,7 @@ export default {
         await scope.TOGGLE_BOOK_I_READ(model.book, 'scenes', scope.params.author.id)
         // TODO: how to open scene Tree
       } finally {
-        var openfeedback = (action == 'open-feedback')
+        var openfeedback = (action == 'open-feedback')? true : false;
         scope.CHANGE_COMPONENT({
           tabKey: 'scene-details-' + model.scene.id,
           tabComponent: 'books-i-read-scene-details',
@@ -593,7 +592,7 @@ export default {
           scope.allItems = response.data.data
           // scope.allItems['notifications'] = response.data.data['notifications']
         })
-        .catch(error => {
+        .catch(error => { 
           console.log('error', error)
         })
  
@@ -684,9 +683,6 @@ export default {
     },
     updateNotificationStatus (model) {
 
-      console.log("update notification status")
-
-
       const scope = this
       if (model.status == 1) return // only un-read status
       if (model.action == 'invite') return // only notifications , dont include invites
@@ -766,12 +762,10 @@ export default {
     const scope = this
     window.addEventListener('click', function(e){
 
-        console.log('sss', scope.$parent.showMessageCenter)
         /*
         * This will trigger close MessageCenter if click oustside MessageCenter
         * */
         if(scope.$parent.showMessageCenter  && document.getElementById('message-centerr').contains(e.target) == false && document.getElementById('message-center').contains(e.target) == false){
-            console.log("here")
             scope.$parent.showMessageCenter=false
         }
 

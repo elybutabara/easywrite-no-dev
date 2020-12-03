@@ -218,6 +218,11 @@ export default {
   },
   mounted () {
     var scope = this
+
+    if(scope.properties.openfeedback){
+      scope.show_feedbacks = true
+    }
+
     scope.initializeData()
   }
 }

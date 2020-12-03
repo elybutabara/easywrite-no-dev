@@ -60,7 +60,7 @@
                     <span v-if="notificationCount > 0" style="position: absolute;width: 20px;height: 20px;border-radius: 50%;background: red;color: rgb(255, 255, 255);top: -5px;right: -8px;line-height: 20px;text-align: center;font-size: 12px;">{{notificationCount}}</span>
                   </a>
                   <div id="message-centerr" v-show="showMessageCenter" style="position: absolute; top: 68px; right: 18px; z-index: 10000; width: 500px; text-align: left;">
-                    <message-center-popup :params="{}"></message-center-popup>
+                    <message-center-popup :params="user"></message-center-popup>
                   </div>
                   <a @click.prevent="showUserSettings=!showUserSettings; showMessageCenter=false;" class="user-btn" href="javascript:void(0)">
                     <i class="las la-user"></i>
@@ -191,7 +191,7 @@ export default {
         id: 0,
         data: null,
         component: 'book-listing'
-      },
+      }, 
       itemsCounts: {
         'all': 0,
         'messages': 0,
@@ -274,7 +274,7 @@ export default {
         ipcRenderer.on('ENABLE_FORCE_QUIT', function () {
           scope.forceQuit = true
         })
-
+ 
         if (modified.length > 0 && scope.forceQuit === false) {
           e.returnValue = true
           var text = ''
@@ -302,7 +302,7 @@ export default {
     countNotificationItemTotal: function () {
       var scope = this
       scope.itemsCounts['all'] = scope.itemsCounts['messages'] + scope.itemsCounts['invitations'] + scope.itemsCounts['notifications']
-      scope.notification.count = scope.itemsCounts['all']
+      scope.notificationCount_ = scope.itemsCounts['all']
       // console.log(scope.itemsCounts)
       return scope.itemsCounts['all']
     }
@@ -321,6 +321,10 @@ export default {
     },
     notificationCount: function () {
       return this.itemsCounts['Notification'] + this.itemsCounts['Message']
+    },
+    user(){
+      var vUser = this.$store.getters.getUser;
+      return vUser;
     }
   },
 

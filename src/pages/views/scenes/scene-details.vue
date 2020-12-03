@@ -352,6 +352,11 @@ export default {
   },
   mounted () {
     var scope = this
+
+    if(scope.properties.openfeedback){
+      scope.show_feedbacks = true
+    }
+    
     scope.initializeData()
     ipcRenderer.on('EXPORT_DOCX_ENABLE_BUTTON', function () {
       scope.exportOnProgress = false

@@ -26,6 +26,9 @@ export default {
     getUserID: state => {
       return state.user.data.uuid
     },
+    getUser: state => {
+      return state.user
+    },
     getUserToken: state => {
       return state.user.data.token
     },
