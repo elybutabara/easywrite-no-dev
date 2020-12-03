@@ -447,8 +447,9 @@ export default {
     timeConvertFromUTC: function (datetime) {
       if (datetime === null || datetime === 'undefined') { return null }
 
-      var stillUtc = moment.utc(datetime).toDate()
-      var date = moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss')
+      // Commented by Ismael: we dont need to convert the date we get from api cause it is coverted already from NORWAY to UTC so the date is already in UTC. The only thing we need to do is convert what we get to local
+      // var stillUtc = moment.utc(datetime).toDate()
+      var date = moment(datetime).local().format('YYYY-MM-DD HH:mm:ss')
       return date
     },
     timeConvertToUTC: function (datetime) {
