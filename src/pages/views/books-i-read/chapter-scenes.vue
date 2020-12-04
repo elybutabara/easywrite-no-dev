@@ -48,15 +48,15 @@ export default {
       get () {
         let scope = this
         let scenes = scope.$store.getters.getScenesByChapter(scope.chapter.uuid)
-        return scenes 
+        return scenes
       },
       set (value) {
-        if (value != undefined && value != null){
+        if (value != undefined && value != null) {
           let scope = this
           this.$store.dispatch('sortScenes', { PARENT: scope.chapter.uuid, data: value })
         }
       }
-    } 
+    }
   },
   methods: {
   },
@@ -64,14 +64,12 @@ export default {
     // var scope = this
   },
   async mounted () {
-    
     var scope = this
     try {
       scope.scenes = await scope.$store.dispatch('loadScenesByChapter', scope.chapter.uuid)
     } finally {
       scope.page.is_ready = true
     }
-
   }
 }
 </script>

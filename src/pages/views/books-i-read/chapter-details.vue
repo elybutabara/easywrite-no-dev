@@ -230,6 +230,10 @@ export default {
   async mounted () {
     var scope = this
 
+    if(scope.properties.openfeedback){
+      scope.show_feedbacks = true
+    }
+
     scope.page.data = scope.properties
     scope.page.title = scope.properties.chapter.title
     // console.log('PROPERTIES')
