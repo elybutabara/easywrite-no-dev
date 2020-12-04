@@ -544,11 +544,13 @@ export default {
 
       // ipcRenderer.once instead of 'on' to prevent multiple executions.
       ipcRenderer.once('GET-DOCX-CONTENT-SCENE', function (event, data) {
-        // scope.data.scene_version.content = data
-        // scope.baseSceneVersionContent = data
+        
         // Add the imported contents where mouse cursor is located.
         tinymce.get(scope.$refs.tmc.$el.id).execCommand('mceInsertContent', false, data)
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+        scope.data.scene_version.content =  tinymce.get(scope.$refs.tmc.$el.id).getContent()
+        scope.baseSceneVersionContent = tinymce.get(scope.$refs.tmc.$el.id).getContent()
+
       })
     },
     toggleAccordion: function (key) {
