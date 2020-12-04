@@ -89,23 +89,26 @@ export default {
           scope.networkConnected = true
           console.log('has network')
         })
+        .catch(function (response) {
+          scope.networkConnected = false
+          console.log('has no network')
+        })
         .finally(function () {
-          scope.axios
-            .get('http://localhost:3000/users/login?username=' + scope.username + '&password=' + scope.password)
-            .then(async function (response) {
-              if (scope.networkConnected) {
-                scope.authenticateAPI()
-                return
-              }
-
-              console.log('authenticate with no net')
-              scope.prepareLoadWindow(response)
-            })
-            .catch(error => {
-              if (error.response.status === 401) {
-                scope.authenticateAPI()
-              }
-            })
+          if (scope.networkConnected) {
+            scope.authenticateAPI()
+          } else {
+            scope.axios
+              .get('http://localhost:3000/users/login?username=' + scope.username + '&password=' + scope.password)
+              .then(async function (response) {
+                console.log('authenticate with no net')
+                scope.prepareLoadWindow(response)
+              })
+              .catch(error => {
+                if (error.response.status === 401) {
+                  scope.authenticateAPI()
+                }
+              })
+          }
         })
     },
     authenticateAPI: function () {
