@@ -307,7 +307,7 @@ export default {
                   timer: 1500
                 }).then(() => {
                   scope.$store.dispatch('removeChapterFromList', chapter)
-                  scope.CHANGE_COMPONENT({tabKey: 'chapter-listing-' + chapter.book_id, tabComponent: 'chapter-listing', tabData: { uuid: chapter.book_id }, tabTitle: this.$t('CHAPTERS') + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
+                  scope.CHANGE_COMPONENT({tabKey: 'chapter-listing-' + chapter.book_id, tabComponent: 'chapter-listing', tabData: scope.book, tabTitle: this.$t('CHAPTERS') + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
                 })
               }
             })
@@ -330,7 +330,7 @@ export default {
   async mounted () {
     var scope = this
 
-    if(scope.properties.openfeedback){
+    if (scope.properties.openfeedback) {
       scope.show_feedbacks = true
     }
 

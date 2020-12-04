@@ -219,7 +219,7 @@ export default {
   mounted () {
     var scope = this
 
-    if(scope.properties.openfeedback){
+    if (scope.properties.openfeedback) {
       scope.show_feedbacks = true
     }
 

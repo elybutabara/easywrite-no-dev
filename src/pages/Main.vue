@@ -191,7 +191,7 @@ export default {
         id: 0,
         data: null,
         component: 'book-listing'
-      }, 
+      },
       itemsCounts: {
         'all': 0,
         'messages': 0,
@@ -243,7 +243,7 @@ export default {
   },
   methods: {
     toggleMessageCenter: function () {
-      const scope = this
+      // const scope = this
       // scope.notification.show = !scope.notification.show
       // scope.showUserSettings = false
     },
@@ -274,7 +274,7 @@ export default {
         ipcRenderer.on('ENABLE_FORCE_QUIT', function () {
           scope.forceQuit = true
         })
- 
+
         if (modified.length > 0 && scope.forceQuit === false) {
           e.returnValue = true
           var text = ''
@@ -322,9 +322,9 @@ export default {
     notificationCount: function () {
       return this.itemsCounts['Notification'] + this.itemsCounts['Message']
     },
-    user(){
-      var vUser = this.$store.getters.getUser;
-      return vUser;
+    user () {
+      var vUser = this.$store.getters.getUser
+      return vUser
     }
   },
 

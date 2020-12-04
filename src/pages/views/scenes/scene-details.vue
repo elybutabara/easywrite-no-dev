@@ -333,7 +333,7 @@ export default {
                   timer: 1500
                 }).then(() => {
                   scope.$store.dispatch('removeSceneFromList', scene)
-                  scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + scene.book_id, tabComponent: 'scene-listing', tabData: { uuid: scene.book_id }, tabTitle: this.$t('SCENES') + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
+                  scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + scene.book_id, tabComponent: 'scene-listing', tabData: scope.book, tabTitle: this.$t('SCENES') + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
                 })
               }
             })
@@ -353,10 +353,10 @@ export default {
   mounted () {
     var scope = this
 
-    if(scope.properties.openfeedback){
+    if (scope.properties.openfeedback) {
       scope.show_feedbacks = true
     }
-    
+
     scope.initializeData()
     ipcRenderer.on('EXPORT_DOCX_ENABLE_BUTTON', function () {
       scope.exportOnProgress = false

@@ -53,9 +53,9 @@
                     <div class="content ">
                         <b-row class="margin-bottom-1rem">
                             <b-col>
-                                <label for="input-title">{{$t('TITLE')}}: </label>
+                                <label :for="`input-title`">{{$t('TITLE')}}: </label>
                                 <b-form-input
-                                    id="input-title"
+                                    :id="`input-title`"
                                     v-model="data.title"
                                     :state="feedback.title.state"
                                     aria-describedby="input-live-help input-live-feedback"
@@ -75,9 +75,9 @@
                         </b-row>
                         <b-row class="margin-bottom-1rem">
                             <b-col>
-                                <label for="input-short-description">{{$t('SHORT_DESCRIPTION')}}: </label>
+                                <label :for="`input-short-description`">{{$t('SHORT_DESCRIPTION')}}: </label>
                                 <b-form-input
-                                    id="input-short-description"
+                                    :id="`input-short-description`"
                                     v-model="data.short_description"
                                     :state="feedback.short_description.state"
                                     aria-describedby="input-live-help input-live-feedback"
@@ -345,7 +345,6 @@
 import TinyMCE from '../../../components/TinyMCE'
 
 import CommentBasePanel from '../../../components/CommentBasePanel'
-import tinymce from 'tinymce'
 const moment = require('moment')
 const {ipcRenderer} = window.require('electron')
 
@@ -544,13 +543,19 @@ export default {
 
       // ipcRenderer.once instead of 'on' to prevent multiple executions.
       ipcRenderer.once('GET-DOCX-CONTENT-SCENE', function (event, data) {
-        
         // Add the imported contents where mouse cursor is located.
-        tinymce.get(scope.$refs.tmc.$el.id).execCommand('mceInsertContent', false, data)
+        scope.tinymce.get(scope.$refs.tmc.$el.id).execCommand('mceInsertContent', false, data)
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
-        scope.data.scene_version.content =  tinymce.get(scope.$refs.tmc.$el.id).getContent()
-        scope.baseSceneVersionContent = tinymce.get(scope.$refs.tmc.$el.id).getContent()
-
+        scope.data.scene_version.content = scope.tinymce.get(scope.$refs.tmc.$el.id).getContent()
+        scope.baseSceneVersionContent = scope.tinymce.get(scope.$refs.tmc.$el.id).getContent()
+        /*
+        // conflict with delete-in-detail-page-for-items-location-character-cause-breadcrumbs-problem-after-redirecting-in-listing-page
+        // scope.data.scene_version.content = data
+        // scope.baseSceneVersionContent = data
+        // Add the imported contents where mouse cursor is located.
+        scope.tinymce.get(scope.$refs.tmc.$el.id).execCommand('mceInsertContent', false, data)
+        scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+        */
       })
     },
     toggleAccordion: function (key) {

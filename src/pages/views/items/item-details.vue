@@ -76,7 +76,7 @@ export default {
                   timer: 1500
                 }).then(() => {
                   scope.$store.dispatch('removeItemFromList', item)
-                  scope.CHANGE_COMPONENT({tabKey: 'item-listing-' + item.book_id, tabComponent: 'item-listing', tabData: { uuid: item.book_id }, tabTitle: this.$t('ITEMS') + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
+                  scope.CHANGE_COMPONENT({tabKey: 'item-listing-' + item.book_id, tabComponent: 'item-listing', tabData: scope.book, tabTitle: this.$t('ITEMS') + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
                 })
               }
             })

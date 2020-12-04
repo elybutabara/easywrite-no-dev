@@ -458,7 +458,7 @@ export default {
         for (var i = 0; i < scope.items.length; i++) {
           var item = scope.items[i]
 
-          if (scope.type === 'Notification') { 
+          if (scope.type === 'Notification') {
             if (item.type !== 'Message') {
               rows.push(item)
             }
@@ -493,7 +493,6 @@ export default {
       } finally {
         scope.CHANGE_COMPONENT({tabKey: 'book-details-' + model.book.id, tabComponent: 'books-i-read-book-details', tabData: model.book, tabTitle: model.book.title})
       }
-
     },
     async openBookIReadChapterDetails (model, action = '') {
       const scope = this
@@ -504,7 +503,7 @@ export default {
         await scope.TOGGLE_BOOK_I_READ(model.book, 'books', scope.params.author.id)
         await scope.TOGGLE_BOOK_I_READ(model.book, 'chapters', scope.params.author.id)
 
-        var openfeedback = (action == 'open-feedback') ? true : false;
+        var openfeedback = (action == 'open-feedback')
 
         let config = {
           tabKey: 'books-i-read-chapter-details-' + model.chapter.id,
@@ -517,7 +516,6 @@ export default {
       }
     },
     async openChapterDetails (model, action = '') {
-      
       const scope = this
       scope.$store.dispatch('setActiveMainSideNavTab', 'my-books')
       try {
@@ -530,7 +528,7 @@ export default {
         //     openfeedback = true
         // }
 
-        var openfeedback = (action == 'open-feedback') ? true : false;
+        var openfeedback = (action == 'open-feedback')
         scope.CHANGE_COMPONENT({
           tabKey: 'chapter-details-' + model.chapter.uuid,
           tabComponent: 'chapter-details',
@@ -548,7 +546,7 @@ export default {
         await scope.TOGGLE_BOOK(model.book, 'scenes')
         // TODO: how to open scene Tree
       } finally {
-        var openfeedback = (action == 'open-feedback')? true : false;
+        var openfeedback = (action == 'open-feedback')
         scope.CHANGE_COMPONENT({
           tabKey: 'scene-details-' + model.scene.uuid,
           tabComponent: 'scene-details',
@@ -568,7 +566,7 @@ export default {
         await scope.TOGGLE_BOOK_I_READ(model.book, 'scenes', scope.params.author.id)
         // TODO: how to open scene Tree
       } finally {
-        var openfeedback = (action == 'open-feedback')? true : false;
+        var openfeedback = (action == 'open-feedback')
         scope.CHANGE_COMPONENT({
           tabKey: 'scene-details-' + model.scene.id,
           tabComponent: 'books-i-read-scene-details',
@@ -578,13 +576,12 @@ export default {
       }
     },
     fetch: async function () {
-      
-      const scope = this;
-      var authorUUID = this.$store.getters.getAuthorID;
- 
+      const scope = this
+      var authorUUID = this.$store.getters.getAuthorID
+
       /**
        * Get notifications | feedback and comments only
-       */ 
+       */
       console.log('authorUUID', authorUUID)
       await scope.axios
         .get('http://localhost:3000/notifications/' + authorUUID)
@@ -592,14 +589,13 @@ export default {
           scope.allItems = response.data.data
           // scope.allItems['notifications'] = response.data.data['notifications']
         })
-        .catch(error => { 
+        .catch(error => {
           console.log('error', error)
         })
- 
+
       scope.messageCenterCounter()
 
-
-      // const scope = this 
+      // const scope = this
       // scope.axios
       //   .get('api/message-center')
       //   .then(async function (response) {
@@ -659,7 +655,7 @@ export default {
       //   })
     },
     messageCenterCounter () {
-      const scope = this 
+      const scope = this
 
       scope.itemsCounts['notifications'] = scope.allItems['notifications'].filter(model => {
         return model && model.status == 0
@@ -682,34 +678,32 @@ export default {
       scope.$parent.countNotificationItemTotal()
     },
     updateNotificationStatus (model) {
-
       const scope = this
       if (model.status == 1) return // only un-read status
       if (model.action == 'invite') return // only notifications , dont include invites
 
       var params = {
         model: model,
-        authorUUID:  this.$store.getters.getAuthorID
+        authorUUID: this.$store.getters.getAuthorID
       }
 
       scope.axios.post('http://localhost:3000/notifications/update-notification-status', params)
-      .then(response => {
-        console.log('updateNotificationStatus response',response.data)
-        scope.items = response.data
-        const itemType = 'notifications'
-        scope.allItems[itemType] = response.data
-        // scope.itemsCounts['all'] -= 1
-        // // scope.$parent.notification.count = scope.itemsCounts['all']
-        // scope.itemsCounts[itemType] = 0;
-        //
-        // scope.$parent.itemsCounts[itemType] = 0; 
-        scope.messageCenterCounter()
-        scope.$parent.countNotificationItemTotal()
-      })
-      .catch(error => {
-        console.log(error)
-      })
-
+        .then(response => {
+          console.log('updateNotificationStatus response', response.data)
+          scope.items = response.data
+          const itemType = 'notifications'
+          scope.allItems[itemType] = response.data
+          // scope.itemsCounts['all'] -= 1
+          // // scope.$parent.notification.count = scope.itemsCounts['all']
+          // scope.itemsCounts[itemType] = 0;
+          //
+          // scope.$parent.itemsCounts[itemType] = 0;
+          scope.messageCenterCounter()
+          scope.$parent.countNotificationItemTotal()
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
     setItem: function (itemType, id) {
       const scope = this
@@ -745,7 +739,6 @@ export default {
     }
   },
   mounted: async function () {
-   
     let scope = this
     try {
       await scope.fetch()
@@ -758,25 +751,24 @@ export default {
 
     console.log('window.AppMessageCenterPopup destroyed')
   },
-  created(){
+  created () {
     const scope = this
-    window.addEventListener('click', function(e){
-
-        /*
+    window.addEventListener('click', function (e) {
+      /*
         * This will trigger close MessageCenter if click oustside MessageCenter
         * */
-        if(scope.$parent.showMessageCenter  && document.getElementById('message-centerr').contains(e.target) == false && document.getElementById('message-center').contains(e.target) == false){
-            scope.$parent.showMessageCenter=false
-        }
+      if (scope.$parent.showMessageCenter && document.getElementById('message-centerr').contains(e.target) == false && document.getElementById('message-center').contains(e.target) == false) {
+        scope.$parent.showMessageCenter = false
+      }
 
-        /*
+      /*
         * Trigger <a> tag ang button as close MessageCenter
         * */
-        document.querySelectorAll('#message-centerr a:not(.actionLink) , #message-centerr .actionLink_message , #message-centerr button, #right-menu-actions a:not(.actionLink)').forEach(link =>{
-            link.onclick  = () => {
-                scope.$parent.showMessageCenter=false
-            }
-        });
+      document.querySelectorAll('#message-centerr a:not(.actionLink) , #message-centerr .actionLink_message , #message-centerr button, #right-menu-actions a:not(.actionLink)').forEach(link => {
+        link.onclick = () => {
+          scope.$parent.showMessageCenter = false
+        }
+      })
     })
   }
 }
