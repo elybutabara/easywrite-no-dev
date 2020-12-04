@@ -345,6 +345,7 @@
 import TinyMCE from '../../../components/TinyMCE'
 
 import CommentBasePanel from '../../../components/CommentBasePanel'
+import tinymce from 'tinymce'
 const moment = require('moment')
 const {ipcRenderer} = window.require('electron')
 
@@ -544,10 +545,10 @@ export default {
       // ipcRenderer.once instead of 'on' to prevent multiple executions.
       ipcRenderer.once('GET-DOCX-CONTENT-SCENE', function (event, data) {
         // Add the imported contents where mouse cursor is located.
-        scope.tinymce.get(scope.$refs.tmc.$el.id).execCommand('mceInsertContent', false, data)
+        tinymce.get(scope.$refs.tmc.$el.id).execCommand('mceInsertContent', false, data)
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
-        scope.data.scene_version.content = scope.tinymce.get(scope.$refs.tmc.$el.id).getContent()
-        scope.baseSceneVersionContent = scope.tinymce.get(scope.$refs.tmc.$el.id).getContent()
+        scope.data.scene_version.content = tinymce.get(scope.$refs.tmc.$el.id).getContent()
+        scope.baseSceneVersionContent = tinymce.get(scope.$refs.tmc.$el.id).getContent()
         /*
         // conflict with delete-in-detail-page-for-items-location-character-cause-breadcrumbs-problem-after-redirecting-in-listing-page
         // scope.data.scene_version.content = data
