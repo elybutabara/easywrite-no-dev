@@ -300,6 +300,22 @@ export default {
     'all': 'All',
     'notifications': 'Notifications',
     'messages': 'Messages',
-    'invitations': 'Invitations'
+    'invitations': 'Invitations',
+    'list-of-scenes': 'List of scenes',
+    'to-view': 'To view',
+    'click-here': 'Click here',
+    'has-declined-your-query-for-requesting-to-read': 'has declined your query for requesting to read',
+    'has-accepted-your-query-for-requesting-to-read': 'has accepted your query for requesting to read',
+    'sent-you-a-notification': 'sent you a notification',
+    'has-queried-you-to-read': 'has queried you to read',
+    'sent-you-a-message': 'sent you a message',
+    'commented-on': 'commented on',
+    'has-replied-to-your-feedback': 'has replied to your feedback',
+    'has-left-a-feedback-on': 'has left a feedback on',
+    'has-declined-your-invitation-to-read': 'has declined your invitation to read',
+    'has-accepted-your-invitation-to-read': 'has accepted your invitation to read',
+    'has-queried-you-to-request-an-access-to-read': 'has queried you to request an access to read',
+    'has-invited-you-to-read': 'has invited you to read',
+    'new-message': 'New Message'
   }
 }
