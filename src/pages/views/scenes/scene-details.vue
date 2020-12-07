@@ -333,7 +333,11 @@ export default {
                   timer: 1500
                 }).then(() => {
                   scope.$store.dispatch('removeSceneFromList', scene)
-                  scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + scene.book_id, tabComponent: 'scene-listing', tabData: scope.book, tabTitle: this.$t('SCENES') + ' - ' + this.$t('LIST'), tabIndex: scope.$store.getters.getActiveTab})
+                  if (scope.chapter) {
+                    scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + scope.book.uuid, tabComponent: 'chapter-details', tabData: { book: scope.book, chapter: scope.chapter }, tabTitle: scope.chapter.title + ' - ' + scope.book.title})
+                  } else {
+                    scope.CHANGE_COMPONENT({tabKey: 'scene-listing-' + scope.book.uuid, tabComponent: 'scene-listing', tabData: scope.book, tabTitle: scope.$t('OTHER_SCENES') + ' - ' + scope.book.title})
+                  }
                 })
               }
             })
