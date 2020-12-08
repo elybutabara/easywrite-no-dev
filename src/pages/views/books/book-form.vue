@@ -42,7 +42,7 @@
                             <label>{{$t('ABOUT')}}: </label>
                             <!-- <div class='import-doc-container'><button @click="getImport()">Import Docx</button></div> -->
                             <button @click="getImport()">Import Docx</button>
-                            <tiny-editor :initValue="data.about" v-on:getEditorContent="setAboutValue" class="form-control" />
+                            <tiny-editor :initValue="data.about" :params="tiny_editor_params" v-on:getEditorContent="setAboutValue" class="form-control" />
                         </div>
                     </div>
                 </div>
@@ -61,6 +61,7 @@ export default {
   name: 'book-form',
   props: ['properties'],
   data: function () {
+    var scope = this
     return {
       data: {
         id: null,
@@ -69,6 +70,12 @@ export default {
         title: '',
         book_genre_collection: [],
         about: ''
+      },
+      tinyEditorAccess: null,
+      tiny_editor_params: {
+        onEditorSetup: function (ed) {
+          scope.tinyEditorAccess = ed
+        },
       },
       tempAbout: '',
       genre_collection: [],
@@ -104,10 +111,11 @@ export default {
       var scope = this
       ipcRenderer.send('IMPORT-DOCX', 'book')
 
-      ipcRenderer.on('GET-DOCX-CONTENT-BOOK', function (event, data) {
-        scope.data.about = data
+      ipcRenderer.once('GET-DOCX-CONTENT-BOOK', function (event, data) {
+        scope.tinyEditorAccess.execCommand('mceInsertContent', false, data)
+        scope.data.about = scope.tinyEditorAccess.getContent()
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
-        scope.tempAbout = data
+        scope.tempAbout = scope.tinyEditorAccess.getContent()
       })
     },
     getGenre: function () {
