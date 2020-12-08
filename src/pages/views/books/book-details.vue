@@ -150,7 +150,7 @@ export default {
   }
 }
 
-ipcRenderer.on('GET-DOCX-CONTENT-MULTI-CHAPTERS-2', function (event, data) {
+ipcRenderer.once('GET-DOCX-CONTENT-MULTI-CHAPTERS-2', function (event, data) {
   let chapters = []
   let wholeChapter = []
 
@@ -159,7 +159,7 @@ ipcRenderer.on('GET-DOCX-CONTENT-MULTI-CHAPTERS-2', function (event, data) {
   window.$.each(contents, function (i, node) {
     const outerHtml = window.$(node).get(0).outerHTML
     if (window.$.inArray(node.nodeName.toLowerCase(), ['h1']) > -1) {
-      chapters.push({title: window.$(node).get(0).innerHTML, fileContent: ''})
+      chapters.push({title: window.$(node).get(0).innerText, fileContent: ''})
       return true
     }
 
