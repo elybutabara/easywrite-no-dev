@@ -44,7 +44,7 @@ class NoteController {
       .where('notes.author_id', authorId)
       .withGraphJoined('author', {maxBatchSize: 1})
       .orderBy('id', 'asc')
-
+    if (!notes) return
     for (let i = 0; i < notes.length; i++) {
       let parent = notes[i].parent
       let parentID = notes[i].parent_id
