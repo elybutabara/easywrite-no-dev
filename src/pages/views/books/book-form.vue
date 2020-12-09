@@ -75,7 +75,7 @@ export default {
       tiny_editor_params: {
         onEditorSetup: function (ed) {
           scope.tinyEditorAccess = ed
-        },
+        }
       },
       tempAbout: '',
       genre_collection: [],

@@ -84,13 +84,11 @@ export default {
       ipcRenderer.send('IMPORT-DOCX-MULTI-CHAPTERS', scope.properties)
 
       ipcRenderer.once('GET-DOCX-CONTENT-MULTI-CHAPTERS-2', function (event, data) {
-        
         let chapters = []
         let wholeChapter = []
         var contents = null
 
-        if(data.fromMammoth){ // use mammoth format
-
+        if (data.fromMammoth) { // use mammoth format
           contents = window.$.parseHTML(data.html)
 
           window.$.each(contents, function (i, node) {
@@ -109,8 +107,8 @@ export default {
               chapters[chapters.length - 1]['fileContent'] += outerHtml
             }
           })
-          
-          for (var i = 0; i < chapters.length; i++) {
+
+          for (let i = 0; i < chapters.length; i++) {
             wholeChapter.push({book_id: data.book.uuid, title: chapters[i].title, chapter_version: {content: chapters[i].fileContent}})
             axios
               .post('http://localhost:3000/chapters', wholeChapter[i])
@@ -119,21 +117,17 @@ export default {
                 }
               })
           }
-
-        }else{ // do not use mammoth. format parse
-
+        } else { // do not use mammoth. format parse
           // Get all nodes
-          var parser = new DOMParser();
-          var doc = parser.parseFromString(data.html, "text/html");
-          contents = doc.querySelectorAll('*');
+          var parser = new DOMParser()
+          var doc = parser.parseFromString(data.html, 'text/html')
+          contents = doc.querySelectorAll('*')
 
-          //remove parent nodes to avoid duplicate data, retain child nodes only
+          // remove parent nodes to avoid duplicate data, retain child nodes only
           window.$.each(contents, function (i, node) {
-
-              if(window.$(node).get(0).hasChildNodes()){
-                  window.$(node).get(0).remove();
-              }
-
+            if (window.$(node).get(0).hasChildNodes()) {
+              window.$(node).get(0).remove()
+            }
           })
 
           window.$.each(contents, function (i, node) {
@@ -152,8 +146,8 @@ export default {
               chapters[chapters.length - 1]['fileContent'] += outerHtml
             }
           })
-          
-          for (var i = 0; i < chapters.length; i++) {
+
+          for (let i = 0; i < chapters.length; i++) {
             wholeChapter.push({book_id: data.book.uuid, title: chapters[i].title, chapter_version: {content: chapters[i].fileContent}})
             axios
               .post('http://localhost:3000/chapters', wholeChapter[i])
@@ -162,7 +156,6 @@ export default {
                 }
               })
           }
-
         }
 
         wholeChapter = []
@@ -175,7 +168,6 @@ export default {
           timer: 1500
         })
       })
-      
     },
     updateBook () {
       var scope = this

@@ -413,22 +413,20 @@ export default {
       window.AppMessaging.recountUnread()
     }
   },
-  created(){
+  created () {
     const scope = this
-    window.addEventListener('click', function(e){
-
+    window.addEventListener('click', function (e) {
       // Close when clicked outside the profile
-      if(scope.showUserSettings && document.getElementById('profile-nav-div').contains(e.target) == false && document.getElementById('profile-nav').contains(e.target) == false){
-          scope.showUserSettings=false
+      if (scope.showUserSettings && document.getElementById('profile-nav-div').contains(e.target) == false && document.getElementById('profile-nav').contains(e.target) == false) {
+        scope.showUserSettings = false
       }
 
-      //close when link clicked in profile
-      document.querySelectorAll('#profile-nav-div .dropdown-item').forEach(link =>{
-          link.onclick  = () => {
-              scope.showUserSettings=false
-          }
-      });
-
+      // close when link clicked in profile
+      document.querySelectorAll('#profile-nav-div .dropdown-item').forEach(link => {
+        link.onclick = () => {
+          scope.showUserSettings = false
+        }
+      })
     })
   }
 }
