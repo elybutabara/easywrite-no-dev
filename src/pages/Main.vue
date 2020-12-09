@@ -62,10 +62,10 @@
                   <div id="message-centerr" v-show="showMessageCenter" style="position: absolute; top: 68px; right: 18px; z-index: 10000; width: 500px; text-align: left;">
                     <message-center-popup :params="user"></message-center-popup>
                   </div>
-                  <a @click.prevent="showUserSettings=!showUserSettings; showMessageCenter=false;" class="user-btn" href="javascript:void(0)">
+                  <a id="profile-nav" @click.prevent="showUserSettings=!showUserSettings; showMessageCenter=false;" class="user-btn" href="javascript:void(0)">
                     <i class="las la-user"></i>
                   </a>
-                  <div v-show="showUserSettings" style="position: absolute; top: 68px; right: 18px; z-index: 10000; width: 350px; text-align: left;">
+                  <div id="profile-nav-div" v-show="showUserSettings" style="position: absolute; top: 68px; right: 18px; z-index: 10000; width: 350px; text-align: left;">
                     <div class="card shadow mb-4">
                       <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold">User Settings</h6>
@@ -412,6 +412,24 @@ export default {
     if (window.AppMessaging.recountUnread) {
       window.AppMessaging.recountUnread()
     }
+  },
+  created(){
+    const scope = this
+    window.addEventListener('click', function(e){
+
+      // Close when clicked outside the profile
+      if(scope.showUserSettings && document.getElementById('profile-nav-div').contains(e.target) == false && document.getElementById('profile-nav').contains(e.target) == false){
+          scope.showUserSettings=false
+      }
+
+      //close when link clicked in profile
+      document.querySelectorAll('#profile-nav-div .dropdown-item').forEach(link =>{
+          link.onclick  = () => {
+              scope.showUserSettings=false
+          }
+      });
+
+    })
   }
 }
 
