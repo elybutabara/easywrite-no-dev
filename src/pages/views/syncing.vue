@@ -717,6 +717,7 @@ export default {
       scope.$store.dispatch('reloadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
       scope.$root.$emit('loadCourses')
       scope.$root.$emit('loadAssignment')
+      scope.$root.$emit('loadMessageCenter')
       // var userID = this.$store.getters.getUserID
       // scope.$store.dispatch('getBooksByAuthorID', userID)
     },

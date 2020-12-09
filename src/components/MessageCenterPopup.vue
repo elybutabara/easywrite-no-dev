@@ -745,6 +745,9 @@ export default {
     } finally {
 
     }
+    scope.$root.$on('loadMessageCenter', async () => {
+      await scope.fetch()
+    })
   },
   beforeDestroy: function () {
     delete window.AppMessageCenterPopup
