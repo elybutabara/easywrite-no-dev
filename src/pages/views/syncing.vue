@@ -475,9 +475,12 @@ export default {
       if (!endpoint) return
       scope.progress_message = scope.$t('DOWNLOADING') + ' ' + endpoint.title + '...'
 
-      //
-
-      var lastSyncedDate = scope.timeConvertToUTC(scope.$store.getters.getUserSyncedDate)
+      let lastSyncedDate
+      if (app.getVersion() == '0.1.30') {
+        lastSyncedDate = '1970-01-01 00:00:01'
+      } else {
+        lastSyncedDate = scope.timeConvertToUTC(scope.$store.getters.getUserSyncedDate)
+      }
       scope.axios.get(window.APP.API.URL + '/' + endpoint.api,
         {
           params: {

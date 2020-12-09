@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
 const moment = require('moment')
-
+const { app } = require('electron')
 // eslint-disable-next-line no-unused-vars
 const { Author, AuthorName, User, Book } = require(path.join(__dirname, '..', 'models'))
 
@@ -62,13 +62,19 @@ class UserController {
   }
 
   static async saveSyncedDate (params) {
-    var data = await User.query()
-      .patch({synced_at: moment().add(5, 'seconds').format('YYYY-MM-DD HH:mm:ss').toString()})
+    let lastSyncedDate
+    if (app.getVersion() == '0.1.30') {
+      lastSyncedDate = '1970-01-01 00:00:01'
+    } else {
+      lastSyncedDate = moment().add(5, 'seconds').format('YYYY-MM-DD HH:mm:ss').toString()
+    }
+    await User.query()
+      .patch({synced_at: lastSyncedDate})
       .where('uuid', '=', params.uuid)
 
-    data = await User.query().findById(params.uuid)
+    let ret = await User.query().findById(params.uuid)
 
-    return data
+    return ret
   }
 }
 
