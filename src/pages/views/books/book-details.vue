@@ -82,6 +82,100 @@ export default {
     getImport: function () {
       var scope = this
       ipcRenderer.send('IMPORT-DOCX-MULTI-CHAPTERS', scope.properties)
+
+      ipcRenderer.once('GET-DOCX-CONTENT-MULTI-CHAPTERS-2', function (event, data) {
+        
+        let chapters = []
+        let wholeChapter = []
+        var contents = null
+
+        if(data.fromMammoth){ // use mammoth format
+
+          contents = window.$.parseHTML(data.html)
+
+          window.$.each(contents, function (i, node) {
+            const outerHtml = window.$(node).get(0).outerHTML
+            if (window.$.inArray(node.nodeName.toLowerCase(), ['h1']) > -1) {
+              chapters.push({title: window.$(node).get(0).innerText, fileContent: ''})
+              return true
+            }
+
+            if (chapters[chapters.length - 1] !== undefined) {
+              // exclude element with &nbsp; content
+              if (window.$(node).html() === '&nbsp;' || window.$(node).is(':empty') || window.$(node).html() === '<br>') {
+                return true
+              }
+              // concat all element outerHtml/text after h1
+              chapters[chapters.length - 1]['fileContent'] += outerHtml
+            }
+          })
+          
+          for (var i = 0; i < chapters.length; i++) {
+            wholeChapter.push({book_id: data.book.uuid, title: chapters[i].title, chapter_version: {content: chapters[i].fileContent}})
+            axios
+              .post('http://localhost:3000/chapters', wholeChapter[i])
+              .then(response => {
+                if (response.data) {
+                }
+              })
+          }
+
+        }else{ // do not use mammoth. format parse
+
+          // Get all nodes
+          var parser = new DOMParser();
+          var doc = parser.parseFromString(data.html, "text/html");
+          contents = doc.querySelectorAll('*');
+
+          //remove parent nodes to avoid duplicate data, retain child nodes only
+          window.$.each(contents, function (i, node) {
+
+              if(window.$(node).get(0).hasChildNodes()){
+                  window.$(node).get(0).remove();
+              }
+
+          })
+
+          window.$.each(contents, function (i, node) {
+            const outerHtml = window.$(node).get(0).outerHTML
+            if (window.$.inArray(node.nodeName.toLowerCase(), ['h1']) > -1) {
+              chapters.push({title: window.$(node).get(0).innerText, fileContent: ''})
+              return true
+            }
+
+            if (chapters[chapters.length - 1] !== undefined) {
+              // exclude element with &nbsp; content
+              if (window.$(node).html() === '&nbsp;' || window.$(node).is(':empty') || window.$(node).html() === '<br>') {
+                return true
+              }
+              // concat all element outerHtml/text after h1
+              chapters[chapters.length - 1]['fileContent'] += outerHtml
+            }
+          })
+          
+          for (var i = 0; i < chapters.length; i++) {
+            wholeChapter.push({book_id: data.book.uuid, title: chapters[i].title, chapter_version: {content: chapters[i].fileContent}})
+            axios
+              .post('http://localhost:3000/chapters', wholeChapter[i])
+              .then(response => {
+                if (response.data) {
+                }
+              })
+          }
+
+        }
+
+        wholeChapter = []
+
+        window.swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: window.vm.$t('CHAPTERS') + ' ' + window.vm.$t('SUCCESSFULY_IMPORTED'),
+          showConfirmButton: false,
+          timer: 1500
+        })
+      })
+      
     },
     updateBook () {
       var scope = this
@@ -149,50 +243,6 @@ export default {
     })
   }
 }
-
-ipcRenderer.once('GET-DOCX-CONTENT-MULTI-CHAPTERS-2', function (event, data) {
-  let chapters = []
-  let wholeChapter = []
-
-  const contents = window.$.parseHTML(data.html)
-
-  window.$.each(contents, function (i, node) {
-    const outerHtml = window.$(node).get(0).outerHTML
-    if (window.$.inArray(node.nodeName.toLowerCase(), ['h1']) > -1) {
-      chapters.push({title: window.$(node).get(0).innerText, fileContent: ''})
-      return true
-    }
-
-    if (chapters[chapters.length - 1] !== undefined) {
-      // exclude element with &nbsp; content
-      if (window.$(node).html() === '&nbsp;' || window.$(node).is(':empty') || window.$(node).html() === '<br>') {
-        return true
-      }
-      // concat all element outerHtml/text after h1
-      chapters[chapters.length - 1]['fileContent'] += outerHtml
-    }
-  })
-
-  for (var i = 0; i < chapters.length; i++) {
-    wholeChapter.push({book_id: data.book.uuid, title: chapters[i].title, chapter_version: {content: chapters[i].fileContent}})
-    axios
-      .post('http://localhost:3000/chapters', wholeChapter[i])
-      .then(response => {
-        if (response.data) {
-        }
-      })
-  }
-
-  wholeChapter = []
-
-  window.swal.fire({
-    position: 'center',
-    icon: 'success',
-    title: window.vm.$t('CHAPTERS') + ' ' + window.vm.$t('SUCCESSFULY_IMPORTED'),
-    showConfirmButton: false,
-    timer: 1500
-  })
-})
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

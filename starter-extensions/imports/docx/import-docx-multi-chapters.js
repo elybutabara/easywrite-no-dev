@@ -23,20 +23,35 @@ exports.initMainWindow = (window) => {
         var outputFile = result.filePaths
 
         fs.readFile(outputFile[0], (err, data) => {
+
           if (err) throw err
 
-          var options = {
-            styleMap: [
-              'u => u'
-            ]
+          // check if there is altChunk
+          if(data.indexOf("<w:altChunk r:id=\"htmlChunk\" />") >= 0){ // Do not use mammoth
+            
+            var toStringContent = data.toString()
+            var tempContent = toStringContent.replace(/3D/g, "")
+            var cleanContent = tempContent.substring(tempContent.indexOf("<body>"), tempContent.indexOf("</body>"))
+            MainWindow.webContents.send('GET-DOCX-CONTENT-MULTI-CHAPTERS-2', {book: book, html: cleanContent, fromMammoth: false})
+
+          }else{
+
+            var options = {
+              styleMap: [
+                'u => u'
+              ]
+            }
+  
+            mammoth.convertToHtml(data, options)
+              .then(function (result) {
+                // console.log('testtse')
+                // console.log(book)
+                MainWindow.webContents.send('GET-DOCX-CONTENT-MULTI-CHAPTERS-2', {book: book, html: result.value, fromMammoth: true})
+              })
+              .done()
+
           }
-          mammoth.convertToHtml(data, options)
-            .then(function (result) {
-              // console.log('testtse')
-              // console.log(book)
-              MainWindow.webContents.send('GET-DOCX-CONTENT-MULTI-CHAPTERS-2', {book: book, html: result.value})
-            })
-            .done()
+
         })
       }
     }).catch(err => {
