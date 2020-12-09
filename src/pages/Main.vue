@@ -50,11 +50,7 @@
                   <a href="javascript:void(0)">
                     <pomodoro-timer></pomodoro-timer>
                   </a>
-                  <!-- <button @click.prevent="showMessageCenter=!showMessageCenter" class="btn btn-danger" style="position: relative;">
-                    <i class="fa fa-bell"></i>
-                    <span v-if="notificationCount > 0" style="position: absolute;width: 20px;height: 20px;border-radius: 50%;background: red;color: rgb(255, 255, 255);top: -5px;right: -8px;line-height: 20px;text-align: center;font-size: 12px;">{{notificationCount}}</span>
-                  </button> -->
-                  <!--TODO: remove this comment if message center is good to go with sync-->
+
                   <a @click.prevent="showMessageCenter=!showMessageCenter; showUserSettings=false;" id="message-center" class="user-btn position-relative" href="javascript:void(0)" style="margin-right: 10px;">
                     <i class="fas fa-bell"></i>
                     <span v-if="notificationCount > 0" style="position: absolute;width: 20px;height: 20px;border-radius: 50%;background: red;color: rgb(255, 255, 255);top: -5px;right: -8px;line-height: 20px;text-align: center;font-size: 12px;">{{notificationCount}}</span>
@@ -65,14 +61,21 @@
                   <a id="profile-nav" @click.prevent="showUserSettings=!showUserSettings; showMessageCenter=false;" class="user-btn" href="javascript:void(0)">
                     <i class="las la-user"></i>
                   </a>
-                  <div id="profile-nav-div" v-show="showUserSettings" style="position: absolute; top: 68px; right: 18px; z-index: 10000; width: 350px; text-align: left;">
-                    <div class="card shadow mb-4">
-                      <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold">User Settings</h6>
+                  <div id="profile-nav-div" v-show="showUserSettings" style="position: absolute; top: 68px; right: 12px; z-index: 10000; width: 350px; text-align: left; width: 250px;">
+                      <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                          <h6 class="m-0 font-weight-bold">{{ user.data.username }}</h6>
+                        </div>
+                        <div class="user-setting-list">
+                          <!--                        <a class="dropdown-item" @click="CHANGE_COMPONENT({tabKey: 'main-account', tabComponent: 'main-account',  tabData: null, tabTitle: 'Main Account'})">{{ trans("site.account.main") }}</a>-->
+                          <!--                        <a class="dropdown-item" @click="CHANGE_COMPONENT({tabKey: 'main-reader-directory', tabComponent: 'main-reader-directory',  tabData: null, tabTitle: 'Main Reader Directory'})">{{ trans("site.the-reader-directory") }}</a>-->
+                          <!--                        <a class="dropdown-item" @click="CHANGE_COMPONENT({tabKey: 'main-book-directory', tabComponent: 'main-book-directory',  tabData: null, tabTitle: 'Main Book Directory'})">{{ trans("site.the-book-directory") }}</a>-->
+                          <!--                        <a class="dropdown-item" @click="CHANGE_COMPONENT({tabKey: 'main-book-finished', tabComponent: 'main-book-finished',  tabData: null, tabTitle: 'Main Book Finished'})">{{ trans('site.books-ive-finished') }}</a>-->
+                          <!--                        <a class="dropdown-item" @click="CHANGE_COMPONENT({tabKey: 'my-deleted-books', tabComponent: 'my-deleted-books',  tabData: null, tabTitle: 'My Deleted Books'})">{{ trans('site.deleted-books-text') }}</a>-->
+                          <a class="dropdown-item" @click="logout()">{{ $t('site.logout') }}</a>
+                        </div>
                       </div>
-                      <div class="card-body"></div>
                     </div>
-                  </div>
                 </div>
             </div>
             <div class="es-tab-nav">
@@ -242,6 +245,9 @@ export default {
     'webinar-listing': WebinarListing
   },
   methods: {
+    logout () {
+      ipcRenderer.send('SET_DEFAULTS', { reload: true })
+    },
     toggleMessageCenter: function () {
       // const scope = this
       // scope.notification.show = !scope.notification.show
@@ -443,5 +449,7 @@ ipcRenderer.on('SET_TRANSLATION_DOM', function (event, data) {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+/*TODO: please use the custom.css from web*/
+/* profile div in nav */
+.user-setting-list a { cursor: pointer }
 </style>

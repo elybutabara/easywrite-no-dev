@@ -316,6 +316,7 @@ export default {
     'has-accepted-your-invitation-to-read': 'has accepted your invitation to read',
     'has-queried-you-to-request-an-access-to-read': 'has queried you to request an access to read',
     'has-invited-you-to-read': 'has invited you to read',
-    'new-message': 'New Message'
+    'new-message': 'New Message',
+    'logout': 'Logout'
   }
 }
