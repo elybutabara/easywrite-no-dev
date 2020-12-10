@@ -21,7 +21,7 @@
                           <i class="fas fa-headset"></i>
                           <span>{{ $t('WEBINARS') }}</span>
                       </a>
-                      <a @click="CHANGE_COMPONENT({tabKey: 'note-listing', tabComponent: 'note-listing',  tabData: null, tabTitle: $t('NOTES')})" v-bind:class="{'active' : tabs.items[0].component == 'note-listing'}" href="javascript:void(0)" class="nav-btn notes">
+                      <a @click="goToNotes()" v-bind:class="{'active' : tabs.items[0].component == 'note-listing'}" href="javascript:void(0)" class="nav-btn notes">
                           <i class="fas fa-sticky-note"></i>
                           <span>{{ $t('NOTES') }}</span>
                       </a>
@@ -311,6 +311,10 @@ export default {
       scope.notificationCount_ = scope.itemsCounts['all']
       // console.log(scope.itemsCounts)
       return scope.itemsCounts['all']
+    },
+    goToNotes: function () {
+      this.$store.dispatch('setActiveMainSideNavTab', 'books-i-read')
+      this.CHANGE_COMPONENT({tabKey: 'note-listing', tabComponent: 'note-listing',  tabData: null, tabTitle: this.$t('NOTES')})
     }
   },
   beforeMount () {
