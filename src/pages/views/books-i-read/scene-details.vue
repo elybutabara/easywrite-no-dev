@@ -49,7 +49,7 @@
                 </a></li>
             </ul>
 
-            <ul v-else class="es-page-breadcrumbs special mb-0">
+            <ul v-else class="es-breadcrumb special mb-0">
                 <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'books-i-read-book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);"><span>{{ book.title }}</span></a></li>
                 <li><a @click="CHANGE_COMPONENT({tabKey: 'scene-listing-' + book.uuid, tabComponent: 'books-i-read-scene-listing', tabData: book, tabTitle: $t('OTHER_SCENES') + ' - ' + book.title})" href="javascript:void(0);"><span>{{ $t('OTHER_SCENES') }}</span></a></li>
                 <li><a href="javascript:void(0);" style="padding-right: 20px;">
