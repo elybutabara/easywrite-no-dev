@@ -400,6 +400,18 @@ export default {
             finalData = data_
           }
         }
+      } else if (['Genres', 'Book Genres'].indexOf(endpoint.title) > -1) {
+        // eslint-disable-next-line valid-typeof
+        scope.upload.index++
+        scope.upload.counter++
+        // move to the next table/model
+        if (scope.upload.index >= endpoint.packed.length) {
+          scope.upload.pointer++
+          scope.upload.index = 0
+          // scope.startUploadData()
+        }
+        scope.startUploadData()
+        return
       }
 
       scope.axios.post(window.APP.API.URL + '/' + endpoint.api + '',
