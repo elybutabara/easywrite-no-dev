@@ -399,7 +399,7 @@ export default {
             finalData = data_
           }
         }
-      } else if (['Genres', 'Book Genres', 'WebinarRegistrants', 'WebinarPresenters', 'Webinars'].indexOf(endpoint.title) > -1) {
+      } else if (['Genres', 'Courses', 'Courses Taken', 'Packages', 'Package Courses', 'Lessons', 'Lesson Documents, ' 'Book Genres', 'WebinarRegistrants', 'WebinarPresenters', 'Webinars'].indexOf(endpoint.title) > -1) {
         // TODO : refactor this for SKIPPING UPLOADS !!
 
         // eslint-disable-next-line valid-typeof
