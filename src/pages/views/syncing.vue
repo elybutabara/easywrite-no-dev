@@ -210,7 +210,7 @@ export default {
         { title: 'WebinarPresenters', api: 'webinar-presenters', local: 'webinar-presenters', downloaded: [], packed: [] },
         { title: 'WebinarRegistrants', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: [], packed: [] },
         { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] },
-        { title: 'Notification', api: 'notifications', local: 'notifications', downloaded: [], packed: [] }
+        { title: 'Notifications', api: 'notifications', local: 'notifications', downloaded: [], packed: [] }
       ],
       bookUUID: ''
     }
@@ -340,8 +340,8 @@ export default {
         return
       }
 
-      scope.progress_message = scope.$t('UPLOADING') + ' ' + endpoint.title + scope.$t('DATA') + '...'
-      scope.progress_message = scope.$t('UPLOADING') + ' ' + endpoint.title + scope.$t('DATA') + '(' + scope.upload.index + ' ' + scope.$t('OF') + ' ' + (endpoint.packed.length + 1) + ')...'
+      scope.progress_message = scope.$t('UPLOADING') + ' ' + endpoint.title + ' ' + scope.$t('DATA') + '...'
+      scope.progress_message = scope.$t('UPLOADING') + ' ' + endpoint.title + ' ' + scope.$t('DATA') + '(' + scope.upload.index + ' ' + scope.$t('OF') + ' ' + (endpoint.packed.length + 1) + ')...'
       var data = endpoint.packed[scope.upload.index]
 
       data.created_at = scope.timeConvertToUTC(data.created_at)
@@ -399,7 +399,9 @@ export default {
             finalData = data_
           }
         }
-      } else if (['Genres', 'Book Genres'].indexOf(endpoint.title) > -1) {
+      } else if (['Genres', 'Book Genres', 'WebinarRegistrants', 'WebinarPresenters', 'Webinars'].indexOf(endpoint.title) > -1) {
+        // TODO : refactor this for SKIPPING UPLOADS !!
+
         // eslint-disable-next-line valid-typeof
         scope.upload.index++
         scope.upload.counter++
@@ -639,8 +641,8 @@ export default {
 
       var endpoint = scope.endpoints[scope.saving.pointer]
       if (!endpoint) return
-      scope.progress_message = scope.$t('SAVING') + ' ' + endpoint.title + scope.$t('DATA') + '...'
-      scope.progress_message = scope.$t('SAVING') + ' ' + endpoint.title + scope.$t('DATA') + '(' + scope.saving.index + ' ' + scope.$t('OF') + ' ' + (endpoint.downloaded.length + 1) + ')...'
+      scope.progress_message = scope.$t('SAVING') + ' ' + endpoint.title + ' ' + scope.$t('DATA') + '...'
+      scope.progress_message = scope.$t('SAVING') + ' ' + endpoint.title + ' ' + scope.$t('DATA') + '(' + scope.saving.index + ' ' + scope.$t('OF') + ' ' + (endpoint.downloaded.length + 1) + ')...'
 
       // skip attempt upload on empty data
       if (endpoint.downloaded.length < 1) {
