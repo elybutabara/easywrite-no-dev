@@ -45,6 +45,8 @@ class NoteController {
       .withGraphJoined('author', {maxBatchSize: 1})
       .orderBy('id', 'asc')
 
+    var notDeletedLinkOnNote = []
+
     for (let i = 0; i < notes.length; i++) {
       let parent = notes[i].parent
       let parentID = notes[i].parent_id
@@ -52,32 +54,35 @@ class NoteController {
       if (parent === 'chapter') {
         notes[i].chapter = await Chapter.query().findById(parentID)
         notes[i].scene = null
-        notes[i].book = await Book.query().findById(notes[i].chapter.book_id)
+        notes[i].book = await Book.query().findById(notes[i].chapter.book_id).whereNull('deleted_at')
+        if (notes[i].book){
+          notDeletedLinkOnNote.push(notes[i])
+        }
       } else if (parent === 'scene') {
         notes[i].chapter = null
         notes[i].scene = await Scene.query().findById(parentID)
-        notes[i].book = await Book.query().findById(notes[i].scene.book_id)
+        notes[i].book = await Book.query().findById(notes[i].scene.book_id).whereNull('deleted_at')
+        if (notes[i].book){
+          notDeletedLinkOnNote.push(notes[i])
+        }
       } else if (parent === 'book') {
         notes[i].chapter = null
         notes[i].scene = null
-        notes[i].book = await Book.query().findById(parentID)
-        var genreUUIDs = []
-        var genreC = await BookGenreCollection.query().select('genre_id').where('book_id', parentID)
-        for (let i = 0; i < genreC.length; i++) {
-          genreUUIDs.push(genreC[i].genre_id)
+        notes[i].book = await Book.query().findById(parentID).whereNull('deleted_at')
+        if (notes[i].book){
+          var genreUUIDs = []
+          var genreC = await BookGenreCollection.query().select('genre_id').where('book_id', parentID)
+          for (let i = 0; i < genreC.length; i++) {
+            genreUUIDs.push(genreC[i].genre_id)
+          }
+          notes[i].book.genre = await BookGenre.query().select('id', 'name').whereIn('uuid', genreUUIDs)
+          notes[i].book.author = await Author.query().findById(notes[i].book.author_id)
+          notDeletedLinkOnNote.push(notes[i])
         }
-        notes[i].book.genre = await BookGenre.query().select('id', 'name').whereIn('uuid', genreUUIDs)
-
-        // await BookGenreCollection.query()
-        //                         .select('book_genres.id','book_genres.name')
-        //                         .leftJoin('book_genres')
-        //                         .where('book_genre_collections.genre_id','=','book_genres.uuid')
-        //                         .where('book_genre_collections.book_id',parentID)
-        notes[i].book.author = await Author.query().findById(notes[i].book.author_id)
       }
     }
 
-    return notes
+    return notDeletedLinkOnNote
   }
 
   static async delete (noteId) {
