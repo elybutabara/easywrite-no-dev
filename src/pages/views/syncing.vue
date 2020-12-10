@@ -333,8 +333,7 @@ export default {
       }
 
       var endpoint = scope.endpoints[scope.upload.pointer]
-      if (!endpoint) return
-      if (typeof endpoint.packed === 'undefined' || typeof endpoint.packed.length === 'undefined' || endpoint.packed.length < 1) {
+      if (!endpoint || typeof endpoint.packed === 'undefined' || typeof endpoint.packed.length === 'undefined' || endpoint.packed.length < 1) {
         scope.upload.pointer++
         scope.upload.index = 0
         scope.startUploadData()
@@ -412,6 +411,15 @@ export default {
         }
         scope.startUploadData()
         return
+      } else if (['Scenes'].indexOf(endpoint.title) > -1) {
+        // checking for valid dates
+        if (!moment(data.date_starts).isValid()) {
+          data.date_starts = moment('1970-01-01 00:00:01').format('YYYY-MM-DD').toString()
+        }
+        // checking for valid dates
+        if (!moment(data.date_ends).isValid()) {
+          data.date_ends = moment('1970-01-01 00:00:01').format('YYYY-MM-DD').toString()
+        }
       }
 
       scope.axios.post(window.APP.API.URL + '/' + endpoint.api + '',
