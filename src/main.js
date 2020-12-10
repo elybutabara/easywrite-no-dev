@@ -131,7 +131,7 @@ let APP = {
   }
 }
 
-window.APP = APP.SE_DEV // DEVELOPEMENT APP
+window.APP = APP.SE_PROD // DEVELOPEMENT APP
 if (process.env.NODE_ENV === 'production') {
   window.APP = APP.SE_PROD // PRODUCTION APP
 }
