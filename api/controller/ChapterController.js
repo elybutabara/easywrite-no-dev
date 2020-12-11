@@ -69,6 +69,15 @@ class ChapterController {
   }
 
   static async save (data) {
+
+    const chapters = await Chapter.query()
+                            .select('order')
+                            .max('order')
+                            .where('book_id', data.book_id)
+                            .whereNull('deleted_at')
+
+    data.order = chapters[0].order + 1
+
     const upsertGraphOptions = {
       relate: ['chapter_version'],
       noDelete: ['chapter_version'],
