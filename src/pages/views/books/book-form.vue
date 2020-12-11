@@ -214,11 +214,11 @@ export default {
       scope.$set(scope.data, 'uuid', scope.properties.uuid)
     }
   },
-  mounted () {
+  async mounted () {
     var scope = this
-    scope.getGenre()
+    await scope.getGenre()
     if (scope.data.id !== null) {
-      scope.loadBook()
+      await scope.loadBook()
     }
   }
 }
