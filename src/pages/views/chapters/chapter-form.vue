@@ -550,7 +550,6 @@ export default {
     },
     saveAuthorPersonalProgress (relationId) {
       let scope = this
-
       if (scope.authorProgress.uuid) {
         scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.WORD_COUNT(scope.data.chapter_version.content) - scope.baseContentCount)
       } else {
@@ -562,6 +561,8 @@ export default {
       scope.axios
         .post('http://localhost:3000/author-personal-progress', scope.authorProgress)
         .then(response => {
+          scope.authorProgress = response.data
+          scope.baseContentCount = scope.WORD_COUNT(scope.data.chapter_version.content)
           scope.$store.dispatch('loadAuthorPersonalProgress', {authorId: response.data.author_id})
         })
     },

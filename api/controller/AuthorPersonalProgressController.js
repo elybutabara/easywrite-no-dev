@@ -18,7 +18,6 @@ class AuthorPersonalProgressController {
     }
 
     let authorPersonalProgress = await queryBuilder.orderBy('created_at', 'DESC').first()
-
     return authorPersonalProgress
   }
 
@@ -37,7 +36,6 @@ class AuthorPersonalProgressController {
     }
 
     let authorPersonalProgress = await queryBuilder.orderBy('created_at', 'DESC').first()
-
     return authorPersonalProgress
   }
 
