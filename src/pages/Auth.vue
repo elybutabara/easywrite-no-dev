@@ -173,13 +173,19 @@ export default {
       let settigs = {
         app_version: scope.version,
         language: scope.language,
-        user_id: response.data.uuid
+        user_id: response.data.uuid,
+        api_url: window.APP.API.URL
       }
       // save app settings
       await scope.axios
         .post('http://localhost:3000/app-settings', settigs).then(response => {
           console.log('Sucecss app settings!!')
-          console.log(response)
+          if (response.data.run_count < 1) {
+            // this will allow syncing to upload all data to web
+            scope.$store.commit('updateSyncedAt', {
+              syncedAt: '1970-01-01 00:00:01'
+            })
+          }
         }).catch(function () {
           console.log('FAILURE app settings!!')
         })

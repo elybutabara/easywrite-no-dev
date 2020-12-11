@@ -134,6 +134,7 @@ export default {
   props: ['properties'],
   data: function () {
     return {
+      app_run_count: 0,
       sync_version: 18,
       api_token: '',
       retry: 0,
@@ -498,9 +499,11 @@ export default {
       scope.progress_message = scope.$t('DOWNLOADING') + ' ' + endpoint.title + '...'
 
       let lastSyncedDate
-      if (app.getVersion() == '0.1.30') {
+      if (scope.app_run_count < 1) {
+        console.log('--------DONWLOAD ALL-----')
         lastSyncedDate = '1970-01-01 00:00:01'
       } else {
+        console.log('--------DONWLOAD only update-----')
         lastSyncedDate = scope.timeConvertToUTC(scope.$store.getters.getUserSyncedDate)
       }
       scope.axios.get(window.APP.API.URL + '/' + endpoint.api,
@@ -634,6 +637,7 @@ export default {
       // done going through tables
       if (scope.saving.pointer >= scope.endpoints.length) {
         scope.saveAuthorFromNotifications() // save notifications Author after all sync is done
+        scope.increaseAppSettingCounter()
         scope.saveUserSyncedDate()
         scope.showLogs()
         return
@@ -845,6 +849,28 @@ export default {
       download(src.url, dst, function () {
         console.log('done donwloadig image: ' + src.name)
       })
+    },
+    checkAppSettings: function () {
+      const scope = this
+      const userUUID = this.$store.getters.getUserID
+      scope.axios.get('http://localhost:3000/app-settings/' + userUUID)
+        .then(function (response) {
+          scope.app_run_count = response.data.run_count
+        })
+        .catch(function () {
+          console.log('FAILURE app settings!!')
+        })
+    },
+    increaseAppSettingCounter: function () {
+      const scope = this
+      const userUUID = this.$store.getters.getUserID
+      scope.axios.post('http://localhost:3000/app-settings/' + userUUID + '/increase-app-counter')
+        .then(function (response) {
+          scope.app_run_count = response.data.run_count
+        })
+        .catch(function () {
+          console.log('FAILURE app settings!!')
+        })
     }
   },
   beforeMount () {
@@ -857,6 +883,8 @@ export default {
     if (scope.properties !== null && scope.properties.fullscreen) {
       scope.fullscreen = true
     }
+
+    scope.checkAppSettings()
 
     if (scope.properties !== null && scope.properties.autostart) {
       scope.autostart = true

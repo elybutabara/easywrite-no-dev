@@ -1,9 +1,9 @@
 'use strict'
 const path = require('path')
 const moment = require('moment')
-const { app } = require('electron')
+// const { app } = require('electron')
 // eslint-disable-next-line no-unused-vars
-const { Author, AuthorName, User, Book } = require(path.join(__dirname, '..', 'models'))
+const { Author, AuthorName, User, AppSetting } = require(path.join(__dirname, '..', 'models'))
 
 class UserController {
   static authenticate (username, password) {
@@ -63,7 +63,14 @@ class UserController {
 
   static async saveSyncedDate (params) {
     let lastSyncedDate
-    if (app.getVersion() == '0.1.30') {
+
+    const model = AppSetting.query()
+      .withGraphJoined('user')
+      .where('user_id', params.uuid)
+    // check app run count from db
+    let settings = await model.orderBy('app_version', 'DESC').first()
+    console.log('saveSynceDate', settings.run_count)
+    if (settings.run_count < 1) {
       lastSyncedDate = '1970-01-01 00:00:01'
     } else {
       lastSyncedDate = moment().add(5, 'seconds').format('YYYY-MM-DD HH:mm:ss').toString()
