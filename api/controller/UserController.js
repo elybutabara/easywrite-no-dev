@@ -62,19 +62,7 @@ class UserController {
   }
 
   static async saveSyncedDate (params) {
-    let lastSyncedDate
-
-    const model = AppSetting.query()
-      .withGraphJoined('user')
-      .where('user_id', params.uuid)
-    // check app run count from db
-    let settings = await model.orderBy('app_version', 'DESC').first()
-    console.log('saveSynceDate', settings.run_count)
-    if (settings.run_count < 1) {
-      lastSyncedDate = '1970-01-01 00:00:01'
-    } else {
-      lastSyncedDate = moment().add(5, 'seconds').format('YYYY-MM-DD HH:mm:ss').toString()
-    }
+    let lastSyncedDate = moment().add(5, 'seconds').format('YYYY-MM-DD HH:mm:ss').toString()
     await User.query()
       .patch({synced_at: lastSyncedDate})
       .where('uuid', '=', params.uuid)
