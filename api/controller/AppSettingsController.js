@@ -3,7 +3,7 @@ const path = require('path')
 // const moment = require('moment')
 // const { raw } = require('objection')
 const { app } = require('electron')
-const {  User, AppSetting } = require(path.join(__dirname, '..', 'models'))
+const { User, AppSetting } = require(path.join(__dirname, '..', 'models'))
 
 class AppSettingsController {
   static async getAppSettings (userId) {
