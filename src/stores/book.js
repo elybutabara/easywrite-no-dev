@@ -251,7 +251,7 @@ export default {
         let current = state.books[authorUUID].rows[i]
         if (current.uuid === payload.uuid) {
           for (var key in payload) {
-            if (state.books[authorUUID].rows[i][key]) {
+            if (typeof state.books[authorUUID].rows[i][key] !== 'undefined') {
               state.books[authorUUID].rows[i][key] = payload[key]
             }
           }
