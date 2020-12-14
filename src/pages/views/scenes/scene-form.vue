@@ -871,6 +871,7 @@ export default {
         .post('http://localhost:3000/author-personal-progress', scope.authorProgress)
         .then(response => {
           scope.authorProgress = response.data
+          scope.base_content_count = scope.WORD_COUNT(scope.data.scene_version.content)
           scope.$store.dispatch('loadAuthorPersonalProgress', { authorId: this.$store.getters.getAuthorID })
         })
     },
@@ -947,7 +948,7 @@ export default {
         await scope.$store.dispatch('loadItemsByScene', scope.properties.scene)
         await scope.$store.dispatch('loadLocationsByScene', scope.properties.scene)
         await scope.$store.dispatch('loadVersionsByScene', scope.properties.scene)
-        await scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', scope.properties.scene.uuid)
+        await scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', sceneProp.uuid)
         await scope.$store.dispatch('loadSceneHistory', scope.properties.scene.uuid)
       } catch (ex) {
         console.log('Failed to load data')
@@ -959,6 +960,8 @@ export default {
         let version = scope.$store.getters.findLatestSceneVersionByScene(sceneProp)
         let progress = scope.$store.getters.getTodayAuthorPersonalProgressForScene(sceneProp)
 
+        console.log('progress')
+        console.log(progress)
         // scene
         scope.data.title = scene.title
         scope.data.short_description = scene.short_description
