@@ -314,7 +314,7 @@ export default {
     },
     goToNotes: function () {
       this.$store.dispatch('setActiveMainSideNavTab', 'books-i-read')
-      this.CHANGE_COMPONENT({tabKey: 'note-listing', tabComponent: 'note-listing',  tabData: null, tabTitle: this.$t('NOTES')})
+      this.CHANGE_COMPONENT({tabKey: 'note-listing', tabComponent: 'note-listing', tabData: null, tabTitle: this.$t('NOTES')})
     }
   },
   beforeMount () {
