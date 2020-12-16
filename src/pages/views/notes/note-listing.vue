@@ -145,7 +145,7 @@ export default {
         scope.CHANGE_COMPONENT({
           tabKey: 'scene-details-' + note.scene.uuid,
           tabComponent: 'books-i-read-scene-details',
-          tabData: { book: note.book, scene: note.scene, chapter: null },
+          tabData: { book: note.book, scene: note.scene, chapter: note.chapter },
           tabTitle: scope.$t('VIEW') + ' - ' + note.scene.title,
           newTab: true
         })
