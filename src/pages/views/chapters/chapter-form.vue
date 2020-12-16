@@ -14,8 +14,8 @@
             <div class="book-panel-right">
                 <button ref="button" v-show="data.id != null" class="es-button btn-sm white" :disabled="chapter_version_modal_is_open" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
                 <button v-if="data.id != null" class="es-button btn-sm white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
-                <button v-if="data.id != null" class="es-button btn-sm white" @click="saveChapter()">{{$t('SAVE_CHANGES')}}</button>
-                <button v-else class="es-button btn-sm white" @click="saveChapter()">{{$t('SAVE')}}</button>
+                <button :disabled="isCurrentlySaving" v-if="data.id != null" class="es-button btn-sm white" @click="saveChapter()">{{$t('SAVE_CHANGES')}}</button>
+                <button :disabled="isCurrentlySaving" v-else class="es-button btn-sm white" @click="saveChapter()">{{$t('SAVE')}}</button>
             </div>
         </div>
     </div>
@@ -324,7 +324,8 @@ export default {
       },
       auto_save_chapter_interval: null,
       chapter_version_modal_is_open: false,
-      do_chapter_auto_save: true
+      do_chapter_auto_save: true,
+      isCurrentlySaving: false,
     }
   },
   components: {
@@ -473,9 +474,10 @@ export default {
 
       return isValid
     },
-    saveChapter (noAlert) {
+    async saveChapter (noAlert) {
       var scope = this
-      console.log(scope.data.chapter_version.content)
+      scope.isCurrentlySaving = true
+      console.log('scope.data.chapter_version.content',scope.data.chapter_version.content)
       // scope.data.chapter_version.content = scope.baseChapterVersionCont
 
       // If upon validation it return error do not save character and display errors
@@ -486,7 +488,7 @@ export default {
       // Set autosave to busy
       scope.do_chapter_auto_save = false
       scope.data.chapter_version.comments = (scope.commentbase_vm) ? scope.commentbase_vm.getCommentsJSON() : null
-      scope.axios
+      await scope.axios
         .post('http://localhost:3000/chapters', scope.data)
         .then(response => {
           if (response.data) {
@@ -534,6 +536,8 @@ export default {
             }
           }
         })
+
+      scope.isCurrentlySaving = false
     },
     async saveRelatedTables (chapterId) {
       let scope = this
