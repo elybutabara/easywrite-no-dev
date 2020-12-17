@@ -32,6 +32,16 @@ class SceneController {
   }
 
   static async save (data) {
+
+    // Get the max order first before saving to fix scene order error
+    const sceneMaxOrder = await Scene.query()
+                                  .select('order')
+                                  .max('order')
+                                  .where('book_id', data.book_id)
+                                  .whereNull('deleted_at')
+
+    data.order = sceneMaxOrder[0].order + 1
+
     const upsertGraphOptions = {
       relate: ['scene_version'],
       noDelete: ['scene_version'],
