@@ -4,7 +4,7 @@
 
 <script>
 import tinymce from 'tinymce'
-const path = window.require('path')
+// const path = window.require('path')
 export default {
   name: 'TinyMCE',
   props: ['initValue', 'disabled', 'params'],
@@ -24,7 +24,7 @@ export default {
           'table contextmenu directionality template paste textcolor print'// remove autoresize
         ],
         external_plugins: {
-          'wordcomment': 'file:///' + path.resolve('src/assets/js/tinymce/plugins/wordcomment/plugin.js')
+          // 'wordcomment': 'file:///' + path.resolve('src/assets/js/tinymce/plugins/wordcomment/plugin.js') // TODO: check what is the function of this
         },
         toolbar: [
           'undo | redo | fontselect | fontsizeselect | copy | cut | paste | bold | italic | underline | strikethrough | forecolor | backcolor | leftChev | rightChev | enDash | numlist | bullist | alignleft | aligncenter | alignright | alignjustify | removeformat | wordcomment | print | fullscreen | searchreplace'

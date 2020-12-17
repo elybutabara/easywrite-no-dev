@@ -74,7 +74,7 @@
                         </div>
                     </div>
                 </div>
-                 <div class="row">
+                <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>{{$t('OCCUPATION')}}: </label>
@@ -93,13 +93,13 @@
                         <div class="form-group">
                             <b-tabs content-class="mt-3" active-nav-item-class="bg-dark text-white">
                                 <b-tab :title="$t('DESCRIPTION')" active>
-                                    <tiny-editor :id="'character-description'" :initValue="data.description" v-on:getEditorContent="setDescription" class="form-control" />
+                                    <tiny-editor :initValue="data.description" v-on:getEditorContent="setDescription" class="form-control" />
                                 </b-tab>
                                 <b-tab :title="$t('BIO')">
-                                    <tiny-editor :id="'character-bio'" :initValue="data.bio" v-on:getEditorContent="setBio" class="form-control" />
+                                    <tiny-editor :initValue="data.bio" v-on:getEditorContent="setBio" class="form-control" />
                                 </b-tab>
                                 <b-tab :title="$t('GOALS')">
-                                    <tiny-editor :id="'character-goals'" :initValue="data.goals" v-on:getEditorContent="setGoals" class="form-control" />
+                                    <tiny-editor :initValue="data.goals" v-on:getEditorContent="setGoals" class="form-control" />
                                 </b-tab>
                             </b-tabs>
                         </div>
