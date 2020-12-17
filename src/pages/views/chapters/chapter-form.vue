@@ -325,7 +325,7 @@ export default {
       auto_save_chapter_interval: null,
       chapter_version_modal_is_open: false,
       do_chapter_auto_save: true,
-      isCurrentlySaving: false,
+      isCurrentlySaving: false
     }
   },
   components: {
@@ -477,7 +477,7 @@ export default {
     async saveChapter (noAlert) {
       var scope = this
       scope.isCurrentlySaving = true
-      console.log('scope.data.chapter_version.content',scope.data.chapter_version.content)
+      console.log('scope.data.chapter_version.content', scope.data.chapter_version.content)
       // scope.data.chapter_version.content = scope.baseChapterVersionCont
 
       // If upon validation it return error do not save character and display errors

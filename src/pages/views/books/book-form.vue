@@ -80,7 +80,7 @@ export default {
       tempAbout: '',
       genre_collection: [],
       genres: [],
-      isCurrentlySaving: false,
+      isCurrentlySaving: false
     }
   },
   components: {
@@ -129,7 +129,7 @@ export default {
     },
     saveBook: async function () {
       var scope = this
-      scope.isCurrentlySaving = true;
+      scope.isCurrentlySaving = true
       scope.data.about = scope.tempAbout
 
       scope.genre_collection.forEach(function (item, index) {
@@ -180,8 +180,7 @@ export default {
           }
         })
 
-      scope.isCurrentlySaving = false;
-      
+      scope.isCurrentlySaving = false
     },
     loadBook: function () {
       var scope = this

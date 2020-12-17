@@ -283,8 +283,8 @@ export default {
         }
       }
 
-      //if there is no rows yet. 1st chapter of the book
-      if (state.chapters[bookUUID].rows === undefined || state.chapters[bookUUID].rows.length == 0){
+      // if there is no rows yet. 1st chapter of the book
+      if (state.chapters[bookUUID].rows === undefined || state.chapters[bookUUID].rows.length == 0) {
         state.chapters[bookUUID].rows.push({})
         Vue.set(state.chapters[bookUUID].rows, 0, payload)
       }

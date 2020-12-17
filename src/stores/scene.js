@@ -267,8 +267,8 @@ export default {
         }
       }
 
-      //if there is no rows yet. 1st scene of the book
-      if (state.scenes[parentUUID].rows === undefined || state.scenes[parentUUID].rows.length == 0){
+      // if there is no rows yet. 1st scene of the book
+      if (state.scenes[parentUUID].rows === undefined || state.scenes[parentUUID].rows.length == 0) {
         state.scenes[parentUUID].rows.push({})
         Vue.set(state.scenes[parentUUID].rows, 0, payload)
       }

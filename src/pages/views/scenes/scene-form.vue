@@ -494,7 +494,7 @@ export default {
       auto_save_scene_interval: null,
       scene_version_modal_is_open: false,
       do_scene_auto_save: true,
-      isCurrentlySaving: false,
+      isCurrentlySaving: false
     }
   },
   components: {
