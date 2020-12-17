@@ -818,7 +818,7 @@ p, a, li, span, label, button, div { font-family: "Opensans" !important; font-si
 
 /* special nav-btn */
 .es-top-nav .inner-nav { display: flex; margin: 0 5px; }
-.es-top-nav .inner-nav .nav-btn { width: 85px; border-radius: 0; margin: 0; background: var(--thin-white); border-color: var(--thin-white); }
+.es-top-nav .inner-nav .nav-btn { width: auto; border-radius: 0; margin: 0; background: var(--thin-white); border-color: var(--thin-white); }
 .es-top-nav .inner-nav .nav-btn:first-child { border-top-left-radius: 5px; border-bottom-left-radius: 5px; }
 .es-top-nav .inner-nav .nav-btn:last-child { border-top-right-radius: 5px; border-bottom-right-radius: 5px; }
 .es-top-nav .inner-nav .nav-btn.active {
