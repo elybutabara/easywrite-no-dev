@@ -168,21 +168,8 @@ export default {
         user: response.data,
         author: response.data.author
       })
-      scope.user = response.data.user
-
-      let settigs = {
-        app_version: scope.version,
-        language: scope.language,
-        user_id: response.data.uuid
-      }
-      // save app settings
-      await scope.axios
-        .post('http://localhost:3000/app-settings', settigs).then(response => {
-          console.log('Sucecss app settings!!')
-          console.log(response)
-        }).catch(function () {
-          console.log('FAILURE app settings!!')
-        })
+      scope.user = response.data
+      await scope.checkAndUpdateAppSetting()
 
       setTimeout(function () {
         console.log('login with net no connection')
@@ -198,6 +185,25 @@ export default {
 
         scope.$router.push({name: 'Main'})
       }, 100)
+    },
+    async checkAndUpdateAppSetting () {
+      const scope = this
+      let settigs = {
+        app_version: scope.version,
+        language: scope.language,
+        user_id: scope.user.uuid,
+        api_url: window.APP.API.URL
+      }
+
+      // save app settings
+      await scope.axios
+        .post('http://localhost:3000/app-settings', settigs).then(response => {
+          if (response.run_count < 1) {
+            console.log('updateSyncedAt = 1970 , app-setting frist run ! UPLOAD ALL DATA TO WEB!')
+          }
+        }).catch(function () {
+          console.log('FAILURE app settings!!')
+        })
     },
     getMenuLang: function (data) {
       var scope = this

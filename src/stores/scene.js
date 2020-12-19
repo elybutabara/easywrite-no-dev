@@ -90,7 +90,6 @@ export default {
     },
     getTodayAuthorPersonalProgressForScene: state => (payload) => {
       let sceneUUID = payload.uuid
-
       if (state.scene_author_personal_progress[sceneUUID] !== 'undefined') {
         return state.scene_author_personal_progress[sceneUUID]
       }
@@ -156,7 +155,7 @@ export default {
       let sceneID = payload.scene_id
       let authorPersonalProgress = payload.authorPersonalProgress
       Vue.set(state.scene_author_personal_progress, sceneID, {})
-      state.scene_author_personal_progress[sceneID] = authorPersonalProgress.data
+      state.scene_author_personal_progress[sceneID] = authorPersonalProgress
     },
     addSceneToList (state, payload) {
       let parentUUID = (payload.chapter_id !== null && payload.chapter_id !== '') ? payload.chapter_id : payload.book_id
@@ -267,6 +266,12 @@ export default {
           Vue.set(state.scenes[parentUUID].rows, count, payload)
         }
       }
+
+      // if there is no rows yet. 1st scene of the book
+      if (state.scenes[parentUUID].rows === undefined || state.scenes[parentUUID].rows.length == 0) {
+        state.scenes[parentUUID].rows.push({})
+        Vue.set(state.scenes[parentUUID].rows, 0, payload)
+      }
     },
     updateSceneVersionList (state, payload) {
       let sceneUUID = payload.book_scene_id
@@ -331,10 +336,10 @@ export default {
       commit('loadVersionsByScene', { scene: payload, versions: versions })
     },
     async loadTodayAuthorPersonalProgressForScene ({ commit, state, rootGetters }, payload) {
-      let sceneID = payload.scene_id
+      let sceneID = payload
       let authorID = rootGetters.getAuthorID
-      let authorPersonalProgress = await axios.get('http://localhost:3000/authors/' + authorID + '/scene/' + sceneID + '/personal-progress/today')
-      commit('loadTodayAuthorPersonalProgressForScene', { scene_id: payload, authorPersonalProgress: authorPersonalProgress })
+      let todayAuthorPersonalProgress = await axios.get('http://localhost:3000/authors/' + authorID + '/scene/' + sceneID + '/personal-progress/today')
+      commit('loadTodayAuthorPersonalProgressForScene', { scene_id: payload, authorPersonalProgress: todayAuthorPersonalProgress.data })
     },
     addSceneToList ({ commit, state }, payload) {
       commit('addSceneToList', payload)

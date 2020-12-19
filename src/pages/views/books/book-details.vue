@@ -114,6 +114,7 @@ export default {
               .post('http://localhost:3000/chapters', wholeChapter[i])
               .then(response => {
                 if (response.data) {
+                  scope.$store.dispatch('updateChapterList', response.data)
                 }
               })
           }
@@ -153,6 +154,7 @@ export default {
               .post('http://localhost:3000/chapters', wholeChapter[i])
               .then(response => {
                 if (response.data) {
+                  scope.$store.dispatch('updateChapterList', response.data)
                 }
               })
           }

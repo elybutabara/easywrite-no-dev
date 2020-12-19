@@ -13,8 +13,8 @@
             </div>
             <div class="book-panel-right">
                 <button ref="button" v-show="data.id!=null" class="es-button btn-sm white" :disabled="scene_version_modal_is_open" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
-                <button v-if="data.id != null" class="es-button btn-sm white" @click="saveScene()">{{$t('SAVE_CHANGES')}}</button>
-                <button v-else class="es-button btn-sm white" @click="saveScene()">{{$t('SAVE')}}</button>
+                <button :disabled="isCurrentlySaving" v-if="data.id != null" class="es-button btn-sm white" @click="saveScene()">{{$t('SAVE_CHANGES')}}</button>
+                <button :disabled="isCurrentlySaving" v-else class="es-button btn-sm white" @click="saveScene()">{{$t('SAVE')}}</button>
             </div>
         </div>
     </div>
@@ -493,7 +493,8 @@ export default {
       tempVersionDesc: '',
       auto_save_scene_interval: null,
       scene_version_modal_is_open: false,
-      do_scene_auto_save: true
+      do_scene_auto_save: true,
+      isCurrentlySaving: false
     }
   },
   components: {
@@ -745,9 +746,9 @@ export default {
 
       return isValid
     },
-    saveScene (noAlert) {
+    async saveScene (noAlert) {
       var scope = this
-
+      scope.isCurrentlySaving = true
       // scope.data.scene_version.content = scope.baseSceneVersionContent
       scope.data.scene_version.comments = (scope.commentbase_vm) ? scope.commentbase_vm.getCommentsJSON() : null
       scope.data.notes = scope.tempSceneNotes
@@ -766,7 +767,7 @@ export default {
       // Set autosave to busy
       scope.do_scene_auto_save = false
 
-      scope.axios
+      await scope.axios
         .post('http://localhost:3000/scenes', scope.data)
         .then(response => {
           if (response.data) {
@@ -817,6 +818,7 @@ export default {
             }
           }
         })
+      scope.isCurrentlySaving = false
     },
     saveRelatedTables: async function (sceneId) {
       var scope = this
@@ -871,6 +873,7 @@ export default {
         .post('http://localhost:3000/author-personal-progress', scope.authorProgress)
         .then(response => {
           scope.authorProgress = response.data
+          scope.base_content_count = scope.WORD_COUNT(scope.data.scene_version.content)
           scope.$store.dispatch('loadAuthorPersonalProgress', { authorId: this.$store.getters.getAuthorID })
         })
     },
@@ -947,7 +950,7 @@ export default {
         await scope.$store.dispatch('loadItemsByScene', scope.properties.scene)
         await scope.$store.dispatch('loadLocationsByScene', scope.properties.scene)
         await scope.$store.dispatch('loadVersionsByScene', scope.properties.scene)
-        await scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', scope.properties.scene.uuid)
+        await scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', sceneProp.uuid)
         await scope.$store.dispatch('loadSceneHistory', scope.properties.scene.uuid)
       } catch (ex) {
         console.log('Failed to load data')
@@ -959,6 +962,8 @@ export default {
         let version = scope.$store.getters.findLatestSceneVersionByScene(sceneProp)
         let progress = scope.$store.getters.getTodayAuthorPersonalProgressForScene(sceneProp)
 
+        console.log('progress')
+        console.log(progress)
         // scene
         scope.data.title = scene.title
         scope.data.short_description = scene.short_description

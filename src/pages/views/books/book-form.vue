@@ -12,8 +12,8 @@
                 </div>
             </div>
             <div class="book-panel-right">
-                <button v-if="properties != null" class="es-button btn-sm white" @click="saveBook()">{{$t('SAVE_CHANGES')}}</button>
-                <button v-else class="es-button btn-sm white" @click="saveBook()">{{$t('SAVE')}}</button>
+                <button :disabled="isCurrentlySaving" v-if="properties != null" class="es-button btn-sm white" @click="saveBook()">{{$t('SAVE_CHANGES')}}</button>
+                <button :disabled="isCurrentlySaving" v-else class="es-button btn-sm white" @click="saveBook()">{{$t('SAVE')}}</button>
             </div>
         </div>
     </div>
@@ -79,7 +79,8 @@ export default {
       },
       tempAbout: '',
       genre_collection: [],
-      genres: []
+      genres: [],
+      isCurrentlySaving: false
     }
   },
   components: {
@@ -126,8 +127,9 @@ export default {
           scope.genres = response.data
         })
     },
-    saveBook: function () {
+    saveBook: async function () {
       var scope = this
+      scope.isCurrentlySaving = true
       scope.data.about = scope.tempAbout
 
       scope.genre_collection.forEach(function (item, index) {
@@ -138,7 +140,7 @@ export default {
         }
       })
 
-      scope.axios
+      await scope.axios
         .post('http://localhost:3000/books', scope.data)
         .then(response => {
           if (response.data) {
@@ -177,6 +179,8 @@ export default {
             })
           }
         })
+
+      scope.isCurrentlySaving = false
     },
     loadBook: function () {
       var scope = this
@@ -214,11 +218,11 @@ export default {
       scope.$set(scope.data, 'uuid', scope.properties.uuid)
     }
   },
-  mounted () {
+  async mounted () {
     var scope = this
-    scope.getGenre()
+    await scope.getGenre()
     if (scope.data.id !== null) {
-      scope.loadBook()
+      await scope.loadBook()
     }
   }
 }

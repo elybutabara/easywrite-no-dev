@@ -49,7 +49,7 @@
                 </a></li>
             </ul>
 
-            <ul v-else class="es-page-breadcrumbs special mb-0">
+            <ul v-else class="es-breadcrumb special mb-0">
                 <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'books-i-read-book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);"><span>{{ book.title }}</span></a></li>
                 <li><a @click="CHANGE_COMPONENT({tabKey: 'scene-listing-' + book.uuid, tabComponent: 'books-i-read-scene-listing', tabData: book, tabTitle: $t('OTHER_SCENES') + ' - ' + book.title})" href="javascript:void(0);"><span>{{ $t('OTHER_SCENES') }}</span></a></li>
                 <li><a href="javascript:void(0);" style="padding-right: 20px;">
@@ -229,6 +229,7 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    .es-breadcrumb.special{ max-width: none !important;}
     .export-content{ text-align: right; margin-bottom: 20px;}
     .es-scene-details-tab { display:flex; border-bottom:1px solid #ccc; padding:0px 30px; height:70px; background:#fff; }
     .es-scene-details-tab .es-scene-details-tab-item { height:30px; line-height:30px; margin-top:40px; margin-right:25px; cursor:pointer; position:relative; }
