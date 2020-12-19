@@ -62,10 +62,10 @@ let buildOptions = {
       "private": true,
       "token": "dfd1c61fcb090ecba24909875e177c5326ad449d",
       "owner": "rancorfloydz",
-      "repo": "easywrite-se-dev",
+      // "repo": "easywrite-se-dev",
       // "repo": "easywrite-se-live"
       // "repo": "easywrite-no-dev"
-      // "repo": "easywrite-no-live"
+      "repo": "easywrite-no-live"
     }],
     "provisioningProfile": path.resolve('build/certificate/EasyWrite.provisionprofile'),
     "hardenedRuntime" : true,
@@ -89,10 +89,10 @@ let buildOptions = {
       "private": true,
       "token": "dfd1c61fcb090ecba24909875e177c5326ad449d",
       "owner": "rancorfloydz",
-      "repo": "easywrite-se-dev",
+      // "repo": "easywrite-se-dev",
       // "repo": "easywrite-se-live"
       // "repo": "easywrite-no-dev"
-      // "repo": "easywrite-no-live"
+      "repo": "easywrite-no-live"
     }],
     "certificateFile" : "build/certificate/easywrite.pfx",
     "verifyUpdateCodeSignature" : true,
