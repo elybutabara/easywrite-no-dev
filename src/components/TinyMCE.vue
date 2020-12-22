@@ -124,9 +124,9 @@ export default {
     darkmode: function () {
       var vm = this
       if (this.darkmode) {
-        tinymce.get(vm.$el.id).getBody().style.color = '#fff'
+        tinymce.get(vm.$el.id).getBody().style.color = '#fff !important'
       } else {
-        tinymce.get(vm.$el.id).getBody().style.color = '#000'
+        tinymce.get(vm.$el.id).getBody().style.color = '#000 !important'
       }
     }
   },
@@ -134,11 +134,13 @@ export default {
     initEditor: function () {
       var vm = this
 
-      if (this.darkmode) {
-        this.initConfig.content_style = 'body { color: #fff;  }'
-      } else {
-        this.initConfig.content_style = 'body { color: #000;  }'
-      }
+      // if (this.darkmode) {
+      //   this.initConfig.content_style = 'body { color: #fff; }'
+      // } else {
+      //   this.initConfig.content_style = 'body { color: #000; }'
+      // }
+
+      this.initConfig.valid_children = '+body[style]'
 
       tinymce.init(vm.initConfig)
 
@@ -164,6 +166,11 @@ export default {
   mounted () {
     var vm = this
     vm.initEditor()
+    if (this.darkmode) {
+      tinymce.get(vm.$el.id).getBody().style.color = '#fff !important'
+    } else {
+      tinymce.get(vm.$el.id).getBody().style.color = '#000 !important'
+    }
   }
 }
 </script>
