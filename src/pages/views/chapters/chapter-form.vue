@@ -257,7 +257,7 @@ export default {
       },
       base_chapter_val: {},
       // Base content count is use to determine initial total number of words in content
-      baseContentCount: '',
+      base_content_count: '',
       // Author progress is use for saving author personal progress
       authorProgress: {
         author_id: '',
@@ -376,6 +376,7 @@ export default {
       ipcRenderer.once('GET-DOCX-CONTENT-CHAPTER', function (event, data) {
         // Add the imported contents where mouse cursor is located.
         scope.tinyEditorAccess.execCommand('mceInsertContent', false, data)
+
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
         scope.data.chapter_version.content = scope.tinyEditorAccess.getContent()
         scope.baseChapterVersionCont = scope.tinyEditorAccess.getContent()
@@ -424,7 +425,7 @@ export default {
     },
     // Required for geting value from TinyMCE content
     setContent (value) {
-      // console.log('set content', value)
+      console.log('set content', value)
       var scope = this
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       scope.data.chapter_version.content = value
@@ -492,7 +493,7 @@ export default {
         .post('http://localhost:3000/chapters', scope.data)
         .then(response => {
           if (response.data) {
-            scope.saveRelatedTables(response.data.uuid)
+            scope.saveRelatedTables(response.data)
             scope.$store.dispatch('updateChapterList', response.data)
             scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
             if (!noAlert) {
@@ -530,8 +531,6 @@ export default {
                     title: this.$t('VIEW') + ' - ' + response.data.title
                   })
                 }
-
-                scope.loadChapter(response.data)
               })
             }
           }
@@ -539,34 +538,43 @@ export default {
 
       scope.isCurrentlySaving = false
     },
-    async saveRelatedTables (chapterId) {
+    async saveRelatedTables (chapter) {
       let scope = this
 
       try {
-        await scope.saveAuthorPersonalProgress(chapterId)
-        await scope.saveChapterHistory(chapterId)
+        await scope.saveAuthorPersonalProgress(chapter.uuid)
+        await scope.saveChapterHistory(chapter.uuid)
+        await scope.loadChapter(chapter)
       } catch (ex) {
         scope.do_chapter_auto_save = true
-        console.log('Failed to save some data')
+        console.log('Failed to save some data', ex)
       } finally {
         scope.do_chapter_auto_save = true
       }
     },
     saveAuthorPersonalProgress (relationId) {
       let scope = this
+
+      console.log('saveAuthorPersonalProgress')
+      console.log('prev total_words', scope.authorProgress.total_words)
+      console.log('prev cont count', scope.WORD_COUNT(scope.data.chapter_version.content))
+      console.log('prev base_content_count', scope.base_content_count)
+
       if (scope.authorProgress.uuid) {
-        scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.WORD_COUNT(scope.data.chapter_version.content) - scope.baseContentCount)
+        scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.WORD_COUNT(scope.data.chapter_version.content) - scope.base_content_count)
       } else {
         scope.authorProgress.author_id = scope.$store.getters.getAuthorID
         scope.authorProgress.relation_id = relationId
-        scope.authorProgress.total_words = scope.WORD_COUNT(scope.data.chapter_version.content) - scope.baseContentCount
+        scope.authorProgress.total_words = scope.WORD_COUNT(scope.data.chapter_version.content) - scope.base_content_count
       }
+
+      console.log('new total_words', scope.authorProgress.total_words)
 
       scope.axios
         .post('http://localhost:3000/author-personal-progress', scope.authorProgress)
         .then(response => {
           scope.authorProgress = response.data
-          scope.baseContentCount = scope.WORD_COUNT(scope.data.chapter_version.content)
+          scope.base_content_count = scope.WORD_COUNT(scope.data.chapter_version.content)
           scope.$store.dispatch('loadAuthorPersonalProgress', {authorId: response.data.author_id})
         })
     },
@@ -583,8 +591,6 @@ export default {
       scope.axios
         .post('http://localhost:3000/book-chapter-history', chapterHistory)
         .then(response => {
-          scope.setBaseChapterVal(scope.data)
-
           scope.chapter_history.push(response.data)
 
           console.log('Chapter history saved!')
@@ -676,7 +682,7 @@ export default {
 
         scope.setBaseChapterVal(scope.data)
 
-        scope.baseContentCount = scope.WORD_COUNT(scope.data.chapter_version.content)
+        scope.base_content_count = scope.WORD_COUNT(scope.baseChapterVersionCont)
 
         // progress
         if (progress) {
@@ -707,6 +713,9 @@ export default {
           scope.$set(scope.base_chapter_val, key, chapter[key])
         }
       }
+
+      console.log('chapter', chapter)
+      console.log('scope.base_chapter_val', scope.base_chapter_val)
     },
     autoSave: function () {
       let scope = this
