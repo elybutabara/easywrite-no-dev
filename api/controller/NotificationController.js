@@ -6,8 +6,15 @@ const { User, Notification, Book, Author, Chapter, Scene } = require(path.join(_
 
 class NotificationController {
   static async getAll (authorUuid) {
-    const notification = await this.notifications(authorUuid)
-    const invitations = await this.invitations(authorUuid)
+    var notification = await this.notifications(authorUuid)
+    var invitations = await this.invitations(authorUuid)
+    
+    if(invitations != undefined){
+        invitations = invitations.filter(model => {
+        return (model.book != null) 
+      })
+    }
+
     return {
       'notifications': notification || [],
       'invitations': invitations || []
@@ -60,9 +67,8 @@ class NotificationController {
             .whereNull('book_scenes.deleted_at')
             .where('book_scenes.uuid', notification[i].parent_id)
             .whereNull('chapter.deleted_at')
-
           notification[i].scene = scene ? scene[0] : null
-          notification[i].chapter = scene ? scene[0].chapter : null
+          notification[i].chapter = scene[0] ? scene[0].chapter : null
         }
       } else if (notification[i].type === 'notif' && notification[i].action === 'response') {
         notification[i].message = from[0].alias + 'Sent you a message'
@@ -82,17 +88,37 @@ class NotificationController {
         if (!chapter) return null
       } else if (notification[i].type === 'scene_comment' && notification[i].action == 'post') {
         const scene = await Scene.query()
+          .withGraphJoined('chapter')
+          .modifyGraph('chapter', builder => {
+            builder.whereNull('deleted_at')
+          })
           .whereNull('book_scenes.deleted_at')
           .where('book_scenes.uuid', notification[i].parent_id)
 
         notification[i].scene = scene ? scene[0] : null
-        notification[i].chapter = scene ? scene[0].chapter : null
+        notification[i].chapter = scene[0] ? scene[0].chapter : null
         notification[i].author = from ? from[0] : null
 
         if (!scene) return null
       } else {
         notification[i].author = from ? from[0] : null
       }
+    }
+
+    /** map remove notification if parent deleted. 
+     * book => if book is null
+     *  chapter => if chapter and book is null
+     *  scene => if scene and chapter and book is null
+     */
+
+    if(notification != undefined){
+      notification = notification.filter(model => {
+        return (
+          (model.parent_name == null && model.book != null) || 
+          (model.parent_name == 'chapter' && model.chapter != null && model.chapter != undefined && model.book != null) ||
+          (model.parent_name == 'scene' && model.scene != null && model.scene != undefined && model.chapter != null && model.chapter != undefined && model.book != null)
+        );
+      })
     }
 
     return notification
@@ -104,12 +130,18 @@ class NotificationController {
   }
 
   static async invitations (authorUuid) {
-    var notification = Notification.query()
+    var notification = []
+    notification = Notification.query()
+      .withGraphJoined('book')
+      .modifyGraph('book', builder => {
+        builder.whereNull('deleted_at')
+      })
       .where('to', authorUuid)
       .where('status', 0)
       .whereIn('type', ['book', 'book_re_read', 'book_invite_decision', 'book_reader'])
       .where('action', 'invite')
       .orderBy('created_at', 'desc')
+    
     return notification
   }
 

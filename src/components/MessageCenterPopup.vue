@@ -578,7 +578,8 @@ export default {
     fetch: async function () {
       const scope = this
       var authorUUID = this.$store.getters.getAuthorID
-
+      scope.allItems['notifications'] = []
+      scope.allItems['invitations'] = []
       /**
        * Get notifications | feedback and comments only
        */
@@ -586,8 +587,10 @@ export default {
       await scope.axios
         .get('http://localhost:3000/notifications/' + authorUUID)
         .then(response => {
-          scope.allItems = response.data.data
-          // scope.allItems['notifications'] = response.data.data['notifications']
+          
+          console.log('response data',response.data.data)
+          scope.allItems['notifications'] = response.data.data.notifications
+          
         })
         .catch(error => {
           console.log('error', error)
