@@ -106,7 +106,7 @@ class NotificationController {
     }
 
     /** map remove notification if parent deleted. 
-     * book => if book is null
+     *  book => if book is null
      *  chapter => if chapter and book is null
      *  scene => if scene and chapter and book is null
      */
@@ -114,7 +114,7 @@ class NotificationController {
     if(notification != undefined){
       notification = notification.filter(model => {
         return (
-          (model.parent_name == null && model.book != null) || 
+          ((model.parent_name == null || model.parent_name == 'book' || model.parent_name == 'book_reader_invitations') && model.book != null) || 
           (model.parent_name == 'chapter' && model.chapter != null && model.chapter != undefined && model.book != null) ||
           (model.parent_name == 'scene' && model.scene != null && model.scene != undefined && model.chapter != null && model.chapter != undefined && model.book != null)
         );
