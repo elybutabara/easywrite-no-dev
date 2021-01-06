@@ -127,8 +127,19 @@ export default {
             }
           })
 
+          var timer = null
+
           editor.on('keyup', function (e) {
-            window.jQuery('#' + this.id).val(editor.getContent()).click()
+            let thisId = this.id
+            console.log('timer', timer)
+            if (timer) {
+              clearTimeout(timer)
+            }
+
+            timer = setTimeout(function () {
+              console.log('called')
+              window.jQuery('#' + thisId).val(editor.getContent()).click()
+            }, 2000)
           })
         }
       }
@@ -173,6 +184,7 @@ export default {
       }
     },
     emitToParent (event) {
+      console.log('emitToParent')
       this.$emit('getEditorContent', this.$el.value)
     },
     showSaveToScene (content) {
