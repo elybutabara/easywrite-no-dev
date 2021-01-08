@@ -1229,3 +1229,5 @@ input:checked + .slider:before {
 /*}*/
 
 /** ===== es-breadcrumb end ==== */
+
+#message-center > span { position: absolute; top: 20px; left: calc(50% + 10px); transform: translate(-50%, -50%); }
