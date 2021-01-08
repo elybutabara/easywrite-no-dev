@@ -587,10 +587,8 @@ export default {
       await scope.axios
         .get('http://localhost:3000/notifications/' + authorUUID)
         .then(response => {
-          
-          console.log('response data',response.data.data)
+          console.log('response data', response.data.data)
           scope.allItems['notifications'] = response.data.data.notifications
-          
         })
         .catch(error => {
           console.log('error', error)

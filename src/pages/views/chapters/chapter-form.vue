@@ -86,7 +86,7 @@
                                         :state="feedback.short_description.state"
                                         aria-describedby="input-live-help input-live-feedback"
                                         :placeholder="$t('SHORT_DESCRIPTION')"
-                                        @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
+                                        @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab); setAll(feedback.short_description, null)"
                                         trim
                                     ></b-form-input>
                                     <!-- This will only be shown if the preceding input has an invalid state -->
