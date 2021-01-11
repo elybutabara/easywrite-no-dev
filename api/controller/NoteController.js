@@ -54,16 +54,20 @@ class NoteController {
       if (parent === 'chapter') {
         notes[i].chapter = await Chapter.query().findById(parentID)
         notes[i].scene = null
-        notes[i].book = await Book.query().findById(notes[i].chapter.book_id).whereNull('deleted_at')
-        if (notes[i].book) {
-          notDeletedLinkOnNote.push(notes[i])
+        if(notes[i].chapter){
+          notes[i].book = await Book.query().findById(notes[i].chapter.book_id).whereNull('deleted_at')
+          if (notes[i].book) {
+            notDeletedLinkOnNote.push(notes[i])
+          }
         }
       } else if (parent === 'scene') {
         notes[i].scene = await Scene.query().findById(parentID)
-        notes[i].chapter = await Chapter.query().findById(notes[i].scene.chapter_id)
-        notes[i].book = await Book.query().findById(notes[i].scene.book_id).whereNull('deleted_at')
-        if (notes[i].book) {
-          notDeletedLinkOnNote.push(notes[i])
+        notes[i].chapter = await notes[i].scene?Chapter.query().findById(notes[i].scene.chapter_id):''
+        if(notes[i].chapter){
+          notes[i].book = await Book.query().findById(notes[i].scene.book_id).whereNull('deleted_at')
+          if (notes[i].book) {
+            notDeletedLinkOnNote.push(notes[i])
+          }
         }
       } else if (parent === 'book') {
         notes[i].chapter = null
