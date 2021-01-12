@@ -123,10 +123,18 @@ let APP = {
   },
   NO_DEV: {
     API: {
-      URL: 'https://api.pilotleser.no/no-dev',
+      URL: 'https://dev.pilotleser.no/app',
       UPLOAD_URL: 'https://dev.pilotleser.no/uploads',
       SITE: 'no-dev',
       CHAT: 'no-dev'
+    }
+  },
+  LOCAL: {
+    API: {
+      URL: 'http://easywrite.local/app',
+      UPLOAD_URL: 'http://easywrite.local/uploads',
+      SITE: 'local',
+      CHAT: 'local'
     }
   }
 }

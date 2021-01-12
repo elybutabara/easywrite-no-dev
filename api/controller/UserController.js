@@ -17,12 +17,32 @@ class UserController {
   }
 
   static async save (row) {
+    console.log(row)
+    var columns = {
+      id: row.id,
+      uuid: row.uuid,
+      username: row.username,
+      email: row.email,
+      role: row.role,
+      is_premium_user: row.is_premium_user,
+      active_state: row.active_state,
+      is_confirmed: row.is_confirmed,
+      confirm_token: row.confirm_token,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      token: row.token,
+      password: row.password,
+    }
+
+    
+
+
     var data = await User.query()
-      .patch(row)
+      .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      var user = await User.query().insert(row)
+      var user = await User.query().insert(columns)
       var author = await Author.query().insert(row.author)
 
       // console.log(user)
