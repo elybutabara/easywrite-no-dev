@@ -31,7 +31,8 @@ class NotificationController {
       .where(`to`, authorUuid)
       .whereIn('type', notificationType)
       .orderBy(`created_at`, 'desc')
-
+      .whereNull('deleted_at')
+      
     var data = []
 
     for (let i = 0; i < notification.length; i++) {
@@ -45,6 +46,7 @@ class NotificationController {
       const book = await Book.query()
         .withGraphJoined('author')
         .where('books.uuid', notification[i].book_id)
+        .whereNull('books.deleted_at')
 
       notification[i].book = book ? book[0] : null
 
