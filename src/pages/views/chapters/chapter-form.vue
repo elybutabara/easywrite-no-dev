@@ -483,6 +483,7 @@ export default {
 
       // If upon validation it return error do not save character and display errors
       if (!scope.validate()) {
+        scope.isCurrentlySaving = false;
         return false
       }
 
