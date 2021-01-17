@@ -130,15 +130,14 @@ export default {
           var timer = null
 
           editor.on('keyup', function (e) {
-            let thisId = this.id
+            // let thisId = this.id
             console.log('timer', timer)
             if (timer) {
               clearTimeout(timer)
             }
 
             timer = setTimeout(function () {
-              console.log('called')
-              window.jQuery('#' + thisId).val(editor.getContent()).click()
+              scope.emitToParent(editor.getContent())
             }, 2000)
           })
         }
@@ -183,9 +182,13 @@ export default {
         editor.setContent(vm.$attrs.value)
       }
     },
-    emitToParent (event) {
-      console.log('emitToParent')
-      this.$emit('getEditorContent', this.$el.value)
+    emitToParent (value) {
+      if (value) {
+        this.$emit('getEditorContent', value)
+      } else {
+        console.log('emitToParent content', this.$el.value)
+        this.$emit('getEditorContent', this.$el.value)
+      }
     },
     showSaveToScene (content) {
       this.$emit('showOverlay', content)
