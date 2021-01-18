@@ -109,7 +109,7 @@ export default {
           })
 
           editor.on('keyup', function (e) {
-            window.jQuery('#' + this.id).val(editor.getContent()).click()
+            scope.emitToParent(editor.getContent())
           })
         }
       }
@@ -149,8 +149,12 @@ export default {
         editor.setContent(vm.$attrs.value)
       }
     },
-    emitToParent (event) {
-      this.$emit('getEditorContent', this.$el.value)
+    emitToParent (value) {
+      if (value) {
+        this.$emit('getEditorContent', value)
+      } else {
+        this.$emit('getEditorContent', this.$el.value)
+      }
     }
   },
   updated: function () {

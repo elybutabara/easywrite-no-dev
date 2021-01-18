@@ -425,10 +425,13 @@ export default {
     },
     // Required for geting value from TinyMCE content
     setContent (value) {
-      console.log('set content', value)
       var scope = this
-      scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       scope.data.chapter_version.content = value
+
+      console.log('chapter_version content', value)
+      console.log('chapter_version content', scope.data.chapter_version.content)
+      console.log('base_chapter_val content', scope.base_chapter_val.chapter_version.content)
+      scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
     },
     viewOverlay (value) {
       var scope = this
@@ -531,6 +534,8 @@ export default {
                     title: this.$t('VIEW') + ' - ' + response.data.title
                   })
                 }
+
+                scope.loadChapter(response.data)
               })
             }
           }
@@ -544,10 +549,8 @@ export default {
       try {
         await scope.saveAuthorPersonalProgress(chapter.uuid)
         await scope.saveChapterHistory(chapter.uuid)
-        await scope.loadChapter(chapter)
       } catch (ex) {
         scope.do_chapter_auto_save = true
-        console.log('Failed to save some data', ex)
       } finally {
         scope.do_chapter_auto_save = true
       }
@@ -628,6 +631,7 @@ export default {
       scope.new_chapter_version.content = scope.data.chapter_version.content
       scope.new_chapter_version.chapter_id = scope.chapter.uuid
       scope.new_chapter_version.chapter_id = scope.chapter.uuid
+      scope.new_chapter_version.chapter_id = scope.chapter.uuid
       scope.new_chapter_version.is_current_version = true
 
       scope.axios.post('http://localhost:3000/chapter-versions', scope.new_chapter_version)
@@ -691,9 +695,9 @@ export default {
 
         // chapter history
         scope.chapter_history = scope.GET_CHAPTER_HISTORY(chapter.uuid)
-
-        scope.page.is_ready = true
       }
+
+      scope.page.is_ready = true
     },
     toggleFeedbacks: function () {
       let scope = this
@@ -723,7 +727,7 @@ export default {
       // If save new version modal is open skip auto save
       // If view history modal is open skip auto save
       // If no changes  skip auto save
-      if (scope.chapter_version_modal_is_open || scope.view_history || (scope.DEEP_EQUAL(scope.base_chapter_val, scope.data) || !scope.IS_TAB_AS_MODIFIED)) return false
+      if (scope.chapter_version_modal_is_open || scope.view_history || !scope.IS_TAB_AS_MODIFIED || scope.DEEP_EQUAL(scope.base_chapter_val, scope.data)) return false
 
       // There still a ongoing autosave return false and let that autosave to finish saving
       if (!scope.do_chapter_auto_save) return false
