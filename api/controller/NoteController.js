@@ -52,7 +52,7 @@ class NoteController {
       let parentID = notes[i].parent_id
 
       if (parent === 'chapter') {
-        notes[i].chapter = await Chapter.query().findById(parentID)
+        notes[i].chapter = await Chapter.query().findById(parentID).whereNull('deleted_at')
         notes[i].scene = null
         if(notes[i].chapter){
           notes[i].book = await Book.query().findById(notes[i].chapter.book_id).whereNull('deleted_at')
@@ -61,8 +61,8 @@ class NoteController {
           }
         }
       } else if (parent === 'scene') {
-        notes[i].scene = await Scene.query().findById(parentID)
-        notes[i].chapter = await notes[i].scene?Chapter.query().findById(notes[i].scene.chapter_id):''
+        notes[i].scene = await Scene.query().findById(parentID).whereNull('deleted_at')
+        notes[i].chapter = notes[i].scene? await Chapter.query().findById(notes[i].scene.chapter_id).whereNull('deleted_at'):''
         if(notes[i].chapter){
           notes[i].book = await Book.query().findById(notes[i].scene.book_id).whereNull('deleted_at')
           if (notes[i].book) {
