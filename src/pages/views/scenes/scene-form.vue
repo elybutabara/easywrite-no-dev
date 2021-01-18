@@ -761,6 +761,7 @@ export default {
       scope.data.character_id_vp = scope.selected_character_id_vp.value
 
       if (!scope.validate()) {
+        scope.isCurrentlySaving = false;
         return false
       }
 
