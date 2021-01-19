@@ -144,7 +144,7 @@ export default {
     scope.axios.get('http://localhost:3000/book-feedbacks/' + scope.properties.book.uuid)
       .then(function (response) {
         scope.feedbacks = response.data
-        console.log(scope.feedbacks)
+        // console.log(scope.feedbacks)
       })
       .catch(function (error) {
         console.log(error)

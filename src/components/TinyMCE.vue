@@ -10,7 +10,7 @@ export default {
   props: ['initValue', 'disabled', 'params'],
   data: function () {
     var scope = this
-    console.log('params........', scope.params)
+    // console.log('params........', scope.params)
     return {
       initConfig: {
         selector: 'input.tiny-area',

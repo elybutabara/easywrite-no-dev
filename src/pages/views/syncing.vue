@@ -547,8 +547,8 @@ export default {
                     folderName = window.APP.API.UPLOAD_URL + '/course-images'
                     image = image.replace('/uploads/course-images/', '')
                   }
-                  console.log(endpoint.api)
-                  console.log(image)
+                  // console.log(endpoint.api)
+                  // console.log(image)
                 }
 
                 const src = folderName + '/' + image + ''
@@ -662,7 +662,7 @@ export default {
       data.updated_at = scope.timeConvertFromUTC(data.updated_at)
 
       console.log('before --> http://localhost:3000/' + endpoint.local + '/sync')
-      console.log(data)
+      // console.log(data)
 
       scope.axios
         .post('http://localhost:3000/' + endpoint.local + '/sync', data)

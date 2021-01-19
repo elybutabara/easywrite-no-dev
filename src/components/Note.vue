@@ -88,7 +88,7 @@ export default {
 
     scope.axios.get('http://localhost:3000/notes/' + authorID + '/' + parent + '/' + parentID)
       .then(function (response) {
-        console.log(response)
+        // console.log(response)
         if (response.data.length > 0) {
           scope.note.id = response.data[0].id
           scope.note.uuid = response.data[0].uuid
