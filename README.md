@@ -2,12 +2,18 @@
 
 > Easy Write Application , The best app for writer!
 
-## Build Setup
+# PREREQUISITE SOFTWARE
+> REQUIREMENT
+> 1. NODE.JS v12.x
+> 2. Python v2.x
+> 3. windows-build-tools ```npm install -g windows-build-tools```
+> 4. sqlite3 v5.0.0 only.. need to verify before upgrading
+## HOW TO INSTALL
+1. npm install yarn -g
+2. yarn install
 
+## HOW TO RUN DEV
 ``` bash
-# install dependencies
-npm install
-
 # serve with hot reload at localhost:8080
 npm run dev
 
@@ -16,15 +22,6 @@ npm run build
 
 # build for production and view the bundle analyzer report
 npm run build --report
-
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
