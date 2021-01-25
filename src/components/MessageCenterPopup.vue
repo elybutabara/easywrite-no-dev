@@ -94,12 +94,13 @@
               <div class="col-md-2">
                 <div v-bind:style="{'background-image': 'url(images/avatars/icons8-source-code-100.png)','background-size':'cover'}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #c0c0c0;"></div>
               </div>
+
               <div class="col-md-10">
                 <div style="margin-left: 10px;">
                   <div><div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{ model.alias }}</div>
                     <div class="mt-2" style="font-size: 14px; line-height: 100%;">
                       {{ model.alias +' '+$t('site.commented-on-chapter')+' '+ model.chapter.title+'.'}}
-                      <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openChapterDetails(model, 'open-feedback'):openBookIReadChapterDetails(model, 'open-feedback')">
+                      <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openChapterDetails(model ):openBookIReadChapterDetails(model, 'open-feedback')">
                         {{ capitalizeFirstLetter($t('site.click-here')) }}
                       </a> {{ $t('site.to-view') }}
                     </div>
@@ -121,7 +122,7 @@
                     <div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{ model.alias }}</div>
                     <div class="mt-2" style="font-size: 14px; line-height: 100%;">
                       {{ model.alias +' '+$t('site.commented-on-scene')+' '+ model.scene.title+'.'}}
-                      <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openSceneDetails(model, 'open-feedback'):openBookIReadSceneDetails(model, 'open-feedback')">
+                      <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openSceneDetails(model):openBookIReadSceneDetails(model, 'open-feedback')">
                         {{ capitalizeFirstLetter($t('site.click-here')) }}
                       </a> {{ $t('site.to-view') }}
                     </div>
