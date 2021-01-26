@@ -583,11 +583,11 @@ export default {
       /**
        * Get notifications | feedback and comments only
        */
-      console.log('authorUUID', authorUUID)
+      // console.log('authorUUID', authorUUID)
       await scope.axios
         .get('http://localhost:3000/notifications/' + authorUUID)
         .then(response => {
-          console.log('response data', response.data.data)
+          // console.log('response data', response.data.data)
           scope.allItems['notifications'] = response.data.data.notifications
         })
         .catch(error => {
@@ -690,7 +690,7 @@ export default {
 
       scope.axios.post('http://localhost:3000/notifications/update-notification-status', params)
         .then(response => {
-          console.log('updateNotificationStatus response', response.data)
+          // console.log('updateNotificationStatus response', response.data)
           scope.items = response.data
           const itemType = 'notifications'
           scope.allItems[itemType] = response.data

@@ -50,7 +50,7 @@
     "select2": "^4.0.13",
     "select2-theme-bootstrap4": "^0.2.0-beta.6",
     "socket.io": "^2.3.0",
-    "sqlite3": "^5.0.0",
+    "sqlite3": "5.0.0",
     "sweetalert2": "^9.7.2",
     "tinymce": "^5.2.0",
     "uuid": "^7.0.2",
