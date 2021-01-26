@@ -108,8 +108,18 @@ export default {
             }
           })
 
+          var timer = null
+
           editor.on('keyup', function (e) {
-            scope.emitToParent(editor.getContent())
+            let thisId = this.id
+            console.log('timer', timer)
+            if (timer) {
+              clearTimeout(timer)
+            }
+
+            timer = setTimeout(function () {
+              window.jQuery('#' + thisId).val(editor.getContent()).click()
+            }, 2000)
           })
         }
       }
@@ -149,12 +159,8 @@ export default {
         editor.setContent(vm.$attrs.value)
       }
     },
-    emitToParent (value) {
-      if (value) {
-        this.$emit('getEditorContent', value)
-      } else {
-        this.$emit('getEditorContent', this.$el.value)
-      }
+    emitToParent (event) {
+      this.$emit('getEditorContent', this.$el.value)
     }
   },
   updated: function () {
