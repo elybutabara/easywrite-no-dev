@@ -7,13 +7,17 @@
           </div>
           <div class="book-panel-right">
             <button class="es-button btn-sm white" @click="CHANGE_COMPONENT({tabKey: 'storyboard-' + page.data.uuid, tabComponent: 'storyboard',  tabData: page.data, tabTitle: 'Story Board - ' + properties.title, newTab: true})">Story Board</button>
-            <button class="es-button btn-sm white" :disabled="getExportBookStatus.export_book_status"  @click="exportBook()">
+            <!--<button class="es-button btn-sm white" :disabled="getExportBookStatus.export_book_status"  @click="exportBook()">
               <span v-if="getExportBookStatus.export_book_status === false"><span>{{export_book}}</span></span>
               <span v-else>
                 <b-spinner small type="grow"></b-spinner>
                 <span>{{exportLoading}}</span>
               </span>
-            </button>
+            </button>-->
+            <div class="position-relative">
+              <button class="es-button btn-sm white h-100" @click="toggleExportBookChapterScene()">{{export_book}}</button>
+              <ExportBookChapterScene :properties="properties" v-show="show_export_book_chapter_scene"></ExportBookChapterScene>
+            </div>
             <button class="es-button btn-sm white" @click="getImport()">{{ $t('IMPORT_MULTIPLE_CHAPTERS') }}</button>
             <a class="es-button icon-only warning" href="#goToFeedbacks"><i class="las la-comments"></i><!--{{$t('FEEDBACKS').toUpperCase()}}--></a>
             <button class="es-button icon-only" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: $t('EDIT') + ' - ' + properties.title, newTab: true})"><i class="las la-highlighter"></i></button>
@@ -46,6 +50,8 @@
 import axios from 'axios'
 import { mapGetters } from 'vuex'
 import Feedback from '../../../components/Feedback'
+import ExportBookChapterScene from '../../../components/ExportBookChapterScene'
+
 const {ipcRenderer} = window.require('electron')
 
 export default {
@@ -69,16 +75,22 @@ export default {
       response: '',
       show_feedbacks: true,
       show_notes: false,
-      feedbacks: []
+      feedbacks: [],
+      show_export_book_chapter_scene: false
     }
   },
   computed: {
     ...mapGetters({ getExportBookStatus: 'getExportBookStatus' })
   },
   components: {
-    Feedback
+    Feedback,
+    ExportBookChapterScene
   },
   methods: {
+    toggleExportBookChapterScene () {
+      var scope = this
+      scope.show_export_book_chapter_scene = !scope.show_export_book_chapter_scene
+    },
     getImport: function () {
       var scope = this
       ipcRenderer.send('IMPORT-DOCX-MULTI-CHAPTERS', scope.properties)
@@ -231,6 +243,8 @@ export default {
     scope.page.title = scope.properties.title
     scope.page.data = scope.properties
     scope.page.is_ready = true
+
+    // console.log(scope.$store.getters.getChaptersByBook(scope.properties.uuid), 'soppieref3ew')
 
     ipcRenderer.on('SET-EXPORT-BOOK-BUTTON-ENABLE', function (event, data) {
       scope.$store.commit('exportBookStatusClose')

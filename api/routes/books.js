@@ -112,6 +112,19 @@ router.get('/:bookId/scenes/other', async function (req, res) {
     .json(scenes)
 })
 
+router.get('/:bookId/scenes', async function (req, res) {
+  const param = {
+    bookId: req.params.bookId,
+    search: ''
+  }
+
+  const scenes = await SceneController.getBookChapterScenes(param)
+
+  res
+    .status(200)
+    .json(scenes)
+})
+
 router.get('/genres', async function (req, res) {
   const genres = await BookController.getAllBookGenres()
 

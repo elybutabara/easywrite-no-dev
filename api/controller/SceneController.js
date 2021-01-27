@@ -16,6 +16,17 @@ class SceneController {
     return scenes
   }
 
+  static getBookChapterScenes (param) {
+    var scenes = Scene.query()
+      .where('book_scenes.book_id', param.bookId)
+      .withGraphJoined('scene_version', {maxBatchSize: 1})
+      .whereNull('book_scenes.deleted_at')
+      .whereRaw('chapter_id IS NOT NULL')
+      .orderBy('order')
+
+    return scenes
+  }
+
   static async sort (data) {
     var count = 0
     for (let i = 0; i < data.length; i++) {

@@ -115,6 +115,12 @@ export default {
       Vue.set(state.scenes, bookID, { rows: [] })
       state.scenes[bookID] = { is_open: false, rows: otherScenes.data }
     },
+    loadChapterScenesByBook (state, payload) {
+      let bookID = payload.book_id
+      let chapterScenes = payload.chapter_scenes
+      Vue.set(state.scenes, bookID, { rows: [] })
+      state.scenes[bookID] = { is_open: false, rows: chapterScenes.data }
+    },
     loadScenesByChapter (state, payload) {
       let chapterUUID = payload.chapter_id
       let scenes = payload.scenes
@@ -304,6 +310,11 @@ export default {
       let bookID = payload
       let otherScenes = await axios.get('http://localhost:3000/books/' + bookID + '/scenes/other')
       commit('loadScenesByBook', { book_id: payload, other_scenes: otherScenes })
+    },
+    async loadChapterScenesByBook ({ commit, state }, payload) {
+      let bookID = payload
+      let chapterScenes = await axios.get('http://localhost:3000/books/' + bookID + '/scenes')
+      commit('loadChapterScenesByBook', { book_id: payload, chapter_scenes: chapterScenes })
     },
     async loadScenesByChapter ({ commit, state }, payload) {
       let chapterUUID = payload
