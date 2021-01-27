@@ -51,6 +51,7 @@
                   </div>
                 </b-button>
                 </div>
+
               <div v-html="getChapterContent" class="description" v-bind:id="commentbase_id"></div>
               <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params"></CommentBasePanel>
           </div>
@@ -165,6 +166,9 @@ export default {
     CommentBasePanel
   },
   computed: {
+    load(){
+      alert('text');
+    },
     getChapterContent: function () {
       var scope = this
       var chapterID = scope.page.data.chapter.uuid
