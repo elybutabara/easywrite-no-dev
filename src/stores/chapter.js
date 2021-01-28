@@ -42,8 +42,7 @@ export default {
           var current = state.chapter_versions[chapterUUID].rows[i]
 
           if (current.is_current_version === 1 || current.is_current_version === '1' || i === (count - 1)) {
-
-              return current.content
+            return current.content
           }
         }
 

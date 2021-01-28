@@ -166,9 +166,6 @@ export default {
     CommentBasePanel
   },
   computed: {
-    load(){
-      alert('text');
-    },
     getChapterContent: function () {
       var scope = this
       var chapterID = scope.page.data.chapter.uuid
