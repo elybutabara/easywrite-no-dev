@@ -123,8 +123,8 @@ let APP = {
   },
   NO_DEV: {
     API: {
-      URL: 'https://dev.pilotleser.no/app',
-      UPLOAD_URL: 'https://dev.pilotleser.no/uploads',
+      URL: 'http://easywrite.local/app',
+      UPLOAD_URL: 'http://easywrite.local/uploads',
       SITE: 'no-dev',
       CHAT: 'no-dev'
     }

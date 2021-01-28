@@ -178,7 +178,7 @@
                         </div>
                     </div>
                     <div class="content">
-                        <tiny-editor :initValue="data.notes" v-on:getEditorContent="setNotes" class="form-control" />
+                        <tiny-editor :initValue="baseSceneNotes" v-on:getEditorContent="setNotes" class="form-control" />
                     </div>
                 </div>
                 <div class="item" v-bind:class="{'active': accordion['viewpoint'] === 'active'}">
@@ -215,7 +215,7 @@
                         <b-row class="margin-bottom-1rem">
                             <b-col>
                                 <label>{{$t('VIEWPOINT_DESCRIPTION')}}: </label>
-                                <tiny-editor :initValue="data.viewpoint_description"
+                                <tiny-editor :initValue="baseViewpointDescription"
                                             v-on:getEditorContent="setViewpointDescription"
                                             class="form-control"
                                 />
@@ -420,8 +420,8 @@ export default {
       selected_locations: [],
       // Temp container of content
       baseSceneVersionContent: '',
-      tempSceneNotes: '',
-      tempViewpointDescription: '',
+      baseSceneNotes: '',
+      baseViewpointDescription: '',
       tempSceneStart: '',
       tempSceneEnd: '',
       accordion: {
@@ -708,13 +708,13 @@ export default {
       var scope = this
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
 
-      scope.tempSceneNotes = value
+      scope.data.notes = value
     },
     setViewpointDescription (value) {
       var scope = this
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
 
-      scope.tempViewpointDescription = value
+      scope.data.viewpoint_description = value
     },
     setAll (obj, val) {
       Object.keys(obj).forEach(function (index) {
@@ -748,11 +748,14 @@ export default {
     },
     async saveScene (noAlert) {
       var scope = this
+
+      console.log('saveScene > ', scope.data)
+
       scope.isCurrentlySaving = true
       // scope.data.scene_version.content = scope.baseSceneVersionContent
       scope.data.scene_version.comments = (scope.commentbase_vm) ? scope.commentbase_vm.getCommentsJSON() : null
-      scope.data.notes = scope.tempSceneNotes
-      scope.data.viewpoint_description = scope.tempViewpointDescription
+      // scope.data.notes = scope.tempSceneNotes
+      // scope.data.viewpoint_description = scope.tempViewpointDescription
       scope.data.chapter_id = (scope.selected_chapter !== 'undefined' && scope.selected_chapter !== null && scope.selected_chapter.uuid !== '-1') ? scope.selected_chapter.uuid : null
       scope.data.typeofscene = scope.selected_typeofscene.value
       scope.data.importance = scope.selected_importance.value
@@ -876,6 +879,8 @@ export default {
           scope.authorProgress = response.data
           scope.base_content_count = scope.WORD_COUNT(scope.data.scene_version.content)
           scope.$store.dispatch('loadAuthorPersonalProgress', { authorId: this.$store.getters.getAuthorID })
+
+          console.log('Author Personal Progress saved!')
         })
     },
     saveSceneHistory (sceneId) {
@@ -1019,8 +1024,8 @@ export default {
           scope.baseSceneVersionContent = version.content
         }
 
-        scope.tempSceneNotes = scene.notes
-        scope.tempViewpointDescription = scene.viewpoint_description
+        scope.baseSceneNotes = scene.notes
+        scope.baseViewpointDescription = scene.viewpoint_description
 
         // set selected item/character/location
         scope.setSelectedChild()
