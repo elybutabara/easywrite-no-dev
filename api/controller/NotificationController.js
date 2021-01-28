@@ -154,6 +154,7 @@ class NotificationController {
       book_id: row.book_id,
       parent_name: row.parent_name,
       status: row.status,
+      data: row.data,
       type: row.type,
       action: row.action,
       created_at: row.created_at,

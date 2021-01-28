@@ -495,47 +495,49 @@ export default {
       }
     },
     async openBookIReadChapterDetails (model, action = '') {
-      const scope = this
-      scope.$store.dispatch('setActiveMainSideNavTab', 'books-i-read')
-      try {
-        await scope.$store.dispatch('loadBooksIReadByAuthor', {authorID: scope.params.author.id, userID: scope.params.data.id})
-      } finally {
-        await scope.TOGGLE_BOOK_I_READ(model.book, 'books', scope.params.author.id)
-        await scope.TOGGLE_BOOK_I_READ(model.book, 'chapters', scope.params.author.id)
-
-        var openfeedback = (action == 'open-feedback')
-
-        let config = {
-          tabKey: 'books-i-read-chapter-details-' + model.chapter.id,
-          tabComponent: 'books-i-read-chapter-details',
-          tabData: {book: model.book, chapter: model.chapter, openfeedback: openfeedback},
-          tabTitle: scope.trans('site.to-view') + ' - ' + model.chapter.title
-        }
-        scope.CHANGE_COMPONENT(config)
-        // TODO : open Book-i-read tree for the specific chapter
-      }
+      console.log('openBookIReadChapterDetails')
+      // const scope = this
+      // scope.$store.dispatch('setActiveMainSideNavTab', 'books-i-read')
+      // try {
+      //   await scope.$store.dispatch('loadBooksIReadByAuthor', {authorID: scope.params.author.id, userID: scope.params.data.id})
+      // } finally {
+      //   await scope.TOGGLE_BOOK_I_READ(model.book, 'books', scope.params.author.id)
+      //   await scope.TOGGLE_BOOK_I_READ(model.book, 'chapters', scope.params.author.id)
+      //
+      //   var openfeedback = (action == 'open-feedback')
+      //
+      //   let config = {
+      //     tabKey: 'books-i-read-chapter-details-' + model.chapter.id,
+      //     tabComponent: 'books-i-read-chapter-details',
+      //     tabData: {book: model.book, chapter: model.chapter, openfeedback: openfeedback},
+      //     tabTitle: scope.trans('site.to-view') + ' - ' + model.chapter.title
+      //   }
+      //   scope.CHANGE_COMPONENT(config)
+      //   // TODO : open Book-i-read tree for the specific chapter
+      // }
     },
     async openChapterDetails (model, action = '') {
-      const scope = this
-      scope.$store.dispatch('setActiveMainSideNavTab', 'my-books')
-      try {
-        await scope.TOGGLE_BOOK(model.book, 'book')
-        await scope.TOGGLE_BOOK(model.book, 'chapters')
-        // TODO: how to open scene Tree
-      } finally {
-        // let openfeedback = null
-        // if(model.type =='feedback' && (model.action == 'post' || model.action == 'inlined')){
-        //     openfeedback = true
-        // }
-
-        var openfeedback = (action == 'open-feedback')
-        scope.CHANGE_COMPONENT({
-          tabKey: 'chapter-details-' + model.chapter.uuid,
-          tabComponent: 'chapter-details',
-          tabData: {book: model.book, chapter: model.chapter, openfeedback: openfeedback},
-          tabTitle: ('VIEW') + ' - ' + model.chapter.title
-        })
-      }
+      console.log(model)
+      // const scope = this
+      // scope.$store.dispatch('setActiveMainSideNavTab', 'my-books')
+      // try {
+      //   await scope.TOGGLE_BOOK(model.book, 'book')
+      //   await scope.TOGGLE_BOOK(model.book, 'chapters')
+      //   // TODO: how to open scene Tree
+      // } finally {
+      //   // let openfeedback = null
+      //   // if(model.type =='feedback' && (model.action == 'post' || model.action == 'inlined')){
+      //   //     openfeedback = true
+      //   // }
+      //
+      //   var openfeedback = (action == 'open-feedback')
+      //   scope.CHANGE_COMPONENT({
+      //     tabKey: 'chapter-details-' + model.chapter.uuid,
+      //     tabComponent: 'chapter-details',
+      //     tabData: {book: model.book, chapter: model.chapter, openfeedback: openfeedback},
+      //     tabTitle: ('VIEW') + ' - ' + model.chapter.title
+      //   })
+      // }
     },
     async openSceneDetails (model, action = '') {
       const scope = this
