@@ -8,10 +8,10 @@ class NotificationController {
   static async getAll (authorUuid) {
     var notification = await this.notifications(authorUuid)
     var invitations = await this.invitations(authorUuid)
-    
-    if(invitations != undefined){
-        invitations = invitations.filter(model => {
-        return (model.book != null) 
+
+    if (invitations != undefined) {
+      invitations = invitations.filter(model => {
+        return (model.book != null)
       })
     }
 
@@ -32,8 +32,6 @@ class NotificationController {
       .whereIn('type', notificationType)
       .orderBy(`created_at`, 'desc')
       .whereNull('deleted_at')
-      
-    var data = []
 
     for (let i = 0; i < notification.length; i++) {
       // get sender
@@ -107,19 +105,19 @@ class NotificationController {
       }
     }
 
-    /** map remove notification if parent deleted. 
+    /** map remove notification if parent deleted.
      *  book => if book is null
      *  chapter => if chapter and book is null
      *  scene => if scene and chapter and book is null
      */
 
-    if(notification != undefined){
+    if (notification != undefined) {
       notification = notification.filter(model => {
         return (
-          ((model.parent_name == null || model.parent_name == 'book' || model.parent_name == 'book_reader_invitations') && model.book != null) || 
+          ((model.parent_name == null || model.parent_name == 'book' || model.parent_name == 'book_reader_invitations') && model.book != null) ||
           (model.parent_name == 'chapter' && model.chapter != null && model.chapter != undefined && model.book != null) ||
           (model.parent_name == 'scene' && model.scene != null && model.scene != undefined && model.chapter != null && model.chapter != undefined && model.book != null)
-        );
+        )
       })
     }
 
@@ -143,7 +141,7 @@ class NotificationController {
       .whereIn('type', ['book', 'book_re_read', 'book_invite_decision', 'book_reader'])
       .where('action', 'invite')
       .orderBy('created_at', 'desc')
-    
+
     return notification
   }
 
@@ -156,6 +154,7 @@ class NotificationController {
       book_id: row.book_id,
       parent_name: row.parent_name,
       status: row.status,
+      data: row.data,
       type: row.type,
       action: row.action,
       created_at: row.created_at,

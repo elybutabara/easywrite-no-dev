@@ -341,8 +341,7 @@ export default {
 
   mounted () {
     var scope = this
-    console.log('helo')
-    console.log(scope.tabs.items[0].component)
+    // console.log(scope.tabs.items[0].component)
     window.AppMain = this
     var userUUID = this.$store.getters.getUserID
     var authorUUID = this.$store.getters.getAuthorID

@@ -17,7 +17,7 @@ class UserController {
   }
 
   static async save (row) {
-    console.log(row)
+    // console.log(row)
     var columns = {
       id: row.id,
       uuid: row.uuid,

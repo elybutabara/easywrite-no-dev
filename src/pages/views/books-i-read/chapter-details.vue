@@ -77,6 +77,7 @@ export default {
     var scope = this
     return {
       show_feedbacks: false,
+      notification: null,
       show_notes: false,
       chapter_version: {
         chapter_id: null,
@@ -233,7 +234,11 @@ export default {
     if (scope.properties.openfeedback) {
       scope.show_feedbacks = true
     }
+    if (scope.properties.notification) {
+      scope.notification = scope.properties.notification
+    }
 
+    console.log(scope.notification)
     scope.page.data = scope.properties
     scope.page.title = scope.properties.chapter.title
     // console.log('PROPERTIES')

@@ -154,7 +154,7 @@ export default {
         error: false
       },
       upload: {
-        pointer: 1, // starts at one coz  we skip genres
+        pointer: 1, // starts at one coz  we skip authors
         index: 0,
         counter: 0,
         progress: 0,
@@ -162,7 +162,7 @@ export default {
         error: false
       },
       packing: {
-        pointer: 1, // starts at one coz  we skip genres
+        pointer: 1, // starts at one coz  we skip authors
         progress: 0,
         total: 0,
         error: false
@@ -261,7 +261,6 @@ export default {
     },
     proceedChecking: function () {
       var scope = this
-
       scope.stage = 'connecting'
       scope.progress_message = scope.$t('ESTABLISHING_CONNECTION') + '...'
 
@@ -400,7 +399,7 @@ export default {
             finalData = data_
           }
         }
-      } else if (['Genres', 'Courses', 'Courses Taken', 'Packages', 'Package Courses', 'Lessons', 'Lesson Documents', 'Book Genres', 'WebinarRegistrants', 'WebinarPresenters', 'Webinars'].indexOf(endpoint.title) > -1) {
+      } else if (['Genres', 'Courses', 'Courses Taken', 'Packages', 'Package Courses', 'Lessons', 'Lesson Documents', 'Authors', 'WebinarRegistrants', 'WebinarPresenters', 'Webinars'].indexOf(endpoint.title) > -1) {
         // TODO : refactor this for SKIPPING UPLOADS !!
 
         // eslint-disable-next-line valid-typeof
@@ -547,8 +546,8 @@ export default {
                     folderName = window.APP.API.UPLOAD_URL + '/course-images'
                     image = image.replace('/uploads/course-images/', '')
                   }
-                  console.log(endpoint.api)
-                  console.log(image)
+                  // console.log(endpoint.api)
+                  // console.log(image)
                 }
 
                 const src = folderName + '/' + image + ''
@@ -662,7 +661,7 @@ export default {
       data.updated_at = scope.timeConvertFromUTC(data.updated_at)
 
       console.log('before --> http://localhost:3000/' + endpoint.local + '/sync')
-      console.log(data)
+      // console.log(data)
 
       scope.axios
         .post('http://localhost:3000/' + endpoint.local + '/sync', data)

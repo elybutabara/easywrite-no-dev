@@ -154,7 +154,8 @@ export default {
       },
       exportOnProgress: false,
       exportLoading: this.$t('Loading'),
-      show_feedbacks: false
+      show_feedbacks: false,
+      notification: null
     }
   },
   components: {
@@ -166,9 +167,6 @@ export default {
     CommentBasePanel
   },
   computed: {
-    load(){
-      alert('text');
-    },
     getChapterContent: function () {
       var scope = this
       var chapterID = scope.page.data.chapter.uuid
@@ -338,6 +336,11 @@ export default {
       scope.show_feedbacks = true
     }
 
+    if (scope.properties.notification) {
+      scope.notification = scope.properties.notification
+    }
+
+    console.log(scope.notification)
     scope.page.data = scope.properties
     scope.page.title = scope.properties.chapter.title
     console.log('PROPERTIES')

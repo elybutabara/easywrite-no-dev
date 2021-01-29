@@ -505,12 +505,15 @@ export default {
         await scope.TOGGLE_BOOK_I_READ(model.book, 'chapters', scope.params.author.id)
 
         var openfeedback = (action == 'open-feedback')
-
+        const book = model.book
+        const chapter = model.chapter
+        delete model.book
+        delete model.chapter
         let config = {
-          tabKey: 'books-i-read-chapter-details-' + model.chapter.id,
+          tabKey: 'books-i-read-chapter-details-' + chapter.id,
           tabComponent: 'books-i-read-chapter-details',
-          tabData: {book: model.book, chapter: model.chapter, openfeedback: openfeedback},
-          tabTitle: scope.trans('site.to-view') + ' - ' + model.chapter.title
+          tabData: {book: book, chapter: chapter, openfeedback: openfeedback, notification: model},
+          tabTitle: scope.trans('site.to-view') + ' - ' + chapter.title
         }
         scope.CHANGE_COMPONENT(config)
         // TODO : open Book-i-read tree for the specific chapter
@@ -528,13 +531,16 @@ export default {
         // if(model.type =='feedback' && (model.action == 'post' || model.action == 'inlined')){
         //     openfeedback = true
         // }
-
+        const book = model.book
+        const chapter = model.chapter
+        delete model.book
+        delete model.chapter
         var openfeedback = (action == 'open-feedback')
         scope.CHANGE_COMPONENT({
-          tabKey: 'chapter-details-' + model.chapter.uuid,
+          tabKey: 'chapter-details-' + chapter.uuid,
           tabComponent: 'chapter-details',
-          tabData: {book: model.book, chapter: model.chapter, openfeedback: openfeedback},
-          tabTitle: ('VIEW') + ' - ' + model.chapter.title
+          tabData: {book: book, chapter: chapter, openfeedback: openfeedback, notification: model},
+          tabTitle: ('VIEW') + ' - ' + chapter.title
         })
       }
     },
@@ -584,11 +590,11 @@ export default {
       /**
        * Get notifications | feedback and comments only
        */
-      console.log('authorUUID', authorUUID)
+      // console.log('authorUUID', authorUUID)
       await scope.axios
         .get('http://localhost:3000/notifications/' + authorUUID)
         .then(response => {
-          console.log('response data', response.data.data)
+          // console.log('response data', response.data.data)
           scope.allItems['notifications'] = response.data.data.notifications
         })
         .catch(error => {
@@ -691,7 +697,7 @@ export default {
 
       scope.axios.post('http://localhost:3000/notifications/update-notification-status', params)
         .then(response => {
-          console.log('updateNotificationStatus response', response.data)
+          // console.log('updateNotificationStatus response', response.data)
           scope.items = response.data
           const itemType = 'notifications'
           scope.allItems[itemType] = response.data

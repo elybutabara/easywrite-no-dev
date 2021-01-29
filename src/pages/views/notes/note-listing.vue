@@ -106,7 +106,7 @@ export default {
       var authorID = scope.$store.getters.getAuthorID
       scope.axios.get('http://localhost:3000/notes/' + authorID)
         .then(function (response) {
-          console.log('notes', response.data)
+          // console.log('notes', response.data)
           scope.notes = response.data
         })
         .catch(function (error) {
