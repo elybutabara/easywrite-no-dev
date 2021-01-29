@@ -74,7 +74,9 @@ export default {
         is_ready: false
       },
       chapter_content: '',
-      scene_content: ''
+      scene_content: '',
+      selected_chapters: [],
+      selected_scenes: []
     }
   },
   methods: {
@@ -122,10 +124,38 @@ export default {
     var scope = this
     ipcRenderer.on('EXPORT-DOCX-GET-BOOK', async function (event, data) {
       try {
-        scope.book = data
+        scope.book = data.book
+        scope.selected_chapters = data.selected_chapters
+        scope.selected_scenes = data.selected_scenes
         await scope.$store.dispatch('loadChaptersWithScenesByBook', scope.book.uuid)
       } finally {
-        scope.chapters = scope.$store.getters.getChaptersByBook(scope.book.uuid)
+        var chapters = scope.$store.getters.getChaptersByBook(scope.book.uuid)
+        // 'selected' (filtered) export
+        if (!data.export_all) {
+          // chapter filtering
+          for (var i = 0; i < scope.selected_chapters.length; i++) {
+            for (var j = 0; j < chapters.length; j++) {
+              if (scope.selected_chapters[i] == chapters[j].id) {
+                var chapterScenes = chapters[j].scene
+                chapters[j].scene = []
+
+                // scene filtering
+                for (var k = 0; k < scope.selected_scenes.length; k++) {
+                  for (var l = 0; l < chapterScenes.length; l++) {
+                    if (chapterScenes[l].id == scope.selected_scenes[k]) {
+                      chapters[j].scene.push(chapterScenes[l])
+                    }
+                  }
+                }
+                scope.chapters.push(chapters[j])
+              }
+            }
+          }
+        } else {
+          // export all
+          scope.chapters = chapters
+        }
+
         scope.page.is_ready = true
         scope.exportBook()
       }
