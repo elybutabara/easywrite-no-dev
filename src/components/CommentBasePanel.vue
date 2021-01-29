@@ -19,7 +19,7 @@
                                 <div v-on:click="deleteComment(k, $event)" class="c-pop-menu-item">Delete</div>
                             </div>
                         </div>
-                    </div>
+                    </div>cha
                     <span class="name">{{ c.user_name }}</span>
                     <span class="time">{{ displayTime(c.created_at) }}</span>
                 </div>

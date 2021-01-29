@@ -340,8 +340,8 @@ export default {
 
     scope.page.data = scope.properties
     scope.page.title = scope.properties.chapter.title
-    // console.log('PROPERTIES')
-    // console.log(scope.properties)
+    console.log('PROPERTIES')
+    console.log(scope.properties)
 
     try {
       await scope.$store.dispatch('loadScenesByChapter', scope.properties.chapter.uuid)
