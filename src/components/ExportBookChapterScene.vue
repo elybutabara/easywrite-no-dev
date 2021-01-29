@@ -87,7 +87,7 @@ export default {
       var finalContent = ''
       // console.log('func-', type, data)
 
-      if (data[`${type}_version`].length > 1) {
+      if (data[`${type}_version`] && data[`${type}_version`].length > 1) {
         // has many versions
         for (var version of data[`${type}_version`]) {
           if (version.is_current_version) {
@@ -125,7 +125,7 @@ export default {
     toggleChapterCheckbox (chapter) {
       var scope = this
 
-      $('#scenes-' + chapter.id).toggle()
+      window.$('#scenes-' + chapter.id).toggle()
 
       if (scope.chapterCheckboxes['chapter-isChecked-' + chapter.id]) {
         scope.chapterCheckboxes['chapter-isChecked-' + chapter.id] = false

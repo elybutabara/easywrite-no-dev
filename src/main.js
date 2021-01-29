@@ -139,11 +139,12 @@ let APP = {
   }
 }
 
-window.APP = APP.NO_DEV // DEVELOPEMENT APP
+window.APP = APP.LOCAL // DEVELOPEMENT APP
 if (process.env.NODE_ENV === 'production') {
   window.APP = APP.NO_DEV // PRODUCTION APP
+} else if (process.env.NODE_ENV === 'local') {
+  window.APP = APP.LOCAL // PRODUCTION APP
 }
-
 // window.$.fn.select2.defaults.set('theme', 'bootstrap')
 
 // import electron from 'electron'

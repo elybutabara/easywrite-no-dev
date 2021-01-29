@@ -198,6 +198,7 @@ export default {
       // eslint-disable-next-line no-useless-escape
       var stripedHtml = content.replace(/<br\s*[\/]?>/gi, ' ')
       stripedHtml = stripedHtml.replace(/<[^>]+>/g, '') // Remove html tags
+      stripedHtml = stripedHtml.replace(/&nbsp;/g, '')// Remove &nbsp;
       // stripedHtml = stripedHtml.replace(/[0-9]/gi, '') // Remove numbers
       stripedHtml = stripedHtml.replace(/\n/g, ' ') // exclude newline with a start spacings
       stripedHtml = stripedHtml.replace(/(^\s*)|(\s*$)/gi, '')// exclude  start and end white-space
