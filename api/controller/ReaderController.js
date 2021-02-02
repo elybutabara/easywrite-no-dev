@@ -26,7 +26,7 @@ class ReaderController {
     // console.log('bookUUIDs')
     // console.log(bookUUIDs)
 
-    const books = Book.query()
+    const books = await Book.query()
       .withGraphJoined('[book_genre_collection,genre,author]')
       .whereIn('books.uuid', bookUUIDs)
       .whereNull('books.deleted_at')
@@ -95,6 +95,35 @@ class ReaderController {
       updated_at: row.updated_at,
       deleted_at: row.deleted_at
     }
+
+    var bookColumns = {
+      uuid: row.book.uuid,
+      author_id: row.book.author_id,
+      title: row.book.title,
+      about: row.book.about,
+      numbered_chapter: row.book.numbered_chapter,
+      is_default: row.book.is_default,
+      created_at: row.book.created_at,
+      updated_at: row.book.updated_at,
+      deleted_at: row.book.deleted_at,
+      from_local: row.book.from_local
+    }
+
+    let bookData = await Book.query()
+      .patch(bookColumns)
+      .where('uuid', '=', row.uuid)
+
+    console.log('bookData', row.uuid)
+
+    if (!bookData || bookData === 0) {
+      bookData = await Book.query().insert(bookColumns)
+
+      // update uuid to match web
+      bookData = await Book.query()
+        .patch({ 'uuid': row.book.uuid, created_at: row.book.created_at, updated_at: row.book.updated_at })
+        .where('uuid', '=', bookData.uuid)
+    }
+
     var data = await Reader.query()
       .patch(columns)
       .where('uuid', '=', row.uuid)
