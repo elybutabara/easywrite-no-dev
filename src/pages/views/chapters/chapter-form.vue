@@ -427,10 +427,17 @@ export default {
     setContent (value) {
       var scope = this
       scope.data.chapter_version.content = value
+
+      console.log('chapter_version content', value)
+      console.log('chapter_version content', scope.data.chapter_version.content)
+      console.log('base_chapter_val content', scope.base_chapter_val.chapter_version.content)
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
     },
     viewOverlay (value) {
       var scope = this
+      console.log('chapter form logs')
+      console.log(this._uid)
+      console.log(value)
       scope.scene_content = value
       this.save_to_scene = true
     },
@@ -474,6 +481,8 @@ export default {
     async saveChapter (noAlert) {
       var scope = this
       scope.isCurrentlySaving = true
+  
+      console.log('scope.data.chapter_version.content', scope.data.chapter_version.content)
       // scope.data.chapter_version.content = scope.baseChapterVersionCont
 
       // If upon validation it return error do not save character and display errors
