@@ -1,37 +1,46 @@
 <template>
-  <div v-if="selected_comments_id" class="commentbase-comments es-panel-2">
-    <div class="es-panel-head">
-      <h5>Comments</h5>
-      <button v-on:click.prevent="close($event)" type="button" aria-label="Close" class="close"><i class="las la-times-circle"></i></button>
-    </div>
-    <div class="es-panel-body" id="custom-scrollbar">
-      <div v-for="(c, k) in comments[selected_comments_id]" v-bind:key="k" v-bind:style="{'border': editingComment==k?'1px solid orange':''}" class="commentbase-comment">
-        <div class="position-relative mb-2">
-          <div v-if="c.user_id==author.uuid" class="c-pop-menu-btn" style="position: absolute; top: 0; right: 5px; border: 0 solid #c0c0c0;" v-on:click.prevent="showCommentActions=showCommentActions==k?null:k">
-              <div style="text-align: right; padding: 0; font-weight: bold; cursor: pointer;">
-                  <i class="fa fa-ellipsis-h"></i>
-                  <div class="c-pop-menu" v-show="showCommentActions==k">
-                      <div v-on:click="editComment(k, $event)" class="c-pop-menu-item">Edit</div>
-                      <div v-on:click="deleteComment(k, $event)" class="c-pop-menu-item">Delete</div>
-                  </div>
-              </div>
-          </div>
-          <span class="name">{{ c.user_name }}</span>
-          <span class="time">{{ displayTime(c.created_at) }}</span>
+    <div v-if="selected_comments_id" class="commentbase-comments es-panel-2">
+        <div class="es-panel-head">
+            <h5>Comments</h5>
+            <button v-on:click.prevent="close($event)" type="button" aria-label="Close" class="close"><i
+                class="las la-times-circle"></i></button>
         </div>
-        <div class="message">
-          {{ c.message }}
+        <div class="es-panel-body" id="custom-scrollbar">
+            <div v-for="(c, k) in comments[selected_comments_id]" v-bind:key="k"
+                 v-bind:style="{'border': editingComment==k?'1px solid orange':''}" class="commentbase-comment">
+                <div class="position-relative mb-2">
+                    <div v-if="c.user_id==author.uuid" class="c-pop-menu-btn"
+                         style="position: absolute; top: 0; right: 5px; border: 0 solid #c0c0c0;"
+                         v-on:click.prevent="showCommentActions=showCommentActions==k?null:k">
+                        <div style="text-align: right; padding: 0; font-weight: bold; cursor: pointer;">
+                            <i class="fa fa-ellipsis-h"></i>
+                            <div class="c-pop-menu" v-show="showCommentActions==k">
+                                <div v-on:click="editComment(k, $event)" class="c-pop-menu-item">Edit</div>
+                                <div v-on:click="deleteComment(k, $event)" class="c-pop-menu-item">Delete</div>
+                            </div>
+                        </div>
+                    </div>cha
+                    <span class="name">{{ c.user_name }}</span>
+                    <span class="time">{{ displayTime(c.created_at) }}</span>
+                </div>
+                <div class="message">
+                    {{ c.message }}
+                </div>
+            </div>
         </div>
-      </div>
+        <div class="commentbase-comments-form">
+            <textarea v-model="comment_message_new" class="commentbase-comment-new"
+                      placeholder="Write your comment here.."></textarea>
+            <div style="text-align: right;">
+                <button v-on:click="pushComment($event)" class="es-button btn-sm btn-block esdarkblue-special">Save
+                    Comments
+                </button>
+                <button v-on:click="cancelCommentEdit($event)" v-if="editingComment"
+                        class="es-button btn-sm btn-block danger esred-special">Cancel
+                </button>
+            </div>
+        </div>
     </div>
-    <div class="commentbase-comments-form">
-      <textarea v-model="comment_message_new" class="commentbase-comment-new" placeholder="Write your comment here.."></textarea>
-      <div style="text-align: right;">
-        <button v-on:click="pushComment($event)" class="es-button btn-sm btn-block esdarkblue-special">Save Comment</button>
-        <button v-on:click="cancelCommentEdit($event)" v-if="editingComment" class="es-button btn-sm btn-block danger esred-special">Cancel</button>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script>
@@ -256,19 +265,24 @@ export default {
               return
             }
 
+
+            // var patten = '/\\n|\\r/g'
+            var result = scope.window.getSelection().toString().replace(/(?:\r\n|\r|\n)/g, '<br>')
+            console.log('data_comment', scope.window.getSelection().toString())
+
             scope.selected_comments_id = id
 
-            var html = '<span class="commentbase-comment-highlight" style="font-weight: inherit; color: #000; background: yellow;" id="' + id + '" data-comments-id="' + id + '">' + range + '</span>'
-            range.deleteContents()
+            // var html = '<span class="commentbase-comment-highlight" style="font-weight: inherit; color: #000; background: yellow;" id="' + id + '" data-comments-id="' + id + '">' + range + '</span>'
+            // range.deleteContents()
 
             var el = scope.window.document.createElement('div')
             el.innerHTML = html
             var frag = scope.window.document.createDocumentFragment()
             var node
             while ((node = el.firstChild)) {
-              frag.appendChild(node)
+              // frag.appendChild(node)
             }
-            range.insertNode(frag)
+            // range.insertNode(frag)
 
             scope.selected_comments_target = scope.window.document.querySelector('[data-comments-id="' + id + '"]')[0]
           }
@@ -295,20 +309,102 @@ export default {
 </script>
 
 <style>
-.commentbase-comments { position: fixed; z-index: 5000; bottom: 0;right: 10px;width: 350px; background: rgb(245, 248, 250); margin: 0px; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;}
-.commentbase-comments .es-panel-head { display: flex; justify-content: space-between; background: var(--thin-white); }
-.commentbase-comments .es-panel-head h5 { font-size: 14px; line-height: unset; margin: 0; }
-.commentbase-comments .es-panel-body { height: 30vh; overflow-y: auto; padding: 0; margin-bottom: 122px; border-radius: 0; }
-.commentbase-comments .es-panel-body .name { font-size: 11px; font-weight: bold; }
-.commentbase-comments .es-panel-body .time { font-size: 11px; color: #888; }
-.commentbase-comments .es-panel-body .message { font-size: 13px; }
+.commentbase-comments {
+    position: fixed;
+    z-index: 5000;
+    bottom: 0;
+    right: 10px;
+    width: 350px;
+    background: rgb(245, 248, 250);
+    margin: 0px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
 
-.commentbase-comments-form { position: absolute; bottom: 0; left: 0; width: 100%; padding: 13px; background: var(--thin-white); border: 1px solid var(--whiteblue); }
-.commentbase-comments-form textarea.commentbase-comment-new { width: 100%; border: 1px solid #ced4da; border-radius: 0.25rem; padding: 10px; font-size: 13px; margin-bottom: 4px; }
+.commentbase-comments .es-panel-head {
+    display: flex;
+    justify-content: space-between;
+    background: var(--thin-white);
+}
 
-.commentbase-comment-highlight {font-weight: inherit; background: orange; color: #fff;}
-.commentbase-comment { background: #fff; padding: 15px; margin-bottom: 0px; border-bottom: 1px solid var(--whiteblue); }
-.c-pop-menu { background: #293742; border: 1px solid #293742; padding: 7px; border-radius: 3px; margin-top: -1px; line-height: 1.2; font-size: 12px;}
-.c-pop-menu-item { text-align: center; color: #fff; font-weight: normal; cursor: pointer; font-size: 12px; }
-.c-pop-menu-item:first-child { margin-bottom: 5px; }
+.commentbase-comments .es-panel-head h5 {
+    font-size: 14px;
+    line-height: unset;
+    margin: 0;
+}
+
+.commentbase-comments .es-panel-body {
+    height: 30vh;
+    overflow-y: auto;
+    padding: 0;
+    margin-bottom: 122px;
+    border-radius: 0;
+}
+
+.commentbase-comments .es-panel-body .name {
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.commentbase-comments .es-panel-body .time {
+    font-size: 11px;
+    color: #888;
+}
+
+.commentbase-comments .es-panel-body .message {
+    font-size: 13px;
+}
+
+.commentbase-comments-form {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 13px;
+    background: var(--thin-white);
+    border: 1px solid var(--whiteblue);
+}
+
+.commentbase-comments-form textarea.commentbase-comment-new {
+    width: 100%;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    padding: 10px;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.commentbase-comment-highlight {
+    font-weight: inherit;
+    background: orange;
+    color: #fff;
+}
+
+.commentbase-comment {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 0px;
+    border-bottom: 1px solid var(--whiteblue);
+}
+
+.c-pop-menu {
+    background: #293742;
+    border: 1px solid #293742;
+    padding: 7px;
+    border-radius: 3px;
+    margin-top: -1px;
+    line-height: 1.2;
+    font-size: 12px;
+}
+
+.c-pop-menu-item {
+    text-align: center;
+    color: #fff;
+    font-weight: normal;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.c-pop-menu-item:first-child {
+    margin-bottom: 5px;
+}
 </style>

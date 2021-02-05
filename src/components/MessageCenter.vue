@@ -12,6 +12,7 @@
                     </div>
                 </b-form>
             </div>
+
             <div style="padding: 0 20px;border-bottom: 1px solid rgba(0,0,0,.125);">
                 <a class="actionLink" v-bind:class="{ 'activeTab': (itemType=='all')}" id="allMessageCenter" href="#" v-on:click.prevent="setItem(defaultType)">
                     {{ trans("site.all") }}
