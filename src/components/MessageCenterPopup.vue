@@ -194,21 +194,21 @@
                     <div v-if="model.action=='post'" class="mt-2" style="font-size: 14px; line-height: 100%;">
                       <!--SCENE FEEDBACK-->
                       <span v-if="model.parent_id && model.parent_name == 'scene' ">
-                                                {{ model.alias +' '+$t('site.has-left-a-feedback-on')+' '+ model.book.title +'-'+model.chapter.title+' ('+model.scene.title+' Scene).'}}
+                                                {{ model.alias +' '+$t('site.has-left-a-scene-feedback-on')+' '+ model.book.title +'-'+model.chapter.title+' ('+model.scene.title+' Scene).'}}
                                                 <a href='javascript:void(0)' @click="openSceneDetails(model, 'open-feedback')">
                                                     {{ capitalizeFirstLetter($t('site.click-here')) }}
                                                 </a> {{ $t('site.to-view')  }}
                                             </span>
                       <!--CHAPTER FEEDBACK-->
-                      <span v-else-if="model.chapter_id">
-                                                {{ model.alias +' '+$t('site.has-left-a-feedback-on')+' '+ model.book.title +'-'+model.chapter.title+'.'}}
+                        <span v-else-if="model.parent_id && model.parent_name == 'chapter' ">
+                                                {{ model.alias +' '+$t('site.has-left-a-chapter-feedback-on')+' '+ model.book.title +'-'+model.chapter.title+'.'}}
                                                 <a href='javascript:void(0)' @click="openChapterDetails(model, 'open-feedback')">
                                                     {{ capitalizeFirstLetter($t('site.click-here')) }}
                                                 </a> {{ $t('site.to-view')  }}
                                             </span>
                       <!--BOOK FEEDBACK-->
                       <span v-else>
-                                                {{ model.alias +' '+$t('site.has-left-a-feedback-on')+' '+ model.book.title+'.'}}
+                                                {{ model.alias +' '+$t('site.has-left-a-book-feedback-on')+' '+ model.book.title+'.'}}
                                                 <a href='javascript:void(0)' @click="openBookDetails(model)">
                                                     {{ capitalizeFirstLetter($t('site.click-here')) }}
                                                 </a> {{ $t('site.to-view') }}
