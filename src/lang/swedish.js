@@ -294,5 +294,32 @@ export default {
   YOU_WONT_BE_ABLE_TO_REVERT_THIS: 'Du kommer inte att kunna återställa detta',
   YOUR_CURRENT_CONTENT_WILL_BE_OVERWRITTERN: 'Ditt nuvärande innehåll kommer att skrivas över',
   YOUR_POMODORO_EXPIRES: 'Tiden har gått ut',
-  OPEN_FILE: 'Öppna fil'
+  OPEN_FILE: 'Öppna fil',
+  site: {
+    'message-center': 'Message Center',
+    'all': 'All',
+    'notifications': 'Notifications',
+    'messages': 'Messages',
+    'invitations': 'Invitations',
+    'list-of-scenes': 'List of scenes',
+    'to-view': 'To view',
+    'click-here': 'Click here',
+    'has-declined-your-query-for-requesting-to-read': 'has declined your query for requesting to read',
+    'has-accepted-your-query-for-requesting-to-read': 'has accepted your query for requesting to read',
+    'sent-you-a-notification': 'sent you a notification',
+    'has-queried-you-to-read': 'has queried you to read',
+    'sent-you-a-message': 'sent you a message',
+    'commented-on': 'commented on',
+    'has-replied-to-your-feedback': 'has replied to your feedback',
+    'has-left-a-chapter-feedback-on': 'har lämnat en feedback på:',
+    'has-left-a-scene-feedback-on': 'har lämnat en feedback på:',
+    'has-left-a-book-feedback-on': 'har lämnat en feedback på:',
+    'has-declined-your-invitation-to-read': 'has declined your invitation to read',
+    'has-accepted-your-invitation-to-read': 'has accepted your invitation to read',
+    'has-queried-you-to-request-an-access-to-read': 'has queried you to request an access to read',
+    'has-invited-you-to-read': 'has invited you to read',
+    'new-message': 'New Message',
+    'logout': 'Logout',
+    'anonymous': 'Anonymous'
+  }
 }
