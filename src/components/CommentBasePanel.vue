@@ -265,23 +265,22 @@ export default {
               return
             }
 
-
             // var patten = '/\\n|\\r/g'
-            var result = scope.window.getSelection().toString().replace(/(?:\r\n|\r|\n)/g, '<br>')
-            console.log('data_comment', scope.window.getSelection().toString())
+            // var result = scope.window.getSelection().toString().replace(/(?:\r\n|\r|\n)/g, '<br>')
+            // console.log('data_comment', scope.window.getSelection().toString())
 
             scope.selected_comments_id = id
 
             // var html = '<span class="commentbase-comment-highlight" style="font-weight: inherit; color: #000; background: yellow;" id="' + id + '" data-comments-id="' + id + '">' + range + '</span>'
             // range.deleteContents()
 
-            var el = scope.window.document.createElement('div')
-            el.innerHTML = html
-            var frag = scope.window.document.createDocumentFragment()
-            var node
-            while ((node = el.firstChild)) {
-              // frag.appendChild(node)
-            }
+            // var el = scope.window.document.createElement('div')
+            // el.innerHTML = html
+            // var frag = scope.window.document.createDocumentFragment()
+            // var node
+            // while ((node = el.firstChild)) {
+            //   frag.appendChild(node)
+            // }
             // range.insertNode(frag)
 
             scope.selected_comments_target = scope.window.document.querySelector('[data-comments-id="' + id + '"]')[0]
