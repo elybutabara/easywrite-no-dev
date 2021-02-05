@@ -271,17 +271,17 @@ export default {
 
             scope.selected_comments_id = id
 
-            // var html = '<span class="commentbase-comment-highlight" style="font-weight: inherit; color: #000; background: yellow;" id="' + id + '" data-comments-id="' + id + '">' + range + '</span>'
-            // range.deleteContents()
+            var html = '<span class="commentbase-comment-highlight" style="font-weight: inherit; color: #000; background: yellow;" id="' + id + '" data-comments-id="' + id + '">' + range + '</span>'
+            range.deleteContents()
 
-            // var el = scope.window.document.createElement('div')
-            // el.innerHTML = html
-            // var frag = scope.window.document.createDocumentFragment()
-            // var node
-            // while ((node = el.firstChild)) {
-            //   frag.appendChild(node)
-            // }
-            // range.insertNode(frag)
+            var el = scope.window.document.createElement('div')
+            el.innerHTML = html
+            var frag = scope.window.document.createDocumentFragment()
+            var node
+            while ((node = el.firstChild)) {
+              frag.appendChild(node)
+            }
+            range.insertNode(frag)
 
             scope.selected_comments_target = scope.window.document.querySelector('[data-comments-id="' + id + '"]')[0]
           }
