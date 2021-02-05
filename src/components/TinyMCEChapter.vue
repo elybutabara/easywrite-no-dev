@@ -202,7 +202,7 @@ export default {
     // Depends on your use case, you might not need this
     var vm = this
 
-    if (vm.initValue) {   
+    if (vm.initValue) {
       var editor = tinymce.get(vm.$el.id)
       editor.setContent(vm.initValue)
     }

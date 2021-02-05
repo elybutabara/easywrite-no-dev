@@ -37,8 +37,6 @@
             Empty
           </div>
 
-
-            aaa
           <div v-for="model in items" v-bind:key="model.id" v-if="model != null" @click="updateNotificationStatus(model)"  style="padding: 10px; border-top: 1px solid #e3e6f0; clear: both;" v-bind:style="{backgroundColor: model.status!=0?'#fff':'rgb(177,226,239)'}">
             <!--INVITE AREA -->
             <div v-if="model.action == 'invite'" class="TnxGiv1ng  row ml-0 mr-0">
