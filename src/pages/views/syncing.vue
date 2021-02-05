@@ -265,7 +265,7 @@ export default {
       scope.progress_message = scope.$t('ESTABLISHING_CONNECTION') + '...'
 
       scope.axios.get(window.APP.API.URL + '/user/connect')
-        .then(function (response) {
+        .then(function () {
           // handle success
           scope.progress_message = scope.$t('CONNECTED') + '!'
           setTimeout(function () {
@@ -429,7 +429,7 @@ export default {
         {
           'headers': headers
         })
-        .then(function (response) {
+        .then(function () {
           // eslint-disable-next-line valid-typeof
           scope.upload.index++
           scope.upload.counter++
@@ -639,6 +639,7 @@ export default {
         scope.increaseAppSettingCounter()
         scope.saveUserSyncedDate()
         scope.showLogs()
+        // scope.dataProcessing()
         return
       }
 
@@ -665,7 +666,7 @@ export default {
 
       scope.axios
         .post('http://localhost:3000/' + endpoint.local + '/sync', data)
-        .then(function (response) {
+        .then(function () {
           // eslint-disable-next-line valid-typeof
           scope.saving.index++
           scope.saving.counter++
@@ -720,7 +721,7 @@ export default {
       for (let i = 0; i < scope.notifications.authors.length; i++) {
         await scope.axios
           .post('http://localhost:3000/authors/sync', scope.notifications.authors[i])
-          .then(function (response) {
+          .then(function () {
             console.log('save notification author')
             // console.log(response)
           })
@@ -840,7 +841,7 @@ export default {
     donwloadFile: function (src, dst) {
       const download = function (uri, filename, callback) {
         // eslint-disable-next-line handle-callback-err
-        request.head(uri, function (err, res, body) {
+        request.head(uri, function () {
           request(uri).pipe(electronFs.createWriteStream(filename)).on('close', callback)
         })
       }
@@ -897,7 +898,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .page-syncing.fullscreen .es-page-content {  position: fixed; top: 0px; left: 0px;  background: rgba(31,46,58,0.8); width: 100%; height: 100vh; z-index: 999; }
   .page-syncing.fullscreen .es-card { margin-top:100px; }
 
   .es-card { width:calc(100% - 40px); max-width:750px; margin:0px auto; margin-top:10px; color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }

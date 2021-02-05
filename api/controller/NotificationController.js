@@ -1,7 +1,7 @@
 'use strict'
 // const { query } = require('express')
 const path = require('path')
-
+const moment = require('moment')
 const { User, Notification, Book, Author, Chapter, Scene } = require(path.join(__dirname, '..', 'models'))
 
 class NotificationController {
@@ -178,6 +178,15 @@ class NotificationController {
     const user = await User.query()
       .findById(userId)
       .withGraphJoined('author', { maxBatchSize: 1 })
+
+      /*
+      * Update update_at so it will push to api , api will handle parent_id
+      * so after upload it will download latest notif that will convert parent_id that is id to uuid
+      * */
+    await Notification.query()
+      .where(`to`, user.author.uuid)
+      .where('parent_id', 'not like', '%-%')
+      .patch({updated_at: moment().format('YYYY-MM-DD HH:mm:ss').toString()})
 
     const rows = await Notification.query()
       .where('to', user.author.uuid)

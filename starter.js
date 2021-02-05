@@ -27,6 +27,7 @@ const exportPdf = require('./starter-extensions/export-reports/pdf/export-pdf')
 const import_docx_per_content = require('./starter-extensions/imports/docx/import-docx-per-content')
 const import_docx_multi_chapters = require('./starter-extensions/imports/docx/import-docx-multi-chapters')
 
+app.allowRendererProcessReuse = false;
 if(process.platform == "darwin"){
   //disable unwanted Emoji and Dictation in Menu before calling app event
   systemPreferences.setUserDefault('NSDisabledDictationMenuItem', 'boolean', true)
