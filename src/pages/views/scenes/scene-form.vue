@@ -132,7 +132,7 @@
                                 </div>
                             </b-col>
                         </b-row>
-                        <div class="col-md-12" v-show="data.id != null">
+                        <div class="col-md-12">
                             <small>The scene will be autosaved every ten seconds</small>
                             <small v-if="!do_scene_auto_save" class="text-red"> | Saving ...</small>
                         </div>
@@ -778,6 +778,7 @@ export default {
             scope.saveRelatedTables(response.data.uuid)
             scope.$store.dispatch('updateSceneList', response.data)
             scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+
             if (!noAlert) {
               window.swal.fire({
                 position: 'center',
@@ -819,6 +820,11 @@ export default {
 
                 scope.loadScene(response.data)
               })
+            } else {
+              if (scope.data.uuid === null) {
+                scope.data.id = response.data.id
+                scope.data.uuid = response.data.uuid
+              }
             }
           }
         })
@@ -1014,15 +1020,12 @@ export default {
           scope.selected_chapter = chapter
         }
 
-        if (version) {
-          // version
-          scope.data.scene_version.id = version.id
-          scope.data.scene_version.uuid = version.uuid
-          scope.data.scene_version.content = version.content
-          scope.data.scene_version.change_description = version.change_description
-
-          scope.baseSceneVersionContent = version.content
-        }
+        // version
+        scope.data.scene_version.id = version.id
+        scope.data.scene_version.uuid = version.uuid
+        scope.data.scene_version.content = version.content
+        scope.data.scene_version.change_description = version.change_description
+        scope.baseSceneVersionContent = version.content
 
         scope.baseSceneNotes = scene.notes
         scope.baseViewpointDescription = scene.viewpoint_description
@@ -1041,9 +1044,9 @@ export default {
 
         // scene history
         scope.scene_history = scope.GET_SCENE_HISTORY(scene.uuid)
-
-        scope.page.is_ready = true
       }
+
+      scope.page.is_ready = true
     },
     setBaseSceneVal: function (scene) {
       let scope = this
@@ -1109,11 +1112,10 @@ export default {
     } catch (ex) {
       console.log('Failed to load data')
     } finally {
+      scope.auto_save_scene_interval = setInterval(scope.autoSave, 10000)
       if (scope.data.uuid) {
         scope.loadScene(scope.properties.scene)
         scope.selected_chapter = scope.properties.chapter
-
-        scope.auto_save_scene_interval = setInterval(scope.autoSave, 10000)
       } else {
         let chapters = scope.$store.getters.getChaptersByBook(scope.properties.book.uuid)
         var bookCharacters = scope.$store.getters.getCharactersByBook(scope.properties.book.uuid)

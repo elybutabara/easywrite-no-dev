@@ -136,7 +136,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12" v-show="data.id != null">
+                            <div class="col-md-12">
                                 <small>The chapter will be autosaved every ten seconds</small>
                                 <small v-if="!do_chapter_auto_save" class="text-red"> | Saving ...</small>
                             </div>
@@ -500,6 +500,7 @@ export default {
             scope.saveRelatedTables(response.data)
             scope.$store.dispatch('updateChapterList', response.data)
             scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+
             if (!noAlert) {
               window.swal.fire({
                 position: 'center',
@@ -538,6 +539,11 @@ export default {
 
                 scope.loadChapter(response.data)
               })
+            } else {
+              if (scope.data.uuid === null) {
+                scope.data.id = response.data.id
+                scope.data.uuid = response.data.uuid
+              }
             }
           }
         })
@@ -728,6 +734,7 @@ export default {
       // If save new version modal is open skip auto save
       // If view history modal is open skip auto save
       // If no changes  skip auto save
+      // eslint-disable-next-line no-unreachable
       if (scope.chapter_version_modal_is_open || scope.view_history || !scope.IS_TAB_AS_MODIFIED || scope.DEEP_EQUAL(scope.base_chapter_val, scope.data)) return false
 
       // There still a ongoing autosave return false and let that autosave to finish saving
@@ -756,10 +763,10 @@ export default {
   mounted () {
     var scope = this
     component = scope
+
+    scope.auto_save_chapter_interval = setInterval(scope.autoSave, 10000)
     if (scope.data.uuid) {
       scope.loadChapter(scope.properties.chapter)
-
-      scope.auto_save_chapter_interval = setInterval(scope.autoSave, 10000)
     } else {
       scope.page.is_ready = true
     }
