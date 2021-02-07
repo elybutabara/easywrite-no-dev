@@ -726,11 +726,10 @@ export default {
       scope.setAll(scope.feedback.title, null)
       scope.setAll(scope.feedback.short_description, null)
     },
-    validate () {
+    validate (noAlert) {
       var scope = this
       var isValid = true
 
-      scope.setFeedbackNull()
       // Check if title is empty and return error
       if (!scope.data.title) {
         scope.feedback.title.message = this.$t('TITLE') + ' ' + this.$t('IS_REQUIRED')
@@ -749,9 +748,11 @@ export default {
     async saveScene (noAlert) {
       var scope = this
 
-      console.log('saveScene > ', scope.data)
-
       scope.isCurrentlySaving = true
+
+      // Clear error messages
+      scope.setFeedbackNull()
+
       // scope.data.scene_version.content = scope.baseSceneVersionContent
       scope.data.scene_version.comments = (scope.commentbase_vm) ? scope.commentbase_vm.getCommentsJSON() : null
       // scope.data.notes = scope.tempSceneNotes
@@ -763,7 +764,7 @@ export default {
       scope.data.weather_type = scope.selected_weather_type.value
       scope.data.character_id_vp = scope.selected_character_id_vp.value
 
-      if (!scope.validate()) {
+      if (!scope.validate(noAlert)) {
         scope.isCurrentlySaving = false
         return false
       }
@@ -822,8 +823,12 @@ export default {
               })
             } else {
               if (scope.data.uuid === null) {
-                scope.data.id = response.data.id
-                scope.data.uuid = response.data.uuid
+                scope.$set(scope.data, 'id', response.data.id)
+                scope.$set(scope.data, 'uuid', response.data.uuid)
+                scope.$set(scope.data.scene_version, 'id', response.data.scene_version[0].id)
+                scope.$set(scope.data.scene_version, 'uuid', response.data.scene_version[0].uuid)
+
+                scope.setBaseSceneVal(scope.data)
               }
             }
           }
@@ -896,15 +901,20 @@ export default {
         content: scope.data.scene_version.content
       }
 
-      if (sceneHistory.content === '') return
+      if (sceneHistory.content === null || sceneHistory.content === undefined || sceneHistory.content === '') return
 
       scope.axios
         .post('http://localhost:3000/book-scene-history', sceneHistory)
         .then(response => {
           scope.setBaseSceneVal(scope.data)
 
-          scope.scene_history.push(response.data)
+          if (scope.scene_history.length) {
+            scope.scene_history.push(response.data)
+          } else {
+            scope.$set(scope, 'scene_history', response.data)
+          }
 
+          scope.do_auto_save = true
           console.log('Scene history saved!')
         })
     },
@@ -1069,7 +1079,7 @@ export default {
       // If save new version modal is open skip auto save
       // If view history modal is open skip auto save
       // If no changes  skip auto save
-      if (scope.scene_version_modal_is_open || scope.view_history || (scope.DEEP_EQUAL(scope.base_scene_val, scope.data) && !scope.IS_TAB_AS_MODIFIED)) return false
+      if (scope.scene_version_modal_is_open || scope.view_history || !scope.IS_TAB_AS_MODIFIED || scope.DEEP_EQUAL(scope.base_scene_val, scope.data)) return false
 
       // There still a ongoing autosave return false and let that autosave to finish saving
       if (!scope.do_scene_auto_save) return false

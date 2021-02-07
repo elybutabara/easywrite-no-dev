@@ -427,10 +427,6 @@ export default {
     setContent (value) {
       var scope = this
       scope.data.chapter_version.content = value
-
-      console.log('chapter_version content', value)
-      console.log('chapter_version content', scope.data.chapter_version.content)
-      console.log('base_chapter_val content', scope.base_chapter_val.chapter_version.content)
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
     },
     viewOverlay (value) {
@@ -497,7 +493,7 @@ export default {
         .post('http://localhost:3000/chapters', scope.data)
         .then(response => {
           if (response.data) {
-            scope.saveRelatedTables(response.data)
+            scope.saveRelatedTables(response.data.uuid)
             scope.$store.dispatch('updateChapterList', response.data)
             scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
 
@@ -540,9 +536,12 @@ export default {
                 scope.loadChapter(response.data)
               })
             } else {
-              if (scope.data.uuid === null) {
-                scope.data.id = response.data.id
-                scope.data.uuid = response.data.uuid
+              if (scope.data.id === null) {
+                scope.$set(scope.data, 'id', response.data.id)
+                scope.$set(scope.data, 'uuid', response.data.uuid)
+                scope.$set(scope.data.chapter_version, 'id', response.data.chapter_version[0].id)
+                scope.$set(scope.data.chapter_version, 'uuid', response.data.chapter_version[0].uuid)
+                scope.setBaseChapterVal(scope.data)
               }
             }
           }
@@ -550,12 +549,12 @@ export default {
 
       scope.isCurrentlySaving = false
     },
-    async saveRelatedTables (chapter) {
+    async saveRelatedTables (chapterId) {
       let scope = this
 
       try {
-        await scope.saveAuthorPersonalProgress(chapter.uuid)
-        await scope.saveChapterHistory(chapter.uuid)
+        await scope.saveAuthorPersonalProgress(chapterId)
+        await scope.saveChapterHistory(chapterId)
       } catch (ex) {
         scope.do_chapter_auto_save = true
       } finally {
@@ -596,13 +595,20 @@ export default {
         content: scope.data.chapter_version.content
       }
 
-      if (chapterHistory.content === '') return
+      if (chapterHistory.content === null || chapterHistory.content === undefined || chapterHistory.content === '') return
 
       scope.axios
         .post('http://localhost:3000/book-chapter-history', chapterHistory)
         .then(response => {
-          scope.chapter_history.push(response.data)
+          scope.setBaseChapterVal(scope.data)
 
+          if (scope.chapter_history.length) {
+            scope.chapter_history.push(response.data)
+          } else {
+            scope.$set(scope, 'chapter_history', response.data)
+          }
+
+          scope.do_auto_save = true
           console.log('Chapter history saved!')
         })
     },
