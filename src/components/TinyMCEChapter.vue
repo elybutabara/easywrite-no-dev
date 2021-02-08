@@ -138,7 +138,7 @@ export default {
 
             timer = setTimeout(function () {
               scope.emitToParent(editor.getContent())
-            }, 2000)
+            }, 200)
           })
         }
       }
@@ -183,12 +183,15 @@ export default {
       }
     },
     emitToParent (value) {
+      this.$emit('getEditorContent', value)
+      /*
       if (value) {
         this.$emit('getEditorContent', value)
       } else {
         console.log('emitToParent content', this.$el.value)
         this.$emit('getEditorContent', this.$el.value)
       }
+      */
     },
     showSaveToScene (content) {
       this.$emit('showOverlay', content)

@@ -481,6 +481,7 @@ export default {
     async saveChapter (noAlert) {
       var scope = this
       scope.isCurrentlySaving = true
+
       console.log('scope.data.chapter_version.content', scope.data.chapter_version.content)
       // scope.data.chapter_version.content = scope.baseChapterVersionCont
 
