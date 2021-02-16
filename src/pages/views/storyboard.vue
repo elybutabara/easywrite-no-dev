@@ -283,16 +283,16 @@ export default {
       var scope = this
       switch (scope.storyboard_rows) {
         case '2':
-          $('.es-storyboard-content .scene-wrapper').css('height', 'calc(50vh - 181px)')
+          window.$('.es-storyboard-content .scene-wrapper').css('height', 'calc(50vh - 181px)')
           break
         case '3':
-          $('.es-storyboard-content .scene-wrapper').css('height', 'calc(33.33vh - 124px)')
+          window.$('.es-storyboard-content .scene-wrapper').css('height', 'calc(33.33vh - 124px)')
           break
         case '4':
-          $('.es-storyboard-content .scene-wrapper').css('height', 'calc(25vh - 100px)')
+          window.$('.es-storyboard-content .scene-wrapper').css('height', 'calc(25vh - 100px)')
           break
         case '5':
-          $('.es-storyboard-content .scene-wrapper').css('height', 'calc(22vh - 100px)')
+          window.$('.es-storyboard-content .scene-wrapper').css('height', 'calc(22vh - 100px)')
           break
       }
     },

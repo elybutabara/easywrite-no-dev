@@ -31,11 +31,8 @@ class UserController {
       created_at: row.created_at,
       updated_at: row.updated_at,
       token: row.token,
-      password: row.password,
+      password: row.password
     }
-
-    
-
 
     var data = await User.query()
       .patch(columns)
