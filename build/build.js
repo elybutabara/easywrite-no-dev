@@ -64,8 +64,8 @@ let buildOptions = {
       "owner": "rancorfloydz",
       // "repo": "easywrite-se-dev",
       // "repo": "easywrite-se-live"
-      // "repo": "easywrite-no-dev"
-      "repo": "easywrite-no-live"
+      "repo": "easywrite-no-dev"
+      // "repo": "easywrite-no-live"
     }],
     "provisioningProfile": path.resolve('build/certificate/EasyWrite.provisionprofile'),
     "hardenedRuntime" : true,
@@ -91,8 +91,8 @@ let buildOptions = {
       "owner": "rancorfloydz",
       // "repo": "easywrite-se-dev",
       // "repo": "easywrite-se-live"
-      // "repo": "easywrite-no-dev"
-      "repo": "easywrite-no-live"
+      "repo": "easywrite-no-dev"
+      // "repo": "easywrite-no-live"
     }],
     "certificateFile" : "build/certificate/easywrite.pfx",
     "verifyUpdateCodeSignature" : true,
