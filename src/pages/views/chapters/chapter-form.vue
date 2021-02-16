@@ -136,7 +136,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12" v-show="data.id != null">
+                            <div class="col-md-12">
                                 <small>The chapter will be autosaved every ten seconds</small>
                                 <small v-if="!do_chapter_auto_save" class="text-red"> | Saving ...</small>
                             </div>
@@ -427,10 +427,6 @@ export default {
     setContent (value) {
       var scope = this
       scope.data.chapter_version.content = value
-
-      console.log('chapter_version content', value)
-      console.log('chapter_version content', scope.data.chapter_version.content)
-      console.log('base_chapter_val content', scope.base_chapter_val.chapter_version.content)
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
     },
     viewOverlay (value) {
@@ -498,9 +494,10 @@ export default {
         .post('http://localhost:3000/chapters', scope.data)
         .then(response => {
           if (response.data) {
-            scope.saveRelatedTables(response.data)
+            scope.saveRelatedTables(response.data.uuid)
             scope.$store.dispatch('updateChapterList', response.data)
             scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+
             if (!noAlert) {
               window.swal.fire({
                 position: 'center',
@@ -539,18 +536,26 @@ export default {
 
                 scope.loadChapter(response.data)
               })
+            } else {
+              if (scope.data.id === null) {
+                scope.$set(scope.data, 'id', response.data.id)
+                scope.$set(scope.data, 'uuid', response.data.uuid)
+                scope.$set(scope.data.chapter_version, 'id', response.data.chapter_version[0].id)
+                scope.$set(scope.data.chapter_version, 'uuid', response.data.chapter_version[0].uuid)
+                scope.setBaseChapterVal(scope.data)
+              }
             }
           }
         })
 
       scope.isCurrentlySaving = false
     },
-    async saveRelatedTables (chapter) {
+    async saveRelatedTables (chapterId) {
       let scope = this
 
       try {
-        await scope.saveAuthorPersonalProgress(chapter.uuid)
-        await scope.saveChapterHistory(chapter.uuid)
+        await scope.saveAuthorPersonalProgress(chapterId)
+        await scope.saveChapterHistory(chapterId)
       } catch (ex) {
         scope.do_chapter_auto_save = true
       } finally {
@@ -591,13 +596,20 @@ export default {
         content: scope.data.chapter_version.content
       }
 
-      if (chapterHistory.content === '') return
+      if (chapterHistory.content === null || chapterHistory.content === undefined || chapterHistory.content === '') return
 
       scope.axios
         .post('http://localhost:3000/book-chapter-history', chapterHistory)
         .then(response => {
-          scope.chapter_history.push(response.data)
+          scope.setBaseChapterVal(scope.data)
 
+          if (scope.chapter_history.length) {
+            scope.chapter_history.push(response.data)
+          } else {
+            scope.$set(scope, 'chapter_history', response.data)
+          }
+
+          scope.do_auto_save = true
           console.log('Chapter history saved!')
         })
     },
@@ -729,6 +741,7 @@ export default {
       // If save new version modal is open skip auto save
       // If view history modal is open skip auto save
       // If no changes  skip auto save
+      // eslint-disable-next-line no-unreachable
       if (scope.chapter_version_modal_is_open || scope.view_history || !scope.IS_TAB_AS_MODIFIED || scope.DEEP_EQUAL(scope.base_chapter_val, scope.data)) return false
 
       // There still a ongoing autosave return false and let that autosave to finish saving
@@ -757,10 +770,10 @@ export default {
   mounted () {
     var scope = this
     component = scope
+
+    scope.auto_save_chapter_interval = setInterval(scope.autoSave, 10000)
     if (scope.data.uuid) {
       scope.loadChapter(scope.properties.chapter)
-
-      scope.auto_save_chapter_interval = setInterval(scope.autoSave, 10000)
     } else {
       scope.page.is_ready = true
     }
