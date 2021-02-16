@@ -1,7 +1,7 @@
 {
   "name": "EasyWrite",
   "main": "starter.js",
-  "version": "0.1.31",
+  "version": "1.0.0-beta.7",
   "description": "Easy Write Application , The best app for writer!",
   "author": "EayWriteDeveloper",
   "private": true,
@@ -15,7 +15,7 @@
     "lint": "eslint --ext .js,.vue src test/unit test/e2e/specs",
     "build": "node build/build.js",
     "postinstall": "electron-builder install-app-deps",
-    "migration-win": "cross-env NODE_ENV=development knex migrate:make update_app_settings_add_run_times_and_api_url-%npm_package_version% --knexfile=./api/knexfile.js",
+    "migration-win": "cross-env NODE_ENV=development knex migrate:make add_column_data_in_notification-%npm_package_version% --knexfile=./api/knexfile.js",
     "migration-mac-linux": "cross-env NODE_ENV=development knex migrate:make [ACTION_NAME]-$npm_package_name --knexfile=./api/knexfile.js",
     "dist": "cross-env IS_UPDATE=true npm run build",
     "publisher": "cross-env IS_PUBLISH=onTagOrDraft npm run build",
@@ -50,7 +50,7 @@
     "select2": "^4.0.13",
     "select2-theme-bootstrap4": "^0.2.0-beta.6",
     "socket.io": "^2.3.0",
-    "sqlite3": "^5.0.0",
+    "sqlite3": "5.0.0",
     "sweetalert2": "^9.7.2",
     "tinymce": "^5.2.0",
     "uuid": "^7.0.2",
@@ -62,7 +62,8 @@
     "vue-notification": "^1.3.20",
     "vue-router": "^3.0.1",
     "vuedraggable": "^2.23.2",
-    "vuex": "^3.1.2"
+    "vuex": "^3.1.2",
+    "yarn": "^1.22.10"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

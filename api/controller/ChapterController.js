@@ -70,13 +70,22 @@ class ChapterController {
 
   static async save (data) {
 
-    const chapters = await Chapter.query()
-                            .select('order')
-                            .max('order')
-                            .where('book_id', data.book_id)
-                            .whereNull('deleted_at')
+    // Get the max order first before saving to fix scene order error
+    if(!data.id){
+      
+      const query = Chapter.query()
+      .select('order')
+      .max('order')
+      .where('book_id', data.book_id)
+      .whereNull('deleted_at')
 
-    data.order = chapters[0].order + 1
+      let chapterMaxOrder = await query
+
+      if (chapterMaxOrder) {
+        data.order = chapterMaxOrder[0].order + 1
+      }
+
+    }
 
     const upsertGraphOptions = {
       relate: ['chapter_version'],

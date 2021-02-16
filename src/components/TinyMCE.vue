@@ -10,7 +10,7 @@ export default {
   props: ['initValue', 'disabled', 'params'],
   data: function () {
     var scope = this
-    console.log('params........', scope.params)
+    // console.log('params........', scope.params)
     return {
       initConfig: {
         selector: 'input.tiny-area',
@@ -108,8 +108,18 @@ export default {
             }
           })
 
+          var timer = null
+
           editor.on('keyup', function (e) {
-            window.jQuery('#' + this.id).val(editor.getContent()).click()
+            let thisId = this.id
+            console.log('timer', timer)
+            if (timer) {
+              clearTimeout(timer)
+            }
+
+            timer = setTimeout(function () {
+              window.jQuery('#' + thisId).val(editor.getContent()).click()
+            }, 2000)
           })
         }
       }
@@ -124,9 +134,9 @@ export default {
     darkmode: function () {
       var vm = this
       if (this.darkmode) {
-        tinymce.get(vm.$el.id).getBody().style.color = '#fff'
+        tinymce.get(vm.$el.id).getBody().style.color = '#fff !important'
       } else {
-        tinymce.get(vm.$el.id).getBody().style.color = '#000'
+        tinymce.get(vm.$el.id).getBody().style.color = '#000 !important'
       }
     }
   },
@@ -134,11 +144,13 @@ export default {
     initEditor: function () {
       var vm = this
 
-      if (this.darkmode) {
-        this.initConfig.content_style = 'body { color: #fff;  }'
-      } else {
-        this.initConfig.content_style = 'body { color: #000;  }'
-      }
+      // if (this.darkmode) {
+      //   this.initConfig.content_style = 'body { color: #fff; }'
+      // } else {
+      //   this.initConfig.content_style = 'body { color: #000; }'
+      // }
+
+      this.initConfig.valid_children = '+body[style]'
 
       tinymce.init(vm.initConfig)
 
@@ -164,6 +176,11 @@ export default {
   mounted () {
     var vm = this
     vm.initEditor()
+    if (this.darkmode) {
+      tinymce.get(vm.$el.id).getBody().style.color = '#fff !important'
+    } else {
+      tinymce.get(vm.$el.id).getBody().style.color = '#000 !important'
+    }
   }
 }
 </script>

@@ -1,13 +1,20 @@
 'use strict'
 // const { query } = require('express')
 const path = require('path')
-
+const moment = require('moment')
 const { User, Notification, Book, Author, Chapter, Scene } = require(path.join(__dirname, '..', 'models'))
 
 class NotificationController {
   static async getAll (authorUuid) {
-    const notification = await this.notifications(authorUuid)
-    const invitations = await this.invitations(authorUuid)
+    var notification = await this.notifications(authorUuid)
+    var invitations = await this.invitations(authorUuid)
+
+    if (invitations != undefined) {
+      invitations = invitations.filter(model => {
+        return (model.book != null)
+      })
+    }
+
     return {
       'notifications': notification || [],
       'invitations': invitations || []
@@ -24,8 +31,7 @@ class NotificationController {
       .where(`to`, authorUuid)
       .whereIn('type', notificationType)
       .orderBy(`created_at`, 'desc')
-
-    var data = []
+      .whereNull('deleted_at')
 
     for (let i = 0; i < notification.length; i++) {
       // get sender
@@ -38,6 +44,7 @@ class NotificationController {
       const book = await Book.query()
         .withGraphJoined('author')
         .where('books.uuid', notification[i].book_id)
+        .whereNull('books.deleted_at')
 
       notification[i].book = book ? book[0] : null
 
@@ -60,9 +67,8 @@ class NotificationController {
             .whereNull('book_scenes.deleted_at')
             .where('book_scenes.uuid', notification[i].parent_id)
             .whereNull('chapter.deleted_at')
-
           notification[i].scene = scene ? scene[0] : null
-          notification[i].chapter = scene ? scene[0].chapter : null
+          notification[i].chapter = scene[0] ? scene[0].chapter : null
         }
       } else if (notification[i].type === 'notif' && notification[i].action === 'response') {
         notification[i].message = from[0].alias + 'Sent you a message'
@@ -82,17 +88,37 @@ class NotificationController {
         if (!chapter) return null
       } else if (notification[i].type === 'scene_comment' && notification[i].action == 'post') {
         const scene = await Scene.query()
+          .withGraphJoined('chapter')
+          .modifyGraph('chapter', builder => {
+            builder.whereNull('deleted_at')
+          })
           .whereNull('book_scenes.deleted_at')
           .where('book_scenes.uuid', notification[i].parent_id)
 
         notification[i].scene = scene ? scene[0] : null
-        notification[i].chapter = scene ? scene[0].chapter : null
+        notification[i].chapter = scene[0] ? scene[0].chapter : null
         notification[i].author = from ? from[0] : null
 
         if (!scene) return null
       } else {
         notification[i].author = from ? from[0] : null
       }
+    }
+
+    /** map remove notification if parent deleted.
+     *  book => if book is null
+     *  chapter => if chapter and book is null
+     *  scene => if scene and chapter and book is null
+     */
+
+    if (notification != undefined) {
+      notification = notification.filter(model => {
+        return (
+          ((model.parent_name == null || model.parent_name == 'book' || model.parent_name == 'book_reader_invitations') && model.book != null) ||
+          (model.parent_name == 'chapter' && model.chapter != null && model.chapter != undefined && model.book != null) ||
+          (model.parent_name == 'scene' && model.scene != null && model.scene != undefined && model.chapter != null && model.chapter != undefined && model.book != null)
+        )
+      })
     }
 
     return notification
@@ -104,12 +130,18 @@ class NotificationController {
   }
 
   static async invitations (authorUuid) {
-    var notification = Notification.query()
+    var notification = []
+    notification = Notification.query()
+      .withGraphJoined('book')
+      .modifyGraph('book', builder => {
+        builder.whereNull('deleted_at')
+      })
       .where('to', authorUuid)
       .where('status', 0)
       .whereIn('type', ['book', 'book_re_read', 'book_invite_decision', 'book_reader'])
       .where('action', 'invite')
       .orderBy('created_at', 'desc')
+
     return notification
   }
 
@@ -122,6 +154,7 @@ class NotificationController {
       book_id: row.book_id,
       parent_name: row.parent_name,
       status: row.status,
+      data: row.data,
       type: row.type,
       action: row.action,
       created_at: row.created_at,
@@ -145,6 +178,15 @@ class NotificationController {
     const user = await User.query()
       .findById(userId)
       .withGraphJoined('author', { maxBatchSize: 1 })
+
+      /*
+      * Update update_at so it will push to api , api will handle parent_id
+      * so after upload it will download latest notif that will convert parent_id that is id to uuid
+      * */
+    await Notification.query()
+      .where(`to`, user.author.uuid)
+      .where('parent_id', 'not like', '%-%')
+      .patch({updated_at: moment().format('YYYY-MM-DD HH:mm:ss').toString()})
 
     const rows = await Notification.query()
       .where('to', user.author.uuid)

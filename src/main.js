@@ -123,19 +123,26 @@ let APP = {
   },
   NO_DEV: {
     API: {
-      URL: 'https://api.pilotleser.no/no-dev',
+      URL: 'https://dev.pilotleser.no/app',
       UPLOAD_URL: 'https://dev.pilotleser.no/uploads',
       SITE: 'no-dev',
       CHAT: 'no-dev'
     }
+  },
+  LOCAL: {
+    API: {
+      URL: 'http://easywrite.local/app',
+      UPLOAD_URL: 'http://easywrite.local/uploads',
+      SITE: 'local',
+      CHAT: 'local'
+    }
   }
 }
 
-window.APP = APP.NO_PROD // DEVELOPEMENT APP
+window.APP = APP.LOCAL // DEVELOPEMENT APP
 if (process.env.NODE_ENV === 'production') {
-  window.APP = APP.NO_PROD // PRODUCTION APP
+  window.APP = APP.NO_DEV // PRODUCTION APP
 }
-
 // window.$.fn.select2.defaults.set('theme', 'bootstrap')
 
 // import electron from 'electron'

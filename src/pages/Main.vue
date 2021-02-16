@@ -53,6 +53,7 @@
 
                   <a @click.prevent="showMessageCenter=!showMessageCenter; showUserSettings=false;" id="message-center" class="user-btn position-relative" href="javascript:void(0)" style="margin-right: 10px;">
                     <i class="fas fa-bell"></i>
+                    <b-badge variant="primary">{{ notificationCount_ }}</b-badge>
                     <span v-if="notificationCount > 0" style="position: absolute;width: 20px;height: 20px;border-radius: 50%;background: red;color: rgb(255, 255, 255);top: -5px;right: -8px;line-height: 20px;text-align: center;font-size: 12px;">{{notificationCount}}</span>
                   </a>
                   <div id="message-centerr" v-show="showMessageCenter" style="position: absolute; top: 68px; right: 18px; z-index: 10000; width: 500px; text-align: left;">
@@ -340,8 +341,7 @@ export default {
 
   mounted () {
     var scope = this
-    console.log('helo')
-    console.log(scope.tabs.items[0].component)
+    // console.log(scope.tabs.items[0].component)
     window.AppMain = this
     var userUUID = this.$store.getters.getUserID
     var authorUUID = this.$store.getters.getAuthorID

@@ -51,6 +51,7 @@
                   </div>
                 </b-button>
                 </div>
+
               <div v-html="getChapterContent" class="description" v-bind:id="commentbase_id"></div>
               <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params"></CommentBasePanel>
           </div>
@@ -153,7 +154,8 @@ export default {
       },
       exportOnProgress: false,
       exportLoading: this.$t('Loading'),
-      show_feedbacks: false
+      show_feedbacks: false,
+      notification: null
     }
   },
   components: {
@@ -334,10 +336,15 @@ export default {
       scope.show_feedbacks = true
     }
 
+    if (scope.properties.notification) {
+      scope.notification = scope.properties.notification
+    }
+
+    console.log(scope.notification)
     scope.page.data = scope.properties
     scope.page.title = scope.properties.chapter.title
-    // console.log('PROPERTIES')
-    // console.log(scope.properties)
+    console.log('PROPERTIES')
+    console.log(scope.properties)
 
     try {
       await scope.$store.dispatch('loadScenesByChapter', scope.properties.chapter.uuid)

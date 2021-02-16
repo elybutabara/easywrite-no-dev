@@ -28,8 +28,7 @@ exports.initMainWindow = (window) => {
           // check if there is altChunk
           if(data.indexOf("<w:altChunk r:id=\"htmlChunk\" />") >= 0){ // Do not use mammoth
             
-            html = data.toString().substring(data.toString().indexOf("<body>"), data.toString().indexOf("</body>"))
-
+            html = data.toString().substring(data.toString().indexOf("<html>"), data.toString().indexOf("</html>")).replace(/3D/g, "")
             if (type === 'book') {
               MainWindow.webContents.send('GET-DOCX-CONTENT-BOOK', html)
             } else if (type === 'chapter') {

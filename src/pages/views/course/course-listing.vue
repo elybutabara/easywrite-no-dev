@@ -117,7 +117,7 @@ export default {
       let coursesTaken = await scope.axios.get('http://localhost:3000/users/' + this.$store.getters.getUserID + '/courses')
       scope.courses_taken = coursesTaken.data
       console.log('coursesTaken >>>>')
-      console.log(scope.courses_taken)
+      // console.log(scope.courses_taken)
     }
   },
   async mounted () {

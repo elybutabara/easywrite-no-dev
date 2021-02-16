@@ -36,6 +36,7 @@
           <div v-if="items.length < 1" style="text-align: center; padding: 30px 0; opacity: 0.5;">
             Empty
           </div>
+
           <div v-for="model in items" v-bind:key="model.id" v-if="model != null" @click="updateNotificationStatus(model)"  style="padding: 10px; border-top: 1px solid #e3e6f0; clear: both;" v-bind:style="{backgroundColor: model.status!=0?'#fff':'rgb(177,226,239)'}">
             <!--INVITE AREA -->
             <div v-if="model.action == 'invite'" class="TnxGiv1ng  row ml-0 mr-0">
@@ -94,12 +95,13 @@
               <div class="col-md-2">
                 <div v-bind:style="{'background-image': 'url(images/avatars/icons8-source-code-100.png)','background-size':'cover'}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #c0c0c0;"></div>
               </div>
+
               <div class="col-md-10">
                 <div style="margin-left: 10px;">
                   <div><div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{ model.alias }}</div>
                     <div class="mt-2" style="font-size: 14px; line-height: 100%;">
                       {{ model.alias +' '+$t('site.commented-on-chapter')+' '+ model.chapter.title+'.'}}
-                      <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openChapterDetails(model, 'open-feedback'):openBookIReadChapterDetails(model, 'open-feedback')">
+                      <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openChapterDetails(model ):openBookIReadChapterDetails(model, 'open-feedback')">
                         {{ capitalizeFirstLetter($t('site.click-here')) }}
                       </a> {{ $t('site.to-view') }}
                     </div>
@@ -121,7 +123,7 @@
                     <div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{ model.alias }}</div>
                     <div class="mt-2" style="font-size: 14px; line-height: 100%;">
                       {{ model.alias +' '+$t('site.commented-on-scene')+' '+ model.scene.title+'.'}}
-                      <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openSceneDetails(model, 'open-feedback'):openBookIReadSceneDetails(model, 'open-feedback')">
+                      <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openSceneDetails(model):openBookIReadSceneDetails(model, 'open-feedback')">
                         {{ capitalizeFirstLetter($t('site.click-here')) }}
                       </a> {{ $t('site.to-view') }}
                     </div>
@@ -194,21 +196,21 @@
                     <div v-if="model.action=='post'" class="mt-2" style="font-size: 14px; line-height: 100%;">
                       <!--SCENE FEEDBACK-->
                       <span v-if="model.parent_id && model.parent_name == 'scene' ">
-                                                {{ model.alias +' '+$t('site.has-left-a-feedback-on')+' '+ model.book.title +'-'+model.chapter.title+' ('+model.scene.title+' Scene).'}}
+                                                {{ model.alias +' '+$t('site.has-left-a-scene-feedback-on')+' '+ model.book.title +'-'+model.chapter.title+' ('+model.scene.title+' Scene).'}}
                                                 <a href='javascript:void(0)' @click="openSceneDetails(model, 'open-feedback')">
                                                     {{ capitalizeFirstLetter($t('site.click-here')) }}
                                                 </a> {{ $t('site.to-view')  }}
                                             </span>
                       <!--CHAPTER FEEDBACK-->
-                      <span v-else-if="model.chapter_id">
-                                                {{ model.alias +' '+$t('site.has-left-a-feedback-on')+' '+ model.book.title +'-'+model.chapter.title+'.'}}
+                        <span v-else-if="model.parent_id && model.parent_name == 'chapter' ">
+                                                {{ model.alias +' '+$t('site.has-left-a-chapter-feedback-on')+' '+ model.book.title +'-'+model.chapter.title+'.'}}
                                                 <a href='javascript:void(0)' @click="openChapterDetails(model, 'open-feedback')">
                                                     {{ capitalizeFirstLetter($t('site.click-here')) }}
                                                 </a> {{ $t('site.to-view')  }}
                                             </span>
                       <!--BOOK FEEDBACK-->
                       <span v-else>
-                                                {{ model.alias +' '+$t('site.has-left-a-feedback-on')+' '+ model.book.title+'.'}}
+                                                {{ model.alias +' '+$t('site.has-left-a-book-feedback-on')+' '+ model.book.title+'.'}}
                                                 <a href='javascript:void(0)' @click="openBookDetails(model)">
                                                     {{ capitalizeFirstLetter($t('site.click-here')) }}
                                                 </a> {{ $t('site.to-view') }}
@@ -504,12 +506,15 @@ export default {
         await scope.TOGGLE_BOOK_I_READ(model.book, 'chapters', scope.params.author.id)
 
         var openfeedback = (action == 'open-feedback')
-
+        const book = model.book
+        const chapter = model.chapter
+        delete model.book
+        delete model.chapter
         let config = {
-          tabKey: 'books-i-read-chapter-details-' + model.chapter.id,
+          tabKey: 'books-i-read-chapter-details-' + chapter.id,
           tabComponent: 'books-i-read-chapter-details',
-          tabData: {book: model.book, chapter: model.chapter, openfeedback: openfeedback},
-          tabTitle: scope.trans('site.to-view') + ' - ' + model.chapter.title
+          tabData: {book: book, chapter: chapter, openfeedback: openfeedback, notification: model},
+          tabTitle: scope.trans('site.to-view') + ' - ' + chapter.title
         }
         scope.CHANGE_COMPONENT(config)
         // TODO : open Book-i-read tree for the specific chapter
@@ -527,13 +532,16 @@ export default {
         // if(model.type =='feedback' && (model.action == 'post' || model.action == 'inlined')){
         //     openfeedback = true
         // }
-
+        const book = model.book
+        const chapter = model.chapter
+        delete model.book
+        delete model.chapter
         var openfeedback = (action == 'open-feedback')
         scope.CHANGE_COMPONENT({
-          tabKey: 'chapter-details-' + model.chapter.uuid,
+          tabKey: 'chapter-details-' + chapter.uuid,
           tabComponent: 'chapter-details',
-          tabData: {book: model.book, chapter: model.chapter, openfeedback: openfeedback},
-          tabTitle: ('VIEW') + ' - ' + model.chapter.title
+          tabData: {book: book, chapter: chapter, openfeedback: openfeedback, notification: model},
+          tabTitle: ('VIEW') + ' - ' + chapter.title
         })
       }
     },
@@ -578,16 +586,17 @@ export default {
     fetch: async function () {
       const scope = this
       var authorUUID = this.$store.getters.getAuthorID
-
+      scope.allItems['notifications'] = []
+      scope.allItems['invitations'] = []
       /**
        * Get notifications | feedback and comments only
        */
-      console.log('authorUUID', authorUUID)
+      // console.log('authorUUID', authorUUID)
       await scope.axios
         .get('http://localhost:3000/notifications/' + authorUUID)
         .then(response => {
-          scope.allItems = response.data.data
-          // scope.allItems['notifications'] = response.data.data['notifications']
+          // console.log('response data', response.data.data)
+          scope.allItems['notifications'] = response.data.data.notifications
         })
         .catch(error => {
           console.log('error', error)
@@ -689,7 +698,7 @@ export default {
 
       scope.axios.post('http://localhost:3000/notifications/update-notification-status', params)
         .then(response => {
-          console.log('updateNotificationStatus response', response.data)
+          // console.log('updateNotificationStatus response', response.data)
           scope.items = response.data
           const itemType = 'notifications'
           scope.allItems[itemType] = response.data
