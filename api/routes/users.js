@@ -12,10 +12,7 @@ router.get('/login', async function (req, res) {
   if (user) {
     res
       .status(200)
-      .json({
-        user: user,
-        author: user.author
-      })
+      .json(user)
   } else {
     res
       .status(401)

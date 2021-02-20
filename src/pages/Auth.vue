@@ -59,7 +59,7 @@ import { mapActions } from 'vuex'
 const electron = window.require('electron')
 const {ipcRenderer} = electron
 const remote = electron.remote
-
+const log = window.require('electron-log')
 export default {
   name: 'Auth',
   data () {
@@ -94,24 +94,34 @@ export default {
           console.log('has no network')
         })
         .finally(function () {
-          if (scope.networkConnected) {
-            scope.authenticateAPI()
+          if (scope.networkConnected == false) {
+            scope.authenticateAPP()
           } else {
-            scope.axios
-              .get('http://localhost:3000/users/login?username=' + scope.username + '&password=' + scope.password)
-              .then(async function (response) {
-                console.log('authenticate with no net')
-                scope.prepareLoadWindow(response)
-              })
-              .catch(error => {
-                if (error.response.status === 401) {
-                  scope.authenticateAPI()
-                }
-              })
+            scope.authenticateAPI()
           }
         })
     },
+    authenticateAPP: function () {
+      const scope = this
+      scope.axios
+        .get('http://localhost:3000/users/login?username=' + scope.username + '&password=' + scope.password)
+        .then(async function (response) {
+          console.log('Sucesss login')
+          await scope.prepareLoadWindow(response)
+        })
+        .catch(error => {
+          scope.$notify({
+            group: 'notification',
+            type: 'error',
+            title: 'Authentication Failed',
+            text: error.response.data.message
+          })
+        })
+    },
     authenticateAPI: function () {
+      /*
+      * authenticate with net
+      * */
       var scope = this
       scope.axios.post(window.APP.API.URL + '/login', {
         username: scope.username,
@@ -134,12 +144,12 @@ export default {
           scope.saveUser(response.data.user)
         })
         .catch(function (error) {
-          scope.$notify({
-            group: 'notification',
-            type: 'error',
-            title: 'Authentication Failed',
-            text: error.response.data.message
-          })
+          /*
+          * IF error connecting to API then proceed authenticate to APP
+          * */
+          log.error(error)
+          console.log('Failed to login to api,login via app')
+          scope.authenticateAPP()
         })
     },
     saveUser: function (data) {
@@ -155,16 +165,21 @@ export default {
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
-              // console.log('SAVE USER RESPONSE:')
-              // console.log(response.data)
               scope.prepareLoadWindow(response)
             })
           }
+        }).catch(function (error) {
+          /*
+          * IF error saving user then proceed authenticate to APP
+          * */
+          log.error(error)
+          console.log('Failed to login to api,login via app')
+          scope.authenticateAPP()
         })
     },
     prepareLoadWindow: async function (response) {
       const scope = this
-      scope.$store.commit('authenticate', {
+      await scope.$store.commit('authenticate', {
         user: response.data,
         author: response.data.author
       })
@@ -195,6 +210,7 @@ export default {
         api_url: window.APP.API.URL
       }
 
+      console.log(settigs)
       // save app settings
       await scope.axios
         .post('http://localhost:3000/app-settings', settigs).then(response => {
