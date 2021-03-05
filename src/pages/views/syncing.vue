@@ -184,41 +184,41 @@ export default {
       batchDatas: [],
       endpoints: [
         { title: 'Authors', api: 'authors', local: 'authors', downloaded: [], packed: [], skip: true, error: [] },
-        // { title: 'Genres', api: 'book-genres', local: 'book-genres', downloaded: [], packed: [], skip: false, error: [] },
-        // { title: 'Relations', api: 'book-relations', local: 'relations', downloaded: [], packed: [], skip: false, error: [] },
-        { title: 'Books', api: 'books', local: 'books', downloaded: [], packed: [], skip: false, error: [] }
-        // { title: 'Items', api: 'book-items', local: 'items', downloaded: [], packed: [], skip: false, error: [] },
-        // { title: 'Locations', api: 'book-locations', local: 'locations', downloaded: [], packed: [], skip: false, error: [] }
-        // { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: [], packed: [], skip: false, error: [] },
-        // { title: 'Chapters', api: 'book-chapters', local: 'chapters', downloaded: [], packed: [], skip: false },
-        // { title: 'Chapter Versions', api: 'book-chapter-versions', local: 'chapter-versions', downloaded: [], packed: [], skip: false },
-        // { title: 'Characters', api: 'book-characters', local: 'characters', downloaded: [], packed: [], skip: false },
-        // { title: 'Relationships', api: 'book-relation-details', local: 'relation-details', downloaded: [], packed: [], skip: false },
-        // { title: 'Scenes', api: 'book-scenes', local: 'scenes', downloaded: [], packed: [], skip: false },
-        // { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: [], packed: [], skip: false },
-        // { title: 'Scene Items', api: 'book-scene-items', local: 'scene-items', downloaded: [], packed: [], skip: false },
-        // { title: 'Scene Locations', api: 'book-scene-locations', local: 'scene-locations', downloaded: [], packed: [], skip: false },
-        // { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: [], packed: [], skip: false },
-        // { title: 'Book Readers', api: 'book-readers', local: 'readers', downloaded: [], packed: [], skip: false, error: [] },
-        // { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: [], packed: [], skip: false, error: [] },
-        // { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: [], packed: [], skip: false, error: [] },
-        // { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], skip: false, error: [] },
-        // { title: 'Courses', api: 'courses', local: 'courses', downloaded: [], packed: [], skip: false, error: [] },
-        // { title: 'Courses Taken', api: 'courses-taken', local: 'courses-taken', downloaded: [], packed: [], skip: false, error: [] },
-        // { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], skip: false, error: [] },
-        // { title: 'Package Courses', api: 'package-courses', local: 'package-courses', downloaded: [], packed: [], skip: false, error: [] },
-        // { title: 'Lessons', api: 'lessons', local: 'lessons', downloaded: [], packed: [], skip: false, error: [] },
-        // { title: 'Lesson Documents', api: 'lesson-documents', local: 'lesson-documents', downloaded: [], packed: [], skip: false, error: [] },
+        { title: 'Genres', api: 'book-genres', local: 'book-genres', downloaded: [], packed: [], skip: false, error: [] },
+        { title: 'Relations', api: 'book-relations', local: 'relations', downloaded: [], packed: [], skip: false, error: [] },
+        { title: 'Books', api: 'books', local: 'books', downloaded: [], packed: [], skip: false, error: [] },
+        { title: 'Items', api: 'book-items', local: 'items', downloaded: [], packed: [], skip: false, error: [] },
+        { title: 'Locations', api: 'book-locations', local: 'locations', downloaded: [], packed: [], skip: false, error: [] },
+        { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: [], packed: [], skip: false, error: [] },
+        { title: 'Chapters', api: 'book-chapters', local: 'chapters', downloaded: [], packed: [], skip: false },
+        { title: 'Chapter Versions', api: 'book-chapter-versions', local: 'chapter-versions', downloaded: [], packed: [], skip: false },
+        { title: 'Characters', api: 'book-characters', local: 'characters', downloaded: [], packed: [], skip: false },
+        { title: 'Relationships', api: 'book-relation-details', local: 'relation-details', downloaded: [], packed: [], skip: false },
+        { title: 'Scenes', api: 'book-scenes', local: 'scenes', downloaded: [], packed: [], skip: false },
+        { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: [], packed: [], skip: false },
+        { title: 'Scene Items', api: 'book-scene-items', local: 'scene-items', downloaded: [], packed: [], skip: false },
+        { title: 'Scene Locations', api: 'book-scene-locations', local: 'scene-locations', downloaded: [], packed: [], skip: false },
+        { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: [], packed: [], skip: false },
+        { title: 'Book Readers', api: 'book-readers', local: 'readers', downloaded: [], packed: [], skip: false, error: [] },
+        { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: [], packed: [], skip: false, error: [] },
+        { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: [], packed: [], skip: false, error: [] },
+        { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], skip: false, error: [] },
+        { title: 'Courses', api: 'courses', local: 'courses', downloaded: [], packed: [], skip: false, error: [] },
+        { title: 'Courses Taken', api: 'courses-taken', local: 'courses-taken', downloaded: [], packed: [], skip: false, error: [] },
+        { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], skip: false, error: [] },
+        { title: 'Package Courses', api: 'package-courses', local: 'package-courses', downloaded: [], packed: [], skip: false, error: [] },
+        { title: 'Lessons', api: 'lessons', local: 'lessons', downloaded: [], packed: [], skip: false, error: [] },
+        { title: 'Lesson Documents', api: 'lesson-documents', local: 'lesson-documents', downloaded: [], packed: [], skip: false, error: [] },
         // { title: 'Book Feedbacks', api: 'book-feedbacks', local: 'feedbacks', downloaded: [], packed: [], skip: false },
         // { title: 'Book Chapter Feedbacks', api: 'book-chapter-feedbacks', local: 'chapter-feedbacks', downloaded: [], packed: [], skip: false },
         // { title: 'Book Chapter Feedback Responses', api: 'book-chapter-feedback-responses', local: 'chapter-feedback-responses', downloaded: [], packed: [], skip: false },
-        // { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [], skip: false },
-        // { title: 'Assignment Manuscripts', api: 'assignment-manuscripts', local: 'assignment-manuscripts', downloaded: [], packed: [], skip: false },
-        // { title: 'Webinars', api: 'webinars', local: 'webinars', downloaded: [], packed: [], skip: false },
-        // { title: 'WebinarPresenters', api: 'webinar-presenters', local: 'webinar-presenters', downloaded: [], packed: [], skip: false },
-        // { title: 'WebinarRegistrants', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: [], packed: [], skip: false },
-        // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [], skip: false },
-        // { title: 'Notifications', api: 'notifications', local: 'notifications', downloaded: [], packed: [], skip: false }
+        { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [], skip: false },
+        { title: 'Assignment Manuscripts', api: 'assignment-manuscripts', local: 'assignment-manuscripts', downloaded: [], packed: [], skip: false },
+        { title: 'Webinars', api: 'webinars', local: 'webinars', downloaded: [], packed: [], skip: false },
+        { title: 'WebinarPresenters', api: 'webinar-presenters', local: 'webinar-presenters', downloaded: [], packed: [], skip: false },
+        { title: 'WebinarRegistrants', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: [], packed: [], skip: false },
+        { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [], skip: false },
+        { title: 'Notifications', api: 'notifications', local: 'notifications', downloaded: [], packed: [], skip: false }
       ],
       bookUUID: ''
     }
@@ -331,7 +331,7 @@ export default {
           // always executed
         })
     },
-    startUploadDatav2: async function () {
+    startUploadDatav2: function () {
       /*
       * FAST TO LOW ways on syncing
       * - axios.all
@@ -347,7 +347,7 @@ export default {
       if (scope.upload.pointer >= scope.endpoints.length) {
         // done going through tables
         console.log('DONE UPLOAD1: ' + scope.upload.pointer)
-        scope.startDownloadData1()
+        scope.startDownloadData()
         return
       }
 
@@ -360,7 +360,7 @@ export default {
         console.log('SKIP ' + endpoint.title)
         scope.upload.pointer++
         scope.upload.index = 0
-        scope.startUploadData()
+        scope.startUploadDatav2()
         return
       }
 
@@ -394,30 +394,33 @@ export default {
         // proceed to next point
         console.log('proceed to next point')
         scope.upload.pointer++
-        await scope.startUploadDatav2()
+        scope.startUploadDatav2()
         return
       }
 
       /*
       * process all request concurrently
       * */
-      await scope.axios.all(scope.upload.allRequest.map(function (req) {
+      scope.axios.all(scope.upload.allRequest.map(function (req) {
+        console.log('sulod axios')
         return scope.axios(req)
       }))
         .then(scope.axios.spread(function (result) {
           console.log('res')
           console.log(result)
-          scope.startDownloadData()
+          scope.upload.pointer++
+          scope.startUploadDatav2()
           // scope.progress_message = scope.$t('UPLOADING') + ' ' + endpoint.title + ' ' + scope.$t('DATA') + '(BATCH ' + batchKey + ')...'
           // console.log(results)
         }))
         .catch(function (err) {
           console.log('err')
           console.log(err)
-          scope.startDownloadData()
+          scope.upload.pointer++
+          scope.startUploadDatav2()
         })
 
-      // Add a request interceptor
+      // Add a request interookceptor
       scope.axios.interceptors.request.use(function (config) {
         // Do something before request is sent
         console.log('config ', config)
