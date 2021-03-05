@@ -44,6 +44,8 @@
             <br/>
           </div>
         </div>
+
+        <!--   UPLOADING     -->
         <div v-if="stage == 'uploading'" class="es-card">
           <div class="es-card-header">{{$t('UPLOADING_DATA')}}</div>
           <div class="es-card-content">
@@ -52,7 +54,7 @@
             <div class="es-progress-bar">
               <div v-bind:class="{'error' : upload.error }" class="es-progress" v-bind:style="{ width: uploadProgess + '%' }"></div>
             </div>
-            <p>{{ progress_message }}</p>
+            <p>{{ message }}</p>
             <br/>
             <br/>
           </div>
@@ -154,12 +156,16 @@ export default {
         error: false
       },
       upload: {
+        data: [],
         pointer: 1, // starts at one coz  we skip authors
         index: 0,
-        counter: 0,
+        counter: [],
         progress: 0,
         total: 0,
-        error: false
+        error: false,
+        batch: 0,
+        progress_message: 'Initializing...',
+        allRequest: []
       },
       packing: {
         pointer: 1, // starts at one coz  we skip authors
@@ -175,48 +181,52 @@ export default {
         total: 0,
         error: false
       },
+      batchDatas: [],
       endpoints: [
-        { title: 'Authors', api: 'authors', local: 'authors', downloaded: [], packed: [], error: [] },
-        { title: 'Genres', api: 'book-genres', local: 'book-genres', downloaded: [], packed: [], error: [] },
-        { title: 'Relations', api: 'book-relations', local: 'relations', downloaded: [], packed: [], error: [] },
-        { title: 'Books', api: 'books', local: 'books', downloaded: [], packed: [], error: [] },
-        { title: 'Items', api: 'book-items', local: 'items', downloaded: [], packed: [], error: [] },
-        { title: 'Locations', api: 'book-locations', local: 'locations', downloaded: [], packed: [], error: [] },
-        { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: [], packed: [], error: [] },
-        { title: 'Chapters', api: 'book-chapters', local: 'chapters', downloaded: [], packed: [] },
-        { title: 'Chapter Versions', api: 'book-chapter-versions', local: 'chapter-versions', downloaded: [], packed: [] },
-        { title: 'Characters', api: 'book-characters', local: 'characters', downloaded: [], packed: [] },
-        { title: 'Relationships', api: 'book-relation-details', local: 'relation-details', downloaded: [], packed: [] },
-        { title: 'Scenes', api: 'book-scenes', local: 'scenes', downloaded: [], packed: [] },
-        { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: [], packed: [] },
-        { title: 'Scene Items', api: 'book-scene-items', local: 'scene-items', downloaded: [], packed: [] },
-        { title: 'Scene Locations', api: 'book-scene-locations', local: 'scene-locations', downloaded: [], packed: [] },
-        { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: [], packed: [] },
-        { title: 'Book Readers', api: 'book-readers', local: 'readers', downloaded: [], packed: [], error: [] },
-        { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: [], packed: [], error: [] },
-        { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: [], packed: [], error: [] },
-        { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], error: [] },
-        { title: 'Courses', api: 'courses', local: 'courses', downloaded: [], packed: [], error: [] },
-        { title: 'Courses Taken', api: 'courses-taken', local: 'courses-taken', downloaded: [], packed: [], error: [] },
-        { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], error: [] },
-        { title: 'Package Courses', api: 'package-courses', local: 'package-courses', downloaded: [], packed: [], error: [] },
-        { title: 'Lessons', api: 'lessons', local: 'lessons', downloaded: [], packed: [], error: [] },
-        { title: 'Lesson Documents', api: 'lesson-documents', local: 'lesson-documents', downloaded: [], packed: [], error: [] },
-        // { title: 'Book Feedbacks', api: 'book-feedbacks', local: 'feedbacks', downloaded: [], packed: [] },
-        // { title: 'Book Chapter Feedbacks', api: 'book-chapter-feedbacks', local: 'chapter-feedbacks', downloaded: [], packed: [] },
-        // { title: 'Book Chapter Feedback Responses', api: 'book-chapter-feedback-responses', local: 'chapter-feedback-responses', downloaded: [], packed: [] },
-        { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [] },
-        { title: 'Assignment Manuscripts', api: 'assignment-manuscripts', local: 'assignment-manuscripts', downloaded: [], packed: [] },
-        { title: 'Webinars', api: 'webinars', local: 'webinars', downloaded: [], packed: [] },
-        { title: 'WebinarPresenters', api: 'webinar-presenters', local: 'webinar-presenters', downloaded: [], packed: [] },
-        { title: 'WebinarRegistrants', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: [], packed: [] },
-        { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [] },
-        { title: 'Notifications', api: 'notifications', local: 'notifications', downloaded: [], packed: [] }
+        { title: 'Authors', api: 'authors', local: 'authors', downloaded: [], packed: [], skip: true, error: [] },
+        // { title: 'Genres', api: 'book-genres', local: 'book-genres', downloaded: [], packed: [], skip: false, error: [] },
+        // { title: 'Relations', api: 'book-relations', local: 'relations', downloaded: [], packed: [], skip: false, error: [] },
+        { title: 'Books', api: 'books', local: 'books', downloaded: [], packed: [], skip: false, error: [] }
+        // { title: 'Items', api: 'book-items', local: 'items', downloaded: [], packed: [], skip: false, error: [] },
+        // { title: 'Locations', api: 'book-locations', local: 'locations', downloaded: [], packed: [], skip: false, error: [] }
+        // { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: [], packed: [], skip: false, error: [] },
+        // { title: 'Chapters', api: 'book-chapters', local: 'chapters', downloaded: [], packed: [], skip: false },
+        // { title: 'Chapter Versions', api: 'book-chapter-versions', local: 'chapter-versions', downloaded: [], packed: [], skip: false },
+        // { title: 'Characters', api: 'book-characters', local: 'characters', downloaded: [], packed: [], skip: false },
+        // { title: 'Relationships', api: 'book-relation-details', local: 'relation-details', downloaded: [], packed: [], skip: false },
+        // { title: 'Scenes', api: 'book-scenes', local: 'scenes', downloaded: [], packed: [], skip: false },
+        // { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: [], packed: [], skip: false },
+        // { title: 'Scene Items', api: 'book-scene-items', local: 'scene-items', downloaded: [], packed: [], skip: false },
+        // { title: 'Scene Locations', api: 'book-scene-locations', local: 'scene-locations', downloaded: [], packed: [], skip: false },
+        // { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: [], packed: [], skip: false },
+        // { title: 'Book Readers', api: 'book-readers', local: 'readers', downloaded: [], packed: [], skip: false, error: [] },
+        // { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: [], packed: [], skip: false, error: [] },
+        // { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: [], packed: [], skip: false, error: [] },
+        // { title: 'Notes', api: 'notes', local: 'notes', downloaded: [], packed: [], skip: false, error: [] },
+        // { title: 'Courses', api: 'courses', local: 'courses', downloaded: [], packed: [], skip: false, error: [] },
+        // { title: 'Courses Taken', api: 'courses-taken', local: 'courses-taken', downloaded: [], packed: [], skip: false, error: [] },
+        // { title: 'Packages', api: 'packages', local: 'packages', downloaded: [], packed: [], skip: false, error: [] },
+        // { title: 'Package Courses', api: 'package-courses', local: 'package-courses', downloaded: [], packed: [], skip: false, error: [] },
+        // { title: 'Lessons', api: 'lessons', local: 'lessons', downloaded: [], packed: [], skip: false, error: [] },
+        // { title: 'Lesson Documents', api: 'lesson-documents', local: 'lesson-documents', downloaded: [], packed: [], skip: false, error: [] },
+        // { title: 'Book Feedbacks', api: 'book-feedbacks', local: 'feedbacks', downloaded: [], packed: [], skip: false },
+        // { title: 'Book Chapter Feedbacks', api: 'book-chapter-feedbacks', local: 'chapter-feedbacks', downloaded: [], packed: [], skip: false },
+        // { title: 'Book Chapter Feedback Responses', api: 'book-chapter-feedback-responses', local: 'chapter-feedback-responses', downloaded: [], packed: [], skip: false },
+        // { title: 'Assignments', api: 'assignments', local: 'assignments', downloaded: [], packed: [], skip: false },
+        // { title: 'Assignment Manuscripts', api: 'assignment-manuscripts', local: 'assignment-manuscripts', downloaded: [], packed: [], skip: false },
+        // { title: 'Webinars', api: 'webinars', local: 'webinars', downloaded: [], packed: [], skip: false },
+        // { title: 'WebinarPresenters', api: 'webinar-presenters', local: 'webinar-presenters', downloaded: [], packed: [], skip: false },
+        // { title: 'WebinarRegistrants', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: [], packed: [], skip: false },
+        // { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: [], packed: [], skip: false },
+        // { title: 'Notifications', api: 'notifications', local: 'notifications', downloaded: [], packed: [], skip: false }
       ],
       bookUUID: ''
     }
   },
   computed: {
+    message: function () {
+      return this.progress_message
+    },
     packingProgess: function () {
       var progress = Math.ceil((this.packing.pointer / this.endpoints.length) * 100)
       if (progress > 100) { progress = 100 }
@@ -303,7 +313,7 @@ export default {
           scope.packing.pointer++
           scope.packing.total += response.data.length
           if (scope.packing.pointer >= scope.endpoints.length) {
-            scope.startUploadData()
+            scope.startUploadDatav2()
           } else {
             scope.getSyncableData()
           }
@@ -320,6 +330,238 @@ export default {
         .finally(function () {
           // always executed
         })
+    },
+    startUploadDatav2: async function () {
+      /*
+      * FAST TO LOW ways on syncing
+      * - axios.all
+      * - Promise.all
+      * - Looping the per batch then per data
+      * */
+
+      const scope = this
+      scope.stage = 'uploading'
+      scope.upload.error = false
+
+      console.log('pointer: ' + scope.upload.pointer)
+      if (scope.upload.pointer >= scope.endpoints.length) {
+        // done going through tables
+        console.log('DONE UPLOAD1: ' + scope.upload.pointer)
+        scope.startDownloadData1()
+        return
+      }
+
+      const endpoint = scope.endpoints[scope.upload.pointer]
+
+      if (!endpoint) return
+
+      if (['Genres', 'Courses', 'Courses Taken', 'Packages', 'Package Courses', 'Lessons', 'Lesson Documents', 'Authors', 'WebinarRegistrants', 'WebinarPresenters', 'Webinars'].indexOf(endpoint.title) > -1) {
+        // TODO : refactor this for SKIPPING UPLOADS !!
+        console.log('SKIP ' + endpoint.title)
+        scope.upload.pointer++
+        scope.upload.index = 0
+        scope.startUploadData()
+        return
+      }
+
+      if (!endpoint || typeof endpoint.packed === 'undefined' || typeof endpoint.packed.length === 'undefined' || endpoint.packed.length < 1) {
+        console.log('sulod dani sa endpoint packed wala sulod')
+        scope.upload.pointer++
+        scope.upload.index = 0
+        scope.startUploadDatav2()
+      }
+
+      scope.progress_message = scope.$t('UPLOADING') + ' ' + endpoint.title + ' ' + scope.$t('DATA') + '...'
+
+      scope.upload.total = endpoint.packed.length
+      const chunks = window.chunk(endpoint.packed, 10)
+
+      if (chunks.length < 1) return
+      chunks.map(function (data, index) {
+        let batchData = {
+          data: data,
+          key: endpoint.title + '-' + index,
+          index: 0
+        }
+        scope.batchDatas.push(batchData)
+      })
+
+      for (const batchKey in scope.batchDatas) {
+        scope.uploadByBatch(scope.batchDatas[batchKey], batchKey, endpoint)
+      }
+
+      if (scope.upload.allRequest.length <= 0) {
+        // proceed to next point
+        console.log('proceed to next point')
+        scope.upload.pointer++
+        await scope.startUploadDatav2()
+        return
+      }
+
+      /*
+      * process all request concurrently
+      * */
+      await scope.axios.all(scope.upload.allRequest.map(function (req) {
+        return scope.axios(req)
+      }))
+        .then(scope.axios.spread(function (result) {
+          console.log('res')
+          console.log(result)
+          scope.startDownloadData()
+          // scope.progress_message = scope.$t('UPLOADING') + ' ' + endpoint.title + ' ' + scope.$t('DATA') + '(BATCH ' + batchKey + ')...'
+          // console.log(results)
+        }))
+        .catch(function (err) {
+          console.log('err')
+          console.log(err)
+          scope.startDownloadData()
+        })
+
+      // Add a request interceptor
+      scope.axios.interceptors.request.use(function (config) {
+        // Do something before request is sent
+        console.log('config ', config)
+        return config
+      }, function (error) {
+        // Do something with request error
+        return Promise.reject(error)
+      })
+
+      // Add a response interceptor
+      scope.axios.interceptors.response.use(function (response) {
+        // Any status code that lie within the range of 2xx cause this function to trigger
+        // Do something with response data
+        console.log('response ', response)
+        return response
+      }, function (error) {
+        // Any status codes that falls outside the range of 2xx cause this function to trigger
+        // Do something with response error
+        return Promise.reject(error)
+      })
+    },
+    startDownloadData1: function () {
+      const scope = this
+      console.log(scope.upload.allRequest)
+      console.log('start download')
+    },
+    uploadByBatch: function (batchData, batchKey, endpoint) {
+      const scope = this
+      scope.upload.batchData = []
+
+      if (scope.upload.batch >= scope.batchDatas.length) {
+        // proceed to next point
+        console.log('proceed to next point')
+        scope.upload.pointer++
+        scope.startUploadDatav2()
+        return
+      }
+
+      console.log('batchData.data.length' + batchData.data.length)
+      // upload all data within the batch
+      for (const dataKey in batchData.data) {
+        scope.uploadData(batchData.data[dataKey], batchKey, endpoint)
+      }
+    },
+    uploadData: function (data, batchIndex, endpoint) {
+      /*
+      * process the singe Data
+      * */
+      const scope = this
+      data.created_at = scope.timeConvertToUTC(data.created_at)
+      data.updated_at = scope.timeConvertToUTC(data.updated_at)
+      data.sync_version = scope.sync_version
+
+      var finalData = data
+      var headers = {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Authorization': 'Bearer ' + scope.api_token,
+        'X-Authorization': 'Bearer ' + scope.api_token
+      }
+
+      if (['Items', 'Characters', 'Locations'].indexOf(endpoint.title) > -1 && (data.picture || data.pictures)) {
+        console.log('awweee')
+        var src = path.join(resourcePath, 'resources', 'images', endpoint.title.replace(/\s+/g, '-').toLowerCase(), (data.picture || data.pictures))
+
+        if (!electronFs.existsSync(src)) {
+          console.log('local file not found: ', src)
+        } else {
+          headers['Content-Type'] = 'multipart/form-data'
+          var data_ = new FormData()
+
+          for (var x in data) {
+            if (data[x]) {
+              data_.append(x, data[x])
+            }
+          }
+
+          data_.append('file', new Blob([electronFs.readFileSync(src)]), data.picture || data.pictures)
+
+          finalData = data_
+        }
+      } else if (['Assignment Manuscripts'].indexOf(endpoint.title) > -1 && data.content) {
+        if (data.is_file) {
+          var file = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), data.content)
+
+          if (!electronFs.existsSync(file)) {
+            console.log('local file not found: ', file)
+          } else {
+            headers['Content-Type'] = 'multipart/form-data'
+
+            // eslint-disable-next-line no-redeclare
+            var data_ = new FormData()
+
+            // eslint-disable-next-line no-redeclare
+            for (var x in data) {
+              if (data[x]) {
+                data_.append(x, data[x])
+              }
+            }
+
+            data_.append('file', new Blob([electronFs.readFileSync(file)]), data.content)
+
+            finalData = data_
+          }
+        }
+      } else if (['Genres', 'Courses', 'Courses Taken', 'Packages', 'Package Courses', 'Lessons', 'Lesson Documents', 'Authors', 'WebinarRegistrants', 'WebinarPresenters', 'Webinars'].indexOf(endpoint.title) > -1) {
+        // TODO : refactor this for SKIPPING UPLOADS !!
+        console.log('SKIPPING', endpoint.title)
+        // eslint-disable-next-line valid-typeof
+        scope.upload.index++
+        scope.upload.counter++
+        // move to the next table/model
+        if (scope.upload.index >= endpoint.packed.length) {
+          scope.upload.pointer++
+          scope.upload.index = 0
+          // scope.startUploadDatav2()
+        }
+        scope.startUploadDatav2()
+        return
+      } else if (['Scenes'].indexOf(endpoint.title) > -1) {
+        // checking for valid dates
+        if (!moment(data.date_starts).isValid()) {
+          data.date_starts = moment('1970-01-01 00:00:01').format('YYYY-MM-DD').toString()
+        }
+        // checking for valid dates
+        if (!moment(data.date_ends).isValid()) {
+          data.date_ends = moment('1970-01-01 00:00:01').format('YYYY-MM-DD').toString()
+        }
+      }
+
+      // prepare config
+      const config = {
+        method: 'post',
+        url: window.APP.API.URL + '/' + endpoint.api + '',
+        data: finalData,
+        headers: headers,
+        onDownloadProgress: function (progressEvent) {
+          // for progress bar
+          scope.upload.counter++
+        }
+      }
+
+      // push data for preparation on concurrent request
+      console.log('batchIndex ' + batchIndex)
+      scope.upload.allRequest.push(config)
     },
     startUploadData: function () {
       var scope = this

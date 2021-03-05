@@ -26,6 +26,7 @@
     "body-parser": "latest",
     "bootstrap": "^4.4.1",
     "bootstrap-vue": "^2.7.0",
+    "chunk": "0.0.3",
     "cross-env": "^7.0.0",
     "custom-electron-titlebar": "^3.2.2-hotfix62",
     "diff-match-patch": "^1.0.4",
