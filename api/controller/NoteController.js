@@ -42,6 +42,7 @@ class NoteController {
     var notes = await Note.query()
       .where('notes.message', '!=', '')
       .where('notes.author_id', authorId)
+      .whereNull('notes.deleted_at')
       .withGraphJoined('author', {maxBatchSize: 1})
       .orderBy('id', 'asc')
 
@@ -90,7 +91,7 @@ class NoteController {
   }
 
   static async delete (noteId) {
-    let updatedAt = moment().format('YYYY-MM-DD HH:mm:ss').toString()
+    /* let updatedAt = moment().format('YYYY-MM-DD HH:mm:ss').toString()
     const note = await Note.query().upsertGraph([{ message: '', uuid: noteId, updated_at: updatedAt }]).first()
 
     var row = Note.query()
@@ -99,6 +100,11 @@ class NoteController {
       .first()
 
     return row
+    */
+    const note = await Note.query().softDeleteById(noteId)
+
+    return note
+
   }
 
   static async save (data) {
