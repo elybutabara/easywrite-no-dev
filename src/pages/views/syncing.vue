@@ -54,7 +54,7 @@
             <div class="es-progress-bar">
               <div v-bind:class="{'error' : upload.error }" class="es-progress" v-bind:style="{ width: uploadProgess + '%' }"></div>
             </div>
-            <p>{{ message }}</p>
+            <p>{{ progress_message }}</p>
             <br/>
             <br/>
           </div>
@@ -157,8 +157,8 @@ export default {
       },
       upload: {
         data: [],
-        pointer: 1, // starts at one coz  we skip authors
-        index: 0,
+        pointer: 0, // starts at one coz  we skip authors
+        index: 0, // batch index
         counter: [],
         progress: 0,
         total: 0,
@@ -331,28 +331,27 @@ export default {
           // always executed
         })
     },
-    startUploadDatav2: function () {
+    startUploadDatav2: async function () {
       /*
       * FAST TO LOW ways on syncing
       * - axios.all
       * - Promise.all
       * - Looping the per batch then per data
       * */
-
       const scope = this
       scope.stage = 'uploading'
       scope.upload.error = false
-
+      scope.upload.allRequest = []
       console.log('pointer: ' + scope.upload.pointer)
       if (scope.upload.pointer >= scope.endpoints.length) {
         // done going through tables
         console.log('DONE UPLOAD1: ' + scope.upload.pointer)
-        scope.startDownloadData()
+        await scope.startDownloadData()
         return
       }
 
       const endpoint = scope.endpoints[scope.upload.pointer]
-
+      console.log(endpoint)
       if (!endpoint) return
 
       if (['Genres', 'Courses', 'Courses Taken', 'Packages', 'Package Courses', 'Lessons', 'Lesson Documents', 'Authors', 'WebinarRegistrants', 'WebinarPresenters', 'Webinars'].indexOf(endpoint.title) > -1) {
@@ -360,18 +359,18 @@ export default {
         console.log('SKIP ' + endpoint.title)
         scope.upload.pointer++
         scope.upload.index = 0
-        scope.startUploadDatav2()
+        await scope.startUploadDatav2()
         return
       }
+
+      scope.progress_message = scope.$t('UPLOADING') + ' ' + endpoint.title + ' ' + scope.$t('DATA') + '...'
 
       if (!endpoint || typeof endpoint.packed === 'undefined' || typeof endpoint.packed.length === 'undefined' || endpoint.packed.length < 1) {
         console.log('sulod dani sa endpoint packed wala sulod')
         scope.upload.pointer++
         scope.upload.index = 0
-        scope.startUploadDatav2()
+        await scope.startUploadDatav2()
       }
-
-      scope.progress_message = scope.$t('UPLOADING') + ' ' + endpoint.title + ' ' + scope.$t('DATA') + '...'
 
       scope.upload.total = endpoint.packed.length
       const chunks = window.chunk(endpoint.packed, 10)
@@ -386,76 +385,74 @@ export default {
         scope.batchDatas.push(batchData)
       })
 
-      for (const batchKey in scope.batchDatas) {
-        scope.uploadByBatch(scope.batchDatas[batchKey], batchKey, endpoint)
-      }
+      // for (const batchKey in scope.batchDatas) {
+      //   scope.uploadByBatch(scope.batchDatas[batchKey], batchKey, endpoint)
+      // }
 
-      if (scope.upload.allRequest.length <= 0) {
-        // proceed to next point
-        console.log('proceed to next point')
-        scope.upload.pointer++
-        scope.startUploadDatav2()
-        return
-      }
+      /*
+      * TEST
+      * */
+      await scope.uploadByBatch(scope.batchDatas[scope.upload.batch], scope.upload.batch, endpoint)
+      // if (scope.upload.allRequest.length <= 0) {
+      //   // proceed to next point
+      //   console.log('proceed to next point')
+      //   scope.upload.pointer++
+      //   await scope.startUploadDatav2()
+      //   return
+      // }
 
       /*
       * process all request concurrently
       * */
-      scope.axios.all(scope.upload.allRequest.map(function (req) {
-        console.log('sulod axios')
-        return scope.axios(req)
-      }))
-        .then(scope.axios.spread(function (result) {
-          console.log('res')
-          console.log(result)
-          scope.upload.pointer++
-          scope.startUploadDatav2()
-          // scope.progress_message = scope.$t('UPLOADING') + ' ' + endpoint.title + ' ' + scope.$t('DATA') + '(BATCH ' + batchKey + ')...'
-          // console.log(results)
-        }))
-        .catch(function (err) {
-          console.log('err')
-          console.log(err)
-          scope.upload.pointer++
-          scope.startUploadDatav2()
-        })
+      console.log('---DONE UPLOAD---')
+      /*
+      * TEST
+      * */
+      // scope.upload.pointer++
+      // await scope.startUploadDatav2()
+      /*
+      * END TEST
+      * */
 
-      // Add a request interookceptor
-      scope.axios.interceptors.request.use(function (config) {
-        // Do something before request is sent
-        console.log('config ', config)
-        return config
-      }, function (error) {
-        // Do something with request error
-        return Promise.reject(error)
-      })
-
-      // Add a response interceptor
-      scope.axios.interceptors.response.use(function (response) {
-        // Any status code that lie within the range of 2xx cause this function to trigger
-        // Do something with response data
-        console.log('response ', response)
-        return response
-      }, function (error) {
-        // Any status codes that falls outside the range of 2xx cause this function to trigger
-        // Do something with response error
-        return Promise.reject(error)
-      })
+      // // Add a request interookceptor
+      // scope.axios.interceptors.request.use(function (config) {
+      //   // Do something before request is sent
+      //   console.log('config ', config)
+      //   return config
+      // }, function (error) {
+      //   // Do something with request error
+      //   return Promise.reject(error)
+      // })
+      //
+      // // Add a response interceptor
+      // scope.axios.interceptors.response.use(function (response) {
+      //   // Any status code that lie within the range of 2xx cause this function to trigger
+      //   // Do something with response data
+      //   console.log('response ', response)
+      //   return response
+      // }, function (error) {
+      //   // Any status codes that falls outside the range of 2xx cause this function to trigger
+      //   // Do something with response error
+      //   return Promise.reject(error)
+      // })
     },
     startDownloadData1: function () {
       const scope = this
       console.log(scope.upload.allRequest)
       console.log('start download')
     },
-    uploadByBatch: function (batchData, batchKey, endpoint) {
+    uploadByBatch: async function (batchData, batchKey, endpoint) {
       const scope = this
       scope.upload.batchData = []
-
+      scope.upload.allRequest = []
       if (scope.upload.batch >= scope.batchDatas.length) {
         // proceed to next point
         console.log('proceed to next point')
+        // console.log(scope.upload.batch)
+        // console.log(scope.batchDatas.length)
+        // console.log(scope.upload.allRequest)
         scope.upload.pointer++
-        scope.startUploadDatav2()
+        await scope.startUploadDatav2()
         return
       }
 
@@ -463,6 +460,35 @@ export default {
       // upload all data within the batch
       for (const dataKey in batchData.data) {
         scope.uploadData(batchData.data[dataKey], batchKey, endpoint)
+        if (dataKey >= (batchData.data.length - 1)) {
+          /*
+          * once batch is done then upload it batch
+          * */
+          await scope.axios.all(scope.upload.allRequest.map(function (req) {
+            return scope.axios(req)
+          }))
+            .then(scope.axios.spread(async function (result) {
+              console.log('batch request result')
+              scope.upload.batch++
+              console.log(scope.upload.allRequest.length)
+              await scope.uploadByBatch(scope.batchDatas[scope.upload.batch], scope.upload.batch, endpoint)
+              // console.log(result)
+              // console.log('counter: ' + scope.upload.counter)
+              // console.log('Pointer: ' + scope.upload.pointer)
+              // scope.upload.pointer++
+              // scope.startUploadDatav2()
+              // scope.progress_message = scope.$t('UPLOADING') + ' ' + endpoint.title + ' ' + scope.$t('DATA') + '(BATCH ' + batchKey + ')...'
+              // console.log(results)
+            }))
+            .catch(function (err) {
+              console.log(scope.upload.allRequest.length)
+              console.log(err)
+              // console.log('counter: ' + scope.upload.counter)
+              // console.log('Pointer: ' + scope.upload.pointer)
+              // scope.upload.pointer++
+              // scope.startUploadDatav2()
+            })
+        }
       }
     },
     uploadData: function (data, batchIndex, endpoint) {
@@ -565,154 +591,6 @@ export default {
       // push data for preparation on concurrent request
       console.log('batchIndex ' + batchIndex)
       scope.upload.allRequest.push(config)
-    },
-    startUploadData: function () {
-      var scope = this
-      scope.stage = 'uploading'
-      scope.upload.error = false
-
-      // done going through tables
-      if (scope.upload.pointer >= scope.endpoints.length) {
-        scope.startDownloadData()
-        return
-      }
-
-      var endpoint = scope.endpoints[scope.upload.pointer]
-      if (!endpoint || typeof endpoint.packed === 'undefined' || typeof endpoint.packed.length === 'undefined' || endpoint.packed.length < 1) {
-        scope.upload.pointer++
-        scope.upload.index = 0
-        scope.startUploadData()
-        return
-      }
-
-      scope.progress_message = scope.$t('UPLOADING') + ' ' + endpoint.title + ' ' + scope.$t('DATA') + '...'
-      scope.progress_message = scope.$t('UPLOADING') + ' ' + endpoint.title + ' ' + scope.$t('DATA') + '(' + scope.upload.index + ' ' + scope.$t('OF') + ' ' + (endpoint.packed.length + 1) + ')...'
-      var data = endpoint.packed[scope.upload.index]
-
-      data.created_at = scope.timeConvertToUTC(data.created_at)
-      data.updated_at = scope.timeConvertToUTC(data.updated_at)
-      data.sync_version = scope.sync_version
-
-      var finalData = data
-      var headers = {
-        'X-Requested-With': 'XMLHttpRequest',
-        'Authorization': 'Bearer ' + scope.api_token,
-        'X-Authorization': 'Bearer ' + scope.api_token
-      }
-
-      if (['Items', 'Characters', 'Locations'].indexOf(endpoint.title) > -1 && (data.picture || data.pictures)) {
-        var src = path.join(resourcePath, 'resources', 'images', endpoint.title.replace(/\s+/g, '-').toLowerCase(), (data.picture || data.pictures))
-
-        if (!electronFs.existsSync(src)) {
-          console.log('local file not found: ', src)
-        } else {
-          headers['Content-Type'] = 'multipart/form-data'
-
-          var data_ = new FormData()
-
-          for (var x in data) {
-            if (data[x]) {
-              data_.append(x, data[x])
-            }
-          }
-
-          data_.append('file', new Blob([electronFs.readFileSync(src)]), data.picture || data.pictures)
-
-          finalData = data_
-        }
-      } else if (['Assignment Manuscripts'].indexOf(endpoint.title) > -1 && data.content) {
-        if (data.is_file) {
-          var file = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), data.content)
-
-          if (!electronFs.existsSync(file)) {
-            console.log('local file not found: ', file)
-          } else {
-            headers['Content-Type'] = 'multipart/form-data'
-
-            // eslint-disable-next-line no-redeclare
-            var data_ = new FormData()
-
-            // eslint-disable-next-line no-redeclare
-            for (var x in data) {
-              if (data[x]) {
-                data_.append(x, data[x])
-              }
-            }
-
-            data_.append('file', new Blob([electronFs.readFileSync(file)]), data.content)
-
-            finalData = data_
-          }
-        }
-      } else if (['Genres', 'Courses', 'Courses Taken', 'Packages', 'Package Courses', 'Lessons', 'Lesson Documents', 'Authors', 'WebinarRegistrants', 'WebinarPresenters', 'Webinars'].indexOf(endpoint.title) > -1) {
-        // TODO : refactor this for SKIPPING UPLOADS !!
-
-        // eslint-disable-next-line valid-typeof
-        scope.upload.index++
-        scope.upload.counter++
-        // move to the next table/model
-        if (scope.upload.index >= endpoint.packed.length) {
-          scope.upload.pointer++
-          scope.upload.index = 0
-          // scope.startUploadData()
-        }
-        scope.startUploadData()
-        return
-      } else if (['Scenes'].indexOf(endpoint.title) > -1) {
-        // checking for valid dates
-        if (!moment(data.date_starts).isValid()) {
-          data.date_starts = moment('1970-01-01 00:00:01').format('YYYY-MM-DD').toString()
-        }
-        // checking for valid dates
-        if (!moment(data.date_ends).isValid()) {
-          data.date_ends = moment('1970-01-01 00:00:01').format('YYYY-MM-DD').toString()
-        }
-      }
-
-      scope.axios.post(window.APP.API.URL + '/' + endpoint.api + '',
-        finalData,
-        {
-          'headers': headers
-        })
-        .then(function () {
-          // eslint-disable-next-line valid-typeof
-          scope.upload.index++
-          scope.upload.counter++
-          // move to the next table/model
-          if (scope.upload.index >= endpoint.packed.length) {
-            scope.upload.pointer++
-            scope.upload.index = 0
-            // scope.startUploadData()
-          }
-          scope.startUploadData()
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error)
-          scope.upload.error = true
-          scope.progress_message = scope.$t('UPLOAD') + ' ' + scope.$t('FAILED') + ', ' + scope.$t('RECONNECTING') + '...'
-          scope.retry++
-          if (scope.retry <= 1) {
-            setTimeout(function () {
-              scope.startUploadData()
-            }, 5000)
-          } else {
-            scope.retry = 0
-            // eslint-disable-next-line valid-typeof
-            scope.upload.index++
-            scope.upload.counter++
-            // move to the next table/model
-            if (scope.upload.index >= endpoint.packed.length) {
-              scope.upload.pointer++
-              scope.upload.index = 0
-              // scope.startUploadData()
-            }
-            scope.startUploadData()
-          }
-        })
-        .finally(function () {
-          // always executed
-        })
     },
     timeConvertFromUTC: function (datetime) {
       if (datetime === null || datetime === 'undefined') { return null }
