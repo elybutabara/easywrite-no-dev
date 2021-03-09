@@ -15,7 +15,7 @@ class FeedbackController {
         builder.orderBy('feedback_responses.id', 'asc')
       })
       .withGraphJoined('author', {maxBatchSize: 1})
-      .orderBy('created_at', 'ASC')
+      .orderBy('feedbacks.created_at', 'DESC')
 
     return feedbacks
   }
@@ -31,7 +31,7 @@ class FeedbackController {
         builder.orderBy('feedback_responses.id', 'asc')
       })
       .withGraphJoined('author', {maxBatchSize: 1})
-      .orderBy('id', 'asc')
+      .orderBy('feedbacks.created_at', 'DESC')
 
     return feedbacks
   }
@@ -47,7 +47,7 @@ class FeedbackController {
         builder.orderBy('feedback_responses.id', 'asc')
       })
       .withGraphJoined('author', {maxBatchSize: 1})
-      .orderBy('id', 'asc')
+      .orderBy('feedbacks.created_at', 'DESC')
 
     return feedbacks
   }
