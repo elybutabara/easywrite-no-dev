@@ -351,7 +351,7 @@ export default {
       }
 
       const endpoint = scope.endpoints[scope.upload.pointer]
-      console.log(endpoint)
+      console.log('Endpoint: ' + endpoint.title)
       if (!endpoint) return
 
       if (['Genres', 'Courses', 'Courses Taken', 'Packages', 'Package Courses', 'Lessons', 'Lesson Documents', 'Authors', 'WebinarRegistrants', 'WebinarPresenters', 'Webinars'].indexOf(endpoint.title) > -1) {
@@ -456,7 +456,7 @@ export default {
         return
       }
 
-      console.log('batchData.data.length' + batchData.data.length)
+      console.log('Uploading Batch' + scope.upload.batch + ' length: ' + batchData.data.length)
       // upload all data within the batch
       for (const dataKey in batchData.data) {
         scope.uploadData(batchData.data[dataKey], batchKey, endpoint)
@@ -468,7 +468,7 @@ export default {
             return scope.axios(req)
           }))
             .then(scope.axios.spread(async function (result) {
-              console.log('batch request result')
+              console.log('batch request Success Result')
               scope.upload.batch++
               console.log(scope.upload.allRequest.length)
               await scope.uploadByBatch(scope.batchDatas[scope.upload.batch], scope.upload.batch, endpoint)
@@ -480,9 +480,11 @@ export default {
               // scope.progress_message = scope.$t('UPLOADING') + ' ' + endpoint.title + ' ' + scope.$t('DATA') + '(BATCH ' + batchKey + ')...'
               // console.log(results)
             }))
-            .catch(function (err) {
-              console.log(scope.upload.allRequest.length)
+            .catch(async function (err) {
               console.log(err)
+              console.log('batch request Success FAILED Batch: ' + scope.upload.batch)
+              scope.upload.batch++
+              await scope.uploadByBatch(scope.batchDatas[scope.upload.batch], scope.upload.batch, endpoint)
               // console.log('counter: ' + scope.upload.counter)
               // console.log('Pointer: ' + scope.upload.pointer)
               // scope.upload.pointer++
@@ -589,7 +591,6 @@ export default {
       }
 
       // push data for preparation on concurrent request
-      console.log('batchIndex ' + batchIndex)
       scope.upload.allRequest.push(config)
     },
     timeConvertFromUTC: function (datetime) {
