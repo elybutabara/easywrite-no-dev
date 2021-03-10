@@ -35,13 +35,24 @@
         <div style="position:relative; padding-bottom:40px; overflow: hidden;">
           <Feedback v-bind:class="{ 'show_feedbacks' : show_feedbacks }" :properties="{ book: book, parent: chapter, parent_name: 'chapter', toggleType: true }"></Feedback>
           <Note v-if="show_notes" :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></Note>
+          
+          <!-- footer previous & next -->
           <div style="border-top:1px solid #ccc; z-index:2000; background:#fff; height:50px; padding:0px 20px; line-height:50px; width:100%; position:absolute; bottom:0px; left:0px;">
-            <button v-if="prevChapter !== null" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + prevChapter.uuid, tabComponent: 'books-i-read-chapter-details',  tabData: { book: book, chapter: prevChapter }, tabTitle: $t('VIEW')+ ' - ' + prevChapter.title})" style="float:left; background:transparent; border:none;">
-              <i class="las la-angle-double-left"></i> {{ $t('PREV').toUpperCase() }}
-            </button>
-            <button v-if="nextChapter !== null" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + nextChapter.uuid, tabComponent: 'books-i-read-chapter-details',  tabData: { book: book, chapter: nextChapter }, tabTitle: $t('VIEW')+ ' - ' + nextChapter.title})" style="float:right; background:transparent; border:none;">
-              {{ $t('NEXT').toUpperCase() }} <i class="las la-angle-double-right"></i>
-            </button>
+
+              <button v-if="prevScene != null && prevType == 'chapter'" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + prevScene.id, tabComponent: 'books-i-read-chapter-details',  tabData: { book: book, chapter: prevScene }, tabTitle: 'VIEW' + ' - ' + prevScene.title})" style="float:left; background:transparent; border:none;">
+                  <i class="las la-angle-double-left"></i> PREV
+              </button>
+              <button v-if="nextScene != null && nextType == 'chapter'" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + nextScene.id, tabComponent: 'books-i-read-chapter-details',  tabData: { book: book, chapter: nextScene }, tabTitle: 'VIEW' + ' - ' + nextScene.title})" style="float:right; background:transparent; border:none;">
+                  NEXT <i class="las la-angle-double-right"></i>
+              </button>
+
+              <button v-if="prevScene != null && prevType == 'scene'" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + prevScene.id, tabComponent: 'books-i-read-scene-details',  tabData: { book: book, scene: prevScene, chapter: previousChapter}, tabTitle: prevScene.title})" style="float:left; background:transparent; border:none;">
+                  <i class="las la-angle-double-left"></i> PREV
+              </button>
+              <button v-if="nextScene != null && nextType == 'scene'" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + nextScene.id, tabComponent: 'books-i-read-scene-details',  tabData: { book: book, scene: nextScene, chapter: chapter}, tabTitle: nextScene.title})" style="float:right; background:transparent; border:none;">
+                  NEXT <i class="las la-angle-double-right"></i>
+              </button>
+
           </div>
 
           <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
@@ -105,7 +116,10 @@ export default {
         onAddComment: function () {
           scope.saveComments()
         }
-      }
+      },
+      nextType: '',
+      prevType: '',
+      previousChapter: '',
     }
   },
   components: {
@@ -143,13 +157,61 @@ export default {
       var scope = this
       return scope.$store.getters.getAuthor
     },
-    prevChapter: function () {
+    prevScene: function () {
       let chapter = this.chapter
-      return this.$store.getters.getPrevChapter(chapter, false)
+      let scope = this
+      scope.previousChapter = this.$store.getters.getPrevChapter(chapter, false)
+
+      // check if there is prev chapter 
+      if(scope.previousChapter != null){
+
+        // if there is a previous chapter - load the scenes of the previous chapter 
+        scope.$store.dispatch('loadScenesByChapter', scope.previousChapter.uuid)
+
+        // check if there is a scene -not including the hidden
+        let notHiddenRows = this.$store.getters.getScenesByChapter(scope.previousChapter.uuid)
+
+        for(var i = 0; i < notHiddenRows.length; i++){
+          if(notHiddenRows[i].hidden){
+            notHiddenRows.splice(i,1)
+          }
+        }
+
+        if(notHiddenRows.length > 0){ //if previous chapter has scene - return scene
+          scope.prevType = 'scene'
+          return notHiddenRows[notHiddenRows.length-1] //last scene
+        }else{ //if no scene under chapter then return the next chapter
+          scope.prevType = 'chapter'
+          return this.$store.getters.getPrevChapter(chapter, false)
+        }
+
+      }
+      return null
+
     },
-    nextChapter: function () {
+    nextScene: function () {
       let chapter = this.chapter
-      return this.$store.getters.getNextChapter(chapter, false)
+      let scope = this
+
+      // check if there is a scene -not including the hidden
+      let notHiddenRows = this.$store.getters.getScenesByChapter(chapter.uuid)
+
+      console.log('not hiddden rows', notHiddenRows, chapter.uuid)
+
+      for(var i = 0; i < notHiddenRows.length; i++){
+        if(notHiddenRows[i].hidden){
+          notHiddenRows.splice(i,1)
+        }
+      }
+      
+      if(notHiddenRows.length > 0){ //if chapter has scene - return scene
+        scope.nextType = 'scene'
+        return notHiddenRows[0]
+      }else{ //if no scene under chapter then return the next chapter
+        scope.nextType = 'chapter'
+        return this.$store.getters.getNextChapter(chapter, false)
+      }
+      
     }
   },
   methods: {

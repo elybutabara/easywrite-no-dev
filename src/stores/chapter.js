@@ -140,7 +140,6 @@ export default {
             break
           }
         }
-        console.log('HERE ' + isHiddenIncluded)
 
         if (index > 0) {
           for (let x = (index - 1); x >= 0; x--) {
@@ -170,7 +169,6 @@ export default {
             break
           }
         }
-        console.log('HERE ' + isHiddenIncluded)
         if (index < rows.length) {
           for (let x = (index + 1); x < rows.length; x++) {
             let row = rows[x]
