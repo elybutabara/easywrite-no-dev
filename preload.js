@@ -73,7 +73,7 @@ ipcRenderer.on('SET_MAIN_MENU', function (event, data) {
 
   // Icon cannot be seen in development but it can be seen in production
   titlebar = new customTitlebar.Titlebar({
-    backgroundColor: customTitlebar.Color.fromHex('#324553'),
+    backgroundColor: customTitlebar.Color.fromHex('#ff4d4d'),
     icon: url.format(path.join(__dirname, '/assets', '/images', '/easywrite-new.ico')),
     menu: menu,
     maximizable: maximizable

@@ -380,4 +380,15 @@ export default {
     .es-scene-details-tab-content { position:relative; padding:30px; background:#fff; height:calc(100vh - 317px); overflow-y:auto; display:block; }
     .es-scene-details-tab-content.no-padding { padding:0px; }
     .es-scene-details-tab-content.active { display:block; }
+    @media screen and (max-width: 1334px){
+        div.es-details-tab-wrapper{
+            display: block;
+        }
+        div.es-details-tab-wrapper > div:nth-child(2){
+            padding: 15px 0px;
+        }
+        .es-breadcrumb.special.tabs-4 li a span {
+            max-width: 180px;
+        }
+    }
 </style>

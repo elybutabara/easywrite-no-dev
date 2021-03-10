@@ -44,12 +44,12 @@ class SceneController {
 
   static async save (data) {
     // Get the max order first before saving to fix scene order error
-    if(!data.id){
+    if (!data.id) {
       const query = Scene.query()
-      .select('order')
-      .max('order')
-      .where('book_id', data.book_id)
-      .whereNull('deleted_at')
+        .select('order')
+        .max('order')
+        .where('book_id', data.book_id)
+        .whereNull('deleted_at')
       let sceneMaxOrder = null
       if (data.chapter_id != null) {
         query.where('chapter_id', data.chapter_id)

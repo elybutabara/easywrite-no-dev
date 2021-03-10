@@ -42,10 +42,14 @@ class NoteController {
     var notes = await Note.query()
       .where('notes.message', '!=', '')
       .where('notes.author_id', authorId)
+      .whereNull('notes.deleted_at')
       .withGraphJoined('author', {maxBatchSize: 1})
       .orderBy('id', 'asc')
 
     if (!notes) return
+
+    //get book readers - books the user is reading
+    var bookIRead = await Reader.query().where('author_id', authorId).where('status', 1).pluck('book_id')
     var notDeletedLinkOnNote = []
     for (let i = 0; i < notes.length; i++) {
       let parent = notes[i].parent
@@ -55,7 +59,7 @@ class NoteController {
         notes[i].chapter = await Chapter.query().findById(parentID).whereNull('deleted_at')
         notes[i].scene = null
         if(notes[i].chapter){
-          notes[i].book = await Book.query().findById(notes[i].chapter.book_id).whereNull('deleted_at')
+          notes[i].book = await Book.query().findById(notes[i].chapter.book_id).whereNull('deleted_at').whereNotIn('uuid', bookIRead)
           if (notes[i].book) {
             notDeletedLinkOnNote.push(notes[i])
           }
@@ -64,7 +68,7 @@ class NoteController {
         notes[i].scene = await Scene.query().findById(parentID).whereNull('deleted_at')
         notes[i].chapter = notes[i].scene? await Chapter.query().findById(notes[i].scene.chapter_id).whereNull('deleted_at'):''
         if(notes[i].chapter){
-          notes[i].book = await Book.query().findById(notes[i].scene.book_id).whereNull('deleted_at')
+          notes[i].book = await Book.query().findById(notes[i].scene.book_id).whereNull('deleted_at').whereNotIn('uuid', bookIRead)
           if (notes[i].book) {
             notDeletedLinkOnNote.push(notes[i])
           }
@@ -72,7 +76,7 @@ class NoteController {
       } else if (parent === 'book') {
         notes[i].chapter = null
         notes[i].scene = null
-        notes[i].book = await Book.query().findById(parentID).whereNull('deleted_at')
+        notes[i].book = await Book.query().findById(parentID).whereNull('deleted_at').whereNotIn('uuid', bookIRead)
         if (notes[i].book) {
           var genreUUIDs = []
           var genreC = await BookGenreCollection.query().select('genre_id').where('book_id', parentID)
@@ -90,7 +94,7 @@ class NoteController {
   }
 
   static async delete (noteId) {
-    let updatedAt = moment().format('YYYY-MM-DD HH:mm:ss').toString()
+    /* let updatedAt = moment().format('YYYY-MM-DD HH:mm:ss').toString()
     const note = await Note.query().upsertGraph([{ message: '', uuid: noteId, updated_at: updatedAt }]).first()
 
     var row = Note.query()
@@ -99,6 +103,11 @@ class NoteController {
       .first()
 
     return row
+    */
+    const note = await Note.query().softDeleteById(noteId)
+
+    return note
+
   }
 
   static async save (data) {

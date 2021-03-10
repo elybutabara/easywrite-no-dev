@@ -96,7 +96,7 @@ window.$ = window.jQuery = require('jquery')
 window.moment = require('moment')
 window.swal = require('sweetalert2')
 window.he = require('he')
-
+window.chunk = require('chunk')
 let APP = {
   SE_PROD: {
     API: {

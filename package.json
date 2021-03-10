@@ -1,7 +1,7 @@
 {
-  "name": "EasyWrite",
+  "name": "EasyWrite-DEV-NO",
   "main": "starter.js",
-  "version": "1.0.0-beta.7",
+  "version": "1.0.0-beta.9",
   "description": "Easy Write Application , The best app for writer!",
   "author": "EayWriteDeveloper",
   "private": true,
@@ -26,6 +26,7 @@
     "body-parser": "latest",
     "bootstrap": "^4.4.1",
     "bootstrap-vue": "^2.7.0",
+    "chunk": "0.0.3",
     "cross-env": "^7.0.0",
     "custom-electron-titlebar": "^3.2.2-hotfix62",
     "diff-match-patch": "^1.0.4",

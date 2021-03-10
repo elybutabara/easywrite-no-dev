@@ -299,7 +299,7 @@ export default {
             }
             scope.message = ''
             scope.feedback_uuid = null
-            // scope.initFeedbacks()
+            scope.initFeedbacks()
           }
         })
     },
