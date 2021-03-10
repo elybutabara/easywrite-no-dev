@@ -33,6 +33,31 @@ class LocationController {
     return location
   }
 
+  static async updateLineColor (locationID,data) {
+
+    var location = await Location.query()
+      .patch({ line_color: data.color })
+      .where('id', '=', locationID)
+
+      location = Location.query()
+      .where('id', '=', locationID).first()
+
+    return location
+  }
+
+  static async hideStoryline(locationID,data) {
+
+    var row  = await Location.query()
+    .where('id', '=', locationID).first()
+
+    var location = await Location.query()
+      .patch({ storyline_hidden: !row.storyline_hidden })
+      .where('id', '=', locationID)
+
+    row.storyline_hidden = !row.storyline_hidden
+    return row
+  }
+
   static async delete (locationId) {
     const location = await Location.query().softDeleteById(locationId)
 
@@ -72,6 +97,8 @@ class LocationController {
       AKA: row.AKA,
       tags: row.tags,
       pictures: row.pictures,
+      line_color: row.line_color,
+      storyline_hidden: row.storyline_hidden,
       created_at: row.created_at,
       updated_at: row.updated_at,
       deleted_at: row.deleted_at,

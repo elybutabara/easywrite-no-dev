@@ -31,6 +31,22 @@ router.post('/', async function (req, res) {
     .json(character)
 })
 
+router.post('/:characterId/line-color', async function (req, res) {
+  const character = await CharacterController.updateLineColor(req.params.characterId, req.body)
+
+  res
+    .status(200)
+    .json(character)
+})
+
+router.post('/:characterId/hide-storyline', async function (req, res) {
+  const character = await CharacterController.hideStoryline(req.params.characterId, req.body)
+
+  res
+    .status(200)
+    .json(character)
+})
+
 router.delete('/:characterId', async function (req, res) {
   const character = await CharacterController.delete(req.params.characterId)
 

@@ -65,7 +65,7 @@
                         <span @click="showOptions(character.id, 'character')" class="cursor-pointer"><i class="fas fa-cog"></i><!--<i class="fas fa-palette"></i>--></span>
                         <div v-if="show_options.show == 'character'+character.id" class="sl-show-options">
                           <span @click="selectChild(character, 'character')" class="cursor-pointer"><!--<i class="fas fa-palette"></i>-->Set Identifying Color</span>
-                          <span @click="toggleHiddenStorylinesAndScenes(character.id, 'characters')" class="cursor-pointer"><!--<i class="fas fa-palette"></i>-->Remove Selection From Storyline</span>
+                          <span @click="toggleHiddenStorylinesAndScenes(character, 'characters')" class="cursor-pointer"><!--<i class="fas fa-palette"></i>-->Remove Selection From Storyline</span>
                         </div>
                       </div>
                     </div>
@@ -91,7 +91,7 @@
                       <span @click="showOptions(location.id, 'location')" class="cursor-pointer"><i class="fas fa-cog"></i></span>
                       <div v-if="show_options.show == 'location'+location.id" class="sl-show-options">
                         <span @click="selectChild(location, 'location')"  class="cursor-pointer">Set Identifying Color</span>
-                        <span @click="toggleHiddenStorylinesAndScenes(location.id, 'locations')" class="cursor-pointer">Remove Selection From Storyline</span>
+                        <span @click="toggleHiddenStorylinesAndScenes(location, 'locations')" class="cursor-pointer">Remove Selection From Storyline</span>
                       </div>
                     </div>
                   </div>
@@ -117,7 +117,7 @@
                           <span @click="showOptions(item.id, 'item')" class="cursor-pointer"><i class="fas fa-cog"></i></span>
                           <div v-if="show_options.show == 'item'+item.id" class="sl-show-options">
                             <span @click="selectChild(item, 'item')" class="cursor-pointer">Set Identifying Color</span>
-                            <span @click="toggleHiddenStorylinesAndScenes(item.id, 'items')" class="cursor-pointer">Remove Selection From Storyline</span>
+                            <span @click="toggleHiddenStorylinesAndScenes(item, 'items')" class="cursor-pointer">Remove Selection From Storyline</span>
                           </div>
                         </div>
                         </div>
@@ -142,7 +142,7 @@
                     <span @click="showOptions(scene.id, 'scene')" class="cursor-pointer"><i class="fas fa-cog"></i></span>
                     <div v-if="show_options.show == 'scene'+scene.id" class="sl-show-options">
                         <span class="cursor-pointer" @click="editScene(scene)">Edit Scene</span>
-                        <span @click="toggleHiddenStorylinesAndScenes(scene.id, 'scenes')" class="cursor-pointer">Remove Selection From Storyline</span>
+                        <span @click="toggleHiddenStorylinesAndScenes(scene, 'scenes')" class="cursor-pointer">Remove Selection From Storyline</span>
                     </div>
                 </div>
               </div>
@@ -198,8 +198,8 @@
                   <input
                     type="checkbox"
                     :id="'character-cbx-'+ character.id"
-                    :checked="isChildrenExists(selected_scene.selected_characters_ids,character.id)"
-                    @change="toggleChild(selected_scene.selected_characters_ids,character.id)"
+                    :checked="isChildrenExists(selected_scene.selected_characters_ids,character.uuid)"
+                    @change="toggleChild(selected_scene.selected_characters_ids,character.uuid)"
                   >
                 <label :for="'character-cbx-'+ character.id">{{ character.fullname }}</label>
                 </div>
@@ -211,8 +211,8 @@
                   <input
                     type="checkbox"
                     :id="'location-cbx-'+ location.id"
-                    :checked="isChildrenExists(selected_scene.selected_locations_ids,location.id)"
-                    @change="toggleChild(selected_scene.selected_locations_ids,location.id)"
+                    :checked="isChildrenExists(selected_scene.selected_locations_ids,location.uuid)"
+                    @change="toggleChild(selected_scene.selected_locations_ids,location.uuid)"
                   >
                   <label :for="'location-cbx-'+ location.id">{{ location.location }}</label>
                 </div>
@@ -223,8 +223,8 @@
                     <input
                       type="checkbox"
                       :id="'item-cbx-'+ item.id"
-                      :checked="isChildrenExists(selected_scene.selected_items_ids,item.id)"
-                      @change="toggleChild(selected_scene.selected_items_ids,item.id)"
+                      :checked="isChildrenExists(selected_scene.selected_items_ids,item.uuid)"
+                      @change="toggleChild(selected_scene.selected_items_ids,item.uuid)"
                     >
                     <label :for="'item-cbx-'+ item.id">{{ item.itemname }}</label>
                   </div>
@@ -276,7 +276,7 @@
                   type="checkbox"
                   :id="'s-character-cbx-'+ character.id"
                   :checked="character.storyline_hidden == 0 || character.storyline_hidden == null"
-                  @change="toggleHiddenStorylinesAndScenes(character.id, 'characters')"
+                  @change="toggleHiddenStorylinesAndScenes(character, 'characters')"
                   >
                   <label :for="'s-character-cbx-'+ character.id">{{ character.fullname }}</label>
                 </div>
@@ -288,7 +288,7 @@
                       type="checkbox"
                       :id="'s-location-cbx-'+ location.id"
                       :checked="location.storyline_hidden == 0 || location.storyline_hidden == null"
-                      @change="toggleHiddenStorylinesAndScenes(location.id, 'locations')"
+                      @change="toggleHiddenStorylinesAndScenes(location, 'locations')"
                     >
                     <label :for="'s-location-cbx-'+ location.id">{{ location.location }}</label>
                 </div>
@@ -300,7 +300,7 @@
                     type="checkbox"
                       :id="'s-item-cbx-'+ item.id"
                       :checked="item.storyline_hidden == 0 || item.storyline_hidden == null"
-                      @change="toggleHiddenStorylinesAndScenes(item.id, 'items')"
+                      @change="toggleHiddenStorylinesAndScenes(item, 'items')"
                     >
                     <label :for="'s-item-cbx-'+ item.id">{{ item.itemname }}</label>
                 </div>
@@ -327,7 +327,7 @@
                     type="checkbox"
                     :id="'s-scene-cbx-'+ scene.id"
                     :checked="scene.storyline_hidden == 0 || scene.storyline_hidden == null"
-                    @change="toggleHiddenStorylinesAndScenes(scene.id, 'scenes')"
+                    @change="toggleHiddenStorylinesAndScenes(scene, 'scenes')"
                 >
                 <label :for="'s-scene-cbx-'+ scene.id">{{ scene.title }}</label>
               </div>
@@ -454,24 +454,19 @@ export default {
       this.show_options.show = ''
       this.show_options.counter = 1
     },
-    toggleHiddenStorylinesAndScenes: function (id, type) {
+    toggleHiddenStorylinesAndScenes: function (selected, type) {
       var scope = this
-
-      axios.post('/api/' + type + '/' + id + '/hide-storyline')
+      
+      axios.post('http://localhost:3000/' + type + '/' + selected.id + '/hide-storyline')
         .then(response => {
-          if (response.data.success) {
-            if (type == 'scenes') {
-              for (var scene in scope.scenes) {
-                if (scope.scenes[scene].id === id) {
-                  scope.scenes[scene].storyline_hidden = response.data.data.storyline_hidden
-                  console.log('new scenes:', scope.scenes)
-                  scope.reCalculateSceneLinesAndHeight()
-                  scope.showSnackbar()
-                  return
-                }
-              }
-            }
-            scope[type] = response.data.data
+          console.log(response)
+          if (response) {
+            console.log('response.data.storyline_hidden')
+            console.log(response.data.storyline_hidden)
+         
+            selected.storyline_hidden = response.data.storyline_hidden
+            
+            
             scope.reCalculateSceneLinesAndHeight()
             scope.showSnackbar()
           }
@@ -480,6 +475,9 @@ export default {
     editScene: function (scene) {
       this.show_edit_scene_modal = true
       this.selected_scene = scene
+
+      console.log('CHILD')
+      console.log(this.selected_scene)
     },
     closeEditSceneModal: function () {
       this.show_edit_scene_modal = false
@@ -503,21 +501,22 @@ export default {
     },
     saveSceneChilds: function () {
       var scope = this
-      var sceneID = scope.selected_scene.id
+      var sceneID = scope.selected_scene.uuid
       scope.formStatus = 'saving'
 
-      axios.post('/api/scenes/' + sceneID + '/children', {
+      axios.post('http://localhost:3000/scenes/' + sceneID + '/children', {
         charaters: scope.selected_scene.selected_characters_ids,
         locations: scope.selected_scene.selected_locations_ids,
         items: scope.selected_scene.selected_items_ids
       }).then(response => {
-        if (response.data.scene) {
+        if (response) {
+          console.log(response)
           setTimeout(function () {
             $(document).find('.sl-line').remove()
-            scope.selected_scene.blurb_title = response.data.scene.blurb_title
-            scope.selected_scene.scene_characters = response.data.scene.scene_characters
-            scope.selected_scene.scene_items = response.data.scene.scene_items
-            scope.selected_scene.scene_locations = response.data.scene.scene_locations
+
+            scope.selected_scene.scene_characters = response.data.scene_characters
+            scope.selected_scene.scene_items = response.data.scene_items
+            scope.selected_scene.scene_locations = response.data.scene_locations
 
             scope.selected_scene.selected_characters_ids = []
             scope.selected_scene.selected_locations_ids = []
@@ -538,7 +537,7 @@ export default {
       this.selected_child = child
       this.selected_child.type = type
       this.selected_child_color.hex = child.line_color
-
+      
       if (type == 'character') {
         this.selected_child.label = child.fullname
       } else if (type == 'location') {
@@ -559,20 +558,20 @@ export default {
       scope.formLineColorStatus = 'saving'
 
       if (scope.selected_child.type == 'character') {
-        URL = '/api/characters/' + childID + '/line-color'
+        URL = '/characters/' + childID + '/line-color'
       } else if (scope.selected_child.type == 'location') {
-        URL = '/api/locations/' + childID + '/line-color'
+        URL = '/locations/' + childID + '/line-color'
       } else if (scope.selected_child.type == 'item') {
-        URL = '/api/items/' + childID + '/line-color'
+        URL = '/items/' + childID + '/line-color'
       }
 
-      axios.post(URL, {
+      axios.post('http://localhost:3000' + URL, {
         color: scope.selected_child_color.hex
       }).then(response => {
         if (response.data) {
           setTimeout(function () {
             $(document).find('.sl-line').remove()
-            var data = response.data.data
+            var data = response.data
             scope.selected_child.line_color = data.line_color
             scope.calculateSceneLinesAndHeight({data: scope.characters, type: 'characters'})
             scope.calculateSceneLinesAndHeight({data: scope.locations, type: 'locations'})
@@ -633,9 +632,18 @@ export default {
           }
 
           for (var sceneType of scene[`scene_${type}`]) {
+            console.log(`HERERE ===>> scene_${type}`)
+            console.log(sceneType)
+            console.log(sceneType[`${typeSingular}`])
             if (dataType.id == sceneType[`${typeSingular}`].id && (scene.storyline_hidden == 0 || scene.storyline_hidden == null)) {
-              console.log(dataType.id, scene, sceneType[`${typeSingular}`].id)
-              scene['selected_' + type + '_ids'].push(dataType.id)
+
+              console.log(`scene_${type}`)
+              console.log(sceneType[`${typeSingular}`])
+              
+              var index = scene['selected_' + type + '_ids'].indexOf(dataType.uuid)
+              if (index === -1) {
+                scene['selected_' + type + '_ids'].push(dataType.uuid)
+              } 
 
               var typeElement = document.querySelector(`.page-storyline #${typeSingular}-${dataType.id}`)
               var sceneElement = document.querySelector(`.page-storyline #scene-${scene.id}`)
@@ -646,7 +654,7 @@ export default {
               // console.log('Xdistance: ', Xdistance)
 
               // var lineColor = dataType.lineColor
-              var lineColor = '#72a2f8'
+              var lineColor = dataType.line_color
               arrayLines.push(`
               <div class="sl-line" style="width: ${Xdistance}px !important; background:${lineColor} !important; border-left-color:${lineColor}; "></div>`)
 

@@ -18,6 +18,22 @@ router.post('/', async function (req, res) {
     .json(item)
 })
 
+router.post('/:itemId/line-color', async function (req, res) {
+  const item = await ItemController.updateLineColor(req.params.itemId, req.body)
+
+  res
+    .status(200)
+    .json(item)
+})
+
+router.post('/:itemId/hide-storyline', async function (req, res) {
+  const item = await ItemController.hideStoryline(req.params.itemId, req.body)
+
+  res
+    .status(200)
+    .json(item)
+})
+
 router.delete('/:itemId', async function (req, res) {
   const location = await ItemController.delete(req.params.itemId)
 

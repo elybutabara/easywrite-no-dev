@@ -2,7 +2,7 @@
 const path = require('path')
 const moment = require('moment')
 
-const { Book, Scene, User } = require(path.join(__dirname, '..', 'models'))
+const { Book, Scene, SceneCharacter, SceneItem, SceneLocation, User } = require(path.join(__dirname, '..', 'models'))
 
 class SceneController {
   static getOtherScene (param) {
@@ -78,6 +78,136 @@ class SceneController {
 
     return scene
   }
+
+  static async saveChildren(sceneId,data) {
+
+    var character_uuids = (Array.isArray(data.charaters)) ? data.charaters : []
+    var item_uuids = (Array.isArray(data.items)) ? data.items : []
+    var location_uuids = (Array.isArray(data.locations)) ? data.locations : []
+
+    // delete all children if ID is NOT in array
+    var delete_scene_characters = await SceneCharacter.query()
+      .patch({ deleted_at: moment().format('YYYY-MM-DD HH:mm:ss').toString() })
+      .where('book_scene_id', '=', sceneId)
+      .whereNotIn('book_character_id',character_uuids)
+
+    var delete_scene_items = await SceneItem.query()
+      .patch({ deleted_at: moment().format('YYYY-MM-DD HH:mm:ss').toString() })
+      .where('book_scene_id', '=', sceneId)
+      .whereNotIn('book_item_id',item_uuids)
+
+    var delete_scene_locations = await SceneLocation.query()
+      .patch({ deleted_at: moment().format('YYYY-MM-DD HH:mm:ss').toString() })
+      .where('book_scene_id', '=', sceneId)
+      .whereNotIn('book_location_id',location_uuids)
+
+
+      for (let i = 0; i < character_uuids.length; i++) {
+        var child_uuid = character_uuids[i]
+        
+        var obj = {
+          book_scene_id: sceneId,
+          book_character_id: child_uuid,
+          deleted_at: null
+        }
+
+        var row  = await SceneCharacter.query()
+          .where('book_scene_id', '=', obj.book_scene_id)
+          .where('book_character_id', '=', obj.book_character_id)
+          .first()
+
+        if (!row) {
+          console.log('INSERTED')
+          const save = await SceneCharacter.query().upsertGraph([obj]).first()
+        } else {
+          const save = await SceneCharacter.query()
+          .patch(obj)
+          .where('book_scene_id', '=', obj.book_scene_id)
+          .where('book_character_id', '=', obj.book_character_id)
+        }
+      }
+
+        
+
+      for (let i = 0; i < item_uuids.length; i++) {
+        var child_uuid = item_uuids[i]
+        
+        var obj = {
+          book_scene_id: sceneId,
+          book_item_id: child_uuid,
+          deleted_at: null
+        }
+
+        var row  = await SceneItem.query()
+          .where('book_scene_id', '=', obj.book_scene_id)
+          .where('book_item_id', '=', obj.book_item_id)
+          .first()
+
+        if (!row) {
+          console.log('INSERTED')
+          const save = await SceneItem.query().upsertGraph([obj]).first()
+        } else {
+          const save = await SceneItem.query()
+          .patch(obj)
+          .where('book_scene_id', '=', obj.book_scene_id)
+          .where('book_item_id', '=', obj.book_item_id)
+        }
+        
+      }
+
+      for (let i = 0; i < location_uuids.length; i++) {
+        var child_uuid = location_uuids[i]
+        
+        var obj = {
+          book_scene_id: sceneId,
+          book_location_id: child_uuid,
+          deleted_at: null
+        }
+
+        var row  = await SceneLocation.query()
+          .where('book_scene_id', '=', obj.book_scene_id)
+          .where('book_location_id', '=', obj.book_location_id)
+          .first()
+
+        if (!row) {
+          console.log('INSERTED')
+          const save = await SceneLocation.query().upsertGraph([obj]).first()
+        }  else {
+          const save = await SceneLocation.query()
+          .patch(obj)
+          .where('book_scene_id', '=', obj.book_scene_id)
+          .where('book_location_id', '=', obj.book_location_id)
+        }
+        
+      }
+
+      var scene = await Scene.query().where('uuid', '=', sceneId).first()
+
+      var scene_characters = await SceneCharacter.query().withGraphFetched('character').where('book_scene_id', '=', sceneId).whereNull('deleted_at')
+      var scene_items = await SceneItem.query().withGraphFetched('item').where('book_scene_id', '=', sceneId).whereNull('deleted_at')
+      var scene_locations = await SceneLocation.query().withGraphFetched('location').where('book_scene_id', '=', sceneId).whereNull('deleted_at')
+
+      scene.scene_characters = scene_characters
+      scene.scene_items = scene_items
+      scene.scene_locations = scene_locations
+
+      return scene
+  }
+
+  static async hideStoryline(sceneId,data) {
+
+    var row  = await Scene.query()
+      .where('id', '=', sceneId).first()
+
+    var scene = await Scene.query()
+      .patch({ storyline_hidden: !row.storyline_hidden })
+      .where('id', '=', sceneId)
+
+
+    row.storyline_hidden = !row.storyline_hidden
+    return row
+  }
+
 
   static getAllSceneByChapterId (chapterId) {
     var scenes = Scene.query()
@@ -169,6 +299,7 @@ class SceneController {
       date_ends: row.date_ends,
       character_id_vp: row.character_id_vp,
       viewpoint_description: row.viewpoint_description,
+      storyline_hidden: row.storyline_hidden,
       created_at: row.created_at,
       updated_at: row.updated_at,
       deleted_at: row.deleted_at,

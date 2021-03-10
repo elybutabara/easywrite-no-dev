@@ -23,7 +23,7 @@ class CharacterController {
     return character
   }
 
-  static async save (data) {
+  static async save(data) {
     if (data.updated_at) delete data.updated_at
     const saveCharacters = await Character.query().upsertGraph([data]).first()
 
@@ -33,6 +33,33 @@ class CharacterController {
 
     return character
   }
+
+
+  static async updateLineColor (characterId,data) {
+
+    var character = await Character.query()
+      .patch({ line_color: data.color })
+      .where('id', '=', characterId)
+
+    character = Character.query()
+      .where('id', '=', characterId).first()
+
+    return character
+  }
+
+  static async hideStoryline(characterId,data) {
+
+    var row  = await Character.query()
+      .where('id', '=', characterId).first()
+
+    var character = await Character.query()
+      .patch({ storyline_hidden: !row.storyline_hidden })
+      .where('id', '=', characterId)
+
+    row.storyline_hidden = !row.storyline_hidden
+    return row
+  }
+
 
   static async delete (characterId) {
     const character = await Character.query().softDeleteById(characterId)
@@ -84,6 +111,8 @@ class CharacterController {
       bio: row.bio,
       goals: row.goals,
       picture: row.picture,
+      line_color: row.line_color,
+      storyline_hidden: row.storyline_hidden,
       created_at: row.created_at,
       updated_at: row.updated_at,
       deleted_at: row.deleted_at,

@@ -73,6 +73,22 @@ router.post('/', async function (req, res) {
     .json(scene)
 })
 
+router.post('/:sceneId/hide-storyline', async function (req, res) {
+  const scene = await SceneController.hideStoryline(req.params.sceneId, req.body)
+
+  res
+    .status(200)
+    .json(scene)
+})
+
+router.post('/:sceneId/children', async function (req, res) {
+  const scene = await SceneController.saveChildren(req.params.sceneId, req.body)
+
+  res
+    .status(200)
+    .json(scene)
+})
+
 router.delete('/:sceneId', async function (req, res) {
   const scene = await SceneController.delete(req.params.sceneId)
 

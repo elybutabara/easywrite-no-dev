@@ -55,6 +55,7 @@ import './assets/css/darkmode.css'
 // import 'select2/dist/js/select2.min'
 
 import 'vue-multiselect/dist/vue-multiselect.min.css'
+import { Sketch,Slider } from 'vue-color'  // refer to this for more options "https://www.npmjs.com/package/vue-color"
 
 import 'tinymce/tinymce'
 import 'tinymce/themes/silver'
@@ -139,9 +140,9 @@ let APP = {
   }
 }
 
-window.APP = APP.NO_DEV // DEVELOPEMENT APP
+window.APP = APP.LOCAL // DEVELOPEMENT APP
 if (process.env.NODE_ENV === 'production') {
-  window.APP = APP.NO_DEV // PRODUCTION APP
+  window.APP = APP.LOCAL // PRODUCTION APP
 }
 // window.$.fn.select2.defaults.set('theme', 'bootstrap')
 
@@ -154,6 +155,8 @@ Vue.component('multiselect', Multiselect)
 Vue.component('tiny-editor', TinyMCE)
 Vue.component('tiny-editor-chapter', TinyMCEChapter)
 Vue.component('ToggleButton', ToggleButton)
+Vue.component('sketch-picker', Sketch)
+Vue.component('slider-picker', Slider)
 
 // Install BootstrapVue
 Vue.use(BootstrapVue)

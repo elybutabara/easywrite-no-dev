@@ -33,6 +33,31 @@ class ItemController {
     return item
   }
 
+  static async updateLineColor (itemID,data) {
+
+    var item = await Item.query()
+      .patch({ line_color: data.color })
+      .where('id', '=', itemID)
+
+      item = Item.query()
+      .where('id', '=', itemID).first()
+
+    return item
+  }
+
+  static async hideStoryline(itemID,data) {
+
+    var row  = await Item.query()
+    .where('id', '=', itemID).first()
+
+    var item = await Item.query()
+      .patch({ storyline_hidden: !row.storyline_hidden })
+      .where('id', '=', itemID)
+
+    row.storyline_hidden = !row.storyline_hidden
+    return row
+  }
+
   static async delete (itemId) {
     const item = await Item.query().softDeleteById(itemId)
 
@@ -72,6 +97,8 @@ class ItemController {
       AKA: row.AKA,
       tags: row.tags,
       pictures: row.pictures,
+      line_color: row.line_color,
+      storyline_hidden: row.storyline_hidden,
       created_at: row.created_at,
       updated_at: row.updated_at,
       deleted_at: row.deleted_at,
