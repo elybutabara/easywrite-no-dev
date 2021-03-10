@@ -426,7 +426,7 @@ export default {
       tempSceneEnd: '',
       accordion: {
         'scene-details': 'active',
-        'content': 'inactive',
+        'content': 'active',
         'more-details': 'inactive',
         'notes': 'inactive',
         'viewpoint': 'inactive',
