@@ -456,17 +456,16 @@ export default {
     },
     toggleHiddenStorylinesAndScenes: function (selected, type) {
       var scope = this
-      
+
       axios.post('http://localhost:3000/' + type + '/' + selected.id + '/hide-storyline')
         .then(response => {
           console.log(response)
           if (response) {
             console.log('response.data.storyline_hidden')
             console.log(response.data.storyline_hidden)
-         
+
             selected.storyline_hidden = response.data.storyline_hidden
-            
-            
+
             scope.reCalculateSceneLinesAndHeight()
             scope.showSnackbar()
           }
@@ -512,7 +511,7 @@ export default {
         if (response) {
           console.log(response)
           setTimeout(function () {
-            $(document).find('.sl-line').remove()
+            window.$(document).find('.sl-line').remove()
 
             scope.selected_scene.scene_characters = response.data.scene_characters
             scope.selected_scene.scene_items = response.data.scene_items
@@ -537,7 +536,7 @@ export default {
       this.selected_child = child
       this.selected_child.type = type
       this.selected_child_color.hex = child.line_color
-      
+
       if (type == 'character') {
         this.selected_child.label = child.fullname
       } else if (type == 'location') {
@@ -570,7 +569,7 @@ export default {
       }).then(response => {
         if (response.data) {
           setTimeout(function () {
-            $(document).find('.sl-line').remove()
+            window.$(document).find('.sl-line').remove()
             var data = response.data
             scope.selected_child.line_color = data.line_color
             scope.calculateSceneLinesAndHeight({data: scope.characters, type: 'characters'})
@@ -612,7 +611,7 @@ export default {
     },
     reCalculateSceneLinesAndHeight: function () {
       var scope = this
-      $(document).find('.sl-line').remove()
+      window.$(document).find('.sl-line').remove()
       Vue.nextTick(function () {
         scope.calculateSceneLinesAndHeight({data: scope.characters, type: 'characters'})
         scope.calculateSceneLinesAndHeight({data: scope.locations, type: 'locations'})
@@ -636,14 +635,13 @@ export default {
             console.log(sceneType)
             console.log(sceneType[`${typeSingular}`])
             if (dataType.id == sceneType[`${typeSingular}`].id && (scene.storyline_hidden == 0 || scene.storyline_hidden == null)) {
-
               console.log(`scene_${type}`)
               console.log(sceneType[`${typeSingular}`])
-              
+
               var index = scene['selected_' + type + '_ids'].indexOf(dataType.uuid)
               if (index === -1) {
                 scene['selected_' + type + '_ids'].push(dataType.uuid)
-              } 
+              }
 
               var typeElement = document.querySelector(`.page-storyline #${typeSingular}-${dataType.id}`)
               var sceneElement = document.querySelector(`.page-storyline #scene-${scene.id}`)
@@ -660,11 +658,11 @@ export default {
 
               // height
               // console.log('height: ', typeElement.offsetTop)
-              $(`.page-storyline #scene-${scene.id} .sl-chapter-scene-blurb`).height(typeElement.offsetTop + 17)
+              window.$(`.page-storyline #scene-${scene.id} .sl-chapter-scene-blurb`).height(typeElement.offsetTop + 17)
             }
           }
         }
-        $(`.page-storyline #${typeSingular}-${dataType.id} .sl-lines-wrapper`).append(arrayLines.reverse().join(''))
+        window.$(`.page-storyline #${typeSingular}-${dataType.id} .sl-lines-wrapper`).append(arrayLines.reverse().join(''))
       }
 
       /**

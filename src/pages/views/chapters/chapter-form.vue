@@ -253,7 +253,7 @@ export default {
       baseChapterVersionCont: '',
       accordion: {
         'chapter-details': 'active',
-        'content': 'inactive'
+        'content': 'active'
       },
       base_chapter_val: {},
       // Base content count is use to determine initial total number of words in content
