@@ -115,6 +115,8 @@
                 <scene-form :key="tab.key" v-if="tab.component == 'scene-form'" :properties="tab.data"></scene-form>
 
                 <storyboard :key="tab.key" v-if="tab.component == 'storyboard'" :properties="tab.data"></storyboard>
+                <storyline :key="tab.key" v-if="tab.component == 'storyline'" :properties="tab.data" ></storyline>
+
                 <syncing :key="tab.key" v-if="tab.component == 'syncing'" :properties="tab.data"></syncing>
                 <course-details :key="tab.key" v-if="tab.component == 'course-details'" :properties="tab.data"></course-details>
                 <course-listing :key="tab.key" v-if="tab.component == 'course-listing'" :properties="tab.data"></course-listing>
@@ -137,6 +139,7 @@ import Syncer from '@/components/Syncer'
 
 import Syncing from '@/pages/views/syncing'
 import StoryBoard from '@/pages/views/storyboard'
+import Storyline from '@/pages/views/storyline'
 import Dashboard from '@/pages/views/dashboard'
 import ChapterListing from '@/pages/views/chapters/chapter-listing'
 import SceneListing from '@/pages/views/scenes/scene-listing'
@@ -215,6 +218,7 @@ export default {
     'syncer': Syncer,
     'syncing': Syncing,
     'storyboard': StoryBoard,
+    'storyline': Storyline,
     'dashboard': Dashboard,
     'chapter-listing': ChapterListing,
     'scene-listing': SceneListing,

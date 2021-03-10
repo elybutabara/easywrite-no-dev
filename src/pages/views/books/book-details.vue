@@ -6,6 +6,12 @@
             <h4 class="main-title"><i class="fas fa-book mr-1"></i> {{ properties.title }}</h4>
           </div>
           <div class="book-panel-right">
+            <button
+              class="es-button btn-sm white btn-storyline"
+              @click="/*$store.dispatch('loadDetailedChaptersByBookId', book_id);*/
+              CHANGE_COMPONENT({tabKey: 'storyline-' + page.data.id, tabComponent: 'storyline',  tabData: { book: properties }, tabTitle: 'Storyline - ' + properties.title, newTab: true})">
+              Storyline
+            </button>
             <button class="es-button btn-sm white" @click="CHANGE_COMPONENT({tabKey: 'storyboard-' + page.data.uuid, tabComponent: 'storyboard',  tabData: page.data, tabTitle: 'Story Board - ' + properties.title, newTab: true})">Story Board</button>
             <!--<button class="es-button btn-sm white" :disabled="getExportBookStatus.export_book_status"  @click="exportBook()">
               <span v-if="getExportBookStatus.export_book_status === false"><span>{{export_book}}</span></span>
