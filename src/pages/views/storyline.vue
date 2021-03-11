@@ -1,5 +1,28 @@
 <template>
 <div class="es-page-main page-storyline">
+
+  <div>
+     <vue-html2pdf
+        :show-layout="false"
+        :float-layout="true"
+        :enable-download="true"
+        :preview-modal="false"
+        :paginate-elements-by-height="1400"
+        filename="hee hee"
+        :pdf-quality="2"
+        :manual-pagination="false"
+        pdf-format="a4"
+        pdf-orientation="landscape"
+        pdf-content-width="1000px"
+        ref="html2Pdf"
+    >
+        <section slot="pdf-content">
+            <Print ref="printCanvas"></Print>
+        </section>
+    </vue-html2pdf>
+   </div>
+   
+
   <div v-if="is_page_ready">
     <div class="es-page-head-2">
       <div class="row-head">
@@ -8,7 +31,7 @@
         </div>
         <div class="book-panel-right">
           <button class="es-button btn-sm white" style="display:none;">Save</button>
-          <button class="es-button btn-sm white" style="display:none;">Print</button>
+          <button class="es-button btn-sm white" @click="generateReport()">Print</button>
           <div class="position-relative">
             <button class="es-button btn-sm white" @click="showSettings('settings')">Settings</button>
             <div v-if="show_settings" class="sl-show-settings">
@@ -43,6 +66,8 @@
         </div>
       </div>
     </div>
+
+   
     <div class="es-page-content" id="custom-scrollbar">
       <div class="storyline-content mt-1">
         <div class="row">
@@ -346,6 +371,8 @@
 // import moment from 'moment'
 import Vue from 'vue'
 import axios from 'axios'
+import VueHtml2pdf from 'vue-html2pdf'
+import Print from './storyline-print'
 
 export default {
   name: 'storyline',
@@ -375,7 +402,10 @@ export default {
       selected_child_color: { hex: '#bbb' }
     }
   },
-  components: { },
+  components: { 
+     VueHtml2pdf,
+     Print
+  },
   computed: {
     book: function () {
       var scope = this
@@ -433,6 +463,22 @@ export default {
     }
   },
   methods: {
+    generateReport () {
+       var scope = this
+        var data = {
+          chapters: [],
+          scenes: scope.scenes,
+          characters: scope.characters,
+          locations: scope.locations,
+          items: scope.items,
+        }
+        scope.$refs.printCanvas.updateData(data);
+
+        setTimeout(function(){
+          scope.$refs.html2Pdf.generatePdf()
+        },1000);
+        
+    },
     showSettings: function (setting) {
       this[`show_` + setting] = !this[`show_` + setting]
       this.resetShowOptions()
