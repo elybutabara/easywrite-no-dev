@@ -773,6 +773,7 @@ export default {
 
     scope.auto_save_chapter_interval = setInterval(scope.autoSave, 10000)
     if (scope.data.uuid) {
+      scope.accordion['chapter-details'] = 'inactive'
       scope.loadChapter(scope.properties.chapter)
     } else {
       scope.page.is_ready = true

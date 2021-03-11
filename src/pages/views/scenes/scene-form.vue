@@ -1124,6 +1124,7 @@ export default {
     } finally {
       scope.auto_save_scene_interval = setInterval(scope.autoSave, 10000)
       if (scope.data.uuid) {
+        scope.accordion['scene-details'] = 'inactive'
         scope.loadScene(scope.properties.scene)
         scope.selected_chapter = scope.properties.chapter
       } else {
