@@ -35,7 +35,7 @@
         <div style="position:relative; padding-bottom:40px; overflow: hidden;">
           <Feedback v-bind:class="{ 'show_feedbacks' : show_feedbacks }" :properties="{ book: book, parent: chapter, parent_name: 'chapter', toggleType: true }"></Feedback>
           <Note v-if="show_notes" :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></Note>
-          
+
           <!-- footer previous & next -->
           <div style="border-top:1px solid #ccc; z-index:2000; background:#fff; height:50px; padding:0px 20px; line-height:50px; width:100%; position:absolute; bottom:0px; left:0px;">
 
@@ -119,7 +119,7 @@ export default {
       },
       nextType: '',
       prevType: '',
-      previousChapter: '',
+      previousChapter: ''
     }
   },
   components: {
@@ -162,32 +162,29 @@ export default {
       let scope = this
       scope.previousChapter = this.$store.getters.getPrevChapter(chapter, false)
 
-      // check if there is prev chapter 
-      if(scope.previousChapter != null){
-
-        // if there is a previous chapter - load the scenes of the previous chapter 
+      // check if there is prev chapter
+      if (scope.previousChapter != null) {
+        // if there is a previous chapter - load the scenes of the previous chapter
         scope.$store.dispatch('loadScenesByChapter', scope.previousChapter.uuid)
 
         // check if there is a scene -not including the hidden
         let notHiddenRows = this.$store.getters.getScenesByChapter(scope.previousChapter.uuid)
 
-        for(var i = 0; i < notHiddenRows.length; i++){
-          if(notHiddenRows[i].hidden){
-            notHiddenRows.splice(i,1)
+        for (var i = 0; i < notHiddenRows.length; i++) {
+          if (notHiddenRows[i].hidden) {
+            notHiddenRows.splice(i, 1)
           }
         }
 
-        if(notHiddenRows.length > 0){ //if previous chapter has scene - return scene
+        if (notHiddenRows.length > 0) { // if previous chapter has scene - return scene
           scope.prevType = 'scene'
-          return notHiddenRows[notHiddenRows.length-1] //last scene
-        }else{ //if no scene under chapter then return the next chapter
+          return notHiddenRows[notHiddenRows.length - 1] // last scene
+        } else { // if no scene under chapter then return the next chapter
           scope.prevType = 'chapter'
           return this.$store.getters.getPrevChapter(chapter, false)
         }
-
       }
       return null
-
     },
     nextScene: function () {
       let chapter = this.chapter
@@ -198,20 +195,19 @@ export default {
 
       console.log('not hiddden rows', notHiddenRows, chapter.uuid)
 
-      for(var i = 0; i < notHiddenRows.length; i++){
-        if(notHiddenRows[i].hidden){
-          notHiddenRows.splice(i,1)
+      for (var i = 0; i < notHiddenRows.length; i++) {
+        if (notHiddenRows[i].hidden) {
+          notHiddenRows.splice(i, 1)
         }
       }
-      
-      if(notHiddenRows.length > 0){ //if chapter has scene - return scene
+
+      if (notHiddenRows.length > 0) { // if chapter has scene - return scene
         scope.nextType = 'scene'
         return notHiddenRows[0]
-      }else{ //if no scene under chapter then return the next chapter
+      } else { // if no scene under chapter then return the next chapter
         scope.nextType = 'chapter'
         return this.$store.getters.getNextChapter(chapter, false)
       }
-      
     }
   },
   methods: {

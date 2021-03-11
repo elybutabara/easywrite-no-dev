@@ -228,13 +228,13 @@ export default {
       let scene = this.scene
       let scope = this
       let previousScene = this.$store.getters.getPrevScene(scene)
-      
-      if(previousScene != null){ //if there is previous scene, then return previous scene
-          scope.prevType = "scene"
-          return previousScene
-      }else{ //if not previous scene. return the chapter of the scene
-          scope.prevType = "chapter"
-          return scope.chapter
+
+      if (previousScene != null) { // if there is previous scene, then return previous scene
+        scope.prevType = 'scene'
+        return previousScene
+      } else { // if not previous scene. return the chapter of the scene
+        scope.prevType = 'chapter'
+        return scope.chapter
       }
     },
     nextScene: function () {
@@ -243,12 +243,12 @@ export default {
       let chapter = this.chapter
       let nextScene = this.$store.getters.getNextScene(chapter, scene)
       // check if there is a next scene
-      if(nextScene != null){
-          scope.nextType = 'scene'
-          return nextScene
-      }else{ //if no next scene, then proceed to next chapter
-          scope.nextType = 'chapter'
-          return this.$store.getters.getNextChapter(chapter)
+      if (nextScene != null) {
+        scope.nextType = 'scene'
+        return nextScene
+      } else { // if no next scene, then proceed to next chapter
+        scope.nextType = 'chapter'
+        return this.$store.getters.getNextChapter(chapter)
       }
     }
   },

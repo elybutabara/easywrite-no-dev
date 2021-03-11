@@ -14,9 +14,7 @@ export default {
   },
   getters: {
     getNextScene: state => (chapter, scene, isHiddenIncluded = true) => {
-      
       if (state.scenes.hasOwnProperty(scene.chapter_id)) {
-
         let rows = state.scenes[scene.chapter_id].rows
         var index = 0
 
@@ -42,14 +40,11 @@ export default {
         } else {
           return null
         }
-
       }
-      
+
       return null
-      
     },
     getPrevScene: state => (scene, isHiddenIncluded = true) => {
-
       if (state.scenes.hasOwnProperty(scene.chapter_id)) {
         let rows = state.scenes[scene.chapter_id].rows
         var index = 0
@@ -76,11 +71,9 @@ export default {
         } else {
           return null
         }
-
       }
-      
-      return null
 
+      return null
     },
     getScenesByBook: state => (bookUUID) => {
       if (state.scenes.hasOwnProperty(bookUUID)) {
