@@ -55,7 +55,7 @@ import './assets/css/darkmode.css'
 // import 'select2/dist/js/select2.min'
 
 import 'vue-multiselect/dist/vue-multiselect.min.css'
-import { Sketch,Slider } from 'vue-color'  // refer to this for more options "https://www.npmjs.com/package/vue-color"
+import { Sketch, Slider } from 'vue-color' // refer to this for more options "https://www.npmjs.com/package/vue-color"
 
 import 'tinymce/tinymce'
 import 'tinymce/themes/silver'

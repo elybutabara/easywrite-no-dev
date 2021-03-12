@@ -46,6 +46,25 @@
         </div>
         <div style="position:relative;">
         <Feedback v-bind:class="{ 'show_feedbacks' : show_feedbacks }" :properties="{ book: book, parent: scene, parent_name: 'scene', toggleType: true }"></Feedback>
+
+        <!-- footer previous & next -->
+        <div style="border-top:1px solid #ccc; z-index:2000; background:#fff; height:50px; padding:0px 20px; line-height:50px; width:100%; position:absolute; bottom:0px; left:0px;">
+            <button v-if="prevScene != null && prevType == 'scene'" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + prevScene.id, tabComponent: 'scene-details',  tabData: { book: book, scene: prevScene, chapter: chapter }, tabTitle: prevScene.title})" style="float:left; background:transparent; border:none;">
+                <i class="las la-angle-double-left"></i> PREV
+            </button>
+            <button v-if="nextScene != null && nextType == 'scene'" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + nextScene.id, tabComponent: 'scene-details',  tabData: { book: book, scene: nextScene, chapter: chapter}, tabTitle: nextScene.title})" style="float:right; background:transparent; border:none;">
+                NEXT <i class="las la-angle-double-right"></i>
+            </button>
+
+            <button v-if="prevScene != null && prevType == 'chapter'" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + prevScene.id, tabComponent: 'chapter-details',  tabData: { book: book, chapter: prevScene }, tabTitle: 'VIEW' + ' - ' + prevScene.title})" style="float:left; background:transparent; border:none;">
+                <i class="las la-angle-double-left"></i> PREV
+            </button>
+            <button v-if="nextScene != null && nextType == 'chapter'" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + nextScene.id, tabComponent: 'chapter-details',  tabData: { book: book, chapter: nextScene }, tabTitle: 'VIEW' + ' - ' + nextScene.title})" style="float:right; background:transparent; border:none;">
+                NEXT <i class="las la-angle-double-right"></i>
+            </button>
+
+        </div>
+
         <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">
             <div class="export-content">
               <b-button class="es-button btn-sm white" :disabled="exportOnProgress"  @click="exportContent()">
@@ -165,7 +184,9 @@ export default {
       },
       exportOnProgress: false,
       exportLoading: this.$t('Loading'),
-      show_feedbacks: false
+      show_feedbacks: false,
+      nextType: '',
+      prevType: ''
     }
   },
   components: {
@@ -202,6 +223,33 @@ export default {
     getAuthor: function () {
       var scope = this
       return scope.$store.getters.getAuthor
+    },
+    prevScene: function () {
+      let scene = this.scene
+      let scope = this
+      let previousScene = this.$store.getters.getPrevScene(scene)
+
+      if (previousScene != null) { // if there is previous scene, then return previous scene
+        scope.prevType = 'scene'
+        return previousScene
+      } else { // if not previous scene. return the chapter of the scene
+        scope.prevType = 'chapter'
+        return scope.chapter
+      }
+    },
+    nextScene: function () {
+      let scope = this
+      let scene = this.scene
+      let chapter = this.chapter
+      let nextScene = this.$store.getters.getNextScene(chapter, scene)
+      // check if there is a next scene
+      if (nextScene != null) {
+        scope.nextType = 'scene'
+        return nextScene
+      } else { // if no next scene, then proceed to next chapter
+        scope.nextType = 'chapter'
+        return this.$store.getters.getNextChapter(chapter)
+      }
     }
   },
   methods: {
@@ -377,7 +425,7 @@ export default {
     .es-scene-details-tab .es-scene-details-tab-item:after { content:''; position:absolute; bottom:0px; left:0px; height:3px;  width:100%; background:transparent;}
     .es-scene-details-tab .es-scene-details-tab-item.active:after { background:#922c39;  }
 
-    .es-scene-details-tab-content { position:relative; padding:30px; background:#fff; height:calc(100vh - 317px); overflow-y:auto; display:block; }
+    .es-scene-details-tab-content { position:relative; padding:30px; background:#fff; height: calc(107vh - 319px); overflow-y:auto; display:block; }
     .es-scene-details-tab-content.no-padding { padding:0px; }
     .es-scene-details-tab-content.active { display:block; }
     @media screen and (max-width: 1334px){

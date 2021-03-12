@@ -253,7 +253,7 @@ export default {
       baseChapterVersionCont: '',
       accordion: {
         'chapter-details': 'active',
-        'content': 'inactive'
+        'content': 'active'
       },
       base_chapter_val: {},
       // Base content count is use to determine initial total number of words in content
@@ -773,6 +773,7 @@ export default {
 
     scope.auto_save_chapter_interval = setInterval(scope.autoSave, 10000)
     if (scope.data.uuid) {
+      scope.accordion['chapter-details'] = 'inactive'
       scope.loadChapter(scope.properties.chapter)
     } else {
       scope.page.is_ready = true

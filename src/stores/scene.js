@@ -13,6 +13,68 @@ export default {
     scene_history: {}
   },
   getters: {
+    getNextScene: state => (chapter, scene, isHiddenIncluded = true) => {
+      if (state.scenes.hasOwnProperty(scene.chapter_id)) {
+        let rows = state.scenes[scene.chapter_id].rows
+        var index = 0
+
+        for (var i = 0; i < rows.length; i++) {
+          let row = rows[i]
+          if (row.uuid === scene.uuid) {
+            index = i
+            break
+          }
+        }
+
+        if (index < rows.length) {
+          for (let x = (index + 1); x < rows.length; x++) {
+            let row = rows[x]
+            if (isHiddenIncluded) {
+              return row
+            } else if (!isHiddenIncluded && !row.hidden) {
+              return row
+            } else if (x <= 0) {
+              return null
+            }
+          }
+        } else {
+          return null
+        }
+      }
+
+      return null
+    },
+    getPrevScene: state => (scene, isHiddenIncluded = true) => {
+      if (state.scenes.hasOwnProperty(scene.chapter_id)) {
+        let rows = state.scenes[scene.chapter_id].rows
+        var index = 0
+
+        for (var i = 0; i < rows.length; i++) {
+          let row = rows[i]
+          if (row.uuid === scene.uuid) {
+            index = i
+            break
+          }
+        }
+
+        if (index > 0) {
+          for (let x = (index - 1); x >= 0; x--) {
+            let row = rows[x]
+            if (isHiddenIncluded) {
+              return row
+            } else if (!isHiddenIncluded && !row.hidden) {
+              return row
+            } else if (x <= 0) {
+              return null
+            }
+          }
+        } else {
+          return null
+        }
+      }
+
+      return null
+    },
     getScenesByBook: state => (bookUUID) => {
       if (state.scenes.hasOwnProperty(bookUUID)) {
         return state.scenes[bookUUID].rows
