@@ -7,13 +7,13 @@
         :float-layout="true"
         :enable-download="true"
         :preview-modal="false"
-        :paginate-elements-by-height="1400"
-        filename="hee hee"
+        :paginate-elements-by-height="1700"
+        :filename="properties.book.title + ' Story Line'"
         :pdf-quality="2"
         :manual-pagination="false"
         pdf-format="a4"
         pdf-orientation="landscape"
-        pdf-content-width="1000px"
+        pdf-content-width="100%"
         ref="html2Pdf"
     >
         <section slot="pdf-content">
@@ -21,8 +21,7 @@
         </section>
     </vue-html2pdf>
    </div>
-   
-
+  
   <div v-if="is_page_ready">
     <div class="es-page-head-2">
       <div class="row-head">

@@ -2,9 +2,10 @@
 <div class="es-page-main page-storyline">
     <section class="storyline-print-canvas" slot="pdf-content">
         
+      <section class="pdf-item" style="margin-top:20px;" v-for="(chunk,chunk_index) in chunks" :key="'chunk' + '-' + chunk_index">
       <div style="flex-wrap: nowrap;" class="row">
             <div class="col-lg-3">
-            <div v-for="character in characters" :key="'character-'+ character.id" :id="'print-character-'+ character.id" class="position-relative">
+            <div v-for="character in characters" :key="'character-'+ character.id + '-' + chunk_index" :id="'print-character-'+ character.id + '-' + chunk_index" class="position-relative">
                 <div v-if="character.storyline_hidden == 0 || character.storyline_hidden == null">
                     <div class="sl-lines-wrapper"></div>
                     <div>
@@ -18,7 +19,7 @@
                     </div>
                 </div>
             </div>
-            <div v-for="location in locations" :key="'location-'+ location.id" :id="'print-location-'+ location.id" class="position-relative">
+            <div v-for="location in locations" :key="'location-'+ location.id" :id="'print-location-'+ location.id + '-' + chunk_index" class="position-relative">
                 <div v-if="location.storyline_hidden == 0 || location.storyline_hidden == null">
                     <div class="sl-lines-wrapper"></div>
                     <div>
@@ -32,7 +33,7 @@
                     </div>
                 </div>
             </div>
-            <div v-for="item in items" :key="'item-'+ item.id" :id="'print-item-'+ item.id" class="position-relative">
+            <div v-for="item in items" :key="'item-'+ item.id" :id="'print-item-'+ item.id + '-' + chunk_index" class="position-relative">
                 <div v-if="item.storyline_hidden == 0 || item.storyline_hidden == null">
                   <div class="sl-lines-wrapper"></div>
                     <div>
@@ -47,11 +48,11 @@
                 </div>
             </div>
         </div>
-        <template v-for="scene in scenes">
+        <template v-for="scene in chunks[chunk_index]">
           <div
             v-show="scene.storyline_hidden == 0 || scene.storyline_hidden == null"
             :key="'scene-'+ scene.id"
-            :id="'print-scene-'+ scene.id"
+            :id="'print-scene-'+ scene.id + '-' + chunk_index"
             class="col-lg-3"
           >
             <div class="sl-chapter-scene-blurb">
@@ -62,6 +63,7 @@
           </div>
         </template>
       </div>
+      </section>
       
     </section>
 </div>
@@ -79,6 +81,7 @@ export default {
       characters: [],
       locations: [],
       items: [],
+      chunks: []
     }
   },
   components: { 
@@ -93,12 +96,26 @@ export default {
         scope.characters = data.characters;
         scope.locations = data.locations;
         scope.items = data.items;
+        scope.chunks = scope.chunkArray(scope.scenes,3)
 
          Vue.nextTick(function () {
           scope.calculateSceneLinesAndHeight({data: scope.characters, type: 'characters'})
           scope.calculateSceneLinesAndHeight({data: scope.locations, type: 'locations'})
           scope.calculateSceneLinesAndHeight({data: scope.items, type: 'items'})
         })
+    },
+    chunkArray: function (myArray, chunk_size){
+        var index = 0;
+        var arrayLength = myArray.length;
+        var tempArray = [];
+        
+        for (index = 0; index < arrayLength; index += chunk_size) {
+            var myChunk = myArray.slice(index, index+chunk_size);
+            // Do something if you want with the group
+            tempArray.push(myChunk);
+        }
+
+        return tempArray;
     },
     reCalculateSceneLinesAndHeight: function () {
       var scope = this
@@ -113,28 +130,18 @@ export default {
       var scope = this
       var typeSingular = type.slice(0, -1)
 
+      for (var chunk_index = 0; chunk_index < scope.chunks.length; chunk_index++) {
       for (var dataType of data) {
         var arrayLines = []
 
-        for (var scene of scope.scenes) {
-          if (!scene.hasOwnProperty('selected_' + type + '_ids')) {
-            scope.$set(scene, 'selected_' + type + '_ids', [])
-          }
+        for (var scene of scope.chunks[chunk_index]) {
 
           for (var sceneType of scene[`scene_${type}`]) {
 
             if (dataType.id == sceneType[`${typeSingular}`].id && (scene.storyline_hidden == 0 || scene.storyline_hidden == null)) {
 
-              console.log(`scene_${type}`)
-              console.log(sceneType[`${typeSingular}`])
-              
-              var index = scene['selected_' + type + '_ids'].indexOf(dataType.uuid)
-              if (index === -1) {
-                scene['selected_' + type + '_ids'].push(dataType.uuid)
-              } 
-
-              var typeElement = document.querySelector(`.page-storyline #print-${typeSingular}-${dataType.id}`)
-              var sceneElement = document.querySelector(`.page-storyline #print-scene-${scene.id}`)
+              var typeElement = document.querySelector(`.page-storyline #print-${typeSingular}-${dataType.id}-${chunk_index}`)
+              var sceneElement = document.querySelector(`.page-storyline #print-scene-${scene.id}-${chunk_index}`)
 
               // lines
               const Xdistance = scope.getXDistanceBetweenElements(typeElement, sceneElement)
@@ -148,11 +155,12 @@ export default {
 
               // height
               // console.log('height: ', typeElement.offsetTop)
-              $(`.page-storyline #print-scene-${scene.id} .sl-chapter-scene-blurb`).height(typeElement.offsetTop + 17)
+              $(`.page-storyline #print-scene-${scene.id}-${chunk_index} .sl-chapter-scene-blurb`).height(typeElement.offsetTop + 17)
             }
           }
         }
-        $(`.page-storyline #print-${typeSingular}-${dataType.id} .sl-lines-wrapper`).append(arrayLines.reverse().join(''))
+        $(`.page-storyline #print-${typeSingular}-${dataType.id}-${chunk_index} .sl-lines-wrapper`).append(arrayLines.reverse().join(''))
+      }
       }
 
       /**

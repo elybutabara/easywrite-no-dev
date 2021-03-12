@@ -279,18 +279,22 @@ export default {
     createGroupChat: function (e) {
       e.preventDefault()
       if (!this.socketConnected) {
+        alert('ss')
         return
       }
       if (this.userSelect.selected.length < 1) {
+        alert('bbb')
         return
       }
       if (this.userSelect.selected.length > 1) {
+        alert('ccc')
         if (this.userSelect.groupName === '') {
           return
         }
       } else {
         this.userSelect.groupName = ''
       }
+      
       this.socket.emit('group create', {name: this.userSelect.groupName, members: this.userSelect.selected})
     },
     userSelectLimitText (count) {

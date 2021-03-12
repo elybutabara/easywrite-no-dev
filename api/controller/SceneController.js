@@ -170,7 +170,6 @@ class SceneController {
           .first()
 
         if (!row) {
-          console.log('INSERTED')
           const save = await SceneLocation.query().upsertGraph([obj]).first()
         }  else {
           const save = await SceneLocation.query()
