@@ -72,7 +72,7 @@
 // import moment from 'moment'
 import Vue from 'vue'
 export default {
-  name: 'storyline-print',
+  name: 'storyline-print-chunked',
   props: ['properties'],
   data: function () {
     return {

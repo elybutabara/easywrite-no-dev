@@ -17,7 +17,8 @@
         ref="html2Pdf"
     >
         <section slot="pdf-content">
-            <Print ref="printCanvas"></Print>
+            <Print v-if="print == 'default'" ref="printCanvas"></Print>
+            <PrintChunked v-if="print == 'chunked'" ref="printCanvasChunked"></PrintChunked>
         </section>
     </vue-html2pdf>
    </div>
@@ -31,6 +32,7 @@
         <div class="book-panel-right">
           <button class="es-button btn-sm white" style="display:none;">Save</button>
           <button class="es-button btn-sm white" @click="generateReport()">Print</button>
+          <button class="es-button btn-sm white" @click="generateReport(true)">Print Chunked</button>
           <div class="position-relative">
             <button class="es-button btn-sm white" @click="showSettings('settings')">Settings</button>
             <div v-if="show_settings" class="sl-show-settings">
@@ -372,6 +374,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import VueHtml2pdf from 'vue-html2pdf'
 import Print from './storyline-print'
+import PrintChunked from './storyline-print-chunked'
 
 export default {
   name: 'storyline',
@@ -398,12 +401,14 @@ export default {
       formLineColorStatus: 'ready',
       show_child_line_color_modal: false,
       selected_child: null,
-      selected_child_color: { hex: '#bbb' }
+      selected_child_color: { hex: '#bbb' },
+      print: 'none' // default or chunked
     }
   },
   components: { 
      VueHtml2pdf,
-     Print
+     Print,
+     PrintChunked
   },
   computed: {
     book: function () {
@@ -462,7 +467,7 @@ export default {
     }
   },
   methods: {
-    generateReport () {
+    generateReport (chunked = false) {
        var scope = this
         var data = {
           chapters: [],
@@ -471,7 +476,19 @@ export default {
           locations: scope.locations,
           items: scope.items,
         }
-        scope.$refs.printCanvas.updateData(data);
+
+        if (!chunked) {
+          scope.print = 'default'
+          setTimeout(function(){
+            scope.$refs.printCanvas.updateData(data);
+          },300);
+        } else {
+          scope.print = 'chunked'
+          setTimeout(function(){
+            scope.$refs.printCanvasChunked.updateData(data);
+          },300);
+        }
+        
 
         setTimeout(function(){
           scope.$refs.html2Pdf.generatePdf()
