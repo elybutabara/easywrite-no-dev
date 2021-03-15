@@ -15,6 +15,7 @@
         pdf-orientation="landscape"
         pdf-content-width="100%"
         ref="html2Pdf"
+        @hasDownloaded="hasDownloaded($event)"
     >
         <section slot="pdf-content">
             <Print v-if="print == 'default'" ref="printCanvas"></Print>
@@ -31,8 +32,15 @@
         </div>
         <div class="book-panel-right">
           <button class="es-button btn-sm white" style="display:none;">Save</button>
-          <button class="es-button btn-sm white" @click="generateReport()">Print</button>
-          <button class="es-button btn-sm white" @click="generateReport(true)">Print Chunked</button>
+          <button class="es-button btn-sm white" v-bind:class="{'disabled' : printing}" @click="generateReport()">
+            <span v-if="printing && print =='default'">Processing..</span>
+            <span v-else>Print</span>
+            
+          </button>
+          <button class="es-button btn-sm white"  v-bind:class="{'disabled' : printing}"  @click="generateReport(true)">
+            <span v-if="printing && print =='chunked'">Processing..</span>
+            <span v-else>Print Chunked</span>
+          </button>
           <div class="position-relative">
             <button class="es-button btn-sm white" @click="showSettings('settings')">Settings</button>
             <div v-if="show_settings" class="sl-show-settings">
@@ -402,7 +410,8 @@ export default {
       show_child_line_color_modal: false,
       selected_child: null,
       selected_child_color: { hex: '#bbb' },
-      print: 'none' // default or chunked
+      print: 'none', // default or chunked
+      printing: false,
     }
   },
   components: { 
@@ -477,6 +486,8 @@ export default {
           items: scope.items,
         }
 
+        scope.printing = true
+
         if (!chunked) {
           scope.print = 'default'
           setTimeout(function(){
@@ -494,6 +505,10 @@ export default {
           scope.$refs.html2Pdf.generatePdf()
         },1000);
         
+    },
+    hasDownloaded: function() {
+      var scope = this
+      scope.printing = false
     },
     showSettings: function (setting) {
       this[`show_` + setting] = !this[`show_` + setting]
@@ -819,6 +834,7 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.es-button.disabled { opacity:0.4 !important; }
 .popup-overlay { position:fixed; top:0px; left:0px; width:100%; height:100vh; background:rgba(0,0,0,0.7); z-index:5000; }
 .popup-overlay .popup-wrapper { background:#fff; width:900px; margin:0px auto; margin-top:120px; border-radius: 4px; }
 .popup-overlay .popup-wrapper .popup-header {
