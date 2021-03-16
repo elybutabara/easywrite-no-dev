@@ -1,7 +1,7 @@
 <template>
 <div class="es-page-main page-storyline">
     <section class="storyline-print-canvas" slot="pdf-content">
-        
+
       <section class="pdf-item" style="margin-top:20px;" v-for="(chunk,chunk_index) in chunks" :key="'chunk' + '-' + chunk_index">
       <div style="flex-wrap: nowrap;" class="row">
             <div class="col-lg-3">
@@ -64,11 +64,12 @@
         </template>
       </div>
       </section>
-      
+
     </section>
 </div>
 </template>
 <script>
+/* eslint-disable camelcase */
 // import moment from 'moment'
 import Vue from 'vue'
 export default {
@@ -84,42 +85,42 @@ export default {
       chunks: []
     }
   },
-  components: { 
+  components: {
   },
   computed: {
   },
   methods: {
     updateData: function (data) {
-        var scope = this
-        scope.chapters = data.chapters;
-        scope.scenes = data.scenes;
-        scope.characters = data.characters;
-        scope.locations = data.locations;
-        scope.items = data.items;
-        scope.chunks = scope.chunkArray(scope.scenes,3)
+      var scope = this
+      scope.chapters = data.chapters
+      scope.scenes = data.scenes
+      scope.characters = data.characters
+      scope.locations = data.locations
+      scope.items = data.items
+      scope.chunks = scope.chunkArray(scope.scenes, 3)
 
-         Vue.nextTick(function () {
-          scope.calculateSceneLinesAndHeight({data: scope.characters, type: 'characters'})
-          scope.calculateSceneLinesAndHeight({data: scope.locations, type: 'locations'})
-          scope.calculateSceneLinesAndHeight({data: scope.items, type: 'items'})
-        })
+      Vue.nextTick(function () {
+        scope.calculateSceneLinesAndHeight({data: scope.characters, type: 'characters'})
+        scope.calculateSceneLinesAndHeight({data: scope.locations, type: 'locations'})
+        scope.calculateSceneLinesAndHeight({data: scope.items, type: 'items'})
+      })
     },
-    chunkArray: function (myArray, chunk_size){
-        var index = 0;
-        var arrayLength = myArray.length;
-        var tempArray = [];
-        
-        for (index = 0; index < arrayLength; index += chunk_size) {
-            var myChunk = myArray.slice(index, index+chunk_size);
-            // Do something if you want with the group
-            tempArray.push(myChunk);
-        }
+    chunkArray: function (myArray, chunk_size) {
+      var index = 0
+      var arrayLength = myArray.length
+      var tempArray = []
 
-        return tempArray;
+      for (index = 0; index < arrayLength; index += chunk_size) {
+        var myChunk = myArray.slice(index, index + chunk_size)
+        // Do something if you want with the group
+        tempArray.push(myChunk)
+      }
+
+      return tempArray
     },
     reCalculateSceneLinesAndHeight: function () {
       var scope = this
-      $(document).find('.sl-line').remove()
+      window.$(document).find('.sl-line').remove()
       Vue.nextTick(function () {
         scope.calculateSceneLinesAndHeight({data: scope.characters, type: 'characters'})
         scope.calculateSceneLinesAndHeight({data: scope.locations, type: 'locations'})
@@ -131,36 +132,33 @@ export default {
       var typeSingular = type.slice(0, -1)
 
       for (var chunk_index = 0; chunk_index < scope.chunks.length; chunk_index++) {
-      for (var dataType of data) {
-        var arrayLines = []
+        for (var dataType of data) {
+          var arrayLines = []
 
-        for (var scene of scope.chunks[chunk_index]) {
+          for (var scene of scope.chunks[chunk_index]) {
+            for (var sceneType of scene[`scene_${type}`]) {
+              if (dataType.id == sceneType[`${typeSingular}`].id && (scene.storyline_hidden == 0 || scene.storyline_hidden == null)) {
+                var typeElement = document.querySelector(`.page-storyline #print-${typeSingular}-${dataType.id}-${chunk_index}`)
+                var sceneElement = document.querySelector(`.page-storyline #print-scene-${scene.id}-${chunk_index}`)
 
-          for (var sceneType of scene[`scene_${type}`]) {
+                // lines
+                const Xdistance = scope.getXDistanceBetweenElements(typeElement, sceneElement)
+                // console.log('type: ', type)
+                // console.log('Xdistance: ', Xdistance)
 
-            if (dataType.id == sceneType[`${typeSingular}`].id && (scene.storyline_hidden == 0 || scene.storyline_hidden == null)) {
-
-              var typeElement = document.querySelector(`.page-storyline #print-${typeSingular}-${dataType.id}-${chunk_index}`)
-              var sceneElement = document.querySelector(`.page-storyline #print-scene-${scene.id}-${chunk_index}`)
-
-              // lines
-              const Xdistance = scope.getXDistanceBetweenElements(typeElement, sceneElement)
-              // console.log('type: ', type)
-              // console.log('Xdistance: ', Xdistance)
-
-              // var lineColor = dataType.lineColor
-              var lineColor = dataType.line_color
-              arrayLines.push(`
+                // var lineColor = dataType.lineColor
+                var lineColor = dataType.line_color
+                arrayLines.push(`
               <div class="sl-line" style="width: ${Xdistance}px !important; background:${lineColor} !important; border-left-color:${lineColor}; "></div>`)
 
-              // height
-              // console.log('height: ', typeElement.offsetTop)
-              $(`.page-storyline #print-scene-${scene.id}-${chunk_index} .sl-chapter-scene-blurb`).height(typeElement.offsetTop + 17)
+                // height
+                // console.log('height: ', typeElement.offsetTop)
+                window.$(`.page-storyline #print-scene-${scene.id}-${chunk_index} .sl-chapter-scene-blurb`).height(typeElement.offsetTop + 17)
+              }
             }
           }
+          window.$(`.page-storyline #print-${typeSingular}-${dataType.id}-${chunk_index} .sl-lines-wrapper`).append(arrayLines.reverse().join(''))
         }
-        $(`.page-storyline #print-${typeSingular}-${dataType.id}-${chunk_index} .sl-lines-wrapper`).append(arrayLines.reverse().join(''))
-      }
       }
 
       /**
@@ -190,10 +188,10 @@ export default {
       const bPosition = scope.getPositionAtCenter(b)
 
       return Math.hypot(aPosition.x - bPosition.x)
-    },
+    }
   },
   async mounted () {
-    var scope = this
+    // var scope = this
   }
 }
 

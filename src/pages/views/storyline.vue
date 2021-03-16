@@ -23,7 +23,7 @@
         </section>
     </vue-html2pdf>
    </div>
-  
+
   <div v-if="is_page_ready">
     <div class="es-page-head-2">
       <div class="row-head">
@@ -34,7 +34,7 @@
           <button class="es-button btn-sm white" v-bind:class="{'disabled' : printing}" @click="generateReport()">
             <span v-if="printing && print =='default'">{{ $t('PROCESSING') }}...</span>
             <span v-else>{{ $t('PRINT') }}</span>
-            
+
           </button>
           <button class="es-button btn-sm white"  v-bind:class="{'disabled' : printing}"  @click="generateReport(true)">
             <span v-if="printing && print =='chunked'">{{ $t('PROCESSING') }}...</span>
@@ -75,7 +75,6 @@
       </div>
     </div>
 
-   
     <div class="es-page-content" id="custom-scrollbar">
       <div class="storyline-content mt-1">
         <div class="row">
@@ -410,13 +409,13 @@ export default {
       selected_child: null,
       selected_child_color: { hex: '#bbb' },
       print: 'none', // default or chunked
-      printing: false,
+      printing: false
     }
   },
-  components: { 
-     VueHtml2pdf,
-     Print,
-     PrintChunked
+  components: {
+    VueHtml2pdf,
+    Print,
+    PrintChunked
   },
   computed: {
     book: function () {
@@ -476,40 +475,38 @@ export default {
   },
   methods: {
     generateReport (chunked = false) {
-       var scope = this
-        var data = {
-          chapters: [],
-          scenes: scope.scenes,
-          characters: scope.characters,
-          locations: scope.locations,
-          items: scope.items,
-        }
+      var scope = this
+      var data = {
+        chapters: [],
+        scenes: scope.scenes,
+        characters: scope.characters,
+        locations: scope.locations,
+        items: scope.items
+      }
 
-        if (scope.printing) {
-          return
-        }
-        
-        scope.printing = true
+      if (scope.printing) {
+        return
+      }
 
-        if (!chunked) {
-          scope.print = 'default'
-          setTimeout(function(){
-            scope.$refs.printCanvas.updateData(data);
-          },300);
-        } else {
-          scope.print = 'chunked'
-          setTimeout(function(){
-            scope.$refs.printCanvasChunked.updateData(data);
-          },300);
-        }
-        
+      scope.printing = true
 
-        setTimeout(function(){
-          scope.$refs.html2Pdf.generatePdf()
-        },1000);
-        
+      if (!chunked) {
+        scope.print = 'default'
+        setTimeout(function () {
+          scope.$refs.printCanvas.updateData(data)
+        }, 300)
+      } else {
+        scope.print = 'chunked'
+        setTimeout(function () {
+          scope.$refs.printCanvasChunked.updateData(data)
+        }, 300)
+      }
+
+      setTimeout(function () {
+        scope.$refs.html2Pdf.generatePdf()
+      }, 1000)
     },
-    hasDownloaded: function() {
+    hasDownloaded: function () {
       var scope = this
       scope.printing = false
     },
