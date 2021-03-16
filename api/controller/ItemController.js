@@ -33,24 +33,22 @@ class ItemController {
     return item
   }
 
-  static async updateLineColor (itemID,data) {
-
+  static async updateLineColor (itemID, data) {
     var item = await Item.query()
       .patch({ line_color: data.color })
       .where('id', '=', itemID)
 
-      item = Item.query()
-      .where('id', '=', itemID).first()
+    // item = Item.query()
+    //   .where('id', '=', itemID).first()
 
     return item
   }
 
-  static async hideStoryline(itemID,data) {
+  static async hideStoryline (itemID, data) {
+    var row = await Item.query()
+      .where('id', '=', itemID).first()
 
-    var row  = await Item.query()
-    .where('id', '=', itemID).first()
-
-    var item = await Item.query()
+    await Item.query()
       .patch({ storyline_hidden: !row.storyline_hidden })
       .where('id', '=', itemID)
 

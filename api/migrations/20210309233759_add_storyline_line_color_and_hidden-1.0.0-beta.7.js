@@ -12,8 +12,7 @@ exports.up = async function (knex) {
       })
     }
   })
-  
-  
+
   await knex.schema.hasColumn('book_locations', 'line_color').then(async (exists) => {
     if (!exists) {
       await knex.schema.table('book_locations', function (table) {
@@ -26,8 +25,7 @@ exports.up = async function (knex) {
       })
     }
   })
-  
-  
+
   await knex.schema.hasColumn('book_items', 'line_color').then(async (exists) => {
     if (!exists) {
       await knex.schema.table('book_items', function (table) {
@@ -52,7 +50,6 @@ exports.up = async function (knex) {
       })
     }
   })
-
 }
 
 exports.down = async function (knex) {
@@ -104,5 +101,3 @@ exports.down = async function (knex) {
     }
   })
 }
-
-
