@@ -294,7 +294,7 @@ export default {
       } else {
         this.userSelect.groupName = ''
       }
-      
+
       this.socket.emit('group create', {name: this.userSelect.groupName, members: this.userSelect.selected})
     },
     userSelectLimitText (count) {
