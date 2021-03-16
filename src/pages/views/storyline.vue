@@ -28,24 +28,23 @@
     <div class="es-page-head-2">
       <div class="row-head">
         <div>
-          <h4 class="main-title"><i class="fas fa-link mr-2"></i>Storyline Editor for ‘{{ book.title }}’</h4>
+          <h4 class="main-title"><i class="fas fa-link mr-2"></i>{{ $t('STORYLINE_EDITOR_FOR') }} ‘{{ book.title }}’</h4>
         </div>
         <div class="book-panel-right">
-          <button class="es-button btn-sm white" style="display:none;">Save</button>
           <button class="es-button btn-sm white" v-bind:class="{'disabled' : printing}" @click="generateReport()">
-            <span v-if="printing && print =='default'">Processing..</span>
-            <span v-else>Print</span>
+            <span v-if="printing && print =='default'">{{ $t('PROCESSING') }}...</span>
+            <span v-else>{{ $t('PRINT') }}</span>
             
           </button>
           <button class="es-button btn-sm white"  v-bind:class="{'disabled' : printing}"  @click="generateReport(true)">
-            <span v-if="printing && print =='chunked'">Processing..</span>
-            <span v-else>Print Chunked</span>
+            <span v-if="printing && print =='chunked'">{{ $t('PROCESSING') }}...</span>
+            <span v-else>{{ $t('PRINT_CHUNKED') }}</span>
           </button>
           <div class="position-relative">
-            <button class="es-button btn-sm white" @click="showSettings('settings')">Settings</button>
+            <button class="es-button btn-sm white" @click="showSettings('settings')">{{ $t('SETTINGS') }}</button>
             <div v-if="show_settings" class="sl-show-settings">
-              <span @click="showSettings('storylines')" class="cursor-pointer">Show Storylines</span>
-              <span @click="showSettings('scenes')" class="cursor-pointer">Show Scenes</span>
+              <span @click="showSettings('storylines')" class="cursor-pointer">{{ $t('SHOW_STORYLINES') }}</span>
+              <span @click="showSettings('scenes')" class="cursor-pointer">{{ $t('SHOW_SCENES') }}</span>
             </div>
           </div>
         </div>
@@ -58,20 +57,20 @@
               <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.id, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">
                   <span class="bc-book-title">{{ book.title }}</span>
               </a></li>
-              <li><a href="javascript:void(0);">Storyline</a></li>
+              <li><a href="javascript:void(0);">{{ $t('STORYLINE') }}</a></li>
           </ul>
         </div>
-        <div class="mr-4"><strong>Selected Storylines ({{ storylinesHidden }} of {{ storylinesTotal }})</strong></div>
-        <div class="mr-4"><strong>Selected Scenes ({{ scenesHidden }} of {{ scenesTotal }})</strong></div>
+        <div class="mr-4"><strong>{{ $t('PROCESSING') }} ({{ storylinesHidden }} {{ $t('OF') }} {{ storylinesTotal }})</strong></div>
+        <div class="mr-4"><strong>{{ $t('SELECTED_SCENE') }} ({{ scenesHidden }} {{ $t('OF') }} {{ scenesTotal }})</strong></div>
       </div>
       <div>
         <div class="legend mr-3">
             <span class="triangle"></span>
-            <span>Storyline associated with scene</span>
+            <span>{{ $t('STORYLINE_ASSOCIATED_WITH_SCENE') }}</span>
         </div>
         <div class="legend">
             <span class="circle"></span>
-            <span>Storyline ends with scene</span>
+            <span>{{ $t('STROYLINE_ENDS_WITH_SCENE') }}</span>
         </div>
       </div>
     </div>
@@ -98,8 +97,8 @@
                       <div class="position-relative">
                         <span @click="showOptions(character.id, 'character')" class="cursor-pointer"><i class="fas fa-cog"></i><!--<i class="fas fa-palette"></i>--></span>
                         <div v-if="show_options.show == 'character'+character.id" class="sl-show-options">
-                          <span @click="selectChild(character, 'character')" class="cursor-pointer"><!--<i class="fas fa-palette"></i>-->Set Identifying Color</span>
-                          <span @click="toggleHiddenStorylinesAndScenes(character, 'characters')" class="cursor-pointer"><!--<i class="fas fa-palette"></i>-->Remove Selection From Storyline</span>
+                          <span @click="selectChild(character, 'character')" class="cursor-pointer"><!--<i class="fas fa-palette"></i>-->{{ $t('SET_IDENTIFYING_COLOR') }}</span>
+                          <span @click="toggleHiddenStorylinesAndScenes(character, 'characters')" class="cursor-pointer"><!--<i class="fas fa-palette"></i>-->{{ $t('REMOVE_SELECTION_FROM_STORYLINE') }}</span>
                         </div>
                       </div>
                     </div>
@@ -124,8 +123,8 @@
                     <div class="position-relative">
                       <span @click="showOptions(location.id, 'location')" class="cursor-pointer"><i class="fas fa-cog"></i></span>
                       <div v-if="show_options.show == 'location'+location.id" class="sl-show-options">
-                        <span @click="selectChild(location, 'location')"  class="cursor-pointer">Set Identifying Color</span>
-                        <span @click="toggleHiddenStorylinesAndScenes(location, 'locations')" class="cursor-pointer">Remove Selection From Storyline</span>
+                        <span @click="selectChild(location, 'location')"  class="cursor-pointer">{{ $t('SET_IDENTIFYING_COLOR') }}</span>
+                        <span @click="toggleHiddenStorylinesAndScenes(location, 'locations')" class="cursor-pointer">{{ $t('REMOVE_SELECTION_FROM_STORYLINE') }}</span>
                       </div>
                     </div>
                   </div>
@@ -150,8 +149,8 @@
                         <div class="position-relative">
                           <span @click="showOptions(item.id, 'item')" class="cursor-pointer"><i class="fas fa-cog"></i></span>
                           <div v-if="show_options.show == 'item'+item.id" class="sl-show-options">
-                            <span @click="selectChild(item, 'item')" class="cursor-pointer">Set Identifying Color</span>
-                            <span @click="toggleHiddenStorylinesAndScenes(item, 'items')" class="cursor-pointer">Remove Selection From Storyline</span>
+                            <span @click="selectChild(item, 'item')" class="cursor-pointer">{{ $t('SET_IDENTIFYING_COLOR') }}</span>
+                            <span @click="toggleHiddenStorylinesAndScenes(item, 'items')" class="cursor-pointer">{{ $t('REMOVE_SELECTION_FROM_STORYLINE') }}</span>
                           </div>
                         </div>
                         </div>
@@ -175,8 +174,8 @@
                 <div class="position-relative">
                     <span @click="showOptions(scene.id, 'scene')" class="cursor-pointer"><i class="fas fa-cog"></i></span>
                     <div v-if="show_options.show == 'scene'+scene.id" class="sl-show-options">
-                        <span class="cursor-pointer" @click="editScene(scene)">Edit Scene</span>
-                        <span @click="toggleHiddenStorylinesAndScenes(scene, 'scenes')" class="cursor-pointer">Remove Selection From Storyline</span>
+                        <span class="cursor-pointer" @click="editScene(scene)">{{ $t('EDIT_SCENE') }}</span>
+                        <span @click="toggleHiddenStorylinesAndScenes(scene, 'scenes')" class="cursor-pointer">{{ $t('REMOVE_SELECTION_FROM_STORYLINE') }}</span>
                     </div>
                 </div>
               </div>
@@ -184,7 +183,7 @@
                 <p>{{ scene.title }}</p>
                 <p>{{ scene.short_description }}</p>
               </div>
-              <div class="d-none blurb-footer">
+              <div style="display:none;" class="d-none blurb-footer">
                 October 10, 2015 9:00 AM (Supposed to be dates ref from WriteItnow)
               </div>
               <!--<small>characters:</small>
@@ -213,14 +212,14 @@
     <div class="d-flex align-items-center flex-column">
       <div id="pageLoader"></div>
         <br>
-        <p style="font-size: 13px;">Loading '{{ book.title }}' Storyline: {{ loading_msg }}</p>
+        <p style="font-size: 13px;">{{ $t('LOADING') }} '{{ book.title }}' {{ $t('STROYLINE') }}: {{ loading_msg }}</p>
       </div>
   </div>
 
     <div v-if="show_edit_scene_modal" class="popup-overlay">
       <div class="popup-wrapper ">
           <div v-if="formStatus == 'ready'" class="popup-header">
-            Edit {{ selected_scene.blurb_title }}
+            {{ $t('EDIT') }} {{ selected_scene.blurb_title }}
             <span @click="closeEditSceneModal()" style="float:right; cursor:pointer;"><i class="fas fa-times"></i></span>
           </div>
 
@@ -240,7 +239,7 @@
               </div>
 
               <div class="col-md-4 col-12">
-                <strong>Locations</strong>
+                <strong>{{ $t('LOCATIONS') }}</strong>
                 <div v-for="location in locations" :key="'location-option-'+ location.id">
                   <input
                     type="checkbox"
@@ -252,7 +251,7 @@
                 </div>
               </div>
                 <div class="col-md-4 col-12">
-                  <strong>Items</strong>
+                  <strong>{{ $t('ITEMS') }}</strong>
                   <div  v-for="item in items" :key="'items-option-'+ item.id">
                     <input
                       type="checkbox"
@@ -265,10 +264,10 @@
                 </div>
             </div>
           </div>
-          <div v-if="formStatus == 'saving'" style="padding:100px 30px; text-align:center;">Saving..</div>
+          <div v-if="formStatus == 'saving'" style="padding:100px 30px; text-align:center;">{{ $t('SAVING') }}</div>
             <div v-if="formStatus == 'ready'" class="popup-footer">
-              <button @click="saveSceneChilds()"  title="Save" class="es-button btn-sm">Save</button>
-              <button @click="closeEditSceneModal()" class="es-button btn-sm white">Cancel</button>
+              <button @click="saveSceneChilds()"  title="Save" class="es-button btn-sm">{{ $t('SAVE') }}</button>
+              <button @click="closeEditSceneModal()" class="es-button btn-sm white">{{ $t('CANCEL') }}</button>
           </div>
         </div>
     </div>
@@ -276,7 +275,7 @@
     <div v-if="show_child_line_color_modal" class="popup-overlay">
       <div class="popup-wrapper" style="width:260px !important;">
         <div v-if="formLineColorStatus == 'ready'" class="popup-header">
-          Edit {{ selected_child.label }}
+          {{ $t('EDIT') }} {{ selected_child.label }}
           <span @click="closeChildLineColorModal()" style="float:right; cursor:pointer;"><i class="fas fa-times"></i></span>
         </div>
 
@@ -287,10 +286,10 @@
             </div>
           </div>
         </div>
-        <div v-if="formLineColorStatus == 'saving'" style="padding:100px 30px; text-align:center;">Saving..</div>
+        <div v-if="formLineColorStatus == 'saving'" style="padding:100px 30px; text-align:center;">{{ $t('SAVING') }}..</div>
         <div v-if="formLineColorStatus == 'ready'" class="popup-footer">
-          <button @click="saveChildLineColor()"  title="Save" class="es-button btn-sm">Save</button>
-          <button @click="closeChildLineColorModal()" class="es-button btn-sm white">Cancel</button>
+          <button @click="saveChildLineColor()"  title="Save" class="es-button btn-sm">{{ $t('SAVE') }}</button>
+          <button @click="closeChildLineColorModal()" class="es-button btn-sm white">{{ $t('CANCEL') }}</button>
         </div>
       </div>
     </div>
@@ -298,13 +297,13 @@
     <div v-if="show_storylines" class="popup-overlay">
         <div class="popup-wrapper">
           <div class="popup-header">
-            Select Storylines
+            {{ $t('SELECT_STORYLINES') }}
             <span @click="show_storylines=false; show_settings=false" style="float:right; cursor:pointer;"><i class="fas fa-times"></i></span>
           </div>
           <div class="popup-body">
             <div class="row">
               <div class="col-lg-4 col-12">
-                <strong class="d-block mb-2">Characters:</strong>
+                <strong class="d-block mb-2">{{ $t('CHARACTERS') }}:</strong>
                 <div v-for="character in characters" :key="'character-option-'+ character.id">
                   <input
                   type="checkbox"
@@ -316,7 +315,7 @@
                 </div>
               </div>
               <div class="col-lg-4 col-12">
-                <strong class="d-block mb-2">Locations:</strong>
+                <strong class="d-block mb-2">{{ $t('LOCATIONS') }}:</strong>
                 <div v-for="location in locations" :key="'location-option-'+ location.id">
                   <input
                       type="checkbox"
@@ -328,7 +327,7 @@
                 </div>
               </div>
               <div class="col-lg-4 col-12">
-                <strong class="d-block mb-2">Items:</strong>
+                <strong class="d-block mb-2">{{ $t('ITEMS') }}:</strong>
                 <div v-for="item in items" :key="'item-option-'+ item.id">
                   <input
                     type="checkbox"
@@ -342,20 +341,20 @@
             </div>
           </div>
           <div class="popup-footer">
-            <button @click="show_storylines=false; show_settings=false" class="es-button btn-sm">Back</button>
+            <button @click="show_storylines=false; show_settings=false" class="es-button btn-sm">{{ $t('BACK') }}</button>
           </div>
         </div>
     </div>
     <div v-if="show_scenes" class="popup-overlay">
       <div class="popup-wrapper">
         <div class="popup-header">
-          Select Scenes
+          {{ $t('SELECT_SCENES') }}
           <span @click="show_scenes=false; show_settings=false" style="float:right; cursor:pointer;"><i class="fas fa-times"></i></span>
         </div>
         <div class="popup-body">
           <div class="row">
             <div class="col-12">
-              <strong class="d-block mb-2">Scenes:</strong>
+              <strong class="d-block mb-2">{{ $t('SCENES') }}:</strong>
               <div v-for="scene in scenes" :key="'scene-option-'+ scene.id">
                 <input
                     type="checkbox"
@@ -369,11 +368,11 @@
           </div>
         </div>
         <div class="popup-footer">
-          <button @click="show_scenes=false; show_settings=false" class="es-button btn-sm">Back</button>
+          <button @click="show_scenes=false; show_settings=false" class="es-button btn-sm">{{ $t('BACK') }}</button>
         </div>
       </div>
     </div>
-    <div id="snackbar">Changes Saved!</div>
+    <div id="snackbar">{{ $t('CHANGES_SAVED') }}</div>
 </div>
 </template>
 <script>
@@ -486,6 +485,10 @@ export default {
           items: scope.items,
         }
 
+        if (scope.printing) {
+          return
+        }
+        
         scope.printing = true
 
         if (!chunked) {
