@@ -530,8 +530,8 @@ export default {
         await scope.startUploadDatav2()
       }
 
-      console.clear()
-      console.log('TOTAL :' + endpoint.packed.length)
+      // console.clear()
+      // console.log('TOTAL :' + endpoint.packed.length)
       scope.upload.total = endpoint.packed.length
       const chunks = window.chunk(endpoint.packed, 10)
 
@@ -564,7 +564,6 @@ export default {
       /*
       * process all request concurrently
       * */
-      console.log('---DONE UPLOAD---')
       /*
       * TEST
       * */
@@ -597,9 +596,9 @@ export default {
       // })
     },
     startDownloadData1: function () {
-      const scope = this
-      console.log(scope.upload.allRequest)
-      console.log('start download')
+      // const scope = this
+      // console.log(scope.upload.allRequest)
+      // console.log('start download')
     },
     uploadByBatch: async function (batchData, batchKey, endpoint) {
       const scope = this
@@ -607,7 +606,7 @@ export default {
       scope.upload.allRequest = []
       if (scope.upload.batch >= scope.batchDatas.length) {
         // proceed to next point
-        console.log('proceed to next point')
+        // console.log('proceed to next point')
         // console.log(scope.upload.batch)
         // console.log(scope.batchDatas.length)
         // console.log(scope.upload.allRequest)
@@ -798,10 +797,10 @@ export default {
 
       let lastSyncedDate
       if (scope.app_run_count < 1) {
-        console.log('--------DONWLOAD ALL-----')
+        // console.log('--------DONWLOAD ALL-----')
         lastSyncedDate = '1970-01-01 00:00:01'
       } else {
-        console.log('--------DONWLOAD only update-----')
+        // console.log('--------DONWLOAD only update-----')
         lastSyncedDate = scope.timeConvertToUTC(scope.$store.getters.getUserSyncedDate)
       }
       scope.axios.get(window.APP.API.URL + '/' + endpoint.api,
@@ -1071,6 +1070,14 @@ export default {
     },
     updateListByModel: function (model, data) {
       var scope = this
+
+      // for images , refresh image after sync
+      if (data.picture || data.pictures) {
+        const image = data.picture || data.pictures
+        data.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', model.replace(/\s+/g, '-').toLowerCase(), image)
+        console.log(data.picture_src)
+      }
+
       if (model === 'Books') {
         if (scope.authorUUID === data.author_id) {
           scope.$store.dispatch('updateBookList', data)
@@ -1082,8 +1089,16 @@ export default {
       } else if (model === 'Chapter Versions') {
         scope.$store.dispatch('updateChapterVersionList', data)
       } else if (model === 'Characters') {
+        // data.picture_src = ''
+        // if (data.picture) {
+        //   data.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'items', data.picture)
+        // }
         scope.$store.dispatch('updateCharacterList', data)
       } else if (model === 'Items') {
+        // data.picture_src = ''
+        // if (data.pictures) {
+        //   data.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'items', data.pictures)
+        // }
         scope.$store.dispatch('updateItemList', data)
       } else if (model === 'Locations') {
         scope.$store.dispatch('updateLocationList', data)
