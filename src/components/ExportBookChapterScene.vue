@@ -207,6 +207,7 @@ export default {
         alert('You need to select a Chapter.')
         return false
       }
+      
       if (scope.export_option === 'select_scenes' && scope.selected_scenes.length === 0) {
         alert('You need to select a Scenes.')
         return false
@@ -220,9 +221,7 @@ export default {
         selected_scenes: scope.selected_scenes,
         export_option: scope.export_option
       }
-
-      console.log(data, 'gg')
-
+      
       ipcRenderer.send('EXPORT-DOCX-SHOW-BOOK-WINDOW', data)
       ipcRenderer.on('CHANGE-EXPORT-BOOK-BUTTON-NAME', function (event, data) {
         scope.exportOnProgress = false
