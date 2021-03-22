@@ -156,15 +156,15 @@ export default {
           }
         } else if (data.export_option === 'select_scenes') {
           // chapter filtering
-          for (var j = 0; j < chapters.length; j++) {
-            var chapterScenes = chapters[j].scene
-            chapters[j].scene = []
+          for (var jj = 0; jj < chapters.length; jj++) {
+            let chapterScenes = chapters[jj].scene
+            chapters[jj].scene = []
 
             // scene filtering
-            for (var k = 0; k < scope.selected_scenes.length; k++) {
-              for (var l = 0; l < chapterScenes.length; l++) {
-                if (chapterScenes[l].id == scope.selected_scenes[k]) {
-                  chapters[j].scene.push(chapterScenes[l])
+            for (var kk = 0; kk < scope.selected_scenes.length; kk++) {
+              for (var ll = 0; ll < chapterScenes.length; ll++) {
+                if (chapterScenes[ll].id == scope.selected_scenes[kk]) {
+                  chapters[j].scene.push(chapterScenes[ll])
                 }
               }
             }
