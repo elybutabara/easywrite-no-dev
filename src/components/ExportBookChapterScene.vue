@@ -9,10 +9,13 @@
     <div class="export-options">
       <input id="se_all" v-model="export_option" type="radio" value="export_all" @click="resetData()">
       <label for="se_all" class="mr-3">Export All</label>
-      <input id="se_op" v-model="export_option" type="radio" value="select_options" @click="word_count = 0">
-      <label for="se_op">Filter Options</label>
+      <input id="se_ch" v-model="export_option" type="radio" value="select_chapters" @click="word_count = 0; resetData()">
+      <label for="se_ch" class="mr-3">Select Chapters</label>
+      <input id="se_sc" v-model="export_option" type="radio" value="select_scenes" @click="word_count = 0; resetData()">
+      <label for="se_sc">Select Scenes</label>
     </div>
-    <div v-if="export_option === 'select_options'">
+
+    <div v-if="export_option === 'select_chapters'">
       <strong class="form-label">Select Chapters:</strong>
       <div class="container-fluid">
         <div class="row chapters-wrap">
@@ -54,6 +57,42 @@
         </div>
       </div>
     </div>
+
+    <div v-if="export_option === 'select_scenes'">
+      <strong class="form-label">Select Scenes:</strong>
+      <div class="container-fluid">
+        <div class="row chapters-wrap">
+          <div v-for="chapter in chapters" v-bind:key="'chapter-' + chapter.id" class="col-lg-6 col-sm-12">
+            <div class="chapter-wrap mb-1">
+              <div class="d-flex align-items-center p-1 pl-2">
+                <label :for="'chckbx-chapter-' + chapter.id">{{ chapter.title }}</label>
+              </div>
+              <div :id="'ss-scenes-'+ chapter.id" class="p-2" style="border-top: 1px solid #eee;">
+                <div v-for="scene in scenes" v-bind:key="'scene-' + scene.id">
+                  <div v-if="scene.chapter_id == chapter.uuid">
+
+                    <input
+                      @click="toggleSceneCheckbox(scene)"
+                      v-model="selected_scenes"
+                      type="checkbox"
+                      :value="scene.id"
+                      :id="'ss-chckbx-scene-' + scene.id"
+                    >
+                    <label :for="'chckbx-scene-' + scene.id">
+                        <span v-if="scene.title && scene.title != null && scene.title != ''">{{ scene.title }}</span>
+                        <span v-else>New Scene (Untitled)</span>
+                    </label>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
   <div class="form-group">
     <button @click="exportBook()" type="button">EXPORT</button>
@@ -163,14 +202,14 @@ export default {
 
     exportBook () {
       var scope = this
-      var exportAll = false
 
-      if (scope.export_option == 'export_all') {
-        exportAll = true
-      }
-
-      if (scope.export_option === 'select_options' && scope.selected_chapters.length === 0) {
+      if (scope.export_option === 'select_chapters' && scope.selected_chapters.length === 0) {
         alert('You need to select a Chapter.')
+        return false
+      }
+      
+      if (scope.export_option === 'select_scenes' && scope.selected_scenes.length === 0) {
+        alert('You need to select a Scenes.')
         return false
       }
 
@@ -180,9 +219,9 @@ export default {
         book: scope.properties,
         selected_chapters: scope.selected_chapters,
         selected_scenes: scope.selected_scenes,
-        export_all: exportAll
+        export_option: scope.export_option
       }
-
+      
       ipcRenderer.send('EXPORT-DOCX-SHOW-BOOK-WINDOW', data)
       ipcRenderer.on('CHANGE-EXPORT-BOOK-BUTTON-NAME', function (event, data) {
         scope.exportOnProgress = false
