@@ -78,7 +78,7 @@ ipcRenderer.on('SET_MAIN_MENU', function (event, data) {
     * no-live: 324553
     * se-live: 324553
     * no-dev: ff4d4d
-    * no-dev: ff4d4d
+    * se-dev: 97ff4d
     * */
     backgroundColor: customTitlebar.Color.fromHex('#ff4d4d'),
     icon: url.format(path.join(__dirname, '/assets', '/images', '/easywrite-new.ico')),
