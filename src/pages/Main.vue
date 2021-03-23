@@ -1,6 +1,7 @@
 <template>
 <div class="page-main" v-bind:class="{ 'collapsed': $store.getters.collapsedSideNav, 'dark': $store.getters.darkmode }">
     <div v-if="ready">
+        <SyncerV2></SyncerV2>
         <!-- <div @click="toggleMainSideBar()"  class="btn-sidebar-opener"><i class="las la-arrow-right"></i></div> -->
         <main-side-navigation></main-side-navigation>
         <div class="es-right-side-content">
@@ -136,6 +137,7 @@ import MainSideNavigation from '@/components/MainSideNavigation'
 import MessageCenterPopup from '@/components/MessageCenterPopup'
 import Messaging from '@/components/Messaging'
 import Syncer from '@/components/Syncer'
+import SyncerV2 from '@/components/SyncerV2'
 
 import Syncing from '@/pages/views/syncing'
 import StoryBoard from '@/pages/views/storyboard'
@@ -216,6 +218,7 @@ export default {
     'message-center-popup': MessageCenterPopup,
     'messaging': Messaging,
     'syncer': Syncer,
+    'SyncerV2': SyncerV2,
     'syncing': Syncing,
     'storyboard': StoryBoard,
     'storyline': Storyline,
