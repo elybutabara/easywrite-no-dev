@@ -298,6 +298,24 @@ export default {
 
       return true
     },
+    CHUNK_ARRAY: function(array, chunkSize) {
+      if (!array.length) {
+        return [];
+      }
+      return array.reduce(function(previous, current) {
+          var chunk;
+          if (previous.length === 0 || 
+                  previous[previous.length -1].length === chunkSize) {
+              chunk = [];   // 1
+              previous.push(chunk);   // 2
+          }
+          else {
+              chunk = previous[previous.length -1];   // 3
+          }
+          chunk.push(current);   // 4
+          return previous;   // 5
+      }, []); 
+    },
     formatDate: function (date, format) {
       return moment(date).format(format)
     },
