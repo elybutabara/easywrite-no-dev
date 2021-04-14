@@ -43,7 +43,7 @@ router.delete('/:locationId', async function (req, res) {
 })
 
 router.get('/syncable', async function (req, res) {
-  const rows = await LocationController.getSyncable(req.query.userID)
+  const rows = await LocationController.getSyncable(req)
 
   res
     .status(200)

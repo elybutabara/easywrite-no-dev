@@ -74,11 +74,14 @@ class CharacterController {
     return character
   }
 
-  static async getSyncable (userId) {
+  static async getSyncable (params) {
+    var userId = params.query.userID;
+    var bookUUID = params.query.parent_uuid;
+
     const user = await User.query()
       .findById(userId)
       .withGraphJoined('author', { maxBatchSize: 1 })
-
+    /*
     const books = await Book.query()
       .select('uuid')
       .where('author_id', user.author.uuid)
@@ -90,9 +93,10 @@ class CharacterController {
     for (let i = 0; i < books.length; i++) {
       bookUUIDs.push(books[i].uuid)
     }
+    */
 
     const rows = await Character.query()
-      .whereIn('book_id', bookUUIDs)
+      .where('book_id','=', bookUUID)
       .where('updated_at', '>', user.synced_at)
 
     return rows

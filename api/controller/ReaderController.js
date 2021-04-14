@@ -76,8 +76,9 @@ class ReaderController {
       .withGraphJoined('author', { maxBatchSize: 1 })
 
     const rows = await Reader.query()
-      .where('author_id', user.author.uuid)
-      .where('updated_at', '>', user.synced_at)
+      .withGraphJoined('book', { maxBatchSize: 1 })
+      .where('book_readers.author_id', user.author.uuid)
+      .where('book_readers.updated_at', '>', user.synced_at)
 
     return rows
   }

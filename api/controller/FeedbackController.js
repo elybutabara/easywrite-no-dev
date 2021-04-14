@@ -133,12 +133,17 @@ class FeedbackController {
     return data
   }
 
-  static async getSyncable (userId) {
+  static async getSyncable (params) {
+    var userId = params.query.userID;
+    var bookUUID = params.query.parent_uuid;
+
     const user = await User.query()
       .findById(userId)
       .withGraphJoined('author', { maxBatchSize: 1 })
 
     var parentIDs = []
+
+    /*
     var bookUUIDs = []
 
     // get all "my books" IDs
@@ -159,26 +164,23 @@ class FeedbackController {
       bookUUIDs.push(booksIRead[i].book_id)
       parentIDs.push(booksIRead[i].book_id)
     }
+    */
 
+    parentIDs.push(bookUUID)
+    
     // get all "chapters" IDs
     const chapters = await Chapter.query()
-      .whereIn('book_id', bookUUIDs)
-
-    var chapterUUIDs = []
+      .where('book_id','=', bookUUID)
 
     for (let i = 0; i < chapters.length; i++) {
-      chapterUUIDs.push(chapters[i].uuid)
       parentIDs.push(chapters[i].uuid)
     }
 
     // get all "scenes" IDs
     const scenes = await Scene.query()
-      .whereIn('book_id', bookUUIDs)
-
-    var sceneUUIDs = []
+      .where('book_id','=', bookUUID)
 
     for (let i = 0; i < scenes.length; i++) {
-      sceneUUIDs.push(scenes[i].uuid)
       parentIDs.push(scenes[i].uuid)
     }
 

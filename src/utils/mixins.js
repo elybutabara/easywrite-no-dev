@@ -316,6 +316,10 @@ export default {
           return previous;   // 5
       }, []); 
     },
+    LOGTIME: function (label) {
+      var d = new Date(); // for now
+      console.log(label + d.getHours() + ':' + d.getMinutes()  + ':' + d.getSeconds())
+    },
     formatDate: function (date, format) {
       return moment(date).format(format)
     },

@@ -98,7 +98,7 @@ router.delete('/:sceneId', async function (req, res) {
 })
 
 router.get('/syncable', async function (req, res) {
-  const rows = await SceneController.getSyncable(req.query.userID)
+  const rows = await SceneController.getSyncable(req)
 
   res
     .status(200)

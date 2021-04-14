@@ -101,7 +101,7 @@ router.delete('/:chapterId', async function (req, res) {
 })
 
 router.get('/syncable', async function (req, res) {
-  const rows = await ChapterController.getSyncable(req.query.userID)
+  const rows = await ChapterController.getSyncable(req)
 
   res
     .status(200)

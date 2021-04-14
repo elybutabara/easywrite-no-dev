@@ -32,7 +32,7 @@ router.get('/:sceneId/latest', async function (req, res) {
 })
 
 router.get('/syncable', async function (req, res) {
-  const rows = await SceneVersionController.getSyncable(req.query.userID)
+  const rows = await SceneVersionController.getSyncable(req)
 
   res
     .status(200)

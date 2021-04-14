@@ -122,24 +122,28 @@ class NoteController {
     return row
   }
 
-  static async getSyncable (userId) {
+  static async getSyncable (params) {
+    var userId = params.query.userID;
+
     const user = await User.query()
       .findById(userId)
       .withGraphJoined('author', { maxBatchSize: 1 })
-
+    
     var parentIDs = []
-    var bookUUIDs = []
-
+    /*
     // get all "my books" IDs
     const books = await Book.query()
       .select('uuid')
+      .where('uuid','=', bookUUID)
       .where('author_id', user.author.uuid)
 
+    
     for (let i = 0; i < books.length; i++) {
       bookUUIDs.push(books[i].uuid)
       parentIDs.push(books[i].uuid)
     }
-
+     
+    
     // get all "books i read" IDs
     const booksIRead = await Reader.query()
       .where('author_id', user.author.uuid)
@@ -148,31 +152,29 @@ class NoteController {
       bookUUIDs.push(booksIRead[i].book_id)
       parentIDs.push(booksIRead[i].book_id)
     }
+   
 
+    parentIDs.push(bookUUID)
+    
     // get all "chapters" IDs
     const chapters = await Chapter.query()
-      .whereIn('book_id', bookUUIDs)
-
-    var chapterUUIDs = []
+      .where('book_id','=', bookUUID)
 
     for (let i = 0; i < chapters.length; i++) {
-      chapterUUIDs.push(chapters[i].uuid)
       parentIDs.push(chapters[i].uuid)
     }
 
     // get all "scenes" IDs
     const scenes = await Scene.query()
-      .whereIn('book_id', bookUUIDs)
-
-    var sceneUUIDs = []
+      .where('book_id','=', bookUUID)
 
     for (let i = 0; i < scenes.length; i++) {
-      sceneUUIDs.push(scenes[i].uuid)
       parentIDs.push(scenes[i].uuid)
     }
+     */
 
     const rows = await Note.query()
-      .whereIn('parent_id', parentIDs)
+      .where('author_id','=', user.author.uuid)
       .where('updated_at', '>', user.synced_at)
 
     return rows
