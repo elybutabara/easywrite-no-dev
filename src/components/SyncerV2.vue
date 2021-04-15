@@ -79,6 +79,11 @@ export default {
         endpoint_total_counter: 0,
         endpoint_done_counter: 0,
         tab: 'SYNC', // SYNC, CHANGE_SYNC_DATE
+        stage: 'BOOK',
+        pre: [
+          { title: 'Books', type: 'book', api: 'books', local: 'books', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Book Readers', type: 'books-i-read', api: 'book-readers', local: 'readers', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+        ],
         endpoints: [
           { title: 'Authors', type: 'default', api: 'authors', local: 'authors', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
           { title: 'Genres', type: 'default', api: 'book-genres', local: 'book-genres', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
@@ -144,8 +149,7 @@ export default {
 
     main_endpoint: function () {
       var scope = this
-      var endpoint = scope.endpoints[scope.endpoint_index]
-
+      var endpoint = (scope.stage  == 'BOOK' || scope.stage  == 'BOOK-I-READ') ? scope.pre[scope.endpoint_index] : scope.endpoints[scope.endpoint_index]
       return endpoint
     },
     main_progress: function () {
@@ -174,12 +178,15 @@ export default {
     },
     endpoint_save_local_request_done: function (val) {
       var scope = this
+      console.log('COUNT ==> ',scope.endpoint_save_local_request_count)
+      console.log('DONE  ==> ',val)
       if (val === null) {
         return;
       }
 
      if (val == scope.endpoint_save_local_request_count) {
        setTimeout(function(){
+         console.log('NEXT ===> ')
          scope.next()
 
         // reset
@@ -223,10 +230,18 @@ export default {
       },5000);
       
     },
-    start: function () {
+    initialize: function () {
       var scope = this
       scope.ready = true
-      
+      scope.endpoint_total_counter = scope.pre.length
+      scope.endpoint_done_counter = 0
+      scope.endpoint_sync_date = (!scope.synced_date) ? '1970-01-01 00:00:00'  :  JSON.parse(JSON.stringify(scope.synced_date))
+      var endpoint = scope.pre[scope.endpoint_index]
+      scope.processEndpoint(endpoint)
+    },
+    start: function () {
+      var scope = this
+
       var endpoint = scope.endpoints[scope.endpoint_index]
       console.log('START SYNC DATE ==> ',scope.endpoint_sync_date)
       scope.endpoint_sync_date = (!scope.synced_date) ? '1970-01-01 00:00:00'  :  JSON.parse(JSON.stringify(scope.synced_date))
@@ -276,7 +291,7 @@ export default {
     },
     saveDataToWeb: function (endpoint) {
       var scope = this
-      
+      console.log('TO UPLOAD ===> ',endpoint)
       if (!endpoint.packed || endpoint.packed.length < 1) {
         scope.fetchDataFromWeb(endpoint);
         return;
@@ -358,7 +373,7 @@ export default {
   
       var sync_date = scope.timeConvertToUTC(scope.endpoint_sync_date)
       var parent_uuid = (endpoint.book_uuid) ? endpoint.book_uuid : null
-      
+
       scope.pointed_endpoint_status = 'Fetching'
       scope.axios.get(window.APP.API.URL + '/' + endpoint.api + '/v2',
         {
@@ -374,7 +389,7 @@ export default {
           }
         })
       .then(function (response) {
-        endpoint.downloaded = (response.data) ? response.data : []
+        endpoint.downloaded = (response.data) ? response.data.rows : []
         scope.saveDataToApp(endpoint)
       })
       .catch(function (error) {
@@ -391,6 +406,8 @@ export default {
         return;
       }
 
+     console.log('saveDataToApp TO APP ===> ',endpoint)
+
       scope.pointed_endpoint_status = 'Saving'
       scope.pointed_endpoint_saved = 0
 
@@ -401,18 +418,19 @@ export default {
         data.sync_version = scope.version
       } 
 
-      var URL = 'http://localhost:3000/' + endpoint.local + '/v2';
+      var URL = 'http://localhost:3000/' + endpoint.local + '/sync';
 
       var rows = endpoint.downloaded
       var chunks = scope.CHUNK_ARRAY(rows,endpoint.chunkSize);
       
+
       scope.$set(endpoint,'chunks',[])
       scope.$set(endpoint,'uploaded',0)
 
       // use this to detect whether or not we move to fetchDataFromWeb
       scope.endpoint_save_local_request_count = chunks.length
       scope.endpoint_save_local_request_done = 0
-
+      
       for (let i = 0; i < chunks.length; i++) {
         var chunk = chunks[i]
         endpoint.chunks.push({
@@ -439,8 +457,11 @@ export default {
         'X-Authorization': 'Bearer ' + scope.api_token
       }
 
+       console.log('SAVE TO APP URL ===> ',URL)
+      
+    
       var FORMDATA = chunk.rows
-      scope.axios.post('http://localhost:3000/' + endpoint.local + '/sync', data)
+      scope.axios.post(URL, FORMDATA)
         .then(function (response) {
           chunk.done = true
           scope.endpoint_save_local_request_done++
@@ -459,7 +480,30 @@ export default {
     next: function () {
       var scope = this
       var main_endpoint =  scope.main_endpoint
-     
+
+      if (scope.stage == 'BOOK') {
+        scope.endpoint_index++;
+        scope.endpoint_done_counter++;
+        var endpoint = scope.pre[scope.endpoint_index]
+        scope.processEndpoint(endpoint);
+        scope.stage = 'BOOK-I-READ';
+         
+        return;
+      } else if (scope.stage == 'BOOK-I-READ') {
+        var userUUID = this.$store.getters.getUserID
+        var authorUUID = this.$store.getters.getAuthorID
+        scope.endpoint_done_counter++;
+
+        scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+        scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+
+        setTimeout(function(){
+          scope.restartSyncing();
+          scope.addBooksToEndpoint();
+          scope.stage = 'ALL';
+        },3000);
+        return;
+      }
 
       // books or others except book childrens e.g chapter, scenes
       if (main_endpoint.children && main_endpoint.children.length > 0 && main_endpoint.child_index < main_endpoint.children.length) {
@@ -485,8 +529,6 @@ export default {
         // set timeout to resync
         return;
       }
-
-      
     },
     minimize: function () {
       this.minimized = true
@@ -558,7 +600,8 @@ export default {
   mounted () {
     const scope = this
     scope.api_token = scope.$store.getters.getUserToken
-    scope.addBooksToEndpoint();
+    scope.initialize();
+    //scope.addBooksToEndpoint();
 
     scope.synced_date = scope.$store.getters.getUserSyncedDate
   } 
