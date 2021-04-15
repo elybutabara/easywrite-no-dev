@@ -298,27 +298,26 @@ export default {
 
       return true
     },
-    CHUNK_ARRAY: function(array, chunkSize) {
+    CHUNK_ARRAY: function (array, chunkSize) {
       if (!array.length) {
-        return [];
+        return []
       }
-      return array.reduce(function(previous, current) {
-          var chunk;
-          if (previous.length === 0 || 
-                  previous[previous.length -1].length === chunkSize) {
-              chunk = [];   // 1
-              previous.push(chunk);   // 2
-          }
-          else {
-              chunk = previous[previous.length -1];   // 3
-          }
-          chunk.push(current);   // 4
-          return previous;   // 5
-      }, []); 
+      return array.reduce(function (previous, current) {
+        var chunk
+        if (previous.length === 0 ||
+                  previous[previous.length - 1].length === chunkSize) {
+          chunk = [] // 1
+          previous.push(chunk) // 2
+        } else {
+          chunk = previous[previous.length - 1] // 3
+        }
+        chunk.push(current) // 4
+        return previous // 5
+      }, [])
     },
     LOGTIME: function (label) {
-      var d = new Date(); // for now
-      console.log(label + d.getHours() + ':' + d.getMinutes()  + ':' + d.getSeconds())
+      var d = new Date() // for now
+      console.log(label + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds())
     },
     formatDate: function (date, format) {
       return moment(date).format(format)
