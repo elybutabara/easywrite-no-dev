@@ -5,12 +5,23 @@
                 <div class="component-syncing-v2-header">
                     <h4>Sync Data</h4>
                     <div class="component-syncing-v2-actions">
+                        <button @click="showSyncDateForm()" class="btn-minimize"><i class="fas fa-cog"></i></button>
                         <button @click="minimize()" class="btn-minimize"><i class="far fa-window-minimize"></i></button>
                     </div>
                 </div>
+                <div v-if="tab == 'CHANGE_SYNC_DATE'" class="component-syncing-v2-body">
+                  <b-form-datepicker @context="onSyncDateChange" id="birthdate-datepicker" :placeholder="$t('NO_SELECTED_DATE')" v-model="synced_date" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"></b-form-datepicker>
+                  <div style="margin-top:20px; margin-bottom:10px; text-align:center;">
+                    <button @click="updateSyncDate()" style="border:1px solid var(--navy); background: var(--navy); color:#fff; font-weight:600; font-size:12px; padding:8px 20px; border-radius:4px;">Update</button>
+                    <button @click="showSyncProgress()" style="border:1px solid #ccc; background: #efefef; font-weight:600; font-size:12px; padding:8px 20px; border-radius:4px;">Cancel</button>
+                  </div>
+                </div>
+                <template v-if="tab == 'SYNC'">
+                <div v-if="!pointed_endpoint" class="component-syncing-v2-body">
+                  <div>Preparing to Sync, Please wait...</div>
+                </div>
                 <div v-if="pointed_endpoint" class="component-syncing-v2-body">
                   <p style="font-weight:600;">{{ main_endpoint.title }}</p>
-                    
                     <div class="es-progress-bar">
                       <div class="es-progress-number">{{ main_progress }}%</div>
                       <div class="es-progress" v-bind:style="{ width: main_progress + '%' }"></div>
@@ -18,10 +29,12 @@
                      {{ pointed_endpoint_status }} {{ pointed_endpoint.title }} Data 
                      <span v-if="pointed_endpoint.packed && pointed_endpoint.packed.length > 0 && pointed_endpoint_status == 'Uploading'">[{{ pointed_endpoint_uploaded }}/{{ pointed_endpoint.packed.length }}]</span>
                      <span v-if="pointed_endpoint.downloaded && pointed_endpoint.downloaded.length > 0 && pointed_endpoint_status == 'Saving'">[{{ pointed_endpoint_saved }}/{{ pointed_endpoint.downloaded.length }}]</span>
-                </div>`
-            </div>`
+                </div>
+                </template>
+            </div>
         </div>
         <div v-else class="component-syncing-v2-minimize">
+            <template v-if="pointed_endpoint">
             <span>
               <i class="fas fa-sync fa-spin"></i>
               {{ pointed_endpoint_status }}  
@@ -31,6 +44,7 @@
               {{ main_progress }}%
             </span>
             <span style="cursor:pointer;" @click="maximize()"><i class="fas fa-window-maximize"></i></span>
+            </template>
         </div>
     </div>
 </template>
@@ -50,8 +64,10 @@ export default {
         ready: false,
         version: 19, // syncing version
         api_token: '',
+        synced_date: null,
         minimized: false,
         endpoint_index: 0,
+        endpoint_sync_date: null,
         endpoint_upload_request_done: null,
         endpoint_upload_request_count: null,
         endpoint_save_local_request_done: null,
@@ -62,6 +78,7 @@ export default {
         pointed_endpoint_saved: 0,
         endpoint_total_counter: 0,
         endpoint_done_counter: 0,
+        tab: 'SYNC', // SYNC, CHANGE_SYNC_DATE
         endpoints: [
           { title: 'Authors', type: 'default', api: 'authors', local: 'authors', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
           { title: 'Genres', type: 'default', api: 'book-genres', local: 'book-genres', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
@@ -174,10 +191,47 @@ export default {
     }
   },
   methods: {
+    onSyncDateChange: function (ctx) {
+      var scope = this
+      scope.synced_date = ctx.selectedYMD
+    },
+    updateSyncDate: function () {
+      var scope = this
+      scope.tab = 'SYNC'
+      scope.restartSyncing();
+    },
+    showSyncDateForm: function () {
+      this.tab = 'CHANGE_SYNC_DATE'
+    },
+    showSyncProgress: function () {
+      this.tab = 'SYNC'
+    },
+    restartSyncing: function () {
+      var scope = this
+
+      scope.pointed_endpoint = null;
+      scope.endpoint_index = 0;
+      scope.endpoint_done_counter = 0
+      scope.endpoint_sync_date = (!scope.synced_date) ? '2000-01-01 00:00:00'  :  JSON.parse(JSON.stringify(scope.synced_date))
+
+      setTimeout(function(){
+        console.log('SYNCING DATA FROM ==> ',scope.endpoint_sync_date)
+        scope.LOGTIME('START TIME:');
+
+        var endpoint = scope.endpoints[scope.endpoint_index]
+        scope.processEndpoint(endpoint);
+      },5000);
+      
+    },
     start: function () {
       var scope = this
-      var endpoint = scope.endpoints[scope.endpoint_index]
       scope.ready = true
+      
+      var endpoint = scope.endpoints[scope.endpoint_index]
+      console.log('START SYNC DATE ==> ',scope.endpoint_sync_date)
+      scope.endpoint_sync_date = (!scope.synced_date) ? '1970-01-01 00:00:00'  :  JSON.parse(JSON.stringify(scope.synced_date))
+      
+      console.log('SYNCING DATA FROM ==> ',scope.endpoint_sync_date)
       scope.LOGTIME('START TIME:');
 
       scope.processEndpoint(endpoint);
@@ -206,9 +260,10 @@ export default {
       var scope = this
       var userID = scope.$store.getters.getUserID
       var parent_uuid = (endpoint.book_uuid) ? endpoint.book_uuid : null
+      var sync_date = scope.timeConvertToUTC(scope.endpoint_sync_date)
 
       scope.pointed_endpoint_status = 'Packing'
-      scope.axios.get('http://localhost:3000/' + endpoint.local + '/syncable',{ params: {userID: userID, parent_uuid: parent_uuid } })
+      scope.axios.get('http://localhost:3000/' + endpoint.local + '/syncable',{ params: {synced_at: sync_date, userID: userID, parent_uuid: parent_uuid } })
       .then(function (response) {
         endpoint.packed = (response.data) ? response.data : []
         scope.saveDataToWeb(endpoint);
@@ -301,14 +356,14 @@ export default {
     fetchDataFromWeb: function (endpoint) {
       var scope = this
   
-      var lastSyncedDate = scope.timeConvertToUTC(scope.$store.getters.getUserSyncedDate)
+      var sync_date = scope.timeConvertToUTC(scope.endpoint_sync_date)
       var parent_uuid = (endpoint.book_uuid) ? endpoint.book_uuid : null
       
       scope.pointed_endpoint_status = 'Fetching'
       scope.axios.get(window.APP.API.URL + '/' + endpoint.api + '/v2',
         {
           params: {
-            synced_at: lastSyncedDate, 
+            synced_at: sync_date, 
             uuid: parent_uuid,
             parent_uuid: parent_uuid
           },
@@ -504,6 +559,8 @@ export default {
     const scope = this
     scope.api_token = scope.$store.getters.getUserToken
     scope.addBooksToEndpoint();
+
+    scope.synced_date = scope.$store.getters.getUserSyncedDate
   } 
 }
 </script>
