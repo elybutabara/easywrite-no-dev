@@ -145,33 +145,41 @@ class NotificationController {
     return notification
   }
 
-  static async sync (row) {
-    var columns = {
-      uuid: row.uuid,
-      from: row.from,
-      to: row.to,
-      parent_id: row.parent_id,
-      book_id: row.book_id,
-      parent_name: row.parent_name,
-      status: row.status,
-      data: row.data,
-      type: row.type,
-      action: row.action,
-      created_at: row.created_at,
-      updated_at: row.updated_at,
-      deleted_at: row.deleted_at
-    }
-    var data = await Notification.query().patch(columns).where('uuid', '=', row.uuid)
+  static async sync (datas) {
+    var rows = []
+    if (!Array.isArray(datas)) rows.push(datas)
+    else rows = datas
 
-    if (!data || data === 0) {
-      data = await Notification.query().insert(columns)
+    for (let i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      var columns = {
+        uuid: row.uuid,
+        from: row.from,
+        to: row.to,
+        parent_id: row.parent_id,
+        book_id: row.book_id,
+        parent_name: row.parent_name,
+        status: row.status,
+        data: row.data,
+        type: row.type,
+        action: row.action,
+        created_at: row.created_at,
+        updated_at: row.updated_at,
+        deleted_at: row.deleted_at
+      }
+      var data = await Notification.query().patch(columns).where('uuid', '=', row.uuid)
 
-      // update uuid to match web
-      data = await Notification.query()
-        .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
-        .where('uuid', '=', data.uuid)
+      if (!data || data === 0) {
+        data = await Notification.query().insert(columns)
+
+        // update uuid to match web
+        data = await Notification.query()
+          .patch({'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at})
+          .where('uuid', '=', data.uuid)
+      }
     }
-    return data
+
+    return true
   }
 
   static async getSyncable (userId) {

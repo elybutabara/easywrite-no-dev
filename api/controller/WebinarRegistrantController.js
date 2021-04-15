@@ -17,30 +17,37 @@ class WebinarRegistrantController {
     return rows
   }
 
-  static async sync (row) {
-    var columns = {
-      uuid: row.uuid,
-      webinar_id: row.webinar_id,
-      user_id: row.user_id,
-      join_url: row.join_url,
-      created_at: row.created_at,
-      updated_at: row.updated_at
+  static async sync (datas) {
+    var rows = []
+    if (!Array.isArray(datas)) rows.push(datas)
+    else rows = datas
+
+    for (let i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      var columns = {
+        uuid: row.uuid,
+        webinar_id: row.webinar_id,
+        user_id: row.user_id,
+        join_url: row.join_url,
+        created_at: row.created_at,
+        updated_at: row.updated_at
+      }
+
+      var data = await WebinarRegistrant.query()
+        .patch(columns)
+        .where('uuid', '=', row.uuid)
+
+      if (!data || data === 0) {
+        data = await WebinarRegistrant.query().insert(columns)
+
+        // update uuid to match web
+        data = await WebinarRegistrant.query()
+          .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
+          .where('uuid', '=', data.uuid)
+      }
     }
 
-    var data = await WebinarRegistrant.query()
-      .patch(columns)
-      .where('uuid', '=', row.uuid)
-
-    if (!data || data === 0) {
-      data = await WebinarRegistrant.query().insert(columns)
-
-      // update uuid to match web
-      data = await WebinarRegistrant.query()
-        .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
-        .where('uuid', '=', data.uuid)
-    }
-
-    return data
+    return true
   }
 }
 

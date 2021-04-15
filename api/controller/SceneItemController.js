@@ -57,8 +57,8 @@ class SceneItemController {
   }
 
   static async getSyncable (params) {
-    var userId = params.query.userID;
-    var bookUUID = params.query.parent_uuid;
+    var userId = params.query.userID
+    var bookUUID = params.query.parent_uuid
 
     const user = await User.query()
       .findById(userId)
@@ -78,7 +78,7 @@ class SceneItemController {
     */
 
     const scenes = await Scene.query()
-      .where('book_id', '=',bookUUID)
+      .where('book_id', '=', bookUUID)
       .whereNull('deleted_at')
 
     var sceneUUIDs = []
@@ -94,31 +94,38 @@ class SceneItemController {
     return rows
   }
 
-  static async sync (row) {
-    var columns = {
-      uuid: row.uuid,
-      book_scene_id: row.book_scene_id,
-      book_item_id: row.book_item_id,
-      created_at: row.created_at,
-      updated_at: row.updated_at,
-      deleted_at: row.deleted_at,
-      from_local: row.from_local
+  static async sync (datas) {
+    var rows = []
+    if (!Array.isArray(datas)) rows.push(datas)
+    else rows = datas
+
+    for (let i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      var columns = {
+        uuid: row.uuid,
+        book_scene_id: row.book_scene_id,
+        book_item_id: row.book_item_id,
+        created_at: row.created_at,
+        updated_at: row.updated_at,
+        deleted_at: row.deleted_at,
+        from_local: row.from_local
+      }
+
+      var data = await SceneItem.query()
+        .patch(columns)
+        .where('uuid', '=', row.uuid)
+
+      if (!data || data === 0) {
+        data = await SceneItem.query().insert(columns)
+
+        // update uuid to match web
+        data = await SceneItem.query()
+          .patch({'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at})
+          .where('uuid', '=', data.uuid)
+      }
     }
 
-    var data = await SceneItem.query()
-      .patch(columns)
-      .where('uuid', '=', row.uuid)
-
-    if (!data || data === 0) {
-      data = await SceneItem.query().insert(columns)
-
-      // update uuid to match web
-      data = await SceneItem.query()
-        .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
-        .where('uuid', '=', data.uuid)
-    }
-
-    return data
+    return true
   }
 }
 

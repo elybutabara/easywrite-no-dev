@@ -32,8 +32,8 @@ class FeedbackResponseController {
   }
 
   static async getSyncable (params) {
-    var userId = params.query.userID;
-    var bookUUID = params.query.parent_uuid;
+    var userId = params.query.userID
+    var bookUUID = params.query.parent_uuid
 
     const user = await User.query()
       .findById(userId)
@@ -65,9 +65,7 @@ class FeedbackResponseController {
 
     // get all "chapters" IDs
     const chapters = await Chapter.query()
-      .where('book_id','=', bookUUID)
-   
-
+      .where('book_id', '=', bookUUID)
 
     for (let i = 0; i < chapters.length; i++) {
       parentIDs.push(chapters[i].uuid)
@@ -75,7 +73,7 @@ class FeedbackResponseController {
 
     // get all "scenes" IDs
     const scenes = await Scene.query()
-    .where('book_id','=', bookUUID)
+      .where('book_id', '=', bookUUID)
 
     for (let i = 0; i < scenes.length; i++) {
       parentIDs.push(scenes[i].uuid)
@@ -83,7 +81,6 @@ class FeedbackResponseController {
 
     const feedbacks = await Feedback.query()
       .whereIn('parent_id', parentIDs)
-
 
     var feedbackUUIDs = []
 
@@ -99,31 +96,38 @@ class FeedbackResponseController {
     return rows
   }
 
-  static async sync (row) {
-    var columns = {
-      uuid: row.uuid,
-      feedback_id: row.feedback_id,
-      author_id: row.author_id,
-      message: row.message,
-      created_at: row.created_at,
-      updated_at: row.updated_at,
-      deleted_at: row.deleted_at
+  static async sync (datas) {
+    var rows = []
+    if (!Array.isArray(datas)) rows.push(datas)
+    else rows = datas
+
+    for (let i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      var columns = {
+        uuid: row.uuid,
+        feedback_id: row.feedback_id,
+        author_id: row.author_id,
+        message: row.message,
+        created_at: row.created_at,
+        updated_at: row.updated_at,
+        deleted_at: row.deleted_at
+      }
+
+      var data = await FeedbackResponse.query()
+        .patch(columns)
+        .where('uuid', '=', row.uuid)
+
+      if (!data || data === 0) {
+        data = await FeedbackResponse.query().insert(columns)
+
+        // update uuid to match web
+        data = await FeedbackResponse.query()
+          .patch({'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at})
+          .where('uuid', '=', data.uuid)
+      }
     }
 
-    var data = await FeedbackResponse.query()
-      .patch(columns)
-      .where('uuid', '=', row.uuid)
-
-    if (!data || data === 0) {
-      data = await FeedbackResponse.query().insert(columns)
-
-      // update uuid to match web
-      data = await FeedbackResponse.query()
-        .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
-        .where('uuid', '=', data.uuid)
-    }
-
-    return data
+    return true
   }
 }
 

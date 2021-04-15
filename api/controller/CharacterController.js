@@ -23,7 +23,7 @@ class CharacterController {
     return character
   }
 
-  static async save(data) {
+  static async save (data) {
     if (data.updated_at) delete data.updated_at
     const saveCharacters = await Character.query().upsertGraph([data]).first()
 
@@ -34,9 +34,7 @@ class CharacterController {
     return character
   }
 
-
-  static async updateLineColor (characterId,data) {
-
+  static async updateLineColor (characterId, data) {
     var character = await Character.query()
       .patch({ line_color: data.color })
       .where('id', '=', characterId)
@@ -47,9 +45,8 @@ class CharacterController {
     return character
   }
 
-  static async hideStoryline(characterId,data) {
-
-    var row  = await Character.query()
+  static async hideStoryline (characterId, data) {
+    var row = await Character.query()
       .where('id', '=', characterId).first()
 
     var character = await Character.query()
@@ -59,7 +56,6 @@ class CharacterController {
     row.storyline_hidden = !row.storyline_hidden
     return row
   }
-
 
   static async delete (characterId) {
     const character = await Character.query().softDeleteById(characterId)
@@ -75,8 +71,8 @@ class CharacterController {
   }
 
   static async getSyncable (params) {
-    var userId = params.query.userID;
-    var bookUUID = params.query.parent_uuid;
+    var userId = params.query.userID
+    var bookUUID = params.query.parent_uuid
 
     const user = await User.query()
       .findById(userId)
@@ -96,46 +92,53 @@ class CharacterController {
     */
 
     const rows = await Character.query()
-      .where('book_id','=', bookUUID)
+      .where('book_id', '=', bookUUID)
       .where('updated_at', '>', user.synced_at)
 
     return rows
   }
 
-  static async sync (row) {
-    var columns = {
-      uuid: row.uuid,
-      book_id: row.book_id,
-      shortname: row.shortname,
-      fullname: row.fullname,
-      nickname: row.nickname,
-      birthdate: row.birthdate,
-      occupation: row.occupation,
-      description: row.description,
-      bio: row.bio,
-      goals: row.goals,
-      picture: row.picture,
-      line_color: row.line_color,
-      storyline_hidden: row.storyline_hidden,
-      created_at: row.created_at,
-      updated_at: row.updated_at,
-      deleted_at: row.deleted_at,
-      from_local: row.from_local
+  static async sync (datas) {
+    var rows = []
+    if (!Array.isArray(datas)) rows.push(datas)
+    else rows = datas
+
+    for (let i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      var columns = {
+        uuid: row.uuid,
+        book_id: row.book_id,
+        shortname: row.shortname,
+        fullname: row.fullname,
+        nickname: row.nickname,
+        birthdate: row.birthdate,
+        occupation: row.occupation,
+        description: row.description,
+        bio: row.bio,
+        goals: row.goals,
+        picture: row.picture,
+        line_color: row.line_color,
+        storyline_hidden: row.storyline_hidden,
+        created_at: row.created_at,
+        updated_at: row.updated_at,
+        deleted_at: row.deleted_at,
+        from_local: row.from_local
+      }
+      var data = await Character.query()
+        .patch(columns)
+        .where('uuid', '=', row.uuid)
+
+      if (!data || data === 0) {
+        data = await Character.query().insert(columns)
+
+        // update uuid to match web
+        data = await Character.query()
+          .patch({'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at})
+          .where('uuid', '=', data.uuid)
+      }
     }
-    var data = await Character.query()
-      .patch(columns)
-      .where('uuid', '=', row.uuid)
 
-    if (!data || data === 0) {
-      data = await Character.query().insert(columns)
-
-      // update uuid to match web
-      data = await Character.query()
-        .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
-        .where('uuid', '=', data.uuid)
-    }
-
-    return data
+    return true
   }
 }
 
