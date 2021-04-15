@@ -502,8 +502,6 @@ export default {
           scope.addBooksToEndpoint();
           scope.stage = 'ALL';
         },3000);
-
-        
         return;
       }
 
