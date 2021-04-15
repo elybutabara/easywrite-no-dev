@@ -352,8 +352,8 @@ export default {
     window.AppMain = this
     var userUUID = this.$store.getters.getUserID
     var authorUUID = this.$store.getters.getAuthorID
-    scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
-    scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+    //scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+    //scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
     // scope.$store.dispatch('getBooksByAuthorID', userID)
     setTimeout(function () {
       scope.ready = true
