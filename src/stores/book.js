@@ -131,6 +131,7 @@ export default {
       state.books[authorUUID].rows = books.data
 
       for (let i = 0; i < state.books[authorUUID].rows.length; i++) {
+        Vue.set(state.books[authorUUID].rows[i], 'is_synced', false)
         Vue.set(state.books[authorUUID].rows[i], 'is_open', false)
         Vue.set(state.books[authorUUID].rows[i], 'is_chapters_folder_open', false)
         Vue.set(state.books[authorUUID].rows[i], 'is_items_folder_open', false)
@@ -147,6 +148,7 @@ export default {
       state.books_i_read[authorUUID].rows = bookIRead.data
 
       for (let i = 0; i < state.books_i_read[authorUUID].rows.length; i++) {
+        Vue.set(state.books_i_read[authorUUID].rows[i], 'is_synced', false)
         Vue.set(state.books_i_read[authorUUID].rows[i], 'is_open', false)
         Vue.set(state.books_i_read[authorUUID].rows[i], 'is_chapters_folder_open', false)
         Vue.set(state.books_i_read[authorUUID].rows[i], 'is_items_folder_open', false)

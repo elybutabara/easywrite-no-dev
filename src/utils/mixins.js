@@ -39,6 +39,10 @@ export default {
     },
     TOGGLE_BOOK: function (data, model) {
       var scope = this
+
+      // disable book if still syncing
+      if (model === 'book' && !data.is_synced) return
+
       scope.$store.dispatch('toggleBook', { model: model, data: data })
 
       if (model === 'book') {
