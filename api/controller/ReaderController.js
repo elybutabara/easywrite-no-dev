@@ -112,13 +112,13 @@ class ReaderController {
         deleted_at: row.book.deleted_at,
         from_local: row.book.from_local
       }
-
+      
+      /*
       let bookData = await Book.query()
         .patch(bookColumns)
         .where('uuid', '=', row.uuid)
 
-      console.log('bookData', row.uuid)
-
+   
       if (!bookData || bookData === 0) {
         bookData = await Book.query().insert(bookColumns)
 
@@ -127,6 +127,7 @@ class ReaderController {
           .patch({ 'uuid': row.book.uuid, created_at: row.book.created_at, updated_at: row.book.updated_at })
           .where('uuid', '=', bookData.uuid)
       }
+      */
 
       var data = await Reader.query()
         .patch(columns)

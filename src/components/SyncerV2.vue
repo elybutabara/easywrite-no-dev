@@ -80,59 +80,61 @@ export default {
       endpoint_done_counter: 0,
       tab: 'SYNC', // SYNC, CHANGE_SYNC_DATE
       stage: 'BOOK',
-      pre: [
-        { title: 'Books', type: 'book', api: 'books', local: 'books', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
-        { title: 'Book Readers', type: 'books-i-read', api: 'book-readers', local: 'readers', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false }
-      ],
-      endpoints: [
-        // { title: 'Authors', type: 'default', api: 'authors', local: 'authors', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
-        { title: 'Genres', type: 'default', api: 'book-genres', local: 'book-genres', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
-        { title: 'Relations', type: 'default', api: 'book-relations', local: 'relations', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false }
+      endpoints: [],
+      template: {
+        pre: [
+          { title: 'Books', type: 'book', api: 'books', local: 'books', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Book Readers', type: 'books-i-read', api: 'book-readers', local: 'readers', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false }
+        ],
+        main: [
+          // { title: 'Authors', type: 'default', api: 'authors', local: 'authors', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'Genres', type: 'default', api: 'book-genres', local: 'book-genres', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'Relations', type: 'default', api: 'book-relations', local: 'relations', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false }
+        ],
+        bookChildren: [
+          { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Chapters', api: 'book-chapters', local: 'chapters', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Items', api: 'book-items', local: 'items', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Locations', api: 'book-locations', local: 'locations', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Characters', api: 'book-characters', local: 'characters', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Relationships', api: 'book-relation-details', local: 'relation-details', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Scenes', api: 'book-scenes', local: 'scenes', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Chapter Versions', api: 'book-chapter-versions', local: 'chapter-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false },
+          { title: 'Scene Items', api: 'book-scene-items', local: 'scene-items', downloaded: null, packed: null, skip: false, done: false },
+          { title: 'Scene Locations', api: 'book-scene-locations', local: 'scene-locations', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false }
+        ],
+        booksIReadChildren: [
+          { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Scenes', api: 'book-scenes', local: 'scenes', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
 
-      ],
-      bookChildren: [
-        { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
-        { title: 'Chapters', api: 'book-chapters', local: 'chapters', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
-        { title: 'Items', api: 'book-items', local: 'items', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
-        { title: 'Locations', api: 'book-locations', local: 'locations', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
-        { title: 'Characters', api: 'book-characters', local: 'characters', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
-        { title: 'Relationships', api: 'book-relation-details', local: 'relation-details', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
-        { title: 'Scenes', api: 'book-scenes', local: 'scenes', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
-        { title: 'Chapter Versions', api: 'book-chapter-versions', local: 'chapter-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false },
-        { title: 'Scene Items', api: 'book-scene-items', local: 'scene-items', downloaded: null, packed: null, skip: false, done: false },
-        { title: 'Scene Locations', api: 'book-scene-locations', local: 'scene-locations', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
-        { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
-        { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
-        { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
-        { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false }
-      ],
-      booksIReadChildren: [
-        { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
-        { title: 'Scenes', api: 'book-scenes', local: 'scenes', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Chapter Versions', api: 'book-chapter-versions', local: 'chapter-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false },
+          { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false }
+        ],
+        postBook: [
+          { title: 'Author Personal Progress', type: 'default', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: null, packed: null, skip: false, chunkSize: 40, done: false },
+          { title: 'Courses', type: 'default', api: 'courses', local: 'courses', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'Courses Taken', type: 'default', api: 'courses-taken', local: 'courses-taken', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'Packages', type: 'default', api: 'packages', local: 'packages', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'Package Courses', type: 'default', api: 'package-courses', local: 'package-courses', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'Lessons', type: 'default', api: 'lessons', local: 'lessons', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'Lesson Documents', type: 'default', api: 'lesson-documents', local: 'lesson-documents', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
 
-        { title: 'Chapter Versions', api: 'book-chapter-versions', local: 'chapter-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false },
-        { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
-        { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
-        { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false }
-      ],
-      postBook: [
-        { title: 'Author Personal Progress', type: 'default', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: null, packed: null, skip: false, chunkSize: 40, done: false },
-        { title: 'Courses', type: 'default', api: 'courses', local: 'courses', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
-        { title: 'Courses Taken', type: 'default', api: 'courses-taken', local: 'courses-taken', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
-        { title: 'Packages', type: 'default', api: 'packages', local: 'packages', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
-        { title: 'Package Courses', type: 'default', api: 'package-courses', local: 'package-courses', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
-        { title: 'Lessons', type: 'default', api: 'lessons', local: 'lessons', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
-        { title: 'Lesson Documents', type: 'default', api: 'lesson-documents', local: 'lesson-documents', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'Notes', api: 'notes', local: 'notes', downloaded: null, packed: null, skip: false, error: [], chunkSize: 25 }, // can only be added on books i read?
+          { title: 'Assignments', type: 'default', api: 'assignments', local: 'assignments', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Assignment Manuscripts', type: 'default', api: 'assignment-manuscripts', local: 'assignment-manuscripts', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Notifications', type: 'default', api: 'notifications', local: 'notifications', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
 
-        { title: 'Notes', api: 'notes', local: 'notes', downloaded: null, packed: null, skip: false, error: [], chunkSize: 25 }, // can only be added on books i read?
-        { title: 'Assignments', type: 'default', api: 'assignments', local: 'assignments', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
-        { title: 'Assignment Manuscripts', type: 'default', api: 'assignment-manuscripts', local: 'assignment-manuscripts', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
-        { title: 'Notifications', type: 'default', api: 'notifications', local: 'notifications', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
-
-        { title: 'Webinars', type: 'default', api: 'webinars', local: 'webinars', downloaded: null, packed: null, skip: true, chunkSize: 50 },
-        { title: 'WebinarPresenters', type: 'default', api: 'webinar-presenters', local: 'webinar-presenters', downloaded: null, packed: null, skip: true, chunkSize: 50 },
-        { title: 'WebinarRegistrants', type: 'default', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: null, packed: null, skip: true, chunkSize: 50 }
-      ]
+          { title: 'Webinars', type: 'default', api: 'webinars', local: 'webinars', downloaded: null, packed: null, skip: true, chunkSize: 50 },
+          { title: 'WebinarPresenters', type: 'default', api: 'webinar-presenters', local: 'webinar-presenters', downloaded: null, packed: null, skip: true, chunkSize: 50 },
+          { title: 'WebinarRegistrants', type: 'default', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: null, packed: null, skip: true, chunkSize: 50 }
+        ]
+      }
     }
   },
   computed: {
@@ -146,10 +148,9 @@ export default {
       var authorUUID = this.$store.getters.getAuthorID
       return this.$store.getters.getBooksIReadByAuthor(authorUUID)
     },
-
     main_endpoint: function () {
       var scope = this
-      var endpoint = (scope.stage == 'BOOK' || scope.stage == 'BOOK-I-READ') ? scope.pre[scope.endpoint_index] : scope.endpoints[scope.endpoint_index]
+      var endpoint = scope.endpoints[scope.endpoint_index]
       return endpoint
     },
     main_progress: function () {
@@ -177,15 +178,12 @@ export default {
     },
     endpoint_save_local_request_done: function (val) {
       var scope = this
-      console.log('COUNT ==> ', scope.endpoint_save_local_request_count)
-      console.log('DONE  ==> ', val)
       if (val === null) {
         return
       }
 
       if (val == scope.endpoint_save_local_request_count) {
         setTimeout(function () {
-          console.log('NEXT ===> ')
           scope.next()
 
           // reset
@@ -203,7 +201,12 @@ export default {
     updateSyncDate: function () {
       var scope = this
       scope.tab = 'SYNC'
-      scope.restartSyncing()
+      scope.stage = 'BOOK'
+      scope.saveUserSyncedDate(scope.endpoint_sync_date);
+      // just add a delay to make sure some (or all) axios request is done before restarting
+      setTimeout(function () {
+        scope.initialize();
+      }, 5000)
     },
     showSyncDateForm: function () {
       this.tab = 'CHANGE_SYNC_DATE'
@@ -211,41 +214,41 @@ export default {
     showSyncProgress: function () {
       this.tab = 'SYNC'
     },
-    restartSyncing: function () {
+    resetData: function () {
       var scope = this
-
-      scope.pointed_endpoint = null
+      scope.endpoints = [];
       scope.endpoint_index = 0
+      scope.endpoint_upload_request_done = null
+      scope.endpoint_upload_request_count = null
+      scope.endpoint_save_local_request_done = null
+      scope.endpoint_save_local_request_count = null
+      scope.pointed_endpoint = null
+      scope.pointed_endpoint_status = null,
+      scope.pointed_endpoint_uploaded = 0
+      scope.pointed_endpoint_saved = 0
+      scope.endpoint_total_counter = 0
       scope.endpoint_done_counter = 0
-      scope.endpoint_sync_date = (!scope.synced_date) ? '2000-01-01 00:00:00' : JSON.parse(JSON.stringify(scope.synced_date))
-
-      setTimeout(function () {
-        console.log('SYNCING DATA FROM ==> ', scope.endpoint_sync_date)
-        scope.LOGTIME('START TIME:')
-
-        var endpoint = scope.endpoints[scope.endpoint_index]
-        scope.processEndpoint(endpoint)
-      }, 5000)
     },
     initialize: function () {
       var scope = this
       scope.ready = true
-      scope.endpoint_total_counter = scope.pre.length
-      scope.endpoint_done_counter = 0
-      scope.endpoint_sync_date = (!scope.synced_date) ? '1970-01-01 00:00:00' : JSON.parse(JSON.stringify(scope.synced_date))
-      var endpoint = scope.pre[scope.endpoint_index]
-      scope.processEndpoint(endpoint)
+      scope.resetData();
+      
+      // set the books and books i read (template.pre) as the main endpoint first
+      if (scope.stage == 'BOOK') {
+        scope.endpoints = JSON.parse(JSON.stringify(scope.template.pre));
+        scope.endpoint_total_counter = scope.template.pre.length
+        scope.start();
+      } else {
+        scope.endpoints = JSON.parse(JSON.stringify(scope.template.main));
+        scope.addBooksToMainEndpoint()
+        // scope.start() ===> this one will be executed after the addPostBookToMainEndpoint is executed
+      }
     },
     start: function () {
       var scope = this
-
-      var endpoint = scope.endpoints[scope.endpoint_index]
-      console.log('START SYNC DATE ==> ', scope.endpoint_sync_date)
       scope.endpoint_sync_date = (!scope.synced_date) ? '1970-01-01 00:00:00' : JSON.parse(JSON.stringify(scope.synced_date))
-
-      console.log('SYNCING DATA FROM ==> ', scope.endpoint_sync_date)
-      scope.LOGTIME('START TIME:')
-
+      var endpoint = scope.endpoints[scope.endpoint_index]
       scope.processEndpoint(endpoint)
     },
     processEndpoint: function (endpoint) {
@@ -452,8 +455,6 @@ export default {
         'X-Authorization': 'Bearer ' + scope.api_token
       }
 
-      console.log('SAVE TO APP URL ===> ', URL)
-
       var FORMDATA = chunk.rows
       scope.axios.post(URL, FORMDATA)
         .then(function (response) {
@@ -478,11 +479,11 @@ export default {
       if (scope.stage == 'BOOK') {
         scope.endpoint_index++
         scope.endpoint_done_counter++
-        var endpoint = scope.pre[scope.endpoint_index]
+        var endpoint = scope.endpoints[scope.endpoint_index]
         scope.processEndpoint(endpoint)
         scope.stage = 'BOOK-I-READ'
-
         return
+
       } else if (scope.stage == 'BOOK-I-READ') {
         var userUUID = this.$store.getters.getUserID
         var authorUUID = this.$store.getters.getAuthorID
@@ -491,10 +492,10 @@ export default {
         scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
         scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
 
+        scope.stage = 'ALL'
+
         setTimeout(function () {
-          scope.restartSyncing()
-          scope.addBooksToEndpoint()
-          scope.stage = 'ALL'
+          scope.initialize()
         }, 3000)
         return
       }
@@ -531,10 +532,17 @@ export default {
 
       scope.endpoint_done_counter++
 
+      // done processing all endpoints
       if (scope.endpoint_index == scope.endpoints.length) {
+
         scope.LOGTIME('END TIME')
-        // update last synced at data
-        // set timeout to resync
+        scope.saveUserSyncedDate();
+
+        setTimeout(function(){
+          scope.LOGTIME('START TIME (RESUME)')
+          scope.stage = 'BOOK'
+          scope.initialize()
+        },300000);
       }
     },
     minimize: function () {
@@ -547,14 +555,14 @@ export default {
       if (datetime === null || datetime === 'undefined') { return null }
       return moment(datetime).utc().format('YYYY-MM-DD HH:mm:ss').toString()
     },
-    addBooksToEndpoint: function () {
+    addBooksToMainEndpoint: function () {
       var scope = this
       var rows = scope.books
 
       for (let i = 0; i < rows.length; i++) {
         var row = rows[i]
 
-        var children = JSON.parse(JSON.stringify(scope.bookChildren))
+        var children = JSON.parse(JSON.stringify(scope.template.bookChildren))
         for (let x = 0; x < children.length; x++) {
           var child = children[x]
           scope.$set(child, 'book_uuid', row.uuid)
@@ -564,15 +572,15 @@ export default {
         packed.push(row)
         scope.endpoints.push({ title: row.title, type: 'book', api: 'books', local: 'books', downloaded: null, packed: packed, skip: false, error: [], chunkSize: 1, done: false, children: children, child_index: 0 })
       }
-      scope.addBooksIReadToEndpoint()
+      scope.addBooksIReadToMainEndpoint()
     },
-    addBooksIReadToEndpoint: function () {
+    addBooksIReadToMainEndpoint: function () {
       var scope = this
       var rows = scope.books_i_read
 
       for (let i = 0; i < rows.length; i++) {
         var row = rows[i]
-        var children = JSON.parse(JSON.stringify(scope.booksIReadChildren))
+        var children = JSON.parse(JSON.stringify(scope.template.booksIReadChildren))
         for (let x = 0; x < children.length; x++) {
           var child = children[x]
           scope.$set(child, 'book_uuid', row.uuid)
@@ -582,11 +590,11 @@ export default {
         packed.push(row)
         scope.endpoints.push({ title: row.title, type: 'book', api: 'books', local: 'books', downloaded: null, packed: packed, skip: false, error: [], chunkSize: 1, done: false, children: children, child_index: 0 })
       }
-      scope.addPostBookEndpoints()
+      scope.addPostBookMainEndpoint()
     },
-    addPostBookEndpoints: function () {
+    addPostBookMainEndpoint: function () {
       var scope = this
-      var rows = scope.postBook
+      var rows = scope.template.postBook
 
       for (let i = 0; i < rows.length; i++) {
         var row = rows[i]
@@ -602,14 +610,33 @@ export default {
 
       scope.endpoint_total_counter = count
       scope.start()
-    }
+    },
+    saveUserSyncedDate: function (date = null) {
+      var scope = this
+      var userID = this.$store.getters.getUserID
+
+      scope.axios
+        .post('http://localhost:3000/users/synced', { uuid: userID, date:  date})
+        .then(function (response) {
+          var data = response.data
+          scope.$store.commit('updateSyncedAt', {
+            syncedAt: data.synced_at
+          })
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error)
+        })
+        .finally(function () {
+          // always executed
+        })
+    },
   },
   mounted () {
     const scope = this
     scope.api_token = scope.$store.getters.getUserToken
     scope.initialize()
     // scope.addBooksToEndpoint();
-
     scope.synced_date = scope.$store.getters.getUserSyncedDate
   }
 }

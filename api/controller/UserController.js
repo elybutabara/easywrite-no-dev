@@ -79,7 +79,9 @@ class UserController {
   }
 
   static async saveSyncedDate (params) {
-    let lastSyncedDate = moment().add(5, 'seconds').format('YYYY-MM-DD HH:mm:ss').toString()
+
+    let lastSyncedDate = (params.date)  ? params.date : moment().add(5, 'seconds').format('YYYY-MM-DD HH:mm:ss').toString()
+    
     await User.query()
       .patch({synced_at: lastSyncedDate})
       .where('uuid', '=', params.uuid)

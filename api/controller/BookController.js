@@ -107,12 +107,16 @@ class BookController {
         from_local: row.from_local
       }
 
+      console.log('BOOK UUID ===> ',row.uuid)
+      console.log('BOOK TITLE ===> ',row.title)
+
       var data = await Book.query()
         .patch(columns)
         .where('uuid', '=', row.uuid)
 
       if (!data || data === 0) {
         data = await Book.query().insert(columns)
+        console.log('BOOK NOT FOUND, INSERT ===> ',row.title)
 
         // update uuid to match web
         data = await Book.query()
