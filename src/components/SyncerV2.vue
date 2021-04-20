@@ -248,6 +248,9 @@ export default {
     start: function () {
       var scope = this
       scope.endpoint_sync_date = (!scope.synced_date) ? '1970-01-01 00:00:00' : JSON.parse(JSON.stringify(scope.synced_date))
+      console.log('scope.synced_date',scope.synced_date)
+      console.log('scope.endpoint_sync_date',scope.endpoint_sync_date)
+
       var endpoint = scope.endpoints[scope.endpoint_index]
       scope.processEndpoint(endpoint)
     },
@@ -635,9 +638,9 @@ export default {
   mounted () {
     const scope = this
     scope.api_token = scope.$store.getters.getUserToken
-    scope.initialize()
-    // scope.addBooksToEndpoint();
     scope.synced_date = scope.$store.getters.getUserSyncedDate
+    scope.initialize()
+    //scope.addBooksToEndpoint();
   }
 }
 </script>
