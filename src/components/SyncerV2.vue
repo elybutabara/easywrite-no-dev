@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 /*  ---- STEPS ----
   STEP 1: get all books
   STEP 2: get all books i read
@@ -87,7 +88,7 @@ export default {
           { title: 'Book Readers', type: 'books-i-read', api: 'book-readers', local: 'readers', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false }
         ],
         main: [
-          // { title: 'Authors', type: 'default', api: 'authors', local: 'authors', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'Authors', type: 'default', api: 'authors', local: 'authors', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
           { title: 'Genres', type: 'default', api: 'book-genres', local: 'book-genres', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
           { title: 'Relations', type: 'default', api: 'book-relations', local: 'relations', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false }
         ],
@@ -105,7 +106,8 @@ export default {
           { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
           { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
           { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
-          { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false }
+          { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false },
+          { title: 'Author Personal Progress', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: null, packed: null, skip: false, chunkSize: 40, done: false }
         ],
         booksIReadChildren: [
           { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
@@ -117,7 +119,7 @@ export default {
           { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false }
         ],
         postBook: [
-          { title: 'Author Personal Progress', type: 'default', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: null, packed: null, skip: false, chunkSize: 40, done: false },
+          // { title: 'Author Personal Progress', type: 'default', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: null, packed: null, skip: false, chunkSize: 40, done: false },
           { title: 'Courses', type: 'default', api: 'courses', local: 'courses', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
           { title: 'Courses Taken', type: 'default', api: 'courses-taken', local: 'courses-taken', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
           { title: 'Packages', type: 'default', api: 'packages', local: 'packages', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
@@ -202,10 +204,10 @@ export default {
       var scope = this
       scope.tab = 'SYNC'
       scope.stage = 'BOOK'
-      scope.saveUserSyncedDate(scope.endpoint_sync_date);
+      scope.saveUserSyncedDate(scope.endpoint_sync_date)
       // just add a delay to make sure some (or all) axios request is done before restarting
       setTimeout(function () {
-        scope.initialize();
+        scope.initialize()
       }, 5000)
     },
     showSyncDateForm: function () {
@@ -216,14 +218,14 @@ export default {
     },
     resetData: function () {
       var scope = this
-      scope.endpoints = [];
+      scope.endpoints = []
       scope.endpoint_index = 0
       scope.endpoint_upload_request_done = null
       scope.endpoint_upload_request_count = null
       scope.endpoint_save_local_request_done = null
       scope.endpoint_save_local_request_count = null
       scope.pointed_endpoint = null
-      scope.pointed_endpoint_status = null,
+      scope.pointed_endpoint_status = null
       scope.pointed_endpoint_uploaded = 0
       scope.pointed_endpoint_saved = 0
       scope.endpoint_total_counter = 0
@@ -232,15 +234,15 @@ export default {
     initialize: function () {
       var scope = this
       scope.ready = true
-      scope.resetData();
-      
+      scope.resetData()
+
       // set the books and books i read (template.pre) as the main endpoint first
       if (scope.stage == 'BOOK') {
-        scope.endpoints = JSON.parse(JSON.stringify(scope.template.pre));
+        scope.endpoints = JSON.parse(JSON.stringify(scope.template.pre))
         scope.endpoint_total_counter = scope.template.pre.length
-        scope.start();
+        scope.start()
       } else {
-        scope.endpoints = JSON.parse(JSON.stringify(scope.template.main));
+        scope.endpoints = JSON.parse(JSON.stringify(scope.template.main))
         scope.addBooksToMainEndpoint()
         // scope.start() ===> this one will be executed after the addPostBookToMainEndpoint is executed
       }
@@ -274,16 +276,19 @@ export default {
     fetchDataFromApp: function (endpoint) {
       var scope = this
       var userID = scope.$store.getters.getUserID
+      // eslint-disable-next-line camelcase
       var parent_uuid = (endpoint.book_uuid) ? endpoint.book_uuid : null
+      // eslint-disable-next-line camelcase
       var sync_date = scope.timeConvertToUTC(scope.endpoint_sync_date)
 
       scope.pointed_endpoint_status = 'Packing'
-      scope.axios.get('http://localhost:3000/' + endpoint.local + '/syncable', { params: {synced_at: sync_date, userID: userID, parent_uuid: parent_uuid } })
+      scope.axios.get('http://localhost:3000/' + endpoint.local + '/syncable', { params: { synced_at: sync_date, userID: userID, parent_uuid: parent_uuid } })
         .then(function (response) {
           endpoint.packed = (response.data) ? response.data : []
           scope.saveDataToWeb(endpoint)
         })
         .catch(function (error) {
+          console.log(error)
           setTimeout(function () {
             scope.fetchDataFromApp(endpoint)
           }, 5000)
@@ -359,6 +364,7 @@ export default {
           // scope.upload_total += chunk.rows.length
         })
         .catch(function (error) {
+          console.log(error)
           setTimeout(function () {
             scope.upload(URL, chunk, index)
           }, 4000)
@@ -370,7 +376,9 @@ export default {
     fetchDataFromWeb: function (endpoint) {
       var scope = this
 
+      // eslint-disable-next-line camelcase
       var sync_date = scope.timeConvertToUTC(scope.endpoint_sync_date)
+      // eslint-disable-next-line camelcase
       var parent_uuid = (endpoint.book_uuid) ? endpoint.book_uuid : null
 
       scope.pointed_endpoint_status = 'Fetching'
@@ -392,6 +400,7 @@ export default {
           scope.saveDataToApp(endpoint)
         })
         .catch(function (error) {
+          console.log(error)
           setTimeout(function () {
             scope.fetchDataFromWeb(endpoint)
           }, 5000)
@@ -449,11 +458,11 @@ export default {
     },
     saveToLocalDB: function (URL, chunk, index = 0) {
       var scope = this
-      var headers = {
-        'X-Requested-With': 'XMLHttpRequest',
-        'Authorization': 'Bearer ' + scope.api_token,
-        'X-Authorization': 'Bearer ' + scope.api_token
-      }
+      // var headers = {
+      //   'X-Requested-With': 'XMLHttpRequest',
+      //   'Authorization': 'Bearer ' + scope.api_token,
+      //   'X-Authorization': 'Bearer ' + scope.api_token
+      // }
 
       var FORMDATA = chunk.rows
       scope.axios.post(URL, FORMDATA)
@@ -464,6 +473,7 @@ export default {
           // scope.upload_total += chunk.rows.length
         })
         .catch(function (error) {
+          console.log(error)
           setTimeout(function () {
             scope.saveToLocalDB(URL, chunk, index)
           }, 4000)
@@ -474,6 +484,7 @@ export default {
     },
     next: function () {
       var scope = this
+      // eslint-disable-next-line camelcase
       var main_endpoint = scope.main_endpoint
 
       if (scope.stage == 'BOOK') {
@@ -483,7 +494,6 @@ export default {
         scope.processEndpoint(endpoint)
         scope.stage = 'BOOK-I-READ'
         return
-
       } else if (scope.stage == 'BOOK-I-READ') {
         var userUUID = this.$store.getters.getUserID
         var authorUUID = this.$store.getters.getAuthorID
@@ -502,8 +512,10 @@ export default {
 
       // books or others except book childrens e.g chapter, scenes
       if (main_endpoint.children && main_endpoint.children.length > 0 && main_endpoint.child_index < main_endpoint.children.length) {
+        // eslint-disable-next-line camelcase
         var child_index = main_endpoint.child_index
 
+        // eslint-disable-next-line no-redeclare
         var endpoint = main_endpoint.children[child_index]
         main_endpoint.child_index++
 
@@ -526,6 +538,7 @@ export default {
 
         scope.endpoint_index++
 
+        // eslint-disable-next-line no-redeclare
         var endpoint = scope.endpoints[scope.endpoint_index]
         scope.processEndpoint(endpoint)
       }
@@ -534,15 +547,14 @@ export default {
 
       // done processing all endpoints
       if (scope.endpoint_index == scope.endpoints.length) {
-
         scope.LOGTIME('END TIME')
-        scope.saveUserSyncedDate();
+        scope.saveUserSyncedDate()
 
-        setTimeout(function(){
+        setTimeout(function () {
           scope.LOGTIME('START TIME (RESUME)')
           scope.stage = 'BOOK'
           scope.initialize()
-        },300000);
+        }, 300000)
       }
     },
     minimize: function () {
@@ -616,7 +628,7 @@ export default {
       var userID = this.$store.getters.getUserID
 
       scope.axios
-        .post('http://localhost:3000/users/synced', { uuid: userID, date:  date})
+        .post('http://localhost:3000/users/synced', { uuid: userID, date: date })
         .then(function (response) {
           var data = response.data
           scope.$store.commit('updateSyncedAt', {
@@ -630,7 +642,7 @@ export default {
         .finally(function () {
           // always executed
         })
-    },
+    }
   },
   mounted () {
     const scope = this
