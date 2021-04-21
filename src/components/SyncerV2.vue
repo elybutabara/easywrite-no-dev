@@ -81,6 +81,7 @@ export default {
       tab: 'SYNC', // SYNC, CHANGE_SYNC_DATE
       stage: 'BOOK',
       endpoints: [],
+      connected: null,
       template: {
         pre: [
           { title: 'Books', type: 'book', api: 'books', local: 'books', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
@@ -254,8 +255,8 @@ export default {
           // handle error
           alert('Wlay internet papi!, saadddd')
           scope.ready = false
-          scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
-          scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+          scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
+          scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
 
           setTimeout(function(){
             scope.LOGTIME('START TIME (RESUME)')
