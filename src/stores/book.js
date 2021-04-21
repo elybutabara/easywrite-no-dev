@@ -129,8 +129,6 @@ export default {
       var books = payload.books
       var is_synced = payload.is_synced
 
-      console.log('PAYLOAD ===> ',payload)
-      console.log('IS SYNCED ===> ',is_synced)
 
       Vue.set(state.books, authorUUID, { rows: [] })
       state.books[authorUUID].rows = books.data
@@ -150,9 +148,6 @@ export default {
       var authorUUID = payload.authorUUID
       let bookIRead = payload.bookIRead
       let is_synced = payload.is_synced
-
-      console.log('PAYLOAD ===> ',payload)
-      console.log('IS SYNCED ===> ',is_synced)
 
       Vue.set(state.books_i_read, authorUUID, { rows: [] })
       state.books_i_read[authorUUID].rows = bookIRead.data
