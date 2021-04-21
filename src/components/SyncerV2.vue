@@ -231,19 +231,43 @@ export default {
     },
     initialize: function () {
       var scope = this
-      scope.ready = true
-      scope.resetData();
+      var userUUID = this.$store.getters.getUserID
+      var authorUUID = this.$store.getters.getAuthorID
       
-      // set the books and books i read (template.pre) as the main endpoint first
-      if (scope.stage == 'BOOK') {
-        scope.endpoints = JSON.parse(JSON.stringify(scope.template.pre));
-        scope.endpoint_total_counter = scope.template.pre.length
-        scope.start();
-      } else {
-        scope.endpoints = JSON.parse(JSON.stringify(scope.template.main));
-        scope.addBooksToMainEndpoint()
-        // scope.start() ===> this one will be executed after the addPostBookToMainEndpoint is executed
-      }
+      scope.resetData();
+
+      scope.axios.get(window.APP.API.URL + '/user/connect')
+        .then(function () {
+          scope.ready = true
+          // set the books and books i read (template.pre) as the main endpoint first
+          if (scope.stage == 'BOOK') {
+            scope.endpoints = JSON.parse(JSON.stringify(scope.template.pre));
+            scope.endpoint_total_counter = scope.template.pre.length
+            scope.start();
+          } else {
+            scope.endpoints = JSON.parse(JSON.stringify(scope.template.main));
+            scope.addBooksToMainEndpoint()
+            // scope.start() ===> this one will be executed after the addPostBookToMainEndpoint is executed
+          }
+        })
+        .catch(function (error) {
+          // handle error
+          alert('Wlay internet papi!, saadddd')
+          scope.ready = false
+          scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+          scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+
+          setTimeout(function(){
+            scope.LOGTIME('START TIME (RESUME)')
+            scope.stage = 'BOOK'
+            scope.initialize()
+          },60000);
+        })
+        .finally(function () {
+          // always executed
+        })
+      
+      
     },
     start: function () {
       var scope = this
@@ -339,11 +363,6 @@ export default {
           scope.upload(URL, _chunk, i)
         }
       }
-
-      /*
-      console.log('CHUNKS ===> ',chunks)
-      scope.fetchDataFromWeb(endpoint);
-      */
     },
     upload: function (URL, chunk, index = 0) {
       var scope = this
@@ -514,7 +533,7 @@ export default {
       } else {
         if (main_endpoint.type == 'book' && main_endpoint.children && main_endpoint.children.length > 0 && main_endpoint.child_index == main_endpoint.children.length) {
           // dispatch
-          console.log('MAIN ENDPOIRT', main_endpoint)
+          //console.log('MAIN ENDPOIRT', main_endpoint)
           var books = (this.$store.getters.getAuthorID == main_endpoint.packed[0].author_id) ? scope.books : scope.books_i_read
           for (let i = 0; i < books.length; i++) {
             var book = books[i]
@@ -539,13 +558,18 @@ export default {
       if (scope.endpoint_index == scope.endpoints.length) {
 
         scope.LOGTIME('END TIME')
+        // DISPATCH POST 
         scope.saveUserSyncedDate();
-
-        setTimeout(function(){
-          scope.LOGTIME('START TIME (RESUME)')
-          scope.stage = 'BOOK'
-          scope.initialize()
-        },300000);
+        scope.ready = false
+        
+        if (scope.$store.getters.isAutoSync) {
+          setTimeout(function(){
+            scope.LOGTIME('START TIME (RESUME)')
+            scope.stage = 'BOOK'
+            scope.minimized = true
+            scope.initialize()
+          },300000);
+        }
       }
     },
     minimize: function () {
