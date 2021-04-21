@@ -3,7 +3,8 @@ export default {
   name: 'settings',
   state: {
     darkmode: true,
-    collapsedSideNav: false
+    collapsedSideNav: false,
+    autosync: false
   },
   getters: {
     darkmode: state => {
@@ -11,6 +12,9 @@ export default {
     },
     collapsedSideNav: state => {
       return state.collapsedSideNav
+    },
+    isAutoSync: state => {
+      return state.autosync
     }
   },
   mutations: {
