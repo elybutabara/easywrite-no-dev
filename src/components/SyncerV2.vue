@@ -174,7 +174,7 @@ export default {
           // reset
           scope.endpoint_upload_request_count = null
           scope.endpoint_upload_request_done = null
-        }, 1000)
+        }, 400)
       }
     },
     endpoint_save_local_request_done: function (val) {
@@ -190,7 +190,7 @@ export default {
           // reset
           scope.endpoint_save_local_request_count = null
           scope.endpoint_save_local_request_done = null
-        }, 1000)
+        }, 400)
       }
     }
   },
@@ -253,7 +253,6 @@ export default {
         })
         .catch(function (error) {
           // handle error
-          alert('Wlay internet papi!, saadddd')
           scope.ready = false
           scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
           scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})

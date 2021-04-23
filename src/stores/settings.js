@@ -4,7 +4,7 @@ export default {
   state: {
     darkmode: true,
     collapsedSideNav: false,
-    autosync: true
+    autosync: false
   },
   getters: {
     darkmode: state => {
