@@ -165,10 +165,10 @@ export default {
     retry: function (val) {
       var scope = this
       if (val < scope.max_retry) {
-        console.log('RETRY ==> ',val) 
+        console.log('RETRY ==> ',val)
         return
-      } 
-    
+      }
+
       console.log('MAX RETRY COUNT REACHED, NEXT >>>')
       scope.next()
     },
@@ -605,14 +605,15 @@ export default {
         scope.ready = false
         scope.updateAppData()
 
-        if (scope.$store.getters.isAutoSync) {
-          setTimeout(function () {
-            scope.LOGTIME('START TIME (RESUME)')
-            scope.stage = 'BOOK'
-            scope.minimized = true
-            scope.initialize()
-          }, 300000)
-        }
+        // TODO: enable if the button is ready
+        // if (scope.$store.getters.isAutoSync) {
+        //   setTimeout(function () {
+        //     scope.LOGTIME('START TIME (RESUME)')
+        //     scope.stage = 'BOOK'
+        //     scope.minimized = true
+        //     scope.initialize()
+        //   }, 300000)
+        // }
       }
     },
     minimize: function () {
