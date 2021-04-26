@@ -82,6 +82,8 @@ export default {
       stage: 'BOOK',
       endpoints: [],
       connected: null,
+      retry: 0,
+      max_retry: 5,
       template: {
         pre: [
           { title: 'Books', type: 'book', api: 'books', local: 'books', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
@@ -160,6 +162,16 @@ export default {
     }
   },
   watch: {
+    retry: function (val) {
+      var scope = this
+      if (val < scope.max_retry) {
+        console.log('RETRY ==> ',val) 
+        return
+      } 
+    
+      console.log('MAX RETRY COUNT REACHED, NEXT >>>')
+      scope.next()
+    },
     endpoint_upload_request_done: function (val) {
       var scope = this
       if (val === null) {
@@ -333,9 +345,11 @@ export default {
         .then(function (response) {
           endpoint.packed = (response.data) ? response.data : []
           scope.saveDataToWeb(endpoint)
+          scope.retry = 0
         })
         .catch(function (error) {
           setTimeout(function () {
+            scope.retry++
             scope.fetchDataFromApp(endpoint)
           }, 5000)
         })
@@ -403,9 +417,11 @@ export default {
           scope.endpoint_upload_request_done++
           scope.pointed_endpoint_uploaded += chunk.rows.length
           // scope.upload_total += chunk.rows.length
+          scope.retry = 0
         })
         .catch(function (error) {
           setTimeout(function () {
+            scope.retry++
             scope.upload(URL, chunk, index)
           }, 4000)
         })
@@ -436,9 +452,11 @@ export default {
         .then(function (response) {
           endpoint.downloaded = (response.data) ? response.data.rows : []
           scope.saveDataToApp(endpoint)
+          scope.retry = 0
         })
         .catch(function (error) {
           setTimeout(function () {
+            scope.retry++
             scope.fetchDataFromWeb(endpoint)
           }, 5000)
         })
@@ -508,9 +526,11 @@ export default {
           scope.endpoint_save_local_request_done++
           scope.pointed_endpoint_saved += chunk.rows.length
           // scope.upload_total += chunk.rows.length
+          scope.retry = 0
         })
         .catch(function (error) {
           setTimeout(function () {
+            scope.retry++
             scope.saveToLocalDB(URL, chunk, index)
           }, 4000)
         })
