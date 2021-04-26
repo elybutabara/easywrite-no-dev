@@ -11,7 +11,8 @@ class SceneController {
       .withGraphJoined('scene_version', {maxBatchSize: 1})
       .whereNull('book_scenes.deleted_at')
       .whereRaw('chapter_id IS NULL OR chapter_id = 0')
-      .orderBy('order')
+      .orderBy('book_scenes.order')
+      .orderBy('book_scenes.created_at')
 
     return scenes
   }

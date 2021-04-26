@@ -200,7 +200,7 @@ export default {
   mounted () {
     var scope = this
     scope.scene = scope.properties.scene
-    scope.versions = scope.$store.getters.getScenesByChapter(scope.scene.uuid)
+    scope.versions = scope.$store.getters.getSceneVersions(scope.scene.uuid)
 
     setTimeout(function () {
       scope.getLatestVersion()

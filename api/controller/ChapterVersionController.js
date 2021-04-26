@@ -8,7 +8,7 @@ class ChapterVersionController {
     var version = ChapterVersion.query()
       .where('chapter_id', chapterId)
       .whereNull('deleted_at')
-      .orderBy('id', 'asc')
+      .orderBy('created_at')
     return version
   }
 

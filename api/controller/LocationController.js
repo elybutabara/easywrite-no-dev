@@ -6,8 +6,11 @@ const { Book, Location, User } = require(path.join(__dirname, '..', 'models'))
 class LocationController {
   static getAllByBookId (param) {
     var locations = Location.query()
-      .where('book_id', param.bookId)
-      .where('location', 'like', '%' + param.search + '%')
+      // .where('book_id', param.bookId)
+      .whereRaw("book_id = '" + param.bookId + "' AND (location LIKE '%" + param.search + "%' OR location IS NULL)")
+
+      //   .where('location', 'like', '%' + param.search + '%')
+      // .orWhere('location', null)
       .withGraphJoined('book')
       .whereNull('book_locations.deleted_at')
 

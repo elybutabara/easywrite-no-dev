@@ -66,6 +66,10 @@ export default {
     },
     TOGGLE_BOOK_I_READ: function (data, model) {
       var scope = this
+
+      // disable book if still syncing
+      if (model === 'book' && !data.is_synced) return
+
       // we use this to get the books id read of the current user
       var authorUUID = this.$store.getters.getAuthorID
       scope.$store.dispatch('toggleBookIRead', { model: model, data: data, author_id: authorUUID })

@@ -84,7 +84,6 @@ class ReaderController {
   }
 
   static async sync (rows) {
-
     for (let i = 0; i < rows.length; i++) {
       var row = rows[i]
       var columns = {
@@ -112,13 +111,12 @@ class ReaderController {
         deleted_at: row.book.deleted_at,
         from_local: row.book.from_local
       }
-      
+
       /*
       let bookData = await Book.query()
         .patch(bookColumns)
         .where('uuid', '=', row.uuid)
 
-   
       if (!bookData || bookData === 0) {
         bookData = await Book.query().insert(bookColumns)
 
