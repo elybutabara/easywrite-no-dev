@@ -81,6 +81,7 @@ export default {
       tab: 'SYNC', // SYNC, CHANGE_SYNC_DATE
       stage: 'BOOK',
       endpoints: [],
+      connected: null,
       template: {
         pre: [
           { title: 'Books', type: 'book', api: 'books', local: 'books', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
@@ -172,7 +173,7 @@ export default {
           // reset
           scope.endpoint_upload_request_count = null
           scope.endpoint_upload_request_done = null
-        }, 1000)
+        }, 400)
       }
     },
     endpoint_save_local_request_done: function (val) {
@@ -188,7 +189,7 @@ export default {
           // reset
           scope.endpoint_save_local_request_count = null
           scope.endpoint_save_local_request_done = null
-        }, 1000)
+        }, 400)
       }
     }
   },
@@ -253,7 +254,6 @@ export default {
         })
         .catch(function (error) {
           // handle error
-          alert('Wlay internet papi!, saadddd')
           console.log(error)
           scope.ready = false
           scope.updateAppData()
