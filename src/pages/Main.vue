@@ -31,10 +31,10 @@
                       <i class="fas fa-book-open"></i>
                       <span>{{ $t('NEW_BOOK') }}</span>
                   </a>
-                  <a @click="CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing',  tabData: null, tabTitle: $t('SYNC_DATA'), newTab: true})" href="javascript:void(0)" class="nav-btn sync-data bx-shadow-1">
-                      <i class="fas fa-sync"></i>
-                      <span>{{ $t('SYNC_DATA') }}</span>
-                  </a>
+<!--                  <a @click="CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing',  tabData: null, tabTitle: $t('SYNC_DATA'), newTab: true})" href="javascript:void(0)" class="nav-btn sync-data bx-shadow-1">-->
+<!--                      <i class="fas fa-sync"></i>-->
+<!--                      <span>{{ $t('SYNC_DATA') }}</span>-->
+<!--                  </a>-->
                   <a @click="CHANGE_COMPONENT({tabKey: 'course-list', tabComponent: 'course-listing',  tabData: {}, tabTitle: $t('COURSES'), newTab: true})" href="javascript:void(0)" class="nav-btn courses bx-shadow-1">
                       <i class="fas fa-graduation-cap"></i>
                       <span>{{ $t('COURSES') }}</span>
