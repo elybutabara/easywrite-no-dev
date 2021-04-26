@@ -282,15 +282,17 @@ export default {
       scope.$root.$emit('loadAssignment')
       scope.$root.$emit('loadMessageCenter')
 
-      var books = scope.books
-      for (let i = 0; i < books.length; i++) {
-        var book = books[i]
-        book.is_synced = true
-      }
-      var books = scope.books_i_read
-      for (let i = 0; i < books.length; i++) {
-        book = books[i]
-        book.is_synced = true
+      if (!scope.$store.getters.isAutoSync) {
+        var books = scope.books
+        for (let i = 0; i < books.length; i++) {
+          var book = books[i]
+          book.is_synced = true
+        }
+        books = scope.books_i_read
+        for (let i = 0; i < books.length; i++) {
+          book = books[i]
+          book.is_synced = true
+        }
       }
     },
     start: function () {
