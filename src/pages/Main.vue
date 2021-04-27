@@ -1,7 +1,7 @@
 <template>
 <div class="page-main" v-bind:class="{ 'collapsed': $store.getters.collapsedSideNav, 'dark': $store.getters.darkmode }">
     <div v-if="ready">
-        <SyncerV2></SyncerV2>
+        <SyncerV2 v-if="$store.getters.getSyncStatus == 'syncing'"></SyncerV2>
         <!-- <div @click="toggleMainSideBar()"  class="btn-sidebar-opener"><i class="las la-arrow-right"></i></div> -->
         <main-side-navigation></main-side-navigation>
         <div class="es-right-side-content">
@@ -31,10 +31,16 @@
                       <i class="fas fa-book-open"></i>
                       <span>{{ $t('NEW_BOOK') }}</span>
                   </a>
-<!--                  <a @click="CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing',  tabData: null, tabTitle: $t('SYNC_DATA'), newTab: true})" href="javascript:void(0)" class="nav-btn sync-data bx-shadow-1">-->
-<!--                      <i class="fas fa-sync"></i>-->
-<!--                      <span>{{ $t('SYNC_DATA') }}</span>-->
-<!--                  </a>-->
+                  <a @click="startSync()" class="nav-btn sync-data bx-shadow-1">
+                      <template v-if="$store.getters.getSyncStatus == 'syncing'">
+                        <i  class="fas fa-sync fa-spin"></i>
+                        <span>{{ $t('SYNCING') }}</span>
+                      </template>
+                      <template v-else>
+                        <i class="far fa-play-circle"></i>
+                        <span>{{ $t('SYNC_DATA') }}</span>
+                      </template>
+                  </a>
                   <a @click="CHANGE_COMPONENT({tabKey: 'course-list', tabComponent: 'course-listing',  tabData: {}, tabTitle: $t('COURSES'), newTab: true})" href="javascript:void(0)" class="nav-btn courses bx-shadow-1">
                       <i class="fas fa-graduation-cap"></i>
                       <span>{{ $t('COURSES') }}</span>
@@ -323,6 +329,13 @@ export default {
     goToNotes: function () {
       this.$store.dispatch('setActiveMainSideNavTab', 'books-i-read')
       this.CHANGE_COMPONENT({tabKey: 'note-listing', tabComponent: 'note-listing', tabData: null, tabTitle: this.$t('NOTES')})
+    },
+    startSync: function () {
+      var scope = this
+      if (scope.$store.getters.getSyncStatus == 'syncing') {
+        return;
+      }
+      scope.$store.commit('startSync');
     }
   },
   beforeMount () {
@@ -429,6 +442,11 @@ export default {
     if (window.AppMessaging.recountUnread) {
       window.AppMessaging.recountUnread()
     }
+
+    setTimeout(function(){
+      scope.$store.commit('startSync');
+    },1000);
+    
   },
   created () {
     const scope = this

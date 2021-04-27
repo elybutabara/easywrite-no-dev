@@ -4,7 +4,8 @@ export default {
   state: {
     darkmode: true,
     collapsedSideNav: false,
-    autosync: true
+    autosync: true,
+    syncStatus: 'idle',
   },
   getters: {
     darkmode: state => {
@@ -15,6 +16,9 @@ export default {
     },
     isAutoSync: state => {
       return state.autosync
+    },
+    getSyncStatus: state => {
+      return state.syncStatus
     }
   },
   mutations: {
@@ -23,6 +27,12 @@ export default {
     },
     toggleSideNav (state) {
       state.collapsedSideNav = !state.collapsedSideNav
+    },
+    startSync (state) {
+      state.syncStatus =  'syncing'
+    },
+    stopSync (state) {
+      state.syncStatus =  'idle'
     }
   },
   actions: {

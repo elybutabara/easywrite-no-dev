@@ -254,6 +254,7 @@ export default {
             scope.updateAppData()
             return
           }
+
           if (scope.stage == 'BOOK') {
             scope.endpoints = JSON.parse(JSON.stringify(scope.template.pre))
             scope.endpoint_total_counter = scope.template.pre.length
@@ -325,6 +326,13 @@ export default {
       if (!endpoint || endpoint.skip) {
         scope.fetchDataFromWeb(endpoint)
         return
+      }
+
+      // we no longer process All books i read and books on main_endpoint since it was already synced at "PRE"
+      if (endpoint.is_book_single && endpoint.is_book_single ==  true) {
+        console.log('BOOK SINGLE SKIP ==> ',endpoint.title)
+        scope.next()
+        return;
       }
 
       if (endpoint.type === 'book' || endpoint.type === 'books-i-read') {
@@ -605,6 +613,8 @@ export default {
         scope.ready = false
         scope.updateAppData()
 
+        scope.$store.commit('stopSync');
+
         // TODO: enable if the button is ready
         // if (scope.$store.getters.isAutoSync) {
         //   setTimeout(function () {
@@ -641,7 +651,7 @@ export default {
 
         var packed = []
         packed.push(row)
-        scope.endpoints.push({ title: row.title, type: 'book', api: 'books', local: 'books', downloaded: null, packed: packed, skip: false, error: [], chunkSize: 1, done: false, children: children, child_index: 0 })
+        scope.endpoints.push({ title: row.title, is_book_single: true, type: 'book', api: 'books', local: 'books', downloaded: null, packed: packed, skip: false, error: [], chunkSize: 1, done: false, children: children, child_index: 0 })
       }
       scope.addBooksIReadToMainEndpoint()
     },
@@ -659,7 +669,7 @@ export default {
 
         var packed = []
         packed.push(row)
-        scope.endpoints.push({ title: row.title, type: 'book', api: 'books', local: 'books', downloaded: null, packed: packed, skip: false, error: [], chunkSize: 1, done: false, children: children, child_index: 0 })
+        scope.endpoints.push({ title: row.title, is_book_single: true, type: 'book', api: 'books', local: 'books', downloaded: null, packed: packed, skip: false, error: [], chunkSize: 1, done: false, children: children, child_index: 0 })
       }
       scope.addPostBookMainEndpoint()
     },
