@@ -7,7 +7,7 @@ class CourseTakenController {
   static async getAllByUserId (param) {
     let courseTaken = CoursesTaken.query()
       .where('courses_taken.user_id', param.userID)
-      .where('package:course:webinars:webinar_registrant.user_id', param.userID)
+      // .where('package:course:webinars:webinar_registrant.user_id', param.userID)
       .withGraphJoined('package.course.[lessons, webinars.[webinar_registrant, webinar_presenters]]')
       .modifyGraph('package.course.lessons', builder => {
         builder.orderBy('order', 'asc')
@@ -19,6 +19,7 @@ class CourseTakenController {
         builder.whereNull('deleted_at')
       })
       .modifyGraph('package.course.webinars.webinar_registrant', builder => {
+        builder.where('user_id', param.userID)
         builder.limit(1).first()
       })
 
