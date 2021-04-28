@@ -287,8 +287,8 @@ export default {
       var userUUID = this.$store.getters.getUserID
       var authorUUID = this.$store.getters.getAuthorID
 
-      await scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
-      await scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+      await scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
+      await scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
       await scope.$store.dispatch('loadAuthorPersonalProgress', {authorId: authorUUID})
 
       scope.$root.$emit('loadCourses')
@@ -309,8 +309,6 @@ export default {
     start: function () {
       var scope = this
       scope.endpoint_sync_date = (!scope.synced_date) ? '1970-01-01 00:00:00' : JSON.parse(JSON.stringify(scope.synced_date))
-      console.log('scope.synced_date', scope.synced_date)
-      console.log('scope.endpoint_sync_date', scope.endpoint_sync_date)
 
       var endpoint = scope.endpoints[scope.endpoint_index]
       scope.processEndpoint(endpoint)
@@ -562,8 +560,18 @@ export default {
         var authorUUID = this.$store.getters.getAuthorID
         scope.endpoint_done_counter++
 
-        scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
-        scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+        //scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+        //scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+        console.log('SYNC SOURCE ==> ',scope.$store.getters.getSyncSource)
+        if (scope.$store.getters.getSyncSource == 'initial') {
+          scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+          scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+        } else {
+          scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
+          scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
+        }
+        
+        
 
         scope.stage = 'ALL'
 

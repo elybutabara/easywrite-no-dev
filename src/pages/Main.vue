@@ -31,7 +31,7 @@
                       <i class="fas fa-book-open"></i>
                       <span>{{ $t('NEW_BOOK') }}</span>
                   </a>
-                  <a @click="startSync()" class="nav-btn sync-data bx-shadow-1">
+                  <a @click="startSync()" href="javascript:void(0)" class="nav-btn sync-data bx-shadow-1">
                       <template v-if="$store.getters.getSyncStatus == 'syncing'">
                         <i  class="fas fa-sync fa-spin"></i>
                         <span>{{ $t('SYNCING') }}</span>
@@ -335,6 +335,8 @@ export default {
       if (scope.$store.getters.getSyncStatus == 'syncing') {
         return;
       }
+
+      scope.$store.dispatch('setSyncSource',{source: 'CTA'})
       scope.$store.commit('startSync');
     }
   },
