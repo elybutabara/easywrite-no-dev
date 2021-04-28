@@ -294,5 +294,14 @@ export default {
   YOU_WONT_BE_ABLE_TO_REVERT_THIS: 'You won\'t be able to revert this',
   YOUR_CURRENT_CONTENT_WILL_BE_OVERWRITTERN: 'Your current content will be overwritten',
   YOUR_POMODORO_EXPIRES: 'Your Pomodoro Expires',
-  OPEN_FILE: 'Open File'
+  OPEN_FILE: 'Open File',
+  EDIT_SCENE: 'Edit Scene',
+  REMOVE_SELECTION_FROM_STORYLINE: 'Remove Selection From Storyline',
+  SET_IDENTIFYING_COLOR: 'Set Identifying Color',
+  SHOW_STORYLINES: 'Show Storylines',
+  SHOW_SCENES: 'Show Scenes',
+  STORYLINE: 'Storyline',
+  STORYLINE_ASSOCIATED_WITH_SCENE: 'Storyline Associated With Scene',
+  STORYLINE_ENDS_WITH_SCENE: 'Storyline Ends With Scene',
+  STORYLINE_EDITOR_FOR: 'Storyline Editor For'
 }

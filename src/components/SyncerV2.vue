@@ -287,8 +287,8 @@ export default {
       var userUUID = this.$store.getters.getUserID
       var authorUUID = this.$store.getters.getAuthorID
 
-      await scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
-      await scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+      await scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
+      await scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
       await scope.$store.dispatch('loadAuthorPersonalProgress', {authorId: authorUUID})
 
       scope.$root.$emit('loadCourses')
@@ -364,7 +364,7 @@ export default {
     },
     saveDataToWeb: function (endpoint) {
       var scope = this
-      console.log('TO UPLOAD ===> ', endpoint)
+
       if (!endpoint.packed || endpoint.packed.length < 1) {
         scope.fetchDataFromWeb(endpoint)
         return
@@ -562,8 +562,15 @@ export default {
         var authorUUID = this.$store.getters.getAuthorID
         scope.endpoint_done_counter++
 
-        scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
-        scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+        if (scope.$store.getters.getSyncSource == 'initial') {
+          scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+          scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+        } else {
+          // manually start, do not reset the is_synced status
+          scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true })
+          scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
+        }
+        
 
         scope.stage = 'ALL'
 

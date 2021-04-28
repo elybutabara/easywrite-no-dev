@@ -321,5 +321,14 @@ export default {
     'new-message': 'New Message',
     'logout': 'Logout',
     'anonymous': 'Anonymous'
-  }
+  },
+  EDIT_SCENE: 'Rediger Scene',
+  REMOVE_SELECTION_FROM_STORYLINE: 'Fjern Valg Fra Storyline',
+  SET_IDENTIFYING_COLOR: 'Still Identifiserende Farge',
+  SHOW_STORYLINES: 'VIS HISTORIER',
+  SHOW_SCENES: 'Vis Historier',
+  STORYLINE: 'Storyline',
+  STORYLINE_ASSOCIATED_WITH_SCENE: 'Storyline Tilknyttet Scenen',
+  STORYLINE_ENDS_WITH_SCENE: 'Storyline Slutter Med Scene',
+  STORYLINE_EDITOR_FOR: 'Storyline Redaktor For'
 }

@@ -321,5 +321,14 @@ export default {
     'new-message': 'New Message',
     'logout': 'Logout',
     'anonymous': 'Anonymous'
-  }
+  },
+  EDIT_SCENE: 'Edit Scene',
+  REMOVE_SELECTION_FROM_STORYLINE: 'Remove Selection From Storyline',
+  SET_IDENTIFYING_COLOR: 'Set Identifying Color',
+  SHOW_STORYLINES: 'Show Storylines',
+  SHOW_SCENES: 'Show Scenes',
+  STORYLINE: 'Storyline',
+  STORYLINE_ASSOCIATED_WITH_SCENE: 'Storyline Associated With Scene',
+  STORYLINE_ENDS_WITH_SCENE: 'Storyline Ends With Scene',
+  STORYLINE_EDITOR_FOR: 'Storyline Editor For'
 }

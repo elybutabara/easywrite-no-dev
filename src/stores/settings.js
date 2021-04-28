@@ -6,6 +6,7 @@ export default {
     collapsedSideNav: false,
     autosync: true,
     syncStatus: 'idle',
+    syncSource: 'initial' // initial or CTA (if  manually started)
   },
   getters: {
     darkmode: state => {
@@ -19,6 +20,9 @@ export default {
     },
     getSyncStatus: state => {
       return state.syncStatus
+    },
+    getSyncSource: state => {
+      return state.syncSource
     }
   },
   mutations: {
@@ -28,14 +32,20 @@ export default {
     toggleSideNav (state) {
       state.collapsedSideNav = !state.collapsedSideNav
     },
+    setSyncSource (state,payload) {
+      state.syncSource =  payload.source
+    },
     startSync (state) {
       state.syncStatus =  'syncing'
     },
     stopSync (state) {
+      state.syncSource =  'initial'
       state.syncStatus =  'idle'
     }
   },
   actions: {
-
+    setSyncSource ({ commit, state }, payload) {
+      commit('setSyncSource', payload)
+    }
   }
 }
