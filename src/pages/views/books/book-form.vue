@@ -157,7 +157,10 @@ export default {
               scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
               */
               scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
-              scope.$store.dispatch('updateBookList', response.data)
+              let book = response.data
+              // This is to set the book already sync and it will not display loading icon
+              if (!book.is_synced) book.is_synced = true
+              scope.$store.dispatch('updateBookList', book)
               if (scope.data.id !== null) { // update book
                 scope.$store.dispatch('changeTabTitle', {
                   key: 'book-form-' + response.data.uuid,
