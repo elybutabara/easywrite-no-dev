@@ -109,7 +109,8 @@ export default {
         itemname: '',
         AKA: '',
         tags: '',
-        description: ''
+        description: '',
+        file_changed: false,
       },
       picture_src: '',
       file: '',
@@ -150,7 +151,7 @@ export default {
       scope.file = this.$refs.fileInput.files[0]
 
       let validImageTypes = ['image/gif', 'image/jpeg', 'image/png']
-
+      
       if (!validImageTypes.includes(scope.file['type'])) {
         scope.file = ''
         window.swal.fire({
@@ -168,6 +169,7 @@ export default {
           image.setAttribute('width', '100%')
           scope.picture_src = image.src
           // window.$('.uploaded-file-preview').html(image)
+          scope.data.file_changed = true
         }
         reader.readAsDataURL(scope.file)
       }
@@ -237,6 +239,7 @@ export default {
       }
 
       if (scope.data.hasOwnProperty('picture_src')) delete scope.data.picture_src
+      
       scope.axios
         .post('http://localhost:3000/items', scope.data)
         .then(response => {
@@ -261,6 +264,7 @@ export default {
 
               scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
               scope.savingInProgress = false
+              scope.data.file_changed = false
             }).catch(function () {
               scope.savingInProgress = false
               scope.$notify({

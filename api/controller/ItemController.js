@@ -1,5 +1,6 @@
 'use strict'
 const path = require('path')
+const moment = require('moment')
 
 const { User, Book, Item } = require(path.join(__dirname, '..', 'models'))
 
@@ -23,7 +24,16 @@ class ItemController {
   }
 
   static async save (data) {
+
     if (data.updated_at) delete data.updated_at
+
+    if (data.file_changed) {
+      let picture_updated_at = moment().format('YYYY-MM-DD HH:mm:ss').toString()
+      data.picture_updated_at = picture_updated_at
+    }
+
+    delete data.file_changed
+
     const saveItem = await Item.query().upsertGraph([data]).first()
 
     const item = Item.query()
