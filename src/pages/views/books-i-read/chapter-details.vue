@@ -1,4 +1,4 @@
-<template>
+a<template>
 <div>
     <div v-if="page.is_ready" class="es-page-main page-chapter-details">
         <div class="es-page-head-2 mb-0">
@@ -57,7 +57,6 @@
 
           <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
               <div v-html="getChapterContent" class="description" v-bind:id="commentbase_id"></div>
-              <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params"></CommentBasePanel>
           </div>
           <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
               <books-i-read-chapter-scenes :properties="{ book: book, chapter: chapter }"></books-i-read-chapter-scenes>
@@ -77,7 +76,7 @@ import ChapterCompareVersions from '@/pages/views/chapters/chapter-compare-versi
 import moment from 'moment'
 import Vue from 'vue'
 
-import CommentBasePanel from '../../../components/CommentBasePanel'
+// import CommentBasePanel from '../../../components/CommentBasePanel'
 
 // const {ipcRenderer} = window.require('electron')
 
@@ -106,17 +105,17 @@ export default {
       busy: false,
       tempVersionDesc: '',
       commentbase_id: ('cm-' + Math.random()).replace('.', ''),
-      commentbase_dom: null,
-      commentbase_params: {
-        onMounted: (vm) => {
-          scope.commentbase_vm = vm
-          vm.setAuthor(this.getAuthor)
-          vm.setCommentsJSON(this.comments)
-        },
-        onAddComment: function () {
-          scope.saveComments()
-        }
-      },
+      // commentbase_dom: null,
+      // commentbase_params: {
+      //   onMounted: (vm) => {
+      //     scope.commentbase_vm = vm
+      //     vm.setAuthor(this.getAuthor)
+      //     vm.setCommentsJSON(this.comments)
+      //   },
+      //   onAddComment: function () {
+      //     scope.saveComments()
+      //   }
+      // },
       nextType: '',
       prevType: '',
       previousChapter: ''
@@ -129,7 +128,7 @@ export default {
     'books-i-read-chapter-scenes': ChapterScenes,
     ChapterVersions,
     ChapterCompareVersions,
-    CommentBasePanel
+    // CommentBasePanel
   },
   computed: {
     getChapterContent: function () {
@@ -137,11 +136,11 @@ export default {
       var chapterID = scope.page.data.chapter.uuid
       return this.$store.getters.getChapterContent(chapterID)
     },
-    comments: function () {
-      var scope = this
-      var chapterID = scope.page.data.chapter.uuid
-      return this.$store.getters.getChapterComments(chapterID)
-    },
+    // comments: function () {
+    //   var scope = this
+    //   var chapterID = scope.page.data.chapter.uuid
+    //   return this.$store.getters.getChapterComments(chapterID)
+    // },
     book: function () {
       return this.properties.book
     },
@@ -220,60 +219,60 @@ export default {
       var scope = this
       scope.tab.active = tab
 
-      Vue.nextTick(function () {
-        if (tab === 'content') {
-          scope.commentbase_dom = document.getElementById(scope.commentbase_id)
-        } else {
-          scope.commentbase_dom = null
-        }
-      })
+      // Vue.nextTick(function () {
+      //   if (tab === 'content') {
+      //     scope.commentbase_dom = document.getElementById(scope.commentbase_id)
+      //   } else {
+      //     scope.commentbase_dom = null
+      //   }
+      // })
     },
-    saveComments () {
-      var scope = this
-      var chapterID = scope.page.data.chapter.uuid
-
-      scope.chapter_version.chapter_id = chapterID
-      scope.chapter_version.uuid = this.$store.getters.getChapterVersionUUID(chapterID)
-      scope.chapter_version.change_description = scope.tempVersionDesc
-      scope.chapter_version.content = this.commentbase_vm.dom.innerHTML
-      scope.chapter_version.comments = this.commentbase_vm.getCommentsJSON()
-      scope.chapter_version.new_comment_json = this.commentbase_vm.getLastComment()
-      scope.chapter_version.new_comment_json.chapter_id = chapterID
-      scope.chapter_version.new_comment_json.chapter_title = scope.page.data.chapter.title
-      scope.chapter_version.new_comment_json = JSON.stringify(scope.chapter_version.new_comment_json)
-
-      /*
-      var data = Object.assign({}, scope.chapter_version, {
-        chapter_id: chapterID,
-        uuid: this.$store.getters.getChapterVersionUUID(chapterID),
-        change_description: scope.tempVersionDesc,
-        content: this.commentbase_vm.getContent(),
-        comments: this.commentbase_vm.getCommentsJSON()
-      })
-      */
-
-      scope.axios
-        .post('http://localhost:3000/chapter-versions/comment', scope.chapter_version)
-        .then(response => {
-          if (response.data) {
-            // TODO: Insert vuex code that will refresh the chapter version
-            scope.tab.active = 'content'
-            scope.$store.dispatch('loadVersionsByChapter', scope.page.data.chapter.uuid)
-            this.busy = false
-            /*
-            window.swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: this.$t('CHAPTER') + ' ' + this.$t('VERSION') + ' ' + this.$t('SUCCESSFULY_SAVED'),
-              showConfirmButton: false,
-              timer: 1500
-            }).then(() => {
-              scope.tab.active = 'content'
-            })s
-            */
-          }
-        })
-    },
+    // saveComments () {
+    //   var scope = this
+    //   var chapterID = scope.page.data.chapter.uuid
+    //
+    //   scope.chapter_version.chapter_id = chapterID
+    //   scope.chapter_version.uuid = this.$store.getters.getChapterVersionUUID(chapterID)
+    //   scope.chapter_version.change_description = scope.tempVersionDesc
+    //   scope.chapter_version.content = this.commentbase_vm.dom.innerHTML
+    //   scope.chapter_version.comments = this.commentbase_vm.getCommentsJSON()
+    //   scope.chapter_version.new_comment_json = this.commentbase_vm.getLastComment()
+    //   scope.chapter_version.new_comment_json.chapter_id = chapterID
+    //   scope.chapter_version.new_comment_json.chapter_title = scope.page.data.chapter.title
+    //   scope.chapter_version.new_comment_json = JSON.stringify(scope.chapter_version.new_comment_json)
+    //
+    //   /*
+    //   var data = Object.assign({}, scope.chapter_version, {
+    //     chapter_id: chapterID,
+    //     uuid: this.$store.getters.getChapterVersionUUID(chapterID),
+    //     change_description: scope.tempVersionDesc,
+    //     content: this.commentbase_vm.getContent(),
+    //     comments: this.commentbase_vm.getCommentsJSON()
+    //   })
+    //   */
+    //
+    //   scope.axios
+    //     .post('http://localhost:3000/chapter-versions/comment', scope.chapter_version)
+    //     .then(response => {
+    //       if (response.data) {
+    //         // TODO: Insert vuex code that will refresh the chapter version
+    //         scope.tab.active = 'content'
+    //         scope.$store.dispatch('loadVersionsByChapter', scope.page.data.chapter.uuid)
+    //         this.busy = false
+    //         /*
+    //         window.swal.fire({
+    //           position: 'center',
+    //           icon: 'success',
+    //           title: this.$t('CHAPTER') + ' ' + this.$t('VERSION') + ' ' + this.$t('SUCCESSFULY_SAVED'),
+    //           showConfirmButton: false,
+    //           timer: 1500
+    //         }).then(() => {
+    //           scope.tab.active = 'content'
+    //         })s
+    //         */
+    //       }
+    //     })
+    // },
     toggleFeedbacks: function () {
       let scope = this
       scope.show_feedbacks = !scope.show_feedbacks
