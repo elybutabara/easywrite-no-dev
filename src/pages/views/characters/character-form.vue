@@ -133,7 +133,8 @@ export default {
         description: '',
         bio: '',
         goals: '',
-        birthdate: ''
+        birthdate: '',
+        file_changed: false
       },
       picture_src: false,
       file: '',
@@ -215,6 +216,7 @@ export default {
           image.setAttribute('width', '100%')
           scope.picture_src = image.src
           // window.$('.uploaded-file-preview').html(image)
+          scope.data.file_changed = true
         }
         reader.readAsDataURL(scope.file)
       }
@@ -310,6 +312,7 @@ export default {
 
               scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
               scope.savingInProgress = false
+              scope.data.file_changed = false
             }).catch(function () {
               scope.savingInProgress = false
               scope.$notify({
