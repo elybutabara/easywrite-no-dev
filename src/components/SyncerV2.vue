@@ -50,13 +50,21 @@
 </template>
 
 <script>
-/*  ---- STEPS ----
-  STEP 1: get all books
-  STEP 2: get all books i read
-  STEP 3: append both books and books i read to the "endpoints" array
-  STEP 4: append the post books endpoints
+import moment from 'moment'
 
-*/
+var electronFs = window.require('fs')
+const fs = window.require('fs-extra')
+
+const path = window.require('path')
+
+// eslint-disable-next-line no-unused-vars
+const app = window.require('electron').remote.app
+
+const electron = window.require('electron')
+const resourcePath = electron.remote.getGlobal('resourcePath')
+
+const request = window.require('request')
+
 export default {
   name: 'SyncerV2',
   data: function () {
@@ -65,6 +73,7 @@ export default {
       version: 19, // syncing version
       api_token: '',
       synced_date: null,
+      start_synced_date: null,
       minimized: false,
       endpoint_index: 0,
       endpoint_sync_date: null,
@@ -134,7 +143,7 @@ export default {
           { title: 'Notifications', type: 'default', api: 'notifications', local: 'notifications', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
           { title: 'Webinars', type: 'default', api: 'webinars', local: 'webinars', downloaded: null, packed: null, skip: true, chunkSize: 50 },
           { title: 'WebinarPresenters', type: 'default', api: 'webinar-presenters', local: 'webinar-presenters', downloaded: null, packed: null, skip: true, chunkSize: 50 },
-          { title: 'WebinarRegistrants', type: 'default', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: null, packed: null, skip: true, chunkSize: 50 }
+          { title: 'WebinarRegistrants', type: 'default', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: null, packed: null, skip: true, chunkSize: 50 },
         ]
       }
     }
@@ -165,11 +174,9 @@ export default {
     retry: function (val) {
       var scope = this
       if (val < scope.max_retry) {
-        console.log('RETRY ==> ',val)
         return
       }
 
-      console.log('MAX RETRY COUNT REACHED, NEXT >>>')
       scope.next()
     },
     endpoint_upload_request_done: function (val) {
@@ -267,15 +274,16 @@ export default {
         })
         .catch(function (error) {
           // handle error
-          console.log(error)
           scope.ready = false
           scope.updateAppData()
-
+          scope.$store.commit('stopSync');
+          /*
           setTimeout(function () {
             scope.LOGTIME('START TIME (RESUME)')
             scope.stage = 'BOOK'
             scope.initialize()
           }, 60000)
+          */
         })
         .finally(function () {
           // always executed
@@ -310,11 +318,16 @@ export default {
       var scope = this
       scope.endpoint_sync_date = (!scope.synced_date) ? '1970-01-01 00:00:00' : JSON.parse(JSON.stringify(scope.synced_date))
 
+      // this is what we store on last synced_date, we will use this as base data for next syncng
+      scope.start_synced_date = moment().format('YYYY-MM-DD HH:mm:ss').toString() 
+      console.log('CURRENT SYNC DATE',scope.endpoint_sync_date)
+      console.log('START SYNC DATE',scope.start_synced_date)
       var endpoint = scope.endpoints[scope.endpoint_index]
       scope.processEndpoint(endpoint)
     },
     processEndpoint: function (endpoint) {
       var scope = this
+
       scope.pointed_endpoint = endpoint
 
       if (scope.endpoint_index >= scope.endpoints.length) {
@@ -362,7 +375,7 @@ export default {
     },
     saveDataToWeb: function (endpoint) {
       var scope = this
-      console.log('TO UPLOAD ===> ', endpoint)
+
       if (!endpoint.packed || endpoint.packed.length < 1) {
         scope.fetchDataFromWeb(endpoint)
         return
@@ -373,9 +386,21 @@ export default {
 
       for (let i = 0; i < endpoint.packed.length; i++) {
         var data = endpoint.packed[i]
+ 
         data.created_at = scope.timeConvertToUTC(data.created_at)
         data.updated_at = scope.timeConvertToUTC(data.updated_at)
         // data.sync_version = scope.version
+
+        if (['Items', 'Characters', 'Locations'].indexOf(endpoint.title) > -1 && (data.picture || data.pictures)) {
+          
+          var src = path.join(resourcePath, 'resources', 'images', endpoint.title.replace(/\s+/g, '-').toLowerCase(), (data.picture || data.pictures))
+          if (electronFs.existsSync(src)) {
+            console.log('local file found: ', src)
+            data.file = new Blob([electronFs.readFileSync(src)]);
+          } else {
+            console.log('local file not found ==> ',src)
+          }
+        }
       }
 
       var URL = window.APP.API.URL + '/' + endpoint.api + '/v2'
@@ -413,10 +438,31 @@ export default {
       var headers = {
         'X-Requested-With': 'XMLHttpRequest',
         'Authorization': 'Bearer ' + scope.api_token,
-        'X-Authorization': 'Bearer ' + scope.api_token
+        'X-Authorization': 'Bearer ' + scope.api_token,
+        'Content-Type': 'multipart/form-data '
       }
 
-      var FORMDATA = chunk.rows
+      var rows = chunk.rows
+
+      var FORMDATA = new FormData()
+
+      for (var x in rows) {
+          if (rows[x]) {
+            var row = rows[x]
+
+            FORMDATA.append(x, JSON.stringify(rows[x]))
+            // if data (object) contains "file" then UPLOAD
+            for (var i in row) {
+              if (i == 'file') {
+                console.log('APPEND FILE!')
+                FORMDATA.append('file_' + row['uuid'], row[i])
+              }
+            }
+
+            
+          }
+      }
+
       scope.axios.post(URL, FORMDATA, { 'headers': headers })
         .then(function (response) {
           chunk.done = true
@@ -457,6 +503,7 @@ export default {
         })
         .then(function (response) {
           endpoint.downloaded = (response.data) ? response.data.rows : []
+          scope.saveDownloadedFiles(endpoint,endpoint.downloaded)
           scope.saveDataToApp(endpoint)
           scope.retry = 0
         })
@@ -474,8 +521,6 @@ export default {
         scope.next()
         return
       }
-
-      console.log('saveDataToApp TO APP ===> ', endpoint)
 
       scope.pointed_endpoint_status = 'Saving'
       scope.pointed_endpoint_saved = 0
@@ -562,7 +607,6 @@ export default {
 
         //scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
         //scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
-        console.log('SYNC SOURCE ==> ',scope.$store.getters.getSyncSource)
         if (scope.$store.getters.getSyncSource == 'initial') {
           scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
           scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
@@ -570,14 +614,13 @@ export default {
           scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
           scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
         }
-        
-        
 
         scope.stage = 'ALL'
 
         setTimeout(function () {
           scope.initialize()
         }, 3000)
+
         return
       }
 
@@ -596,9 +639,7 @@ export default {
           var books = (this.$store.getters.getAuthorID == main_endpoint.packed[0].author_id) ? scope.books : scope.books_i_read
           for (let i = 0; i < books.length; i++) {
             var book = books[i]
-            console.log(book.uuid, main_endpoint.packed[0].uuid)
             if (book.uuid == main_endpoint.packed[0].uuid) {
-              console.log('book.uuid == main_endpoint.packed[0].uuid', book.uuid, main_endpoint.packed[0].uuid)
               book.is_synced = true
               break
             }
@@ -617,7 +658,9 @@ export default {
       if (scope.endpoint_index == scope.endpoints.length) {
         scope.LOGTIME('END TIME')
         // DISPATCH POST
-        scope.saveUserSyncedDate()
+        var last_sync_date = scope.start_synced_date
+        scope.synced_date = last_sync_date
+        scope.saveUserSyncedDate(last_sync_date)
         scope.ready = false
         scope.updateAppData()
 
@@ -719,7 +762,96 @@ export default {
         .finally(function () {
           // always executed
         })
-    }
+    },
+    saveDownloadedFiles: function(endpoint,rows) {
+      var scope = this
+      if (rows.length < 1) {
+        return
+      }
+      var endpoint =  JSON.parse(JSON.stringify(endpoint))
+
+      if (['Items', 'Characters', 'Locations', 'Courses', 'Webinars', 'WebinarPresenters'].indexOf(endpoint.title) > -1) {
+        // console.log(endpoint.title + ' response.data.rows ---->\n', response.data.rows)
+        if (rows.length > 0) {
+          for (let i = 0; i < rows.length; i++) {
+            const row = rows[i]
+            let image = (row.picture || row.pictures || row.image)
+            const allowedExt = ['.png', '.jpg', '.jpeg']
+            let imageExt = (image) ? image.split('.').pop() : null
+
+            if (!(imageExt && (allowedExt.indexOf('.' + imageExt) > -1))) {
+              continue
+            }
+
+            // Added by mael this will create the directory if not exist
+            let dstDir = path.join(resourcePath, 'resources', 'images', endpoint.title.replace(/\s+/g, '-').toLowerCase())
+            fs.mkdirsSync(dstDir)
+
+            var folderName = window.APP.API.UPLOAD_URL + '/book-' + endpoint.title.toLowerCase()
+            if (['Webinars', 'Courses', 'WebinarPresenters'].indexOf(endpoint.title) > -1) {
+              folderName = window.APP.API.UPLOAD_URL + '/' + endpoint.title.toLowerCase()
+
+              image = image.replace('/uploads/' + endpoint.api + '/', '')
+              if (endpoint.title === 'Courses') {
+                folderName = window.APP.API.UPLOAD_URL + '/course-images'
+                image = image.replace('/uploads/course-images/', '')
+              }
+              // console.log(endpoint.api)
+              // console.log(image)
+            }
+
+            const src = folderName + '/' + image + ''
+            const dst = path.resolve(dstDir, image + '')
+            scope.donwloadFile({url: src, name: image}, dst)
+          }
+        }
+      } else if (['Assignment Manuscripts'].indexOf(endpoint.title) > -1) {
+        if (rows.length > 0) {
+          // eslint-disable-next-line no-redeclare
+          for (var i = 0; i < rows.length; i++) {
+            // eslint-disable-next-line no-redeclare
+            var row = rows[i]
+
+            if (row.is_file) {
+              const loc = '/uploads/assignment-manuscripts/' // file location from web TODO: refactor web saving of assignment ,dont include path
+              const filename = row.content.replace(loc, '') // file location from web TODO: refactor web saving of assignment ,dont include path
+              var src = window.APP.API.UPLOAD_URL + '/' + endpoint.title.replace(/\s+/g, '-').toLowerCase() + '/' + filename
+
+              var dst = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), row.content)
+              // Added by mael this will create the directory if not exist
+
+              // file location from web TODO: refactor web saving of assignment ,dont include path
+              let dstDir = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), loc)
+              fs.mkdirsSync(dstDir)
+
+              fetch(src, {
+                method: 'GET'
+              })
+                .then(response => response.blob())
+                .then(blob => {
+                  var fileReader = new FileReader()
+                  fileReader.onload = function () {
+                    electronFs.writeFileSync(dst, Buffer.from(new Uint8Array(this.result)))
+                  }
+                  fileReader.readAsArrayBuffer(blob)
+                })
+            }
+          }
+        }
+      }
+    },
+    donwloadFile: function (src, dst) {
+      const download = function (uri, filename, callback) {
+        // eslint-disable-next-line handle-callback-err
+        request.head(uri, function () {
+          request(uri).pipe(electronFs.createWriteStream(filename)).on('close', callback)
+        })
+      }
+
+      download(src.url, dst, function () {
+        console.log('done donwloadig image: ' + src.name)
+      })
+    },
   },
   mounted () {
     const scope = this
