@@ -141,9 +141,14 @@ export default {
   },
   computed: {
     books: function () {
-      // this is fetched during login
+      // this is fetched during login s
       var authorUUID = this.$store.getters.getAuthorID
       return this.$store.getters.getBooksByAuthor(authorUUID)
+    },
+    deleted_books: function () {
+      // this is fetched during login s
+      var authorUUID = this.$store.getters.getAuthorID
+      return this.$store.getters.getSyncableBooks(authorUUID)
     },
     books_i_read: function () {
       // this is fetched during login
@@ -165,7 +170,7 @@ export default {
     retry: function (val) {
       var scope = this
       if (val < scope.max_retry) {
-        console.log('RETRY ==> ',val)
+        console.log('RETRY ==> ', val)
         return
       }
 
@@ -327,10 +332,10 @@ export default {
         return
       }
 
-      if (endpoint.type === 'book' || endpoint.type === 'books-i-read') {
-        scope.saveDataToWeb(endpoint)
-        return
-      }
+      // if (endpoint.type === 'book' || endpoint.type === 'books-i-read') {
+      //   scope.saveDataToWeb(endpoint)
+      //   return
+      // }
 
       scope.fetchDataFromApp(endpoint)
     },
@@ -555,6 +560,7 @@ export default {
         scope.endpoint_done_counter++
 
         scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+        scope.$store.dispatch('loadSyncableBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
         scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
 
         scope.stage = 'ALL'
