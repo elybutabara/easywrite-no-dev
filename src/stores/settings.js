@@ -39,6 +39,7 @@ export default {
       state.syncStatus =  'syncing'
     },
     stopSync (state) {
+      state.syncSource =  'initial'
       state.syncStatus =  'idle'
     }
   },
