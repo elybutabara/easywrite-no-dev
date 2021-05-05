@@ -20,13 +20,24 @@ class SceneItemController {
   }
 
   static async save (data) {
+    /*
     if (data.updated_at) delete data.updated_at
     const save = await SceneItem.query().upsertGraph([data])
       .withGraphFetched('scene')
       .withGraphFetched('item')
       .first()
+    */
 
-    return save
+    var saved = await SceneItem.query()
+    .patch({ deleted_at: null, book_scene_id: data.book_scene_id, book_item_id: data.book_item_id })
+    .where('book_scene_id', '=', data.book_scene_id)
+    .where('book_item_id', '=', data.book_item_id)
+
+    if (!saved || saved === 0) {
+      saved = await SceneItem.query().insert({ book_scene_id: data.book_scene_id, book_item_id: data.book_item_id })
+    }
+
+    return saved
   }
 
   static async saveBatch (data) {

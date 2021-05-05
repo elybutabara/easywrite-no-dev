@@ -91,7 +91,8 @@ export default {
         .post('http://localhost:3000/scene-items', sceneItem)
         .then(response => {
           if (response.data) {
-            scope.$store.dispatch('addSceneItemToList', response.data)
+            // scope.$store.dispatch('addSceneItemToList', response.data)
+            scope.$store.dispatch('loadItemsByScene', scope.scene)
           }
         })
     },
