@@ -6,7 +6,7 @@ exports.up = async function (knex) {
         table.text('content').after('title')
       }).then(async function () {
         // Script that will update the new content column in book_chapters value to latest chapter version or is current version
-        await knex.raw('UPDATE book_chapters SET content = ( SELECT BCV.content FROM book_chapter_versions AS BCV WHERE BCV.chapter_id = book_chapters.uuid GROUP BY BCV.chapter_id ORDER BY BCV.is_current_version DESC, BCV.created_at DESC )')
+        await knex.raw('UPDATE book_chapters SET content = ( SELECT BCV.content FROM book_chapter_versions AS BCV WHERE BCV.chapter_id = book_chapters.uuid ORDER BY BCV.is_current_version DESC, BCV.created_at DESC LIMIT 1)')
 
         log.info('Migration book_chapters new column content : success')
       }).catch(function (err) {

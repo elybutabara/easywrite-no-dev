@@ -8,7 +8,7 @@ class SceneVersionController {
     var version = SceneVersion.query()
       .where('book_scene_id', sceneId)
       .whereNull('deleted_at')
-      .orderBy('id', 'asc')
+      .orderBy('created_at', 'asc')
 
     return version
   }
@@ -17,7 +17,7 @@ class SceneVersionController {
     var version = SceneVersion.query()
       .where('book_scene_id', sceneId)
       .whereNull('deleted_at')
-      .orderBy('id', 'desc')
+      .orderBy('created_at', 'desc')
       .first()
 
     return version

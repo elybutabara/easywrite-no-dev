@@ -9,6 +9,10 @@ class SceneController {
     var scenes = Scene.query()
       .where('book_scenes.book_id', param.bookId)
       .withGraphJoined('scene_version', {maxBatchSize: 1})
+      .modifyGraph('scene_version', builder => {
+        builder.whereNull('deleted_at')
+        builder.orderBy('created_at', 'ASC')
+      })
       .whereNull('book_scenes.deleted_at')
       .whereRaw('chapter_id IS NULL OR chapter_id = 0')
       .orderBy('book_scenes.order')

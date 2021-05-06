@@ -10,6 +10,10 @@ class ChapterController {
       .where('book_id', param.bookId)
       .where('title', 'like', '%' + param.search + '%')
       .withGraphJoined('chapter_version', {maxBatchSize: 1})
+      .modifyGraph('chapter_version', builder => {
+        builder.whereNull('deleted_at')
+        builder.orderBy('created_at', 'ASC')
+      })
       .whereNull('book_chapters.deleted_at')
       .orderBy('order')
       .orderBy('created_at')
