@@ -114,8 +114,7 @@
                                     <button class="es-button-white margin-bottom-1rem" @click="show_history = !show_history">{{$t('SHOW_HISTORY')}}</button>
                                 </div>
                                 <div class="form-group">
-                                  <tiny-editor-chapter ref="tmc" :chapterData="data" :params="tiny_editor_params" :initValue="baseChapterVersionCont" v-on:showOverlay="viewOverlay" v-on:getEditorContent="setContent" @getShowScene="save_to_scene=$event" class="form-control" />
-                                    <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params()"></CommentBasePanel>
+                                  <tiny-editor-chapter ref="tmc" :chapterData="data" :params="tiny_editor_params" :initValue="baseChapterCont" v-on:showOverlay="viewOverlay" v-on:getEditorContent="setContent" @getShowScene="save_to_scene=$event" class="form-control" />
                                 </div>
                                 <div v-if="show_history" class="chapter-history-items slideInRight animated">
                                     <div class="note">
@@ -190,6 +189,14 @@
           <b-container class="bv-example-row">
             <b-card-group deck>
               <b-card :header="$t('SAVE_AS_NEW_VERSION')" class="text-center">
+                <b-row class="text-left">
+                  <b-col>
+                    <div class="custom-checkbox mt-2">
+                      <input v-model="clear_history" type="checkbox" id="clearChapterHistory">
+                      <label for="clearChapterHistory">{{$t('site.clear-chapter-history-on-save')}}</label>
+                    </div>
+                  </b-col>
+                </b-row>
                 <b-row style="margin-bottom: 1rem;" class="text-left">
                   <b-col>
                     <label>{{$t('DESCRIPTION')}}: </label>
@@ -224,7 +231,7 @@ import Feedback from '../../../components/Feedback'
 import TinyMCE from '../../../components/TinyMCE'
 import SavetoScene from '@/pages/views/chapters/save-to-scene'
 
-import CommentBasePanel from '../../../components/CommentBasePanel'
+// import CommentBasePanel from '../../../components/CommentBasePanel'
 const {ipcRenderer} = window.require('electron')
 
 var component = null
@@ -244,13 +251,14 @@ export default {
         uuid: null,
         book_id: null,
         title: '',
+        content: '',
         short_description: '',
         chapter_version: {
           change_description: '',
           content: ''
         }
       },
-      baseChapterVersionCont: '',
+      baseChapterCont: '',
       accordion: {
         'chapter-details': 'active',
         'content': 'active'
@@ -288,25 +296,25 @@ export default {
         },
         onEditorInit: function (ed) {
           // console.log('ed init----->', ed, ed.contentDocument, ed.getDoc())
-          scope.commentbase_editor = ed
-          scope.commentbase_dom = ed.getDoc()
+          // scope.commentbase_editor = ed
+          // scope.commentbase_dom = ed.getDoc()
           // console.log('onEditorInit',ed.getDoc())
         }
       },
-      commentbase_dom: null,
-      commentbase_params: function () {
-        return {
-          tinymce: scope.commentbase_editor,
-          onMounted: (vm) => {
-            scope.commentbase_vm = vm
-            vm.setAuthor(this.getAuthor)
-            vm.setCommentsJSON(this.comments)
-          },
-          onAddComment: function () {
-            scope.saveChapter(true)
-          }
-        }
-      },
+      // commentbase_dom: null,
+      // commentbase_params: function () {
+      //   return {
+      //     tinymce: scope.commentbase_editor,
+      //     onMounted: (vm) => {
+      //       scope.commentbase_vm = vm
+      //       vm.setAuthor(this.getAuthor)
+      //       vm.setCommentsJSON(this.comments)
+      //     },
+      //     onAddComment: function () {
+      //       scope.saveChapter(true)
+      //     }
+      //   }
+      // },
       show_feedbacks: false,
       selected_chapter: null,
       options_importance: [
@@ -314,6 +322,7 @@ export default {
         {text: 'Subplot', value: 'Subplot'}
       ],
       save_to_scene: false,
+      clear_history: true,
       scene_content: '',
       tempVersionDesc: '',
       new_chapter_version: {
@@ -331,7 +340,7 @@ export default {
   components: {
     TinyMCE,
     Feedback,
-    CommentBasePanel,
+    // CommentBasePanel,
     SavetoScene
   },
   computed: {
@@ -341,11 +350,11 @@ export default {
     chapter: function () {
       return this.properties.chapter
     },
-    comments: function () {
-      var scope = this
-      var chapterID = (scope.chapter) ? scope.chapter.uuid : null
-      return this.$store.getters.getChapterComments(chapterID)
-    },
+    // comments: function () {
+    //   var scope = this
+    //   var chapterID = (scope.chapter) ? scope.chapter.uuid : null
+    //   return this.$store.getters.getChapterComments(chapterID)
+    // },
     getAuthor: function () {
       var scope = this
       return scope.$store.getters.getAuthor
@@ -378,12 +387,12 @@ export default {
         scope.tinyEditorAccess.execCommand('mceInsertContent', false, data)
 
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
-        scope.data.chapter_version.content = scope.tinyEditorAccess.getContent()
-        scope.baseChapterVersionCont = scope.tinyEditorAccess.getContent()
+        scope.data.content = scope.tinyEditorAccess.getContent()
+        scope.baseChapterCont = scope.tinyEditorAccess.getContent()
         // console.log('scope.tinyEditorAccess.getDoc()',scope.tinyEditorAccess.getDoc())
         // scope.data.chapter_version.content = scope.tinyEditorAccess.getContent()
         // console.log(scope.data.chapter_version.content)
-        // scope.baseChapterVersionCont = 'test'
+        // scope.baseChapterCont = 'test'
       })
     },
     toggleAccordion: function (key) {
@@ -418,15 +427,15 @@ export default {
           scope.show_history = false
 
           let content = !(scope.historyContent) ? ' ' : scope.historyContent
-          scope.data.chapter_version.content = content
-          scope.baseChapterVersionCont = content
+          scope.data.content = content
+          scope.baseChapterCont = content
         }
       })
     },
     // Required for geting value from TinyMCE content
     setContent (value) {
       var scope = this
-      scope.data.chapter_version.content = value
+      scope.data.content = value
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
     },
     viewOverlay (value) {
@@ -479,7 +488,7 @@ export default {
       scope.isCurrentlySaving = true
 
       console.log('scope.data.chapter_version.content', scope.data.chapter_version.content)
-      // scope.data.chapter_version.content = scope.baseChapterVersionCont
+      // scope.data.content = scope.baseChapterCont
 
       // If upon validation it return error do not save character and display errors
       if (!scope.validate()) {
@@ -489,7 +498,7 @@ export default {
 
       // Set autosave to busy
       scope.do_chapter_auto_save = false
-      scope.data.chapter_version.comments = (scope.commentbase_vm) ? scope.commentbase_vm.getCommentsJSON() : null
+      // scope.data.chapter_version.comments = (scope.commentbase_vm) ? scope.commentbase_vm.getCommentsJSON() : null
       await scope.axios
         .post('http://localhost:3000/chapters', scope.data)
         .then(response => {
@@ -567,15 +576,15 @@ export default {
 
       console.log('saveAuthorPersonalProgress')
       console.log('prev total_words', scope.authorProgress.total_words)
-      console.log('prev cont count', scope.WORD_COUNT(scope.data.chapter_version.content))
+      console.log('prev cont count', scope.WORD_COUNT(scope.data.content))
       console.log('prev base_content_count', scope.base_content_count)
 
       if (scope.authorProgress.uuid) {
-        scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.WORD_COUNT(scope.data.chapter_version.content) - scope.base_content_count)
+        scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.WORD_COUNT(scope.data.content) - scope.base_content_count)
       } else {
         scope.authorProgress.author_id = scope.$store.getters.getAuthorID
         scope.authorProgress.relation_id = relationId
-        scope.authorProgress.total_words = scope.WORD_COUNT(scope.data.chapter_version.content) - scope.base_content_count
+        scope.authorProgress.total_words = scope.WORD_COUNT(scope.data.content) - scope.base_content_count
       }
 
       console.log('new total_words', scope.authorProgress.total_words)
@@ -584,7 +593,7 @@ export default {
         .post('http://localhost:3000/author-personal-progress', scope.authorProgress)
         .then(response => {
           scope.authorProgress = response.data
-          scope.base_content_count = scope.WORD_COUNT(scope.data.chapter_version.content)
+          scope.base_content_count = scope.WORD_COUNT(scope.data.content)
           scope.$store.dispatch('loadAuthorPersonalProgress', {authorId: response.data.author_id})
         })
     },
@@ -593,7 +602,7 @@ export default {
 
       let chapterHistory = {
         chapter_id: chapterId,
-        content: scope.data.chapter_version.content
+        content: scope.data.content
       }
 
       if (chapterHistory.content === null || chapterHistory.content === undefined || chapterHistory.content === '') return
@@ -604,7 +613,7 @@ export default {
           scope.setBaseChapterVal(scope.data)
 
           if (scope.chapter_history.length) {
-            scope.chapter_history.push(response.data)
+            scope.chapter_history.unshift(response.data)
           } else {
             scope.$set(scope, 'chapter_history', response.data)
           }
@@ -631,7 +640,7 @@ export default {
       let scope = this
       scope.chapter_version_modal_is_open = true
 
-      scope.clear_history = false
+      scope.clear_history = true
       scope.new_chapter_version.change_description = ''
       if (scope.new_chapter_version.id) {
         delete (scope.new_chapter_version.id)
@@ -642,10 +651,10 @@ export default {
       let scope = this
 
       scope.new_chapter_version.change_description = scope.tempVersionDesc
-      scope.new_chapter_version.content = scope.data.chapter_version.content
-      scope.new_chapter_version.chapter_id = scope.chapter.uuid
-      scope.new_chapter_version.chapter_id = scope.chapter.uuid
-      scope.new_chapter_version.chapter_id = scope.chapter.uuid
+      scope.new_chapter_version.content = scope.data.content
+      scope.new_chapter_version.chapter_id = scope.data.uuid
+      scope.new_chapter_version.chapter_id = scope.data.uuid
+      scope.new_chapter_version.chapter_id = scope.data.uuid
       scope.new_chapter_version.is_current_version = true
 
       scope.axios.post('http://localhost:3000/chapter-versions', scope.new_chapter_version)
@@ -654,6 +663,8 @@ export default {
             let version = response.data
 
             scope.$store.dispatch('updateChapterVersionList', version)
+
+            console.log('http://localhost:3000/chapter-versions', version)
 
             scope.data.chapter_version.id = version.id
             scope.data.chapter_version.uuid = version.uuid
@@ -690,17 +701,18 @@ export default {
         // chapter
         scope.data.title = chapter.title
         scope.data.short_description = chapter.short_description
+        scope.data.content = chapter.content
+        scope.baseChapterCont = chapter.content
 
         // version
         scope.data.chapter_version.id = version.id
         scope.data.chapter_version.uuid = version.uuid
         scope.data.chapter_version.content = version.content
         scope.data.chapter_version.change_description = version.change_description
-        scope.baseChapterVersionCont = version.content
 
         scope.setBaseChapterVal(scope.data)
 
-        scope.base_content_count = scope.WORD_COUNT(scope.baseChapterVersionCont)
+        scope.base_content_count = scope.WORD_COUNT(scope.baseChapterCont)
 
         // progress
         if (progress) {
@@ -731,9 +743,6 @@ export default {
           scope.$set(scope.base_chapter_val, key, chapter[key])
         }
       }
-
-      console.log('chapter', chapter)
-      console.log('scope.base_chapter_val', scope.base_chapter_val)
     },
     autoSave: function () {
       let scope = this

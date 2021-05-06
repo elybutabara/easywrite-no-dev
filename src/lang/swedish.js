@@ -320,6 +320,8 @@ export default {
     'has-invited-you-to-read': 'has invited you to read',
     'new-message': 'New Message',
     'logout': 'Logout',
-    'anonymous': 'Anonymous'
+    'anonymous': 'Anonymous',
+    'clear-chapter-history-on-save': 'Clear chapter history on save',
+    'clear-scene-history-on-save': 'Clear scene history on save'
   }
 }

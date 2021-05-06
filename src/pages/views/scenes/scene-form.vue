@@ -109,8 +109,7 @@
                                     <button class="es-button-white margin-bottom-1rem" @click="show_history = !show_history">{{$t('SHOW_HISTORY')}}</button>
                                 </div>
                                 <div class="form-group testtest">
-                                    <tiny-editor ref="tmc" :params="tiny_editor_params" :initValue="baseSceneVersionContent" v-on:getEditorContent="setContent" class="form-control" />
-                                    <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params()"></CommentBasePanel>
+                                    <tiny-editor ref="tmc" :params="tiny_editor_params" :initValue="baseSceneContent" v-on:getEditorContent="setContent" class="form-control" />
                                 </div>
                                 <div v-if="show_history" class="scene-history-items slideInRight animated">
                                     <div class="note">
@@ -315,6 +314,14 @@
           <b-container class="bv-example-row">
             <b-card-group deck>
               <b-card :header="$t('SAVE_AS_NEW_VERSION')"  class="text-center">
+                <b-row class="text-left">
+                  <b-col>
+                    <div class="custom-checkbox mt-2">
+                      <input v-model="clear_history" type="checkbox" id="clearSceneHistory">
+                      <label for="clearSceneHistory">{{$t('site.clear-scene-history-on-save')}}</label>
+                    </div>
+                  </b-col>
+                </b-row>
                 <b-row style="margin-bottom: 1rem;" class="text-left">
                   <b-col>
                     <label>{{$t('DESCRIPTION')}}: </label>
@@ -344,7 +351,7 @@
 <script>
 import TinyMCE from '../../../components/TinyMCE'
 
-import CommentBasePanel from '../../../components/CommentBasePanel'
+// import CommentBasePanel from '../../../components/CommentBasePanel'
 import tinymce from 'tinymce'
 const moment = require('moment')
 const {ipcRenderer} = window.require('electron')
@@ -366,7 +373,9 @@ export default {
         chapter_id: '',
         title: '',
         short_description: '',
+        content: '',
         scene_version: {
+          change_description: '',
           content: ''
         },
         typeofscene: '',
@@ -419,7 +428,7 @@ export default {
       selected_characters: [],
       selected_locations: [],
       // Temp container of content
-      baseSceneVersionContent: '',
+      baseSceneContent: '',
       baseSceneNotes: '',
       baseViewpointDescription: '',
       tempSceneStart: '',
@@ -457,6 +466,7 @@ export default {
       },
       scene_history: {},
       show_history: false,
+      clear_history: true,
       view_history: false,
       historyContent: '',
       tinyEditorAccess: null,
@@ -467,24 +477,24 @@ export default {
         },
         onEditorInit: function (ed) {
           // console.log('ed init----->', ed, ed.contentDocument, ed.getDoc())
-          scope.commentbase_editor = ed
-          scope.commentbase_dom = ed.getDoc()
+          // scope.commentbase_editor = ed
+          // scope.commentbase_dom = ed.getDoc()
         }
       },
-      commentbase_dom: null,
-      commentbase_params: function () {
-        return {
-          tinymce: scope.commentbase_editor,
-          onMounted: (vm) => {
-            scope.commentbase_vm = vm
-            vm.setAuthor(this.getAuthor)
-            vm.setCommentsJSON(this.comments)
-          },
-          onAddComment: function () {
-            scope.saveScene(true)
-          }
-        }
-      },
+      // commentbase_dom: null,
+      // commentbase_params: function () {
+      //   return {
+      //     tinymce: scope.commentbase_editor,
+      //     onMounted: (vm) => {
+      //       scope.commentbase_vm = vm
+      //       vm.setAuthor(this.getAuthor)
+      //       vm.setCommentsJSON(this.comments)
+      //     },
+      //     onAddComment: function () {
+      //       scope.saveScene(true)
+      //     }
+      //   }
+      // },
       new_scene_version: {
         book_scene_id: null,
         change_description: null,
@@ -498,8 +508,8 @@ export default {
     }
   },
   components: {
-    TinyMCE,
-    CommentBasePanel
+    TinyMCE
+    // CommentBasePanel
   },
   computed: {
     book: function () {
@@ -520,13 +530,13 @@ export default {
     characters: function () {
       return this.$store.getters.getCharactersByBook(this.properties.book.uuid)
     },
-    comments: function () {
-      // return '{}'
-      var scope = this
-      if (!scope.scene) return null
-      var sceneID = scope.scene.uuid
-      return this.$store.getters.getSceneComments(sceneID)
-    },
+    // comments: function () {
+    //   // return '{}'
+    //   var scope = this
+    //   if (!scope.scene) return null
+    //   var sceneID = scope.scene.uuid
+    //   return this.$store.getters.getSceneComments(sceneID)
+    // },
     getAuthor: function () {
       var scope = this
       return scope.$store.getters.getAuthor
@@ -549,11 +559,11 @@ export default {
         tinymce.get(scope.$refs.tmc.$el.id).execCommand('mceInsertContent', false, data)
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
         scope.data.scene_version.content = tinymce.get(scope.$refs.tmc.$el.id).getContent()
-        scope.baseSceneVersionContent = tinymce.get(scope.$refs.tmc.$el.id).getContent()
+        scope.baseSceneContent = tinymce.get(scope.$refs.tmc.$el.id).getContent()
         /*
         // conflict with delete-in-detail-page-for-items-location-character-cause-breadcrumbs-problem-after-redirecting-in-listing-page
         // scope.data.scene_version.content = data
-        // scope.baseSceneVersionContent = data
+        // scope.baseSceneContent = data
         // Add the imported contents where mouse cursor is located.
         scope.tinymce.get(scope.$refs.tmc.$el.id).execCommand('mceInsertContent', false, data)
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
@@ -633,8 +643,8 @@ export default {
           scope.show_history = false
 
           let content = !(scope.historyContent) ? ' ' : scope.historyContent
-          scope.data.scene_version.content = content
-          scope.baseSceneVersionContent = content
+          scope.data.content = content
+          scope.baseSceneContent = content
         }
       })
     },
@@ -700,9 +710,9 @@ export default {
     // Required for geting value from TinyMCE content
     setContent (value) {
       var scope = this
+      scope.data.content = value
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
-      scope.data.scene_version.content = value
-      // scope.baseSceneVersionContent = value
+      // scope.baseSceneContent = value
     },
     setNotes (value) {
       var scope = this
@@ -753,8 +763,8 @@ export default {
       // Clear error messages
       scope.setFeedbackNull()
 
-      // scope.data.scene_version.content = scope.baseSceneVersionContent
-      scope.data.scene_version.comments = (scope.commentbase_vm) ? scope.commentbase_vm.getCommentsJSON() : null
+      // scope.data.scene_version.content = scope.baseSceneContent
+      // scope.data.scene_version.comments = (scope.commentbase_vm) ? scope.commentbase_vm.getCommentsJSON() : null
       // scope.data.notes = scope.tempSceneNotes
       // scope.data.viewpoint_description = scope.tempViewpointDescription
       scope.data.chapter_id = (scope.selected_chapter !== 'undefined' && scope.selected_chapter !== null && scope.selected_chapter.uuid !== '-1') ? scope.selected_chapter.uuid : null
@@ -877,18 +887,18 @@ export default {
     saveAuthorPersonalProgress (sceneId) {
       var scope = this
       if (scope.authorProgress.uuid) {
-        scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.WORD_COUNT(scope.data.scene_version.content) - scope.base_content_count)
+        scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.WORD_COUNT(scope.data.content) - scope.base_content_count)
       } else {
         scope.authorProgress.author_id = scope.$store.getters.getAuthorID
         scope.authorProgress.relation_id = sceneId
-        scope.authorProgress.total_words = scope.WORD_COUNT(scope.data.scene_version.content) - scope.base_content_count
+        scope.authorProgress.total_words = scope.WORD_COUNT(scope.data.content) - scope.base_content_count
       }
 
       scope.axios
         .post('http://localhost:3000/author-personal-progress', scope.authorProgress)
         .then(response => {
           scope.authorProgress = response.data
-          scope.base_content_count = scope.WORD_COUNT(scope.data.scene_version.content)
+          scope.base_content_count = scope.WORD_COUNT(scope.data.content)
           scope.$store.dispatch('loadAuthorPersonalProgress', { authorId: this.$store.getters.getAuthorID })
 
           console.log('Author Personal Progress saved!')
@@ -898,7 +908,7 @@ export default {
       var scope = this
       let sceneHistory = {
         scene_id: sceneId,
-        content: scope.data.scene_version.content
+        content: scope.data.content
       }
 
       if (sceneHistory.content === null || sceneHistory.content === undefined || sceneHistory.content === '') return
@@ -909,7 +919,7 @@ export default {
           scope.setBaseSceneVal(scope.data)
 
           if (scope.scene_history.length) {
-            scope.scene_history.push(response.data)
+            scope.scene_history.unshift(response.data)
           } else {
             scope.$set(scope, 'scene_history', response.data)
           }
@@ -923,7 +933,7 @@ export default {
       var scope = this
       this.scene_version_modal_is_open = true
 
-      scope.clear_history = false
+      scope.clear_history = true
       scope.new_scene_version.change_description = ''
       if (scope.new_scene_version.id) {
         delete (scope.new_scene_version.id)
@@ -934,7 +944,7 @@ export default {
       var scope = this
 
       scope.new_scene_version.change_description = scope.tempVersionDesc
-      scope.new_scene_version.content = scope.data.scene_version.content
+      scope.new_scene_version.content = scope.data.content
       scope.new_scene_version.book_scene_id = scope.data.uuid
 
       scope.axios.post('http://localhost:3000/scene-versions', scope.new_scene_version)
@@ -989,6 +999,7 @@ export default {
         // scene
         scope.data.title = scene.title
         scope.data.short_description = scene.short_description
+        scope.data.content = scene.content
         scope.data.typeofscene = scene.typeofscene
         scope.data.importance = scene.importance
         scope.data.status = scene.status
@@ -999,6 +1010,7 @@ export default {
         scope.data.tags = scene.tags
         scope.data.notes = scene.notes
         scope.data.viewpoint_description = scene.viewpoint_description
+        scope.baseSceneContent = scene.content
 
         scope.tempSceneStart = scene.date_starts
         scope.tempSceneEnd = scene.date_ends
@@ -1035,7 +1047,6 @@ export default {
         scope.data.scene_version.uuid = version.uuid
         scope.data.scene_version.content = version.content
         scope.data.scene_version.change_description = version.change_description
-        scope.baseSceneVersionContent = version.content
 
         scope.baseSceneNotes = scene.notes
         scope.baseViewpointDescription = scene.viewpoint_description
@@ -1045,7 +1056,7 @@ export default {
 
         scope.setBaseSceneVal(scope.data)
 
-        scope.base_content_count = scope.WORD_COUNT(scope.baseSceneVersionContent)
+        scope.base_content_count = scope.WORD_COUNT(scope.baseSceneContent)
 
         // progress
         if (progress) {

@@ -75,7 +75,7 @@
                 </div>
               </b-button>
             </div>
-            <div v-html="getSceneContent" class="description" v-bind:id="commentbase_id"></div>
+            <div v-html="scene.content" class="description" v-bind:id="commentbase_id"></div>
         </div>
         <div v-if="tab.active === 'locations'"  class="es-scene-details-tab-content no-padding">
             <scene-locations :properties="{ book: book, scene: page.data.scene }"></scene-locations>
@@ -203,17 +203,17 @@ export default {
       return this.properties.book
     },
     scene: function () {
-      return this.properties.scene
+      return this.$store.getters.findScene(this.properties.scene)
     },
     chapter: function () {
-      if (this.properties.chapter) { return this.properties.chapter }
+      if (this.properties.chapter) { return this.$store.getters.findChapter(this.properties.chapter) }
       return null
     },
-    getSceneContent: function () {
-      var scope = this
-      var sceneID = scope.page.data.scene.uuid
-      return this.$store.getters.getSceneContent(sceneID)
-    },
+    // getSceneContent: function () {
+    //   var scope = this
+    //   var sceneID = scope.page.data.scene.uuid
+    //   return this.$store.getters.getSceneContent(sceneID)
+    // },
     // comments: function () {
     //   // return '{}'
     //   var scope = this
@@ -286,7 +286,7 @@ export default {
       var scope = this
 
       scope.scene_version.change_description = scope.tempVersionDesc
-      scope.scene_version.content = scope.getSceneContent
+      scope.scene_version.content = scope.scene.content
       scope.scene_version.book_scene_id = scope.page.data.scene.uuid
 
       scope.axios
@@ -396,7 +396,7 @@ export default {
     exportContent: function () {
       var scope = this
       scope.exportOnProgress = true
-      ipcRenderer.send('EXPORT-CONTENT-DOCX', {content: scope.getSceneContent, defaultfilename: scope.properties.scene.title + ' - ' + this.$t('CONTENT')})
+      ipcRenderer.send('EXPORT-CONTENT-DOCX', {content: scope.scene.content, defaultfilename: scope.properties.scene.title + ' - ' + this.$t('CONTENT')})
     },
     toggleFeedbacks: function () {
       let scope = this

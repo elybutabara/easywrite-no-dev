@@ -80,7 +80,7 @@
                 </button>
 
             </div>
-            <div v-html="getSceneContent" class="description" v-bind:id="commentbase_id"></div>
+            <div v-html="scene.content" class="description" v-bind:id="commentbase_id"></div>
         </div>
     </div>
 </div>
@@ -147,11 +147,11 @@ export default {
     chapter: function () {
       return this.properties.chapter
     },
-    getSceneContent: function () {
-      var scope = this
-      var sceneID = scope.page.data.scene.uuid
-      return this.$store.getters.getSceneContent(sceneID)
-    },
+    // getSceneContent: function () {
+    //   var scope = this
+    //   var sceneID = scope.page.data.scene.uuid
+    //   return this.$store.getters.getSceneContent(sceneID)
+    // },
     // comments: function () {
     //   // return '{}'
     //   var scope = this

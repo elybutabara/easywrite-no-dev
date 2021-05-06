@@ -56,7 +56,7 @@ a<template>
           </div>
 
           <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
-              <div v-html="getChapterContent" class="description" v-bind:id="commentbase_id"></div>
+              <div v-html="chapter.content" class="description" v-bind:id="commentbase_id"></div>
           </div>
           <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
               <books-i-read-chapter-scenes :properties="{ book: book, chapter: chapter }"></books-i-read-chapter-scenes>
@@ -131,11 +131,11 @@ export default {
     // CommentBasePanel
   },
   computed: {
-    getChapterContent: function () {
-      var scope = this
-      var chapterID = scope.page.data.chapter.uuid
-      return this.$store.getters.getChapterContent(chapterID)
-    },
+    // getChapterContent: function () {
+    //   var scope = this
+    //   var chapterID = scope.page.data.chapter.uuid
+    //   return this.$store.getters.getChapterContent(chapterID)
+    // },
     // comments: function () {
     //   var scope = this
     //   var chapterID = scope.page.data.chapter.uuid

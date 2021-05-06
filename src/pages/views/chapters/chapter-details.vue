@@ -64,7 +64,7 @@
                 </b-button>
                 </div>
 
-              <div v-html="getChapterContent" class="description" v-bind:id="commentbase_id"></div>
+              <div v-html="chapter.content" class="description" v-bind:id="commentbase_id"></div>
           </div>
           <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing" id="custom-scrollbar">
               <chapter-scenes :properties="{ book: book, chapter: chapter }"></chapter-scenes>
@@ -181,11 +181,11 @@ export default {
     // CommentBasePanel
   },
   computed: {
-    getChapterContent: function () {
-      var scope = this
-      var chapterID = scope.page.data.chapter.uuid
-      return this.$store.getters.getChapterContent(chapterID)
-    },
+    // getChapterContent: function () {
+    //   var scope = this
+    //   var chapterID = scope.page.data.chapter.uuid
+    //   return this.$store.getters.getChapterContent(chapterID)
+    // },
     // comments: function () {
     //   var scope = this
     //   var chapterID = scope.page.data.chapter.uuid
@@ -195,7 +195,7 @@ export default {
       return this.properties.book
     },
     chapter: function () {
-      return this.properties.chapter
+      return this.$store.getters.findChapter(this.properties.chapter)
     },
     test: function () {
       var stillUtc = moment.utc('2020-04-09 13:51:40').toDate()
@@ -276,7 +276,7 @@ export default {
       var scope = this
 
       scope.chapter_version.change_description = scope.tempVersionDesc
-      scope.chapter_version.content = scope.getChapterContent
+      scope.chapter_version.content = scope.chapter.content
       scope.chapter_version.chapter_id = scope.page.data.chapter.uuid
 
       scope.axios
