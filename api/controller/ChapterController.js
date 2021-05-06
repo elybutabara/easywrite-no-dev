@@ -161,6 +161,7 @@ class ChapterController {
         uuid: row.uuid,
         book_id: row.book_id,
         title: row.title,
+        content: row.content,
         chapter_guidance: row.chapter_guidance,
         hidden: row.hidden,
         order: row.order,

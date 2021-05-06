@@ -293,6 +293,7 @@ class SceneController {
         book_id: row.book_id,
         chapter_id: row.chapter_id,
         title: row.title,
+        content: row.content,
         short_description: row.short_description,
         typeofscene: row.typeofscene,
         importance: row.importance,
