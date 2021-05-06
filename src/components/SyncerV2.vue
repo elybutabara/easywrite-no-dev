@@ -325,8 +325,7 @@ export default {
 
       // this is what we store on last synced_date, we will use this as base data for next syncng
       scope.start_synced_date = moment().format('YYYY-MM-DD HH:mm:ss').toString()
-      console.log('CURRENT SYNC DATE', scope.endpoint_sync_date)
-      console.log('START SYNC DATE', scope.start_synced_date)
+
       var endpoint = scope.endpoints[scope.endpoint_index]
       scope.processEndpoint(endpoint)
     },
@@ -362,7 +361,8 @@ export default {
       var scope = this
       var userID = scope.$store.getters.getUserID
       var parent_uuid = (endpoint.book_uuid) ? endpoint.book_uuid : null
-      var sync_date = scope.timeConvertToUTC(scope.endpoint_sync_date)
+      // var sync_date = scope.timeConvertToUTC(scope.endpoint_sync_date)
+      var sync_date = scope.endpoint_sync_date
 
       scope.pointed_endpoint_status = 'Packing'
       scope.axios.get('http://localhost:3000/' + endpoint.local + '/syncable', { params: {synced_at: sync_date, userID: userID, parent_uuid: parent_uuid } })

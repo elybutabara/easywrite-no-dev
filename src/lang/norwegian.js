@@ -330,5 +330,7 @@ export default {
   STORYLINE: 'Storyline',
   STORYLINE_ASSOCIATED_WITH_SCENE: 'Storyline Tilknyttet Scenen',
   STORYLINE_ENDS_WITH_SCENE: 'Storyline Slutter Med Scene',
-  STORYLINE_EDITOR_FOR: 'Storyline Redaktor For'
+  STORYLINE_EDITOR_FOR: 'Storyline Redaktor For',
+  PROCESSING: 'Laster',
+  SELECTED_SCENE: 'Valgt Scene',
 }

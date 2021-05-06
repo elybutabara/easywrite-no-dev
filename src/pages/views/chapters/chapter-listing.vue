@@ -27,7 +27,7 @@
 
         <draggable v-model="chapters" draggable=".kj-col" class="row kj-row">
         <div class="col-md-3 col-sm-12 kj-col fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
-            <div class="es-card">
+            <div class="es-card" v-bind:class="{'chapter-hidden' : chapter.hidden}">
                 <div class="es-card-content">
                     <div class="es-card-actions">
                         <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'chapter-form-' + chapter.uuid, tabComponent: 'chapter-form',  tabData: { book: book, chapter: chapter }, tabTitle: $t('EDIT')+ ' - ' + chapter.title, newTab: true })"><i class="las la-pencil-alt"></i></button>
@@ -39,10 +39,9 @@
                     <toggle-button
                         :width="60" :height="20" :font-size="12"
                         :color="{checked:'#dc3545', unchecked:'#354350'}" class="mt-2 ml-2"
-                        :value="!!chapter.hidden"
+                        v-model="chapter.hidden"
                         @change="hiddenChapter(chapter, $event)">
                     </toggle-button>
-                    {{ chapter.hidden }}
                 </div>
                 <div class="es-card-footer">
                     <small>{{$t('SCENES')}}: {{ ($store.getters.getScenesByChapter(chapter.uuid)) ? $store.getters.getScenesByChapter(chapter.uuid).length : 0 }}</small>
@@ -156,14 +155,10 @@ export default {
     },
     hiddenChapter: function (chapter, event) {
       var scope = this
-      console.log('chapter.hiddens', chapter)
-
-      console.log('iraaaannnnn', chapter.hidden)
-
+      console.log('HIDDEN ==> ',chapter.hidden)
       scope.axios
-        .post('http://localhost:3000/chapters', { hidden : chapter.hidden, id: chapter.id, uuid: chapter.uuid })
+        .post('http://localhost:3000/chapters/hide', { hidden : chapter.hidden, id: chapter.id, uuid: chapter.uuid })
         .then(response => {
-          if (response.data) { alert('success') }
         }
       );
     }
@@ -180,3 +175,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.chapter-hidden {
+    opacity: 0.6;
+}
+</style>

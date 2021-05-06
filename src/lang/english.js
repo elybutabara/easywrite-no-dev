@@ -330,5 +330,7 @@ export default {
   STORYLINE: 'Storyline',
   STORYLINE_ASSOCIATED_WITH_SCENE: 'Storyline Associated With Scene',
   STORYLINE_ENDS_WITH_SCENE: 'Storyline Ends With Scene',
-  STORYLINE_EDITOR_FOR: 'Storyline Editor For'
+  STORYLINE_EDITOR_FOR: 'Storyline Editor For',
+  PROCESSING: 'Processing',
+  SELECTED_SCENE: 'Selected Scene',
 }
