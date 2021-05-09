@@ -134,6 +134,7 @@ export default {
   name: 'chapter-details',
   props: ['properties'],
   data: function () {
+    // eslint-disable-next-line no-unused-vars
     var scope = this
     return {
       chapter_version: {

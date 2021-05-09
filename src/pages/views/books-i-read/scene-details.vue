@@ -91,12 +91,11 @@ import Feedback from '../../../components/Feedback'
 import Note from '../../../components/Note'
 // import CommentBasePanel from '../../../components/CommentBasePanel'
 
-import Vue from 'vue'
-
 export default {
   name: 'books-i-read-scene-details',
   props: ['properties'],
   data: function () {
+    // eslint-disable-next-line no-unused-vars
     var scope = this
     return {
       scene_version: {
@@ -134,7 +133,7 @@ export default {
   },
   components: {
     Feedback,
-    Note,
+    Note
     // CommentBasePanel
   },
   computed: {

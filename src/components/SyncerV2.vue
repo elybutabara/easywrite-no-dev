@@ -660,9 +660,9 @@ export default {
       if (scope.endpoint_index == scope.endpoints.length) {
         scope.LOGTIME('END TIME')
         // DISPATCH POST
-        var last_sync_date = scope.start_synced_date
-        scope.synced_date = last_sync_date
-        scope.saveUserSyncedDate(last_sync_date)
+        // var last_sync_date = scope.start_synced_date
+        scope.synced_date = moment().format('YYYY-MM-DD HH:mm:ss').toString()
+        scope.saveUserSyncedDate(scope.synced_date)
         scope.ready = false
         scope.updateAppData()
 

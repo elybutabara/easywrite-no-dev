@@ -333,11 +333,11 @@ export default {
     startSync: function () {
       var scope = this
       if (scope.$store.getters.getSyncStatus == 'syncing') {
-        return;
+        return
       }
 
-      scope.$store.dispatch('setSyncSource',{source: 'CTA'})
-      scope.$store.commit('startSync');
+      scope.$store.dispatch('setSyncSource', {source: 'CTA'})
+      scope.$store.commit('startSync')
     }
   },
   beforeMount () {
@@ -365,10 +365,12 @@ export default {
     var scope = this
     // console.log(scope.tabs.items[0].component)
     window.AppMain = this
+    // eslint-disable-next-line no-unused-vars
     var userUUID = this.$store.getters.getUserID
+    // eslint-disable-next-line no-unused-vars
     var authorUUID = this.$store.getters.getAuthorID
-    //scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
-    //scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+    // scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+    // scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
     // scope.$store.dispatch('getBooksByAuthorID', userID)
     setTimeout(function () {
       scope.ready = true
@@ -445,10 +447,9 @@ export default {
       window.AppMessaging.recountUnread()
     }
 
-    setTimeout(function(){
-      scope.$store.commit('startSync');
-    },1000);
-    
+    setTimeout(function () {
+      scope.$store.commit('startSync')
+    }, 1000)
   },
   created () {
     const scope = this

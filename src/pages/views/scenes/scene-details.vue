@@ -142,7 +142,6 @@ import SceneItems from '@/pages/views/scenes/scene-items'
 import SceneCharacters from '@/pages/views/scenes/scene-characters'
 import SceneVersions from '@/pages/views/scenes/scene-versions'
 import SceneCompareVersions from '@/pages/views/scenes/scene-compare-versions'
-import Vue from 'vue'
 
 // import CommentBasePanel from '../../../components/CommentBasePanel'
 
@@ -152,6 +151,7 @@ export default {
   name: 'scene-details',
   props: ['properties'],
   data: function () {
+    // eslint-disable-next-line no-unused-vars
     var scope = this
     return {
       scene_version: {

@@ -84,6 +84,7 @@ export default {
   name: 'books-i-read-chapter-details',
   props: ['properties'],
   data: function () {
+    // eslint-disable-next-line no-unused-vars
     var scope = this
     return {
       show_feedbacks: false,
@@ -127,7 +128,7 @@ export default {
     Note,
     'books-i-read-chapter-scenes': ChapterScenes,
     ChapterVersions,
-    ChapterCompareVersions,
+    ChapterCompareVersions
     // CommentBasePanel
   },
   computed: {
