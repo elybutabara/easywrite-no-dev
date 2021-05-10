@@ -155,20 +155,22 @@ export default {
             }
           }
         } else if (data.export_option === 'select_scenes') {
+
           // chapter filtering
-          for (var jj = 0; jj < chapters.length; jj++) {
-            let chapterScenes = chapters[jj].scene
-            chapters[jj].scene = []
+          for (let chapter in chapters) {
+            let chapterScenes = chapters[chapter].scene
+            chapters[chapter].scene = []
 
             // scene filtering
-            for (var kk = 0; kk < scope.selected_scenes.length; kk++) {
-              for (var ll = 0; ll < chapterScenes.length; ll++) {
-                if (chapterScenes[ll].id == scope.selected_scenes[kk]) {
-                  chapters[j].scene.push(chapterScenes[ll])
+            for (let scene in scope.selected_scenes) {
+              for (let chapterScene in chapterScenes) {
+                if (chapterScenes[chapterScene].id == scope.selected_scenes[scene]) {
+                  chapters[chapter].scene.push(chapterScenes[chapterScene])
                 }
               }
             }
-            scope.chapters.push(chapters[j])
+            
+            scope.chapters.push(chapters[chapter])
             scope.isSceneOnly = true
           }
         } else {
