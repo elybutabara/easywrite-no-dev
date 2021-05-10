@@ -260,7 +260,6 @@ export default {
 
       scope.axios.get(window.APP.API.URL + '/user/connect')
         .then(function () {
-          
           // set the books and books i read (template.pre) as the main endpoint first
           if (!scope.$store.getters.isAutoSync) {
             scope.updateAppData()
@@ -269,7 +268,7 @@ export default {
           }
 
           scope.ready = true
-          
+
           if (scope.stage == 'BOOK') {
             scope.endpoints = JSON.parse(JSON.stringify(scope.template.pre))
             scope.endpoint_total_counter = scope.template.pre.length
@@ -663,8 +662,8 @@ export default {
       if (scope.endpoint_index == scope.endpoints.length) {
         scope.LOGTIME('END TIME')
         // DISPATCH POST
-        // var last_sync_date = scope.start_synced_date
-        scope.synced_date = moment().format('YYYY-MM-DD HH:mm:ss').toString()
+        scope.synced_date = scope.start_synced_date
+        // scope.synced_date = moment().format('YYYY-MM-DD HH:mm:ss').toString()
         scope.saveUserSyncedDate(scope.synced_date)
         scope.ready = false
         scope.updateAppData()
