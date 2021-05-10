@@ -62,7 +62,6 @@
             <button v-if="nextScene != null && nextType == 'chapter'" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + nextScene.id, tabComponent: 'chapter-details',  tabData: { book: book, chapter: nextScene }, tabTitle: 'VIEW' + ' - ' + nextScene.title})" style="float:right; background:transparent; border:none;">
                 NEXT <i class="las la-angle-double-right"></i>
             </button>
-
         </div>
 
         <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">
@@ -241,10 +240,6 @@ export default {
       let scope = this
       let scene = this.scene
       let chapter = this.chapter
-
-      // this is for other scene, since other scne dont have chapter
-      if (!chapter) return null
-
       let nextScene = this.$store.getters.getNextScene(chapter, scene)
       // check if there is a next scene
       if (nextScene != null) {
