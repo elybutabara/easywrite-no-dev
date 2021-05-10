@@ -178,15 +178,30 @@ export default {
           }
         }
 
+        if(wholeChapter.length > 0){
+
+          window.swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: window.vm.$t('CHAPTERS') + ' ' + window.vm.$t('SUCCESSFULY_IMPORTED'),
+            showConfirmButton: false,
+            timer: 1500
+          })
+
+        }else{
+
+          window.swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: window.vm.$t('NO') + ' ' + window.vm.$t('CHAPTERS'),
+            showConfirmButton: false,
+            timer: 1500
+          })
+          
+        }
         wholeChapter = []
 
-        window.swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: window.vm.$t('CHAPTERS') + ' ' + window.vm.$t('SUCCESSFULY_IMPORTED'),
-          showConfirmButton: false,
-          timer: 1500
-        })
+        
       })
     },
     updateBook () {
