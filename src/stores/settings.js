@@ -25,7 +25,7 @@ export default {
       return state.syncSource
     }
   },
-  mutations: {
+  mutations: { 
     toggleTheme (state) {
       state.darkmode = !state.darkmode
     },
