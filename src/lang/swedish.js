@@ -301,7 +301,7 @@ export default {
     'has-left-a-book-feedback-on': 'har lämnat en feedback på:',
     'has-accepted-your-invitation-to-read': 'has accepted your invitation to read',
     'clear-chapter-history-on-save': 'Clear chapter history on save',
-    'clear-scene-history-on-save': 'Clear scene history on save'
+    'clear-scene-history-on-save': 'Clear scene history on save',
     'anonymous': 'Anonymous',
     'message-center': 'Meddelandecenter',
     'all': 'Alt',

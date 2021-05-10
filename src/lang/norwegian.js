@@ -300,7 +300,7 @@ export default {
     'has-left-a-scene-feedback-on': 'har lagt igjen en tilbakemelding på:',
     'has-left-a-book-feedback-on': 'har lagt igjen en tilbakemelding på:',
     'has-invited-you-to-read': 'has invited you to read',
-    'clear-scene-history-on-save': 'Clear scene history on save'
+    'clear-scene-history-on-save': 'Clear scene history on save',
     'clear-chapter-history-on-save': 'Clear chapter history on save',
     'anonymous': 'Anonymous',
     'message-center': 'Meldingssenter',
