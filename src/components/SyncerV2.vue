@@ -96,7 +96,7 @@ export default {
       template: {
         pre: [
           { title: 'Books', type: 'book', api: 'books', local: 'books', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
-          { title: 'Book Readers', type: 'books-i-read', api: 'book-readers', local: 'readers', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false }
+          { title: 'Book Readers', type: 'books-i-read', api: 'book-readers', local: 'readers', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false }
         ],
         main: [
           { title: 'Authors', type: 'default', api: 'authors', local: 'authors', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
@@ -260,13 +260,16 @@ export default {
 
       scope.axios.get(window.APP.API.URL + '/user/connect')
         .then(function () {
-          scope.ready = true
+          
           // set the books and books i read (template.pre) as the main endpoint first
           if (!scope.$store.getters.isAutoSync) {
             scope.updateAppData()
+            scope.$store.commit('stopSync')
             return
           }
 
+          scope.ready = true
+          
           if (scope.stage == 'BOOK') {
             scope.endpoints = JSON.parse(JSON.stringify(scope.template.pre))
             scope.endpoint_total_counter = scope.template.pre.length
@@ -325,8 +328,7 @@ export default {
 
       // this is what we store on last synced_date, we will use this as base data for next syncng
       scope.start_synced_date = moment().format('YYYY-MM-DD HH:mm:ss').toString()
-      console.log('CURRENT SYNC DATE', scope.endpoint_sync_date)
-      console.log('START SYNC DATE', scope.start_synced_date)
+
       var endpoint = scope.endpoints[scope.endpoint_index]
       scope.processEndpoint(endpoint)
     },
@@ -362,7 +364,8 @@ export default {
       var scope = this
       var userID = scope.$store.getters.getUserID
       var parent_uuid = (endpoint.book_uuid) ? endpoint.book_uuid : null
-      var sync_date = scope.timeConvertToUTC(scope.endpoint_sync_date)
+      // var sync_date = scope.timeConvertToUTC(scope.endpoint_sync_date)
+      var sync_date = scope.endpoint_sync_date
 
       scope.pointed_endpoint_status = 'Packing'
       scope.axios.get('http://localhost:3000/' + endpoint.local + '/syncable', { params: {synced_at: sync_date, userID: userID, parent_uuid: parent_uuid } })
@@ -529,8 +532,8 @@ export default {
 
       for (let i = 0; i < endpoint.downloaded.length; i++) {
         var data = endpoint.downloaded[i]
-        data.created_at = scope.timeConvertToUTC(data.created_at)
-        data.updated_at = scope.timeConvertToUTC(data.updated_at)
+        data.created_at = scope.timeConvertFromUTC(data.created_at)
+        data.updated_at = scope.timeConvertFromUTC(data.updated_at)
         // data.sync_version = scope.version
       }
 
@@ -684,6 +687,14 @@ export default {
     },
     maximize: function () {
       this.minimized = false
+    },
+    timeConvertFromUTC: function (datetime) {
+      if (datetime === null || datetime === 'undefined') { return null }
+
+      // Commented by Ismael: we dont need to convert the date we get from api cause it is coverted already from NORWAY to UTC so the date is already in UTC. The only thing we need to do is convert what we get to local
+      // var stillUtc = moment.utc(datetime).toDate()
+      var date = moment(datetime).local().format('YYYY-MM-DD HH:mm:ss')
+      return date
     },
     timeConvertToUTC: function (datetime) {
       if (datetime === null || datetime === 'undefined') { return null }

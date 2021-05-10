@@ -119,7 +119,7 @@
                                 <div v-if="show_history" class="chapter-history-items slideInRight animated">
                                     <div class="note">
                                         <i @click="show_history = !show_history" class="btn-close fas fa-times"></i>
-                                        <strong>{{$t('DOUBLE_CLICK')}}</strong> {{$t('TO_VIEW_HISTORY')}}
+                                        <strong>{{$t('DOUBLE_CLICK_TO_VIEW_HISTORY')}}</strong>
                                     </div>
                                     <div class="chapter-history-list" >
                                         <div v-bind:key="history.uuid" v-for="history in chapter_history">

@@ -85,11 +85,12 @@
                   <div>
                     <div class="sl-sceneType-blurb">
                       <div class="d-flex align-items-center">
-                        <div v-if="character.picture == '/uploads/book-characters/' || character.pictures == null" class="icon-wrap mr-2">
+                        <div v-if="!CHECK_VALID_IMAGE(character.picture)"  class="icon-wrap mr-2">
                           <i class="fas fa-question-circle"></i>
                         </div>
                         <div v-else class="sl-c-img-wrap mr-2">
-                          <div class="sl-c-img" :style="'background-image: url(' + character.picture + ')'"></div>
+                          <!-- <div class="sl-c-img" :style="'background-image: url(' + character.picture_src + ')'"></div> -->
+                          <img :src="character.picture_src" width="28px" height="25px">
                         </div>
                           <span class="name">{{ character.fullname }}</span>
                       </div>
@@ -110,12 +111,13 @@
                 <div>
                   <div class="sl-sceneType-blurb">
                     <div class="d-flex align-items-center">
-                      <div v-if="location.pictures == '/uploads/book-locations/' || location.pictures == null" class="icon-wrap mr-2">
+                      <div v-if="!CHECK_VALID_IMAGE(location.pictures)" class="icon-wrap mr-2">
                           <!--<i class="fas fa-map-marker-alt"></i>-->
                           <i class="fas fa-question-circle"></i>
                       </div>
                      <div v-else class="sl-c-img-wrap mr-2">
-                        <div class="sl-c-img" :style="'background-image: url(' + location.pictures + ')'"></div>
+                        <!-- <div class="sl-c-img" :style="'background-image: url(' + location.picture_src + ')'"></div> -->
+                        <img :src="location.picture_src" width="28px" height="25px">
                       </div>
                       <span class="name">{{ location.location }}</span>
                     </div>
@@ -136,12 +138,13 @@
                   <div>
                     <div class="sl-sceneType-blurb">
                       <div class="d-flex align-items-center">
-                        <div v-if="item.pictures == '/uploads/book-items/' || item.pictures == null" class="icon-wrap iw-hammer mr-2">
+                        <div v-if="!CHECK_VALID_IMAGE(item.pictures)" class="icon-wrap iw-hammer mr-2">
                           <!--<i class="fas fa-hammer"></i>-->
                           <i class="fas fa-question-circle"></i>
                         </div>
                         <div v-else class="sl-c-img-wrap mr-2">
-                          <div class="sl-c-img" :style="'background-image: url(' + item.pictures + ')'"></div>
+                          <!-- <div class="sl-c-img" :style="'background-image: url(' + item.picture_src + ')'"></div> -->
+                          <img :src="item.picture_src" width="28px" height="25px">
                         </div>
                         <span class="name">{{ item.itemname }}</span>
                         </div>
@@ -236,7 +239,6 @@
                 <label :for="'character-cbx-'+ character.id">{{ character.fullname }}</label>
                 </div>
               </div>
-
               <div class="col-md-4 col-12">
                 <strong>{{ $t('LOCATIONS') }}</strong>
                 <div v-for="location in locations" :key="'location-option-'+ location.id">

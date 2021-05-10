@@ -72,6 +72,29 @@ class ChapterController {
     return count
   }
 
+  static async hide ( data) {
+    console.log('HIDE CHAPTER DATA ==> '.data)
+
+    var chapter = await Chapter.query()
+      .patch({ hidden: data.hidden })
+      .where('id', '=', data.id)
+
+    return chapter
+  }
+
+
+  static async delete (chapterId) {
+    const chapter = await Chapter.query().softDeleteById(chapterId)
+
+    await Scene.query()
+      .where('chapter_id', chapterId)
+      .patch({
+        chapter_id: null
+      })
+
+    return chapter
+  }
+
   static async save (data) {
     // Get the max order first before saving to fix scene order error
     if (!data.id) {

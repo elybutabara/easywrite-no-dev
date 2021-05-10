@@ -20,7 +20,6 @@
     </div>
 
     <div class="es-page-content" id="custom-scrollbar">
-
         <ul class="es-breadcrumb">
           <li><a @click="CHANGE_COMPONENT({tabKey: 'book-details-' + book.uuid, tabComponent: 'book-details', tabData: book, tabTitle: book.title})" href="javascript:void(0);">{{ book.title }}</a></li>
           <li><a href="javascript:void(0);" style="padding-right: 20px;">{{ $t('CHAPTERS') }}</a></li>
@@ -28,7 +27,7 @@
 
         <draggable v-model="chapters" draggable=".kj-col" class="row kj-row">
         <div class="col-md-3 col-sm-12 kj-col fadeIn animated" v-for="chapter in chapters" v-bind:key="chapter.id">
-            <div class="es-card">
+            <div class="es-card" v-bind:class="{'chapter-hidden' : chapter.hidden}">
                 <div class="es-card-content">
                     <div class="es-card-actions">
                         <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'chapter-form-' + chapter.uuid, tabComponent: 'chapter-form',  tabData: { book: book, chapter: chapter }, tabTitle: $t('EDIT')+ ' - ' + chapter.title, newTab: true })"><i class="las la-pencil-alt"></i></button>
@@ -37,6 +36,12 @@
                     </div>
                     <p class="title ellipsis-2">{{ displayTitle(chapter.title) }}</p>
                     <i class="description ellipsis-2">{{ chapter.short_description || $t('NO_SHORT_DESCRIPTION') + '...' }}</i>
+                    <toggle-button
+                        :width="60" :height="20" :font-size="12"
+                        :color="{checked:'#dc3545', unchecked:'#354350'}" class="mt-2 ml-2"
+                        v-model="chapter.hidden"
+                        @change="hiddenChapter(chapter, $event)">
+                    </toggle-button>
                 </div>
                 <div class="es-card-footer">
                     <small>{{$t('SCENES')}}: {{ ($store.getters.getScenesByChapter(chapter.uuid)) ? $store.getters.getScenesByChapter(chapter.uuid).length : 0 }}</small>
@@ -55,7 +60,7 @@
 import { mapGetters } from 'vuex'
 import draggable from 'vuedraggable'
 const {ipcRenderer} = window.require('electron')
-export default {
+export default {                                   
   name: 'chapter-listing',
   props: ['properties'],
   components: {
@@ -69,7 +74,7 @@ export default {
       exportOnProgress: false,
       exportDefaultName: this.$t('EXPORT_SCENES_LIST').toUpperCase(),
       exportLoading: this.$t('Loading'),
-      bookUUID: ''
+      bookUUID: '',
     }
   },
   computed: {
@@ -85,6 +90,7 @@ export default {
           scope.$store.dispatch('loadScenesByChapter', chapters[chaptersKey].uuid)
           scope.$store.dispatch('loadVersionsByChapter', chapters[chaptersKey].uuid)
         }
+        console.log(chapters, 'heyheyyy')
         return chapters
       },
       set (value) {
@@ -146,6 +152,15 @@ export default {
       const scope = this
       scope.$store.commit('exportCharactersStatusOpen')
       ipcRenderer.send('EXPORT_PDF_SHOW_SCENE', {bookUUID: scope.bookUUID, title: scope.properties.title})
+    },
+    hiddenChapter: function (chapter, event) {
+      var scope = this
+      console.log('HIDDEN ==> ',chapter.hidden)
+      scope.axios
+        .post('http://localhost:3000/chapters/hide', { hidden : chapter.hidden, id: chapter.id, uuid: chapter.uuid })
+        .then(response => {
+        }
+      );
     }
   },
   mounted () {
@@ -160,3 +175,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.chapter-hidden {
+    opacity: 0.6;
+}
+</style>
