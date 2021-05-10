@@ -308,7 +308,8 @@ export default {
               scope.$set(scope.data, 'id', response.data.id)
               scope.$set(scope.data, 'uuid', response.data.uuid)
               scope.$set(scope.data, 'updated_at', response.data.updated_at)
-              scope.$store.dispatch('updateCharacterList', response.data)
+              // scope.$store.dispatch('updateCharacterList', response.data)
+              scope.$store.dispatch('loadCharactersByBook', scope.data.book_id)
 
               scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
               scope.savingInProgress = false
