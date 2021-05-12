@@ -4,6 +4,7 @@
 
 <script>
 import tinymce from 'tinymce'
+import Vue from 'vue'
 // const path = window.require('path')
 export default {
   name: 'TinyMCE',
@@ -211,6 +212,23 @@ export default {
     var vm = this
     vm.initEditor()
     console.log('tinyMCECHapter-uid' + this._uid)
+    /**
+    setTimeout(() => {
+      $('.page-main.dark .tox .tox-edit-area__iframe #tinymce').css('color', '#fff')
+      tinymce.get(vm.$el.id).getBody().style.color = '#fff'
+      console.log('test1')
+    },3000)
+
+    Vue.nextTick(() => {
+      $('.page-main.dark .tox .tox-edit-area__iframe #tinymce').css('color', '#fff')
+      tinymce.get(vm.$el.id).getBody().style.color = '#fff'
+      console.log('test2')
+    })
+    */
+    tinymce.get(vm.$el.id).getBody().style.color = '#000'
+    if ($('.page-main').hasClass('dark')) {
+      tinymce.get(vm.$el.id).getBody().style.color = '#fff'
+    }
   }
 }
 </script>

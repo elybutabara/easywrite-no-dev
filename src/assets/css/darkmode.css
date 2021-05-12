@@ -76,6 +76,8 @@
 .page-main.dark .tox .tox-tbtn__select-label { color:#fff; }
 .page-main.dark .tox .tox-tbtn svg { }
 
+.page-main.dark .tox .tox-edit-area__iframe body { color: #000 !important; }
+
 /* btn-tabs */
 .page-main.dark .btn-tabs .btn-tab { background: var(--thin-navy); color: #fff; }
 .page-main.dark .btn-tabs .btn-tab.active { background: var(--thin-white); color: #222; }
@@ -169,4 +171,4 @@
 /*page course details*/
 .page-main.dark .es-course-details-content .es-page-content { background: #fff; padding-top: 20px; }
 .page-main.dark .lesson-list .lesson-single .footer { background: var(--navy); border-color: var(--navy); }
-.page-main.dark .lesson-list .lesson-single .footer span { color: #fff; }
+.page-main.dark .lesson-list .lesson-single .footer span { color: #fff; }                        
