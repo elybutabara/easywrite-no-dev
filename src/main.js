@@ -130,6 +130,38 @@ let APP = {
       CHAT: 'no-dev'
     }
   },
+  FI_PROD: {
+    API: {
+      URL: 'https://easywrite.fi/app',
+      UPLOAD_URL: 'https://easywrite.fi/uploads',
+      SITE: 'no-dev',
+      CHAT: 'no-dev'
+    }
+  },
+  FI_DEV: {
+    API: {
+      URL: 'https://dev.easywrite.fi/app',
+      UPLOAD_URL: 'https://dev.easywrite.fi/uploads',
+      SITE: 'no-dev',
+      CHAT: 'no-dev'
+    }
+  },
+  DK_PROD: {
+    API: {
+      URL: 'https://easywrite.dk/app',
+      UPLOAD_URL: 'https://easywrite.dk/uploads',
+      SITE: 'no-dev',
+      CHAT: 'no-dev'
+    }
+  },
+  DK_DEV: {
+    API: {
+      URL: 'https://dev.easywrite.dk/app',
+      UPLOAD_URL: 'https://dev.easywrite.dk/uploads',
+      SITE: 'no-dev',
+      CHAT: 'no-dev'
+    }
+  },
   LOCAL: {
     API: {
       URL: 'http://easywrite.local/app',
