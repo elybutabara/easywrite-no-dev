@@ -324,10 +324,14 @@ export default {
     start: function () {
       var scope = this
       scope.endpoint_sync_date = (!scope.synced_date) ? '1970-01-01 00:00:00' : JSON.parse(JSON.stringify(scope.synced_date))
-
+      
       // this is what we store on last synced_date, we will use this as base data for next syncng
       scope.start_synced_date = moment().format('YYYY-MM-DD HH:mm:ss').toString()
 
+      console.log('########################################')
+      console.log('START HERE: endpoint_sync_date',scope.endpoint_sync_date)
+      console.log('START HERE: start_synced_date',scope.start_synced_date)
+      
       var endpoint = scope.endpoints[scope.endpoint_index]
       scope.processEndpoint(endpoint)
     },
@@ -532,7 +536,7 @@ export default {
       for (let i = 0; i < endpoint.downloaded.length; i++) {
         var data = endpoint.downloaded[i]
         data.created_at = scope.timeConvertFromUTC(data.created_at)
-        data.updated_at = scope.timeConvertFromUTC(data.updated_at)
+        data.updated_at = scope.start_synced_date
         // data.sync_version = scope.version
       }
 
