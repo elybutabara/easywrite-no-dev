@@ -327,6 +327,7 @@ export default {
 
       // this is what we store on last synced_date, we will use this as base data for next syncng
       scope.start_synced_date = moment().format('YYYY-MM-DD HH:mm:ss').toString()
+      console.log('start', scope.endpoint_sync_date, scope.start_synced_date)
 
       var endpoint = scope.endpoints[scope.endpoint_index]
       scope.processEndpoint(endpoint)
@@ -532,17 +533,18 @@ export default {
       for (let i = 0; i < endpoint.downloaded.length; i++) {
         var data = endpoint.downloaded[i]
         data.created_at = scope.timeConvertFromUTC(data.created_at)
-        data.updated_at = scope.timeConvertFromUTC(data.updated_at)
-        // data.sync_version = scope.version
+        data.updated_at = scope.timeConvertFromUTC(scope.start_synced_date, true)
+        // data.sync_version = scope.version scope.start_synced_date
       }
 
       var URL = 'http://localhost:3000/' + endpoint.local + '/sync'
 
       var rows = endpoint.downloaded
+      console.log('save data to app', endpoint.downloaded, data.updated_at)
       var chunks = scope.CHUNK_ARRAY(rows, endpoint.chunkSize)
 
       scope.$set(endpoint, 'chunks', [])
-      scope.$set(endpoint, 'uploaded', 0)
+      scope.$set(endpoint, 'uploadeda', 0)
 
       // use this to detect whether or not we move to fetchDataFromWeb
       scope.endpoint_save_local_request_count = chunks.length
@@ -660,11 +662,13 @@ export default {
 
       // done processing all endpoints
       if (scope.endpoint_index == scope.endpoints.length) {
-        scope.LOGTIME('END TIME')
+        scope.LOGTIME('END TIME', scope.endpoint_sync_date, scope.start_synced_date)
         // DISPATCH POST
-        scope.synced_date = scope.start_synced_date
-        // scope.synced_date = moment().format('YYYY-MM-DD HH:mm:ss').toString()
-        scope.saveUserSyncedDate(scope.synced_date)
+        // eslint-disable-next-line camelcase
+        var last_sync_date = scope.start_synced_date
+        // eslint-disable-next-line camelcase
+        scope.synced_date = last_sync_date
+        scope.saveUserSyncedDate(last_sync_date)
         scope.ready = false
         scope.updateAppData()
 
@@ -687,12 +691,17 @@ export default {
     maximize: function () {
       this.minimized = false
     },
-    timeConvertFromUTC: function (datetime) {
+    timeConvertFromUTC: function (datetime, is_updated_at = false) {
       if (datetime === null || datetime === 'undefined') { return null }
 
       // Commented by Ismael: we dont need to convert the date we get from api cause it is coverted already from NORWAY to UTC so the date is already in UTC. The only thing we need to do is convert what we get to local
       // var stillUtc = moment.utc(datetime).toDate()
-      var date = moment(datetime).local().format('YYYY-MM-DD HH:mm:ss')
+      var date = ''
+
+      // eslint-disable-next-line camelcase
+      if (is_updated_at) date = moment(datetime).subtract(1, 'second').format('YYYY-MM-DD HH:mm:ss')
+      else date = moment(datetime).local().format('YYYY-MM-DD HH:mm:ss')
+
       return date
     },
     timeConvertToUTC: function (datetime) {
