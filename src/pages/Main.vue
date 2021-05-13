@@ -336,7 +336,7 @@ export default {
         return
       }
 
-      scope.$store.dispatch('setSyncSource', {source: 'CTA'})
+      scope.$store.dispatch('setSyncSource', { source: 'CTA' })
       scope.$store.commit('startSync')
     }
   },
@@ -387,7 +387,8 @@ export default {
     })
 
     ipcRenderer.on('SYNC_DATA', function (event, data) {
-      scope.CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing', tabData: null, tabTitle: scope.$t('SYNC_DATA'), newTab: true})
+      // scope.CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing', tabData: null, tabTitle: scope.$t('SYNC_DATA'), newTab: true})
+      scope.startSync();
     })
 
     ipcRenderer.on('SHOW_SWAL_TIMESUP', function (event, data) {
