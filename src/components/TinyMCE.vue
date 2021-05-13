@@ -4,6 +4,7 @@
 
 <script>
 import tinymce from 'tinymce'
+import Vue from 'vue'
 // const path = window.require('path')
 export default {
   name: 'TinyMCE',
@@ -176,10 +177,18 @@ export default {
   mounted () {
     var vm = this
     vm.initEditor()
+
+    /*
     if (this.darkmode) {
       tinymce.get(vm.$el.id).getBody().style.color = '#fff !important'
     } else {
       tinymce.get(vm.$el.id).getBody().style.color = '#000 !important'
+    }
+    */
+
+    tinymce.get(vm.$el.id).getBody().style.color = '#000'
+    if ($('.page-main').hasClass('dark')) {
+      tinymce.get(vm.$el.id).getBody().style.color = '#fff'
     }
   }
 }
