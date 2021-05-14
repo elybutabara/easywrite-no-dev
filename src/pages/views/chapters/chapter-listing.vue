@@ -90,7 +90,6 @@ export default {
           scope.$store.dispatch('loadScenesByChapter', chapters[chaptersKey].uuid)
           scope.$store.dispatch('loadVersionsByChapter', chapters[chaptersKey].uuid)
         }
-        console.log(chapters, 'heyheyyy')
         return chapters
       },
       set (value) {
