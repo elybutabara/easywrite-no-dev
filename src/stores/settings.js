@@ -4,7 +4,7 @@ export default {
   state: {
     darkmode: true,
     collapsedSideNav: false,
-    autosync: false,
+    autosync: true,
     syncStatus: 'idle',
     syncSource: 'initial', // initial (on app load), CTA (when manually started)
   },
@@ -25,7 +25,7 @@ export default {
       return state.syncSource
     }
   },
-  mutations: { 
+  mutations: {
     toggleTheme (state) {
       state.darkmode = !state.darkmode
     },
