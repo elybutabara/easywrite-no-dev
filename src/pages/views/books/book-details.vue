@@ -64,6 +64,7 @@ export default {
   name: 'book-details',
   props: ['properties'],
   data: function () {
+    var scope = this
     return {
       page: {
         is_ready: false,
@@ -82,7 +83,13 @@ export default {
       show_feedbacks: true,
       show_notes: false,
       feedbacks: [],
-      show_export_book_chapter_scene: false
+      show_export_book_chapter_scene: false,
+      authorProgress: {
+        author_id: scope.properties.author_id,
+        relation_id: '',
+        is_for: 'chapter',
+        total_words: 0
+      },
     }
   },
   computed: {
@@ -133,6 +140,18 @@ export default {
               .then(response => {
                 if (response.data) {
                   scope.$store.dispatch('updateChapterList', response.data)
+
+                  scope.authorProgress.total_words = scope.WORD_COUNT(response.data.content)
+                  scope.authorProgress.relation_id = response.data.uuid
+                 
+                  scope.axios
+                  .post('http://localhost:3000/author-personal-progress', scope.authorProgress)
+                  .then(response_pp => {
+                    // scope.authorProgress = response_pp.data
+                    // scope.base_content_count = scope.WORD_COUNT(scope.data.content)
+                    scope.$store.dispatch('loadAuthorPersonalProgress', {authorId: response_pp.data.author_id})
+                  })
+                  
                 }
               })
           }
