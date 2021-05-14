@@ -147,8 +147,8 @@ export default {
                   scope.axios
                   .post('http://localhost:3000/author-personal-progress', scope.authorProgress)
                   .then(response_pp => {
-                    // scope.authorProgress = response_pp.data
-                    // scope.base_content_count = scope.WORD_COUNT(scope.data.content)
+                    scope.authorProgress = response_pp.data
+                    scope.base_content_count = scope.WORD_COUNT(scope.data.content)
                     scope.$store.dispatch('loadAuthorPersonalProgress', {authorId: response_pp.data.author_id})
                   })
                   
