@@ -110,7 +110,7 @@ export default {
   BELOW_ARE_THE_LIST_OF_CHARACTERS_UNDER: 'Below are the list of characters under',
   BELOW_ARE_THE_LIST_OF_ITEMS_UNDER: 'Below are the list of items under',
   BELOW_ARE_THE_LIST_OF_LOCATIONS_UNDER: 'Below are the list of locations under',
-  BELOW_ARE_THE_LIST_OF_SCENES_UNDER: 'Below are the list of scenes under',
+  BELOW_ARE_THE_LIST_OF_SCENES_UNDER: 'Below are the list of chapters under',
   BIO: 'Bio',
   BIRTHDATE: 'Birthdate',
   BOOK: 'Book',
