@@ -127,7 +127,7 @@ export default {
           })
 
           for (let i = 0; i < chapters.length; i++) {
-            wholeChapter.push({book_id: data.book.uuid, title: chapters[i].title, chapter_version: {content: chapters[i].fileContent}})
+            wholeChapter.push({book_id: data.book.uuid, title: chapters[i].title, content: chapters[i].fileContent, chapter_version: {content: chapters[i].fileContent, is_current_version: 1}})
             axios
               .post('http://localhost:3000/chapters', wholeChapter[i])
               .then(response => {
