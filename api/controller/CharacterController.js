@@ -11,7 +11,7 @@ class CharacterController {
       .where('fullname', 'like', '%' + param.search + '%')
       .withGraphJoined('book')
       .whereNull('book_characters.deleted_at')
-      .orderBy('book_characters.fullname')
+      .orderByRaw('lower("book_characters.fullname")')
 
     return characters
   }
