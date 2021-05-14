@@ -681,9 +681,12 @@ export default {
       // send data to Main.vue
       scope.$parent.itemsCounts['notifications'] = scope.itemsCounts['notifications']
       scope.$parent.itemsCounts['invitations'] = scope.itemsCounts['invitations']
-
-      scope.$parent.itemsCounts['all'] = scope.itemsCounts['all']
-      scope.$parent.itemsCounts = scope.itemsCounts
+      
+      // did not incude this since it makes message count 0, only notification and invitation is needed here. all is recomputed in main
+      // scope.$parent.itemsCounts['all'] = scope.itemsCounts['all']
+      // console.log('messages form parent in message ceter', scope.$parent.itemsCounts['messages'])
+      // console.log('message center allllllllllllllllllllllllllllllll', scope.$parent.itemsCounts['all'])
+      // scope.$parent.itemsCounts = scope.itemsCounts
       scope.$parent.countNotificationItemTotal()
     },
     updateNotificationStatus (model) {
@@ -759,9 +762,9 @@ export default {
     })
   },
   beforeDestroy: function () {
-    delete window.AppMessageCenterPopup
+    // delete window.AppMessageCenterPopup
 
-    console.log('window.AppMessageCenterPopup destroyed')
+    // console.log('window.AppMessageCenterPopup destroyed')
   },
   created () {
     const scope = this
