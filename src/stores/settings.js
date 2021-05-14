@@ -4,7 +4,7 @@ export default {
   state: {
     darkmode: true,
     collapsedSideNav: false,
-    autosync: true,
+    autosync: false,
     syncStatus: 'idle',
     syncSource: 'initial', // initial (on app load), CTA (when manually started)
   },
