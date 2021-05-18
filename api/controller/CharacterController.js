@@ -5,14 +5,13 @@ const moment = require('moment')
 const { Book, Character, RelationDetail, User } = require(path.join(__dirname, '..', 'models'))
 
 class CharacterController {
-  static getAllByBookId (param) {
-    var characters = Character.query()
+  static async getAllByBookId (param) {
+    var characters = await Character.query()
       .where('book_id', param.bookId)
       .where('fullname', 'like', '%' + param.search + '%')
       .withGraphJoined('book')
       .whereNull('book_characters.deleted_at')
-      .orderByRaw('lower("book_characters.fullname")')
-
+      .orderByRaw('lower(book_characters.fullname)')
     return characters
   }
 
