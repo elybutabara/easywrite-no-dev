@@ -15,6 +15,7 @@ class SceneCharacterController {
   }
 
   static async save (data) {
+    /*
     if (data.updated_at) delete data.updated_at
     const save = await SceneCharacter.query().upsertGraph([data])
       .withGraphFetched('scene')
@@ -22,6 +23,19 @@ class SceneCharacterController {
       .first()
 
     return save
+    */
+
+    var saved = await SceneCharacter.query()
+        .patch({ deleted_at: null, book_scene_id: data.book_scene_id, book_character_id: data.book_character_id })
+        .where('book_scene_id', '=', data.book_scene_id)
+        .where('book_character_id', '=', data.book_character_id)
+
+    if (!saved || saved === 0) {
+      saved = await SceneCharacter.query().insert({ book_scene_id: data.book_scene_id, book_character_id: data.book_character_id })
+    }
+
+    return saved
+
   }
 
   static async saveBatch (data) {
