@@ -173,4 +173,13 @@ router.delete('/:bookId', async function (req, res) {
     .json(book)
 })
 
+
+router.post('/:bookId/replace-words', async function (req, res) {
+  const book = await BookController.replaceWords(req.body)
+
+  res
+    .status(200)
+    .json(book)
+})
+
 module.exports = router
