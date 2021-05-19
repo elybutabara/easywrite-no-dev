@@ -6,6 +6,8 @@
             <h4 class="main-title"><i class="fas fa-book mr-1"></i> {{ properties.title }}</h4>
           </div>
           <div class="book-panel-right">
+            <button class="es-button btn-sm white" @click="toggleFindandReplace()">REPLACE</button>
+
             <button
               class="es-button btn-sm white btn-storyline"
               @click="/*$store.dispatch('loadDetailedChaptersByBookId', book_id);*/
@@ -40,6 +42,7 @@
       </div>
     </div>
     <div class="es-page-content" id="custom-scrollbar">
+      <FindAndReplace :properties="properties" v-show="show_find_and_replace"></FindAndReplace>
         <div class="mb-5">
             <h4>{{ $t('ABOUT') }}</h4>
             <div v-html="properties.about"></div>
@@ -57,6 +60,7 @@ import axios from 'axios'
 import { mapGetters } from 'vuex'
 import Feedback from '../../../components/Feedback'
 import ExportBookChapterScene from '../../../components/ExportBookChapterScene'
+import FindAndReplace from '../../../components/FindAndReplace'
 
 const {ipcRenderer} = window.require('electron')
 
@@ -90,6 +94,7 @@ export default {
         is_for: 'chapter',
         total_words: 0
       },
+      show_find_and_replace: false,
     }
   },
   computed: {
@@ -97,9 +102,14 @@ export default {
   },
   components: {
     Feedback,
-    ExportBookChapterScene
+    ExportBookChapterScene,
+    FindAndReplace
   },
   methods: {
+    toggleFindandReplace() {
+      var scope = this
+      scope.show_find_and_replace = !scope.show_find_and_replace
+    },
     toggleExportBookChapterScene () {
       var scope = this
       scope.show_export_book_chapter_scene = !scope.show_export_book_chapter_scene

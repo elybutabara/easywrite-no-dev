@@ -4,6 +4,22 @@ const path = require('path')
 const { User, Book, BookGenre } = require(path.join(__dirname, '..', 'models'))
 
 class BookController {
+  static async replaceWords (params, bookId) {
+    console.log(params, 'ypw')
+    console.log(bookId, 'buk')
+    const book = await Book.query().where('id', bookId)
+    console.log(book[0].title, 'reabbuk')
+    console.log(book, 'rea2buk')
+
+    var str = book[0].about
+    str.replace(params.find, params.replace)
+    var book_data = { about: 'okay' }
+    console.log(book_data, 'bookdata')
+    const saveBook = await Book.query().upsertGraph([book_data]).first()
+    console.log('na save ni?', saveBook)
+    const item = Book.query().findById(saveBook.uuid)
+  }
+
   static async getAllBooksByUserId (userId) {
     const user = await User.query()
       .findById(userId)
