@@ -6,6 +6,15 @@ const router = express.Router()
 
 const { ChapterController, ItemController, CharacterController, LocationController, SceneController, BookController } = require(path.join(__dirname, '..', 'controllers'))
 
+router.post('/:bookId/replace-words', async function (req, res) {
+  
+  const book = await BookController.replaceWords(req.body, req.params.bookId)
+
+  res
+    .status(200)
+    .json(book)
+})
+
 router.get('/:bookId/chapters', async function (req, res) {
   const param = {
     bookId: req.params.bookId,
@@ -134,6 +143,7 @@ router.get('/genres', async function (req, res) {
 })
 
 router.post('/', async function (req, res) {
+  console.log('log', req.body)
   const book = await BookController.save(req.body)
 
   res

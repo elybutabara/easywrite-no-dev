@@ -96,6 +96,7 @@ export default {
         is_for: 'chapter',
         total_words: 0
       },
+      show_find_and_replace: false,
     }
   },
   computed: {
