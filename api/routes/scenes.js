@@ -121,6 +121,14 @@ router.post('/sync', async function (req, res) {
     .json(row)
 })
 
+router.post('/hide', async function (req, res) {
+  const scene = await SceneController.hide(req.body)
+
+  res
+    .status(200)
+    .json(scene)
+})
+
 router.get('/:sceneId', async function (req, res) {
   const scene = await SceneController.getSceneById(req.params.sceneId)
 

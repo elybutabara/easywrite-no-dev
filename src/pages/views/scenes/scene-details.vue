@@ -8,6 +8,10 @@
                 </div>
                 <div class="book-panel-right">
                     <!-- <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>-->
+                    <button class="es-button btn-sm white" @click="toggleHiddenScene()">
+                      <span v-if="scene_hidden" class="d-flex align-items-center"><i class="las la-eye-slash mr-1"></i> Scene Hidden</span>
+                      <span v-else class="d-flex align-items-center"><i class="las la-eye mr-1"></i> Hide Scene</span>
+                    </button>
                     <button class="es-button icon-only warning" @click="toggleFeedbacks()"><i class="las la-comments"></i><!--{{$t('FEEDBACKS').toUpperCase()}}--></button>
                     <button class="es-button icon-only" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.scene.uuid, tabComponent: 'scene-form', tabData: { book: book, scene: properties.scene, chapter: chapter }, tabTitle: $t('EDIT')+ ' - ' +  properties.scene.title, newTab: true})"><i class="las la-highlighter"></i><!--{{$t('EDIT').toUpperCase()}}--></button>
                     <button class="es-button icon-only danger" @click="deleteScene(properties.scene)"><i class="las la-trash-alt"></i><!--{{$t('DELETE').toUpperCase()}}--></button>
@@ -153,6 +157,7 @@ export default {
     // eslint-disable-next-line no-unused-vars
     var scope = this
     return {
+      scene_hidden: false,
       scene_version: {
         book_scene_id: null,
         change_description: null,
@@ -256,6 +261,27 @@ export default {
     }
   },
   methods: {
+    toggleHiddenScene: function () {
+      var scope = this
+      scope.axios
+        .post('http://localhost:3000/scenes/hide', { hidden : !scope.scene_hidden, id: scope.scene.id, uuid: scope.scene.uuid })
+        .then(response => {
+          if (response.status == 200) {
+            console.log('toggleHiddenChapter res', response)
+            scope.scene_hidden = !scope.scene_hidden
+
+            window.swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Changes ' + scope.$t('SUCCESSFULY_SAVED'),
+              showConfirmButton: false,
+              timer: 1500
+            })
+          }
+
+        }
+      );
+    },
     setDescription (value) {
       var scope = this
       scope.tempVersionDesc = value
@@ -405,6 +431,11 @@ export default {
   mounted () {
     var scope = this
 
+    if (scope.scene.hidden) {
+      scope.scene_hidden = true
+    }
+    console.log(scope.scene_hidden, 'mounted hidden')
+
     if (scope.properties.openfeedback) {
       scope.show_feedbacks = true
     }
@@ -418,6 +449,9 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    .las.la-eye,
+    .las.la-eye-slash { font-size: 16px; }
+
     .es-breadcrumb.special{ max-width: none !important;}
     .export-content{ text-align: right; margin-bottom: 20px;}
     .es-scene-details-tab { display:flex; border-bottom:1px solid #ccc; padding:0px 30px; height:70px; background:#fff; }
