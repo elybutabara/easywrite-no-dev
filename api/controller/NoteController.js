@@ -56,7 +56,10 @@ class NoteController {
       let parentID = notes[i].parent_id
 
       if (parent === 'chapter') {
-        notes[i].chapter = await Chapter.query().findById(parentID).whereNull('deleted_at').where('hidden', '!=', 1)
+        notes[i].chapter = await Chapter.query().findById(parentID).whereNull('deleted_at').where(builder => {
+          builder.where('hidden','=', 0)
+          .orWhereNull('hidden');
+        })
         notes[i].scene = null
         if (notes[i].chapter) {
           notes[i].book = await Book.query().findById(notes[i].chapter.book_id).whereNull('deleted_at').whereNotIn('uuid', bookIRead)
