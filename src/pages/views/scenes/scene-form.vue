@@ -14,7 +14,7 @@
             <div class="book-panel-right">
                 <button ref="button" v-show="data.id!=null" class="es-button btn-sm white" :disabled="scene_version_modal_is_open" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
                 <button :disabled="isCurrentlySaving" v-if="data.id != null" class="es-button btn-sm white" @click="saveScene()">{{$t('SAVE_CHANGES')}}</button>
-                <button :disabled="isCurrentlySaving" v-else class="es-button btn-sm white" @click="saveScene()">{{$t('SAVE')}}</button>
+                <button :disabled="isCurrentlySaving || !isSaveEnabled" v-else class="es-button btn-sm white" @click="saveScene()">{{$t('SAVE')}}</button>
             </div>
         </div>
     </div>
@@ -504,7 +504,8 @@ export default {
       auto_save_scene_interval: null,
       scene_version_modal_is_open: false,
       do_scene_auto_save: true,
-      isCurrentlySaving: false
+      isCurrentlySaving: false,
+        isSaveEnabled: false,
     }
   },
   components: {
@@ -1154,6 +1155,9 @@ export default {
           }
         }
         scope.page.is_ready = true
+          setTimeout(function(){
+             scope.isSaveEnabled = true;
+          }, 5000);
       }
     }
 
@@ -1239,4 +1243,11 @@ export default {
   }
 
   .history-content { max-height: 400px; overflow-y: auto }
+
+    .es-button[disabled] {
+        background: #f1f3f4;
+        border-color: #f1f3f4;
+        color: #0f1c24;
+        cursor: context-menu;
+    }
 </style>

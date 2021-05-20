@@ -9,6 +9,11 @@
               <div class="book-panel-right">
                 <button class="es-button btn-sm white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
                 <button class="es-button btn-sm white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + chapter.uuid, tabComponent: 'scene-form',  tabData: { book: book, chapter: chapter, scene: null }, tabTitle: 'New Scene', newTab: true})">{{$t('ADD_NEW_SCENE').toUpperCase()}}</button>
+                <button class="es-button btn-sm white" @click="toggleHiddenChapter()">
+                  <span v-if="chapter_hidden" class="d-flex align-items-center"><i class="las la-eye-slash mr-1"></i> Chapter Hidden</span>
+                  <span v-else class="d-flex align-items-center"><i class="las la-eye mr-1"></i> Hide Chapter</span>
+                </button>
+                
                 <!-- <button ref="button" class="es-button btn-sm white" :disabled="busy" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button> -->
                 <button class="es-button icon-only warning" @click="toggleFeedbacks()"><i class="las la-comments"></i><!--{{$t('FEEDBACKS').toUpperCase()}}--></button>
                 <button class="es-button icon-only" @click="CHANGE_COMPONENT({ tabKey: 'chapter-form-' + chapter.uuid, tabComponent: 'chapter-form',  tabData: { book: book, chapter:  chapter }, tabTitle: $t('EDIT')+ ' - ' +  chapter.title, newTab: true })"><i class="las la-highlighter"></i><!--{{$t('EDIT').toUpperCase()}}--></button>
@@ -171,7 +176,8 @@ export default {
       notification: null,
       nextType: '',
       prevType: '',
-      previousChapter: ''
+      previousChapter: '',
+      chapter_hidden: false,
     }
   },
   components: {
@@ -260,6 +266,27 @@ export default {
     }
   },
   methods: {
+    toggleHiddenChapter: function () {
+      var scope = this
+      scope.axios
+        .post('http://localhost:3000/chapters/hide', { hidden : !scope.chapter_hidden, id: scope.chapter.id, uuid: scope.chapter.uuid })
+        .then(response => {
+          if (response.status == 200) {
+            console.log('toggleHiddenChapter res', response)
+            scope.chapter_hidden = !scope.chapter_hidden
+
+            window.swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Changes ' + scope.$t('SUCCESSFULY_SAVED'),
+              showConfirmButton: false,
+              timer: 1500
+            })
+          }
+
+        }
+      );
+    },
     // Required for geting value from TinyMCE content
     setDescription (value) {
       var scope = this
@@ -390,6 +417,11 @@ export default {
   async mounted () {
     var scope = this
 
+    if (scope.chapter.hidden) {
+      scope.chapter_hidden = true
+    }
+    console.log(scope.chapter_hidden, 'mounted hidden')
+
     if (scope.properties.openfeedback) {
       scope.show_feedbacks = true
     }
@@ -432,4 +464,7 @@ export default {
 
     .image-container { text-align: center; }
     .image-container img { width:100%; max-width:250px; }
+
+    .las.la-eye,
+    .las.la-eye-slash { font-size: 16px; }
 </style>

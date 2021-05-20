@@ -167,9 +167,6 @@ class ChapterController {
       .where('book_id', '=', bookUUID)
       .where('updated_at', '>', user.synced_at)
 
-    console.log('BOOK UO ==> ', bookUUID)
-    console.log('chapters ==> ', rows.length)
-
     return rows
   }
 

@@ -240,6 +240,10 @@ export default {
       let scope = this
       let scene = this.scene
       let chapter = this.chapter
+
+      // this is for other scene, since other scne dont have chapter
+      if (!chapter) return null
+
       let nextScene = this.$store.getters.getNextScene(chapter, scene)
       // check if there is a next scene
       if (nextScene != null) {
