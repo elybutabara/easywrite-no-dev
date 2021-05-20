@@ -118,6 +118,8 @@ export default {
               clearTimeout(timer)
             }
 
+            scope.emitTyped()
+
             timer = setTimeout(function () {
               window.jQuery('#' + thisId).val(editor.getContent()).click()
             }, 2000)
@@ -151,6 +153,11 @@ export default {
       //   this.initConfig.content_style = 'body { color: #000; }'
       // }
 
+      this.initConfig.content_style = this.darkmode?'body { color: #fff; }':'body { color: #000; }'
+      if(vm.params.type = 'user_treadline'){
+        this.initConfig.content_style = 'body { color: #000; }'
+      }
+
       this.initConfig.valid_children = '+body[style]'
 
       tinymce.init(vm.initConfig)
@@ -162,7 +169,10 @@ export default {
     },
     emitToParent (event) {
       this.$emit('getEditorContent', this.$el.value)
-    }
+    },
+   emitTyped () {
+     this.$emit('typing', this.$el)
+   }
   },
   updated: function () {
     // Since we're using Ajax to load data, hence we have to use this hook because when parent's data got loaded, it will fire this hook.
@@ -186,10 +196,10 @@ export default {
     }
     */
 
-    tinymce.get(vm.$el.id).getBody().style.color = '#000'
-    if ($('.page-main').hasClass('dark')) {
-      tinymce.get(vm.$el.id).getBody().style.color = '#fff'
-    }
+    // tinymce.get(vm.$el.id).getBody().style.color = '#000'
+    // if ($('.page-main').hasClass('dark')) {
+    //   tinymce.get(vm.$el.id).getBody().style.color = '#fff'
+    // }
   }
 }
 </script>

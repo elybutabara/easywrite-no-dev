@@ -6,6 +6,7 @@
             <h4 class="main-title"><i class="fas fa-book mr-1"></i> {{ properties.title }}</h4>
           </div>
           <div class="book-panel-right">
+            <button class="es-button btn-sm white" v-if="user.data.is_premium_user" @click="showTreadline()">Treadline</button>
             <button
               class="es-button btn-sm white btn-storyline"
               @click="/*$store.dispatch('loadDetailedChaptersByBookId', book_id);*/
@@ -62,7 +63,7 @@ const {ipcRenderer} = window.require('electron')
 
 export default {
   name: 'book-details',
-  props: ['properties'],
+  props: ['properties', 'user'],
   data: function () {
     var scope = this
     return {
@@ -276,7 +277,14 @@ export default {
         scope.exportOnProgress = false
         scope.export_book = scope.$t('EXPORT_BOOK')
       })
-    }
+    },
+
+    showTreadline: function () {
+
+      var scope = this
+      scope.CHANGE_COMPONENT({tabKey: 'user-treadline', tabComponent: 'user-treadline', tabData: {bookId: scope.properties.uuid}, tabTitle: 'User Treadline'})
+
+    },
   },
   mounted () {
     var scope = this
