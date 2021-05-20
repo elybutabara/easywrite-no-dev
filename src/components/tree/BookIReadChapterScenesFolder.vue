@@ -1,8 +1,11 @@
 <template>
     <draggable v-if="component.is_ready" tag="ul" v-model="scenes" draggable=".handle" class="level-4">
-        <li v-bind:key="scene.id" v-for="scene in scenes" class="handle ellipsis-2">
+      <template  v-for="scene in scenes" >
+        <li v-bind:key="scene.id"  class="handle ellipsis-2" v-if="!scene.hidden">
             <div @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + scene.uuid, tabComponent: 'books-i-read-scene-details',  tabData: { book: book, scene: scene, chapter: chapter}, tabTitle: scene.title})" class="label"><span><img  src="@/assets/img/icons/scene.svg"> {{ scene.title || 'Untitled' }}</span></div>
         </li>
+      </template>
+        
     </draggable>
 </template>
 <script>

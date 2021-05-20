@@ -307,11 +307,13 @@ class SceneController {
         character_id_vp: row.character_id_vp,
         viewpoint_description: row.viewpoint_description,
         storyline_hidden: row.storyline_hidden,
+        hidden: row.hidden,
         created_at: row.created_at,
         updated_at: row.updated_at,
         deleted_at: row.deleted_at,
         from_local: row.from_local
       }
+      
       var data = await Scene.query()
         .patch(columns)
         .where('uuid', '=', row.uuid)
