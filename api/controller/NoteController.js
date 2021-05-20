@@ -17,25 +17,25 @@ class NoteController {
   }
 
   static getAllNotesByChapterId (authorId, chapterId) {
-    var feedbacks = Note.query()
+    var notes = Note.query()
       .where('parent', 'chapter')
       .where('parent_id', chapterId)
       .where('author_id', authorId)
       .withGraphJoined('author', {maxBatchSize: 1})
       .orderBy('id', 'asc')
 
-    return feedbacks
+    return notes
   }
 
   static getAllNotesBySceneId (authorId, sceneId) {
-    var feedbacks = Note.query()
+    var notes = Note.query()
       .where('parent', 'scene')
       .where('parent_id', sceneId)
       .where('author_id', authorId)
       .withGraphJoined('author', {maxBatchSize: 1})
       .orderBy('id', 'asc')
 
-    return feedbacks
+    return notes
   }
 
   static async getAllNotesByAuthor (authorId) {
@@ -65,10 +65,16 @@ class NoteController {
           }
         }
       } else if (parent === 'scene') {
-        notes[i].scene = await Scene.query().findById(parentID).whereNull('deleted_at').where('hidden', '!=', 1)
-        notes[i].chapter = notes[i].scene ? await Chapter.query().findById(notes[i].scene.chapter_id).whereNull('deleted_at') : ''
+        notes[i].scene = await Scene.query().findById(parentID).whereNull('deleted_at')
+        .where(builder => {
+          builder.where('hidden','=', 0)
+          .orWhereNull('hidden');
+        })
+
+        notes[i].chapter = notes[i].scene ? await Chapter.query().findById(notes[i].scene.chapter_id).whereNull('deleted_at') : null
         if (notes[i].chapter) {
-          notes[i].book = await Book.query().findById(notes[i].scene.book_id).whereNull('deleted_at').whereNotIn('uuid', bookIRead)
+          // notes[i].book = await Book.query().findById(notes[i].scene.book_id).whereNull('deleted_at').whereNotIn('uuid', bookIRead)
+          notes[i].book = await Book.query().findById(notes[i].scene.book_id).whereNull('deleted_at')
           if (notes[i].book) {
             notDeletedLinkOnNote.push(notes[i])
           }
