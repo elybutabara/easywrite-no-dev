@@ -576,15 +576,18 @@ export default {
 
       console.log('saveAuthorPersonalProgress')
       console.log('prev total_words', scope.authorProgress.total_words)
-      console.log('prev cont count', scope.WORD_COUNT(scope.data.content))
+      console.log('prev cont count', scope.WORD_COUNT(scope.data.content), scope.data.content)
       console.log('prev base_content_count', scope.base_content_count)
 
+      // scope.tinyEditorAccess.plugins.wordcount.getCount() - USE THE WORDCOUNT FROM TINTMCE INSTEAD
       if (scope.authorProgress.uuid) {
         scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.WORD_COUNT(scope.data.content) - scope.base_content_count)
+        // scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.tinyEditorAccess.plugins.wordcount.getCount() - scope.base_content_count)
       } else {
         scope.authorProgress.author_id = scope.$store.getters.getAuthorID
         scope.authorProgress.relation_id = relationId
         scope.authorProgress.total_words = scope.WORD_COUNT(scope.data.content) - scope.base_content_count
+        // scope.authorProgress.total_words = scope.tinyEditorAccess.plugins.wordcount.getCount() - scope.base_content_count
       }
 
       console.log('new total_words', scope.authorProgress.total_words)
@@ -594,6 +597,7 @@ export default {
         .then(response => {
           scope.authorProgress = response.data
           scope.base_content_count = scope.WORD_COUNT(scope.data.content)
+          // scope.base_content_count = scope.tinyEditorAccess.plugins.wordcount.getCount()
           scope.$store.dispatch('loadAuthorPersonalProgress', {authorId: response.data.author_id})
         })
     },
@@ -713,6 +717,7 @@ export default {
         scope.setBaseChapterVal(scope.data)
 
         scope.base_content_count = scope.WORD_COUNT(scope.baseChapterCont)
+        // scope.base_content_count = scope.tinyEditorAccess.plugins.wordcount.getCount()
 
         // progress
         if (progress) {

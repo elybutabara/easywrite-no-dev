@@ -206,13 +206,12 @@ export default {
       // eslint-disable-next-line no-useless-escape
       var stripedHtml = content.replace(/<br\s*[\/]?>/gi, ' ')
       stripedHtml = stripedHtml.replace(/<[^>]+>/g, '') // Remove html tags
-      stripedHtml = stripedHtml.replace(/&nbsp;/g, '')// Remove &nbsp;
+      stripedHtml = stripedHtml.replace(/&nbsp;/g, ' ')// Remove &nbsp; //newly added - replace it with a space
       // stripedHtml = stripedHtml.replace(/[0-9]/gi, '') // Remove numbers
       stripedHtml = stripedHtml.replace(/\n/g, ' ') // exclude newline with a start spacings
       stripedHtml = stripedHtml.replace(/(^\s*)|(\s*$)/gi, '')// exclude  start and end white-space
       stripedHtml = stripedHtml.replace(/[ ]{2,}/gi, ' ')// 2 or more space to 1
       stripedHtml = stripedHtml.replace(/[^\w\s] [^\w\s] /gi, ' ') // Remove all special char
-
       return stripedHtml.split(' ').filter(function (str) { return str !== '' }).length
     },
     GET_AUTHOR_PERSONAL_PROGRESS: function (progress = 'all_time') {
