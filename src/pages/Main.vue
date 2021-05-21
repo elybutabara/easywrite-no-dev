@@ -101,7 +101,7 @@
                 <location-listing :key="tab.key" v-if="tab.component == 'location-listing'" :properties="tab.data"></location-listing>
                 <character-listing :key="tab.key" v-if="tab.component == 'character-listing'" :properties="tab.data"></character-listing>
 
-                <book-details :key="tab.key" v-if="tab.component == 'book-details'" :properties="tab.data"></book-details>
+                <book-details :key="tab.key" v-if="tab.component == 'book-details'" :properties="tab.data" :user="user"></book-details>
                 <chapter-details :key="tab.key" v-if="tab.component == 'chapter-details'" :properties="tab.data"></chapter-details>
                 <scene-details :key="tab.key" v-if="tab.component == 'scene-details'" :properties="tab.data"></scene-details>
                 <item-details :key="tab.key" v-if="tab.component == 'item-details'" :properties="tab.data"></item-details>
@@ -131,6 +131,8 @@
 
                 <note-listing :key="tab.key" v-if="tab.component == 'note-listing'" :properties="tab.data"></note-listing>
                 <webinar-listing :key="tab.key" v-if="tab.component == 'webinar-listing'" :properties="tab.data"></webinar-listing>
+
+                <user-treadline :key="tab.key" v-if="tab.component == 'user-treadline'" :properties="tab.data" :user="user"></user-treadline>
             </div>
         </div>
     </div>
@@ -182,6 +184,7 @@ import CourseListing from '@/pages/views/course/course-listing'
 
 import NoteListing from '@/pages/views/notes/note-listing'
 import WebinarListing from '@/pages/views/webinars/webinar-listing'
+import UserTreadline from '@/pages/views/treadline/user-treadline.vue'
 // const electron = window.require('electron')
 // const remote = electron.remote
 // const loginInfo = remote.getGlobal('loginInfo')
@@ -194,6 +197,7 @@ const {ipcRenderer} = electron
 
 export default {
   name: 'Main',
+
   data: function () {
     return {
       ready: false,
@@ -256,7 +260,8 @@ export default {
     'course-listing': CourseListing,
     'lesson-details': LessonDetails,
     'note-listing': NoteListing,
-    'webinar-listing': WebinarListing
+    'webinar-listing': WebinarListing,
+    'user-treadline': UserTreadline,
   },
   methods: {
     logout () {
@@ -323,7 +328,6 @@ export default {
       var scope = this
       scope.itemsCounts['all'] = scope.itemsCounts['messages'] + scope.itemsCounts['invitations'] + scope.itemsCounts['notifications']
       scope.notificationCount_ = scope.itemsCounts['all']
-      // console.log(scope.itemsCounts)
       return scope.itemsCounts['all']
     },
     goToNotes: function () {
