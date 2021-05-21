@@ -15,6 +15,7 @@ class SceneLocationController {
   }
 
   static async save (data) {
+    /*
     if (data.updated_at) delete data.updated_at
     const save = await SceneLocation.query().upsertGraph([data])
       .withGraphFetched('scene')
@@ -22,6 +23,19 @@ class SceneLocationController {
       .first()
 
     return save
+    */
+
+    var saved = await SceneLocation.query()
+        .patch({ deleted_at: null, book_scene_id: data.book_scene_id, book_location_id: data.book_location_id })
+        .where('book_scene_id', '=', data.book_scene_id)
+        .where('book_location_id', '=', data.book_location_id)
+
+    if (!saved || saved === 0) {
+      saved = await SceneLocation.query().insert({ book_scene_id: data.book_scene_id, book_location_id: data.book_location_id })
+    }
+
+    return saved
+
   }
 
   static async saveBatch (data) {
