@@ -31,4 +31,21 @@ router.post('/save', async function (req, res){
       .json(save)
 })
 
+
+router.get('/syncable', async function (req, res) {
+  const rows = await TreadlineController.getSyncable(req)
+
+  res
+    .status(200)
+    .json(rows)
+})
+
+router.post('/sync', async function (req, res) {
+    const row = await TreadlineController.sync(req.body)
+  
+    res
+      .status(200)
+      .json(row)
+})
+
 module.exports = router
