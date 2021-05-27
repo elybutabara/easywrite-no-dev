@@ -20,6 +20,20 @@ router.get('/chapter/:chapterId/author/:authorId', async function (req, res) {
         .json(comments)
 });
 
+router.get('/scene/:sceneId/author/:authorId', async function (req, res) {
+    const param = {
+        parent_id: req.params.sceneId,
+        parent: 'scene',
+        current_author: req.params.authorId
+    };
+
+    const comments = await CommentController.filterComment(param);
+
+    res
+        .status(200)
+        .json(comments)
+});
+
 router.post('/', async function( req, res ) {
     const scene = await CommentController.save(req.body);
 

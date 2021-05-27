@@ -897,7 +897,7 @@ p, a, li, span, label, button, div { font-family: "Opensans" !important; font-si
 .es-chapter-details-tab-content { position:relative; padding:30px; background:#fff; height:calc(100vh - 302px); overflow-y:auto; display:block; }
 .es-chapter-details-tab-content.no-padding { padding:0px; }
 .es-chapter-details-tab-content.active { display:block; }
-.es-chapter-details-tab-content p {
+.es-chapter-details-tab-content p, .es-scene-details-tab-content P {
   margin-bottom: 0;
 }
 

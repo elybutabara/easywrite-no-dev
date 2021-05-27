@@ -13,6 +13,13 @@ export default {
             }
             return []
         },
+
+        getCommentsByScene: state => (sceneUUID) => {
+            if (state.comments.scenes.hasOwnProperty(sceneUUID)) {
+                return state.comments.scenes[sceneUUID].rows
+            }
+            return []
+        },
     },
 
     mutations: {
@@ -21,6 +28,13 @@ export default {
             let comments = payload.comments
             Vue.set(state.comments, 'chapters', {chapterID: {rows: []}})
             state.comments.chapters[chapterID] = {is_open: false, rows: comments.data}
+        },
+
+        loadCommentsByScene(state, payload) {
+            let sceneID = payload.scene_id;
+            let comments = payload.comments;
+            Vue.set(state.comments, 'scenes', { sceneID: { rows: [] } })
+            state.comments.scenes[sceneID] = { is_open: false, rows: comments.data }
         },
 
         removeCommentFromList (state, payload) {
@@ -114,6 +128,13 @@ export default {
             let authorID = rootGetters.getAuthorID;
             let comments = await axios.get('http://localhost:3000/comments/chapter/' + chapterID + '/author/' + authorID);
             commit('loadCommentsByChapter', {chapter_id: chapterID, comments: comments})
+        },
+
+        async loadCommentsByScene ({ commit, state, rootGetters }, payload) {
+            let sceneID = payload;
+            let authorID = rootGetters.getAuthorID;
+            let comments = await await axios.get('http://localhost:3000/comments/scene/' + sceneID + '/author/' + authorID);
+            commit('loadCommentsByScene', { scene_id: sceneID, comments: comments })
         },
 
         removeCommentFromList ({ commit, state }, payload) {

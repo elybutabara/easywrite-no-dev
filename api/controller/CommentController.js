@@ -2,13 +2,13 @@
 const path = require('path')
 const moment = require('moment')
 
-const { Comment, BookScene, Chapter } = require(path.join(__dirname, '..', 'models'))
+const { Comment, Scene, Chapter } = require(path.join(__dirname, '..', 'models'))
 
 class CommentController {
 
     static async filterComment (param) {
 
-        let parentTableQuery = param.parent === 'scene' ? BookScene.query() : Chapter.query();
+        let parentTableQuery = param.parent === 'scene' ? Scene.query() : Chapter.query();
         const bookAuthor = await parentTableQuery.findById(param.parent_id).withGraphJoined('book', { maxBatchSize: 1 });
 
         let comments = Comment.query();
