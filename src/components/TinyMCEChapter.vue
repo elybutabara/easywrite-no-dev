@@ -5,7 +5,10 @@
 <script>
 import tinymce from 'tinymce'
 import Vue from 'vue'
-// const path = window.require('path')
+
+const path = window.require('path')
+
+console.log(path.resolve('src/assets/css/darkmode.css'))
 export default {
   name: 'TinyMCE',
   props: ['initValue', 'disabled', 'params', 'chapterData'],
@@ -14,6 +17,7 @@ export default {
     return {
       save_to_scene: false,
       initConfig: {
+        content_css: path.resolve('src/assets/css/darkmode.css'),
         selector: 'input.tiny-area',
         language: 'custom_lang',
         min_height: 400,
