@@ -559,7 +559,8 @@ export default {
         // Add the imported contents where mouse cursor is located.
         tinymce.get(scope.$refs.tmc.$el.id).execCommand('mceInsertContent', false, data)
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
-        scope.data.scene_version.content = tinymce.get(scope.$refs.tmc.$el.id).getContent()
+        // scope.data.scene_version.content = tinymce.get(scope.$refs.tmc.$el.id).getContent()
+        scope.data.content = tinymce.get(scope.$refs.tmc.$el.id).getContent()
         scope.baseSceneContent = tinymce.get(scope.$refs.tmc.$el.id).getContent()
         /*
         // conflict with delete-in-detail-page-for-items-location-character-cause-breadcrumbs-problem-after-redirecting-in-listing-page
