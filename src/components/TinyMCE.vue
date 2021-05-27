@@ -154,8 +154,10 @@ export default {
       // }
 
       this.initConfig.content_style = this.darkmode?'body { color: #fff; }':'body { color: #000; }'
-      if(vm.params.type = 'user_treadline'){
-        this.initConfig.content_style = 'body { color: #000; }'
+      if(vm.params){
+        if(vm.params.type = 'user_treadline'){
+          this.initConfig.content_style = 'body { color: #000; }'
+        }
       }
 
       this.initConfig.valid_children = '+body[style]'
