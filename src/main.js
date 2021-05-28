@@ -29,6 +29,7 @@ import listing from './stores/listing'
 import timer from './stores/timer'
 import chapter from './stores/chapter'
 import character from './stores/character'
+import comment from './stores/comment'
 import item from './stores/item'
 import location from './stores/location'
 import scene from './stores/scene'
@@ -213,6 +214,7 @@ const store = new Vuex.Store({
     timer: timer,
     chapter: chapter,
     character: character,
+    comment:comment,
     item: item,
     location: location,
     scene: scene,

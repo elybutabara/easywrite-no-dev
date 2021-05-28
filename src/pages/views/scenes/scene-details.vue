@@ -12,6 +12,7 @@
                       <span v-if="scene_hidden" class="d-flex align-items-center"><i class="las la-eye-slash mr-1"></i> Scene Hidden</span>
                       <span v-else class="d-flex align-items-center"><i class="las la-eye mr-1"></i> Hide Scene</span>
                     </button>
+                    <button class="es-button btn-sm white view-comments" v-if="commentbase_dom" @click="toggleComments()">{{('VIEW COMMENTS').toUpperCase()}}</button>
                     <button class="es-button icon-only warning" @click="toggleFeedbacks()"><i class="las la-comments"></i><!--{{$t('FEEDBACKS').toUpperCase()}}--></button>
                     <button class="es-button icon-only" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.scene.uuid, tabComponent: 'scene-form', tabData: { book: book, scene: properties.scene, chapter: chapter }, tabTitle: $t('EDIT')+ ' - ' +  properties.scene.title, newTab: true})"><i class="las la-highlighter"></i><!--{{$t('EDIT').toUpperCase()}}--></button>
                     <button class="es-button icon-only danger" @click="deleteScene(properties.scene)"><i class="las la-trash-alt"></i><!--{{$t('DELETE').toUpperCase()}}--></button>
@@ -49,6 +50,8 @@
           </div>
         </div>
         <div style="position:relative;">
+            <CommentBasePanelv2 v-bind:class="{ 'show_comments' : show_comments }" v-if="commentbase_dom" :dom="commentbase_dom" :properties="{ book: book,
+            parent_name: 'scene', parent_id: scene.uuid, parent: scene, selected_comment: selected_comment }" ref="commentbasepanelv2"></CommentBasePanelv2>
         <Feedback v-bind:class="{ 'show_feedbacks' : show_feedbacks }" :properties="{ book: book, parent: scene, parent_name: 'scene', toggleType: true }"></Feedback>
 
         <!-- footer previous & next -->
@@ -145,7 +148,8 @@ import SceneItems from '@/pages/views/scenes/scene-items'
 import SceneCharacters from '@/pages/views/scenes/scene-characters'
 import SceneVersions from '@/pages/views/scenes/scene-versions'
 import SceneCompareVersions from '@/pages/views/scenes/scene-compare-versions'
-
+import Vue from 'vue'
+import CommentBasePanelv2 from '../../../components/CommentBasePanelv2'
 // import CommentBasePanel from '../../../components/CommentBasePanel'
 
 const {ipcRenderer} = window.require('electron')
@@ -174,7 +178,7 @@ export default {
       busy: false,
       tempVersionDesc: '',
       commentbase_id: ('cm-' + Math.random()).replace('.', ''),
-      // commentbase_dom: null,
+      commentbase_dom: null,
       // commentbase_params: {
       //   onMounted: (vm) => {
       //     scope.commentbase_vm = vm
@@ -188,6 +192,8 @@ export default {
       exportOnProgress: false,
       exportLoading: this.$t('Loading'),
       show_feedbacks: false,
+        show_comments: false,
+        selected_comment: null,
       nextType: '',
       prevType: ''
     }
@@ -199,7 +205,8 @@ export default {
     SceneItems,
     SceneCharacters,
     SceneVersions,
-    SceneCompareVersions
+    SceneCompareVersions,
+      CommentBasePanelv2
     // CommentBasePanel
   },
   computed: {
@@ -299,13 +306,13 @@ export default {
     changeTab: function (tab) {
       var scope = this
       scope.tab.active = tab
-      // Vue.nextTick(function () {
-      //   if (tab === 'content') {
-      //     scope.commentbase_dom = document.getElementById(scope.commentbase_id)
-      //   } else {
-      //     scope.commentbase_dom = null
-      //   }
-      // })
+      Vue.nextTick(function () {
+          if (tab === 'content') {
+            scope.commentbase_dom = document.getElementById(scope.commentbase_id)
+          } else {
+            scope.commentbase_dom = null
+          }
+      })
     },
     saveNewVersion () {
       var scope = this
@@ -362,7 +369,7 @@ export default {
     //       }
     //     })
     // },
-    initializeData: function () {
+    initializeData: async function () {
       var scope = this
       scope.page.data = scope.properties
 
@@ -377,10 +384,16 @@ export default {
       scope.$store.dispatch('loadLocationsByScene', scope.page.data.scene)
       scope.$store.dispatch('loadVersionsByScene', scope.page.data.scene)
 
-      setTimeout(function () {
-        scope.page.is_ready = true
-        scope.changeTab('content')
-      }, 500)
+        try {
+            await scope.$store.dispatch('loadCommentsByScene', scope.properties.scene.uuid)
+        } catch (ex) {
+            console.log('Failed to load data')
+        } finally {
+            setTimeout(function () {
+                scope.page.is_ready = true
+                scope.changeTab('content')
+            }, 500)
+        }
     },
     deleteScene: function (scene) {
       var scope = this
@@ -426,7 +439,26 @@ export default {
     toggleFeedbacks: function () {
       let scope = this
       scope.show_feedbacks = !scope.show_feedbacks
-    }
+    },
+      toggleComments: function () {
+          let scope = this
+          if (scope.show_feedbacks) {
+              scope.show_feedbacks = !scope.show_feedbacks
+          }
+
+          if (scope.show_comments) {
+              document.getElementById('app-container').focus()
+          }
+
+          this.$refs.commentbasepanelv2.sub_comment_msg = '';
+          this.$refs.commentbasepanelv2.main_comment_id = null;
+          // close all sub_comments
+          $.each(this.$refs.commentbasepanelv2.comments, function(k, v) {
+              v.show_sub_comments = false;
+          });
+
+          scope.show_comments = !scope.show_comments
+      },
   },
   mounted () {
     var scope = this

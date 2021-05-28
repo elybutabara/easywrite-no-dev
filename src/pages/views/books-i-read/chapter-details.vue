@@ -8,6 +8,7 @@ a<template>
                 </div>
                 <div class="book-panel-right">
                   <button class="es-button btn-sm white" @click="toggleNotes()">{{$t('MY_NOTES').toUpperCase()}}</button>
+                    <button class="es-button btn-sm white view-comments" v-if="commentbase_dom" @click="toggleComments()">{{('VIEW COMMENTS').toUpperCase()}}</button>
                   <a class="es-button btn-sm w-icon icon-left warning" @click="toggleFeedbacks()"><i class="las la-comments"></i> {{$t('FEEDBACKS')}}</a>
                 </div>
             </div>
@@ -33,6 +34,8 @@ a<template>
               </div>
         </div>
         <div style="position:relative; padding-bottom:40px; overflow: hidden;">
+            <CommentBasePanelv2 v-bind:class="{ 'show_comments' : show_comments }" v-if="commentbase_dom" :dom="commentbase_dom" :properties="{ book: book,
+            parent_name: 'chapter', parent_id: chapter.uuid, parent: chapter, selected_comment: selected_comment, is_reply: true }" ref="commentbasepanelv2"></CommentBasePanelv2>
           <Feedback v-bind:class="{ 'show_feedbacks' : show_feedbacks }" :properties="{ book: book, parent: chapter, parent_name: 'chapter', toggleType: true }"></Feedback>
           <Note v-if="show_notes" :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></Note>
 
@@ -75,7 +78,7 @@ import ChapterVersions from '@/pages/views/chapters/chapter-versions'
 import ChapterCompareVersions from '@/pages/views/chapters/chapter-compare-versions'
 import moment from 'moment'
 import Vue from 'vue'
-
+import CommentBasePanelv2 from '../../../components/CommentBasePanelv2'
 // import CommentBasePanel from '../../../components/CommentBasePanel'
 
 // const {ipcRenderer} = window.require('electron')
@@ -88,6 +91,8 @@ export default {
     var scope = this
     return {
       show_feedbacks: false,
+        show_comments: false,
+        selected_comment: null,
       notification: null,
       show_notes: false,
       chapter_version: {
@@ -106,7 +111,7 @@ export default {
       busy: false,
       tempVersionDesc: '',
       commentbase_id: ('cm-' + Math.random()).replace('.', ''),
-      // commentbase_dom: null,
+      commentbase_dom: null,
       // commentbase_params: {
       //   onMounted: (vm) => {
       //     scope.commentbase_vm = vm
@@ -128,7 +133,8 @@ export default {
     Note,
     'books-i-read-chapter-scenes': ChapterScenes,
     ChapterVersions,
-    ChapterCompareVersions
+    ChapterCompareVersions,
+      CommentBasePanelv2
     // CommentBasePanel
   },
   computed: {
@@ -220,13 +226,13 @@ export default {
       var scope = this
       scope.tab.active = tab
 
-      // Vue.nextTick(function () {
-      //   if (tab === 'content') {
-      //     scope.commentbase_dom = document.getElementById(scope.commentbase_id)
-      //   } else {
-      //     scope.commentbase_dom = null
-      //   }
-      // })
+      Vue.nextTick(function () {
+          if (tab === 'content') {
+            scope.commentbase_dom = document.getElementById(scope.commentbase_id)
+          } else {
+            scope.commentbase_dom = null
+          }
+      })
     },
     // saveComments () {
     //   var scope = this
@@ -278,6 +284,25 @@ export default {
       let scope = this
       scope.show_feedbacks = !scope.show_feedbacks
     },
+      toggleComments: function () {
+          let scope = this
+          if (scope.show_feedbacks) {
+              scope.show_feedbacks = !scope.show_feedbacks
+          }
+
+          if (scope.show_comments) {
+              document.getElementById('app').focus()
+          }
+
+          this.$refs.commentbasepanelv2.sub_comment_msg = '';
+          this.$refs.commentbasepanelv2.main_comment_id = null;
+          // close all sub_comments
+          $.each(this.$refs.commentbasepanelv2.comments, function(k, v) {
+              v.show_sub_comments = false;
+          });
+
+          scope.show_comments = !scope.show_comments
+      },
     toggleNotes: function () {
       let scope = this
       scope.show_notes = !scope.show_notes
@@ -305,6 +330,7 @@ export default {
     try {
       await scope.$store.dispatch('loadScenesByChapter', scope.properties.chapter.uuid)
       await scope.$store.dispatch('loadVersionsByChapter', scope.properties.chapter.uuid)
+      await scope.$store.dispatch('loadCommentsByChapter', scope.properties.chapter.uuid)
     } catch (ex) {
       console.log('Failed to load data')
     } finally {

@@ -9,6 +9,7 @@
                     </div>
                 </div>
                 <div class="book-panel-right">
+                    <button class="es-button btn-sm white view-comments" v-if="commentbase_dom" @click="toggleComments()">{{('VIEW COMMENTS').toUpperCase()}}</button>
                   <button class="es-button btn-sm white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
                   <button class="es-button btn-sm white" @click="toggleNotes()">{{$t('MY NOTES').toUpperCase()}}</button>
                 </div>
@@ -60,7 +61,9 @@
             </div>
         </div>
 
-        <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content" style="position:relative;">
+        <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content" style="position:relative; overflow: hidden; height:calc(100vh - 190px);">
+            <CommentBasePanelv2 v-bind:class="{ 'show_comments' : show_comments }" v-if="commentbase_dom" :dom="commentbase_dom" :properties="{ book: book,
+                parent_name: 'scene', parent_id: scene.uuid, parent: scene, selected_comment:selected_comment, is_reply: true }" ref="commentbasepanelv2"></CommentBasePanelv2>
             <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: scene, parent_name: 'scene' }"></Feedback>
             <Note v-if="show_notes" :properties="{ book: book, parent: scene, parent_name: 'scene' }"></Note>
             <!-- footer previous & next -->
@@ -89,6 +92,8 @@
 <script>
 import Feedback from '../../../components/Feedback'
 import Note from '../../../components/Note'
+import Vue from 'vue'
+import CommentBasePanelv2 from '../../../components/CommentBasePanelv2'
 // import CommentBasePanel from '../../../components/CommentBasePanel'
 
 export default {
@@ -114,9 +119,11 @@ export default {
       busy: false,
       tempVersionDesc: '',
       show_feedbacks: false,
+        show_comments: false,
+        selected_comment: null,
       show_notes: false,
       commentbase_id: ('cm-' + Math.random()).replace('.', ''),
-      // commentbase_dom: null,
+      commentbase_dom: null,
       // commentbase_params: {
       //   onMounted: (vm) => {
       //     scope.commentbase_vm = vm
@@ -133,7 +140,8 @@ export default {
   },
   components: {
     Feedback,
-    Note
+    Note,
+      CommentBasePanelv2
     // CommentBasePanel
   },
   computed: {
@@ -197,13 +205,13 @@ export default {
     changeTab: function (tab) {
       var scope = this
       scope.tab.active = tab
-      // Vue.nextTick(function () {
-      //   if (tab === 'content') {
-      //     scope.commentbase_dom = document.getElementById(scope.commentbase_id)
-      //   } else {
-      //     scope.commentbase_dom = null
-      //   }
-      // })
+      Vue.nextTick(function () {
+          if (tab === 'content') {
+            scope.commentbase_dom = document.getElementById(scope.commentbase_id)
+          } else {
+            scope.commentbase_dom = null
+          }
+      })
     },
     // todo
     // saveComments () {
@@ -231,7 +239,7 @@ export default {
     //       }
     //     })
     // },
-    initializeData: function () {
+    initializeData: async function () {
       var scope = this
       scope.page.data = scope.properties
 
@@ -246,21 +254,46 @@ export default {
       scope.$store.dispatch('loadLocationsByScene', scope.page.data.scene)
       scope.$store.dispatch('loadVersionsByScene', scope.page.data.scene)
 
-      setTimeout(function () {
-        scope.page.is_ready = true
-        scope.changeTab('content')
-      }, 500)
+        try {
+            await scope.$store.dispatch('loadCommentsByScene', scope.scene.uuid)
+        } catch (ex) {
+            console.log('Failed to load data')
+        } finally {
+            setTimeout(function () {
+                scope.page.is_ready = true
+                scope.changeTab('content')
+            }, 500)
+        }
     },
     toggleFeedbacks: function () {
       let scope = this
       scope.show_feedbacks = !scope.show_feedbacks
     },
+      toggleComments: function () {
+          let scope = this
+          if (scope.show_feedbacks) {
+              scope.show_feedbacks = !scope.show_feedbacks
+          }
+
+          if (scope.show_comments) {
+              document.getElementById('app').focus()
+          }
+
+          this.$refs.commentbasepanelv2.sub_comment_msg = '';
+          this.$refs.commentbasepanelv2.main_comment_id = null;
+          // close all sub_comments
+          $.each(this.$refs.commentbasepanelv2.comments, function(k, v) {
+              v.show_sub_comments = false;
+          });
+
+          scope.show_comments = !scope.show_comments
+      },
     toggleNotes: function () {
       let scope = this
       scope.show_notes = !scope.show_notes
     }
   },
-  mounted () {
+  async mounted () {
     var scope = this
 
     if (scope.properties.openfeedback) {
