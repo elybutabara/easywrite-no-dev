@@ -174,5 +174,4 @@
 /* added for disabling of inline-comment */
 .commentbase-comment-highlight {
     background: transparent !important;
-    color: #212529 !important;
 }
