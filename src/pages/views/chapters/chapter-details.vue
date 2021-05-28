@@ -44,17 +44,17 @@
           <div style="border-top:1px solid #ccc; z-index:2000; background:#fff; height:50px; padding:0px 20px; line-height:50px; width:100%; position:absolute; bottom:0px; left:0px;">
 
             <button v-if="prevScene != null && prevType == 'chapter'" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + prevScene.id, tabComponent: 'chapter-details',  tabData: { book: book, chapter: prevScene }, tabTitle: 'VIEW' + ' - ' + prevScene.title})" style="float:left; background:transparent; border:none;">
-                <i class="las la-angle-double-left"></i> PREV
+                <i class="las la-angle-double-left"></i> {{ $t('PREV') }}
             </button>
             <button v-if="nextScene != null && nextType == 'chapter'" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + nextScene.id, tabComponent: 'chapter-details',  tabData: { book: book, chapter: nextScene }, tabTitle: 'VIEW' + ' - ' + nextScene.title})" style="float:right; background:transparent; border:none;">
-                NEXT <i class="las la-angle-double-right"></i>
+                {{ $t('NEXT') }} <i class="las la-angle-double-right"></i>
             </button>
 
             <button v-if="prevScene != null && prevType == 'scene'" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + prevScene.id, tabComponent: 'scene-details',  tabData: { book: book, scene: prevScene, chapter: previousChapter}, tabTitle: prevScene.title})" style="float:left; background:transparent; border:none;">
-                <i class="las la-angle-double-left"></i> PREV
+                <i class="las la-angle-double-left"></i> {{ $t('PREV') }}
             </button>
             <button v-if="nextScene != null && nextType == 'scene'" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + nextScene.id, tabComponent: 'scene-details',  tabData: { book: book, scene: nextScene, chapter: chapter}, tabTitle: nextScene.title})" style="float:right; background:transparent; border:none;">
-                NEXT <i class="las la-angle-double-right"></i>
+                {{ $t('NEXT') }} <i class="las la-angle-double-right"></i>
             </button>
 
           </div>

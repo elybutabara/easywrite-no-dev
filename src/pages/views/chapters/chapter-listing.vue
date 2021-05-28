@@ -4,7 +4,7 @@
         <div class="row-head">
           <div>
               <h4 class="main-title"><i class="fas fa-folder mr-1"></i> {{ book.title }}</h4>
-              <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ book.title }}</small>
+              <small>{{$t('BELOW_ARE_THE_LIST_OF_CHAPTERS_UNDER')}} {{ book.title }}</small>
           </div>
           <div class="book-panel-right">
             <button class="es-button btn-sm white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
