@@ -116,7 +116,7 @@
     </div>
     <div class="foot">
       <div class="textarea-wrap">
-        <textarea type="text" v-model="message" placeholder="Write your feedback here.."></textarea>
+        <textarea type="text" v-model="message" :placeholder="$t('WRITE_YOUR_FEEDBACK_HERE') + '..'"></textarea>
         <a v-if="feedback_uuid != null" @click="saveFeedback()" class="send-icon" href="javascript:void(0);"><i class="las la-paper-plane"></i></a>
         <a v-else @click="saveFeedback()" href="javascript:void(0);" class="send-icon"><i class="las la-paper-plane"></i></a>
       </div>

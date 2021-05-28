@@ -30,7 +30,7 @@
         </div>
         <div class="commentbase-comments-form">
             <textarea v-model="comment_message_new" class="commentbase-comment-new"
-                      placeholder="Write your comment here.."></textarea>
+                      :placeholder="$('WRITE_YOUR_COMMENT_HERE')"></textarea>
             <div style="text-align: right;">
                 <button v-on:click="pushComment($event)" class="es-button btn-sm btn-block esdarkblue-special">Save
                     Comments
