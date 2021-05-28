@@ -217,7 +217,7 @@ export default {
     prevScene: function () {
       let chapter = this.chapter
       let scope = this
-      scope.previousChapter = this.$store.getters.getPrevChapter(chapter, false)
+      scope.previousChapter = this.$store.getters.getPrevChapter(chapter, true)
 
       // check if there is prev chapter
       if (scope.previousChapter != null) {
@@ -227,18 +227,18 @@ export default {
         // check if there is a scene -not including the hidden
         let notHiddenRows = this.$store.getters.getScenesByChapter(scope.previousChapter.uuid)
 
-        for (var i = 0; i < notHiddenRows.length; i++) {
-          if (notHiddenRows[i].hidden) {
-            notHiddenRows.splice(i, 1)
-          }
-        }
+        // for (var i = 0; i < notHiddenRows.length; i++) {
+        //   if (notHiddenRows[i].hidden) {
+        //     notHiddenRows.splice(i, 1)
+        //   }
+        // }
 
         if (notHiddenRows.length > 0) { // if previous chapter has scene - return scene
           scope.prevType = 'scene'
           return notHiddenRows[notHiddenRows.length - 1] // last scene
         } else { // if no scene under chapter then return the next chapter
           scope.prevType = 'chapter'
-          return this.$store.getters.getPrevChapter(chapter, false)
+          return scope.previousChapter
         }
       }
       return null
@@ -250,18 +250,18 @@ export default {
       // check if there is a scene -not including the hidden
       let notHiddenRows = this.$store.getters.getScenesByChapter(chapter.uuid)
 
-      for (var i = 0; i < notHiddenRows.length; i++) {
-        if (notHiddenRows[i].hidden) {
-          notHiddenRows.splice(i, 1)
-        }
-      }
+      // for (var i = 0; i < notHiddenRows.length; i++) {
+      //   if (notHiddenRows[i].hidden) {
+      //     notHiddenRows.splice(i, 1)
+      //   }
+      // }
 
       if (notHiddenRows.length > 0) { // if chapter has scene - return scene
         scope.nextType = 'scene'
         return notHiddenRows[0]
       } else { // if no scene under chapter then return the next chapter
         scope.nextType = 'chapter'
-        return this.$store.getters.getNextChapter(chapter, false)
+        return this.$store.getters.getNextChapter(chapter, true)
       }
     }
   },
