@@ -102,7 +102,7 @@
                         </div>
                     </div>
                     <div class="content ">
-                        <button @click="getImport()">Import Docx</button>
+                        <button @click="getImport()"> {{ $t('IMPORT_DOCX') }} </button>
                         <b-row class="margin-bottom-1rem">
                             <b-col>
                                 <div v-if="scene_history.length" class="text-right">
@@ -132,7 +132,7 @@
                             </b-col>
                         </b-row>
                         <div class="col-md-12">
-                            <small>The scene will be autosaved every ten seconds</small>
+                            <small> {{ $t('THE_SCENE_WILL_BE_SAVED_EVERY_TEN_SECONDS') }} </small>
                             <small v-if="!do_scene_auto_save" class="text-red"> | Saving ...</small>
                         </div>
                     </div>

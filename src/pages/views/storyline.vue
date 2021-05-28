@@ -70,7 +70,7 @@
         </div>
         <div class="legend">
             <span class="circle"></span>
-            <span>{{ $t('STROYLINE_ENDS_WITH_SCENE') }}</span>
+            <span>{{ $t('STORYLINE_ENDS_WITH_SCENE') }}</span>
         </div>
       </div>
     </div>

@@ -5,9 +5,9 @@
       <div class="d-flex algin-items-center"><h5>Feedbacks</h5></div>
       <div class="d-flex">
         <select v-model="filter" v-if="$store.getters.getAuthorID === properties.book.author_id" class="select-feedback-view">
-          <option value="all">{{ $t('all') }}</option>
-          <option value="done">{{ $t('done') }}</option>
-          <option value="undone">{{ $t('undone') }}</option>
+          <option value="all">{{ $t('ALL') }}</option>
+          <option value="done">{{ $t('DONE') }}</option>
+          <option value="undone">{{ $t('UNDONE') }}</option>
         </select>
         <a @click="$parent.toggleFeedbacks()" href="javascript:void(0);" class="btn-close-feedback close"><i class="las la-arrow-circle-right"></i></a>
       </div>
@@ -61,10 +61,10 @@
                   </div>
 
                   <div class="d-flex" v-if="$store.getters.getAuthorID === properties.book.author_id">
-                    <a @click="toggleMark(feedback)" v-if="!feedback.is_done" class="btn-feedback-marks mr-1" href="javascript:void(0);"><i class="las la-check-circle mr-1"></i> Mark as Done</a>
+                    <a @click="toggleMark(feedback)" v-if="!feedback.is_done" class="btn-feedback-marks mr-1" href="javascript:void(0);"><i class="las la-check-circle mr-1"></i>{{ $t('MARK_AS_DONE') }}</a>
                     <a @click="toggleMark(feedback)" v-else class="btn-feedback-marks done mr-1" href="javascript:void(0);"><i class="las la-times-circle mr-1"></i> Mark Undone</a>
 
-                    <a @click="toggleSeen(feedback)" v-if="!feedback.is_seen" class="btn-feedback-marks" href="javascript:void(0);"><i class="las la-eye mr-1"></i> Mark as Seen</a>
+                    <a @click="toggleSeen(feedback)" v-if="!feedback.is_seen" class="btn-feedback-marks" href="javascript:void(0);"><i class="las la-eye mr-1"></i> {{ $t('MARK_AS_SEEN') }}</a>
                     <a @click="toggleSeen(feedback)" v-else class="btn-feedback-marks seen" href="javascript:void(0);"><i class="las la-eye-slash mr-1"></i> Mark Unseen</a>
                   </div>
                 </div>
@@ -93,12 +93,12 @@
               </div>
               <div v-else class="no-response-wrap">
                 <div class="no-response">
-                  <i class="las la-comment-slash"></i> No response for this feedback yet.
+                  <i class="las la-comment-slash"></i> {{ $t('NO_RESPONSE_FOR_THIS_FEEDBACK_YET') }}
                 </div>
               </div>
               <div class="p-15px">
                 <form v-on:submit.prevent="sendReply(feedback)" class="textarea-wrap">
-                  <textarea style="width:100%;" type="text" v-model="feedback.reponse_text" placeholder="Write a reply.."></textarea>
+                  <textarea style="width:100%;" type="text" v-model="feedback.reponse_text" :placeholder="$t('WRITE_A_REPLY')+'..'"></textarea>
                   <button v-if="feedback_responses_uuid != null" type="submit" class="send-icon"><i class="las la-paper-plane"></i></button>
                   <button v-else type="submit" class="send-icon"><i class="las la-paper-plane"></i></button>
                 </form>
@@ -110,7 +110,7 @@
       </div>
       <div v-else class="no-feedbacks-wrap">
         <div class="no-feedbacks">
-          <i class="las la-comment-slash"></i> There are no feedbacks yet.
+          <i class="las la-comment-slash"></i> {{ $t('THERE_ARE_NO_FEEDBACKS_YET') }}
         </div>
       </div>
     </div>

@@ -23,7 +23,7 @@
             <li><a @click="CHANGE_COMPONENT({tabKey: 'location-listing-' + book.uuid, tabComponent: 'location-listing', tabData: book, tabTitle: $t('LOCATIONS') + ' - ' + book.title})" href="javascript:void(0);"><span>{{ $t('LOCATIONS') }}</span></a></li>
             <li><a href="javascript:void(0);" style="padding-right: 20px;">
                 <span v-if="location !== null">{{ location.location }}</span>
-                <span v-else>New Location</span>
+                <span v-else>{{ $t('NEW_LOCATION') }}</span>
             </a></li>
         </ul>
         <div class="container">

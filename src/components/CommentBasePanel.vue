@@ -33,7 +33,7 @@
                       :placeholder="$('WRITE_YOUR_COMMENT_HERE')"></textarea>
             <div style="text-align: right;">
                 <button v-on:click="pushComment($event)" class="es-button btn-sm btn-block esdarkblue-special">Save
-                    Comments
+                  {{ $t('COMMENTS') }}
                 </button>
                 <button v-on:click="cancelCommentEdit($event)" v-if="editingComment"
                         class="es-button btn-sm btn-block danger esred-special">Cancel
