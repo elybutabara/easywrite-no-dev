@@ -44,6 +44,9 @@ export default {
     getUserSyncedDate: state => {
       return state.user.data.synced_at
     },
+    getUserSyncedAutoSync: state => {
+      return state.user.data.autosync
+    },
     getAuthorPersonaProgress: state => (progress) => {
       return state.author_personal_progress[progress]
     }
@@ -56,6 +59,9 @@ export default {
     },
     updateSyncedAt (state, payload) {
       state.user.data.synced_at = payload.syncedAt
+    },
+    updateAutoSync (state, payload) {
+      state.user.data.autosync = payload.autosync
     },
     loadAuthorPersonalProgress (state, payload) {
       axios

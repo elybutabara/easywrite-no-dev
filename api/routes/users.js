@@ -31,7 +31,7 @@ router.post('/', async function (req, res) {
 })
 
 router.post('/synced', async function (req, res) {
-  const user = await UserController.saveSyncedDate(req.body)
+  const user = await UserController.saveSyncingSettings(req.body)
 
   res
     .status(200)

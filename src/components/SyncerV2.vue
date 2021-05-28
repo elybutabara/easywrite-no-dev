@@ -263,11 +263,13 @@ export default {
       scope.axios.get(window.APP.API.URL + '/user/connect')
         .then(function () {
           // set the books and books i read (template.pre) as the main endpoint first
+          /*
           if (!scope.$store.getters.isAutoSync) {
             scope.updateAppData()
             scope.$store.commit('stopSync')
             return
           }
+          */
 
           scope.ready = true
 
