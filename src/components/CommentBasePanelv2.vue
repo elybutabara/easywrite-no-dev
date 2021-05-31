@@ -244,7 +244,7 @@ export default {
       this.comment_end_point = comment.end_point
 
       var el = scope.dom
-      var str = window.$('#' + el.id).text()
+      var str = window.$('#' + el.id).html() // old code is using .text()
 
       var span = document.createElement('span')
       span.id = 'cm-' + comment.uuid
@@ -252,11 +252,13 @@ export default {
       span.setAttribute('style', 'font-weight: inherit; color: #000; background: yellow;')
       span.setAttribute('data-comments-id', 'cm-' + comment.uuid)
 
-      span.append(str.substr(comment.start_point, comment.end_point - comment.start_point + 1))
+      span.append(str.substr(comment.start_point, comment.end_point - comment.start_point))
+      //span.append(str.substr(comment.start_point, comment.end_point - comment.start_point + 1))
 
-      str = str.substr(0, comment.start_point) + span.outerHTML + str.substr(comment.end_point + 1)
+      str = str.substr(0, comment.start_point) + span.outerHTML + str.substr(comment.end_point)
+      //str = str.substr(0, comment.start_point) + span.outerHTML + str.substr(comment.end_point + 1)
         el.style="white-space: break-spaces;";
-      scope.dom.innerHTML = str
+      scope.dom.innerHTML = str.replace(/&lt;/g, "<").replace(/&gt;/g, ">"); // old don't have replace
     },
     highlightText () {
       console.log(this.comment)
@@ -289,7 +291,10 @@ export default {
       let index = nodes.indexOf(node)
       let num = 0
       for (let i = 0; i < index; i++) {
-        num += nodes[i].textContent.length
+          // check if node is text type then count the text, if not then the outerHTML length of the element
+          num += nodes[i].nodeType === 3 ? nodes[i].textContent.length : nodes[i].outerHTML.length
+          // old code, which do not include the html tags on the count
+          //num += nodes[i].textContent.length
       }
       return num + offset
     },
