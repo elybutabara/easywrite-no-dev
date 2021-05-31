@@ -1,5 +1,5 @@
 <template>
-    <div class="animated flash notify-sync">
+    <div class="animated bounceInUp notify-sync">
         <div>{{ $t('WOULD_YOU_LIKE_TO_SYNC_DATA_WITH_WEB') }}</div>
         <div class="notify-sync-actions">
             <button @click="sync()" type="button" style="background:#007bff; color:#fff; border: 1px solid #007bff; padding: 1px 15px; font-size: 12px;">{{ $t('YES') }}</button>

@@ -70,7 +70,7 @@ export default {
   data: function () {
     return {
       ready: false,
-      version: 19, // syncing version
+      version: 20, // syncing version
       api_token: '',
       synced_date: null,
       start_synced_date: null,
@@ -93,6 +93,8 @@ export default {
       connected: null,
       retry: 0,
       max_retry: 5,
+      total_uploaded: 0,
+      total_downloaded: 0,
       template: {
         pre: [
           { title: 'Books', type: 'book', api: 'books', local: 'books', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
@@ -398,6 +400,7 @@ export default {
 
       scope.pointed_endpoint_status = 'Uploading'
       scope.pointed_endpoint_uploaded = 0
+      scope.total_uploaded += endpoint.packed.length
 
       for (let i = 0; i < endpoint.packed.length; i++) {
         var data = endpoint.packed[i]
@@ -535,6 +538,7 @@ export default {
 
       scope.pointed_endpoint_status = 'Saving'
       scope.pointed_endpoint_saved = 0
+      scope.total_downloaded += endpoint.downloaded.length
 
       for (let i = 0; i < endpoint.downloaded.length; i++) {
         var data = endpoint.downloaded[i]
@@ -676,9 +680,11 @@ export default {
         scope.saveUserSyncedDate(last_sync_date)
         scope.ready = false
         scope.updateAppData()
-
+        scope.userSyncingLog();
         scope.$store.commit('stopSync')
-
+        
+        scope.total_uploaded = 0
+        scope.total_downloaded = 0
         // TODO: enable if the button is ready
         // if (scope.$store.getters.isAutoSync) {
         //   setTimeout(function () {
@@ -877,6 +883,27 @@ export default {
       download(src.url, dst, function () {
         console.log('done donwloadig image: ' + src.name)
       })
+    },
+    userSyncingLog: function () {
+      var scope = this
+
+      var URL = window.APP.API.URL + '/users/synced'
+      var headers = {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Authorization': 'Bearer ' + scope.api_token,
+        'X-Authorization': 'Bearer ' + scope.api_token,
+      }
+
+      scope.axios.post(URL, { uploaded: scope.total_uploaded, downloaded: scope.total_downloaded, version:  scope.version }, { 'headers': headers })
+        .then(function (response) {})
+        .catch(function (error) {
+          setTimeout(function () {
+            scope.userSyncingLog()
+          }, 4000)
+        })
+        .finally(function () {
+
+        })
     }
   },
   mounted () {
