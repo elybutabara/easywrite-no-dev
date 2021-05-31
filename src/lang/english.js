@@ -337,9 +337,7 @@ export default {
   PROCESSING: 'Processing',
   SELECTED_SCENE: 'Selected Scene',
 
-  COUNT: 'Count',
-  QUESTIONS: 'Questions',
-  ANSWERS: 'Answers',
+
   PREV: 'PREV',
   FIRST_EDITION: '1st Editiion',
   SECOND_EDITION: '2nd Edition',
@@ -419,5 +417,16 @@ export default {
   WRITE_A_REPLY: 'Write a reply',
   WRITE_YOUR_COMMENT_HERE: 'Write your comment here',
   WRITE_YOUR_FEEDBACK_HERE: 'Write your feedback here',
-  WOULD_YOU_LIKE_TO_SYNC_DATA_WITH_WEB: 'Would you like to sync your data with web?'
+ 
+
+  COUNT: 'Count',
+  QUESTIONS: 'Questions',
+  ANSWERS: 'Answers',
+  EDIT_ANSWERS: 'Edit Answers',
+  USER_SETTINGS: 'User Settings',
+  ENABLE_AUTO_SYNC: 'Enable Auto Sync',
+  START_DATE: 'Start Date',
+  WOULD_YOU_LIKE_TO_SYNC_DATA_WITH_WEB: 'Would you like to sync your data with web?',
+  UPDATE: 'Update',
+  
 }
