@@ -280,6 +280,7 @@ export default {
         .then(response => {
           if (response.status == 200) {
             console.log('toggleHiddenChapter res', response)
+            scope.$store.dispatch('updateChapterHidden', response.data)
             scope.chapter_hidden = !scope.chapter_hidden
 
             window.swal.fire({

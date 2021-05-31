@@ -5,9 +5,9 @@
                 <i class="las la-plus"></i> {{$t('ADD_NEW_SCENE').toUpperCase()}}
             </button>
         </div>
-    <draggable v-model="scenes" draggable=".es-col" class="es-row">
-        <div class="es-col " v-for="scene in scenes" v-bind:key="scene.id">
-            <div class="es-card">
+    <draggable v-model="scenes" draggable=".kj-col" class="row kj-row">
+        <div class="col-md-3 col-sm-12 kj-col fadeIn animated" v-for="scene in scenes" v-bind:key="scene.id">
+            <div class="es-card" :class="{'scene-hidden' : scene.hidden == 1}">
                 <div class="es-card-content">
                     <div class="es-card-actions">
                         <button class="btn-circle" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + scene.uuid, tabComponent: 'scene-form',  tabData: { book: book, scene: scene, chapter: chapter}, tabTitle: 'Edit ' + scene.title, newTab: true })"><i class="las la-pencil-alt"></i></button>
@@ -16,6 +16,14 @@
                     </div>
                     <p class="title ellipsis-2">{{ scene.title || 'Untitled' }}</p>
                     <i class="description ellipsis-2">{{ scene.short_description || $t('NO_SHORT_DESCRIPTION') + '...'  }}</i>
+                    <div>
+                        <toggle-button :labels="{checked: $t('SHOW'), unchecked: $t('HIDE')}"
+                            :width="60" :height="20" :font-size="12"
+                            :color="{checked:'#dc3545', unchecked:'#354350'}" class="mt-2 ml-2"
+                            :value="!!scene.hidden"
+                            @change="hiddenScene(scene, $event)">
+                        </toggle-button>
+                    </div>
                 </div>
                 <div class="es-card-footer">
                     <small>{{$t('VERSIONS')}}: {{ scene.scene_version.length }}</small>
@@ -94,8 +102,29 @@ export default {
             })
         }
       })
-    }
+    },
+    hiddenScene: function(scene, event){
+      var scope = this
+      scope.axios.post('http://localhost:3000/scenes/hide', {id: scene.id, hidden: event.value})
+            .then(response => {
+                window.swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: this.$t("SUCCESSFULY_SAVED"),
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    // scope.is_scene_hidden = response.data.hidden
+                    scope.$store.dispatch('updateSceneHidden', response.data)
+                    scope.$store.dispatch('loadScenesByChapter', scope.chapter.uuid)
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            });
+    },
   },
+  
   beforeUpdate () {
     // var scope = this
   },
@@ -113,8 +142,8 @@ export default {
 <style scoped>
     .scene-listing { background:transparent; }
     .scene-listing .btn-new-scene { background:#fff; color:#324553; border:1px solid #496d7d; height:30px; line-height:30px; padding:0px 10px; }
-    .scene-listing .es-card { color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; }
-    .scene-listing .es-card .es-card-content { position:relative; padding:20px; min-height:150px; }
+    .scene-listing .es-card { color:#293742; background:#fff; border:1px solid #e0e5ee; border-radius:3px; opacity: 1;}
+    .scene-listing .es-card .es-card-content { position:relative; padding:20px; min-height:176px; }
     .scene-listing .es-card .es-card-content .title { font-size:18px; font-weight:900; margin:0px; padding-right:110px; }
     .scene-listing .es-card .es-card-content .description { display:inline-block; padding-top:15px; color:#4b6273; }
 
@@ -129,4 +158,5 @@ export default {
     .scene-listing .es-card .es-card-content .es-card-actions { position:absolute; top:20px; right:20px; text-align:right; }
     .scene-listing .es-card .es-card-content .es-card-actions .btn-circle { background:transparent; border:1px solid #e0e5ee; border-radius:50%; width:30px; height:30px; line-height:22px; text-align:center; font-size:15px; }
     .scene-listing .es-card .es-card-footer { background:#f5f8fa; height:40px; line-height:40px; padding:0px 20px; border-top:1px solid #e0e5ee; }
+    .scene-hidden{opacity: 0.6 !important; background-color: #f8f8f8 !important;}
 </style>

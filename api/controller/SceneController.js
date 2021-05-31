@@ -196,11 +196,10 @@ class SceneController {
   static async hide (data) {
     console.log('HIDE SCENE DATA ==> '.data)
 
-    var scene = await Scene.query()
-      .patch({ hidden: data.hidden })
-      .where('id', '=', data.id)
+    var scene = await Scene.query().findOne({ id: data.id });
+    const updateScene = await scene.$query().patchAndFetch({ hidden: data.hidden });
 
-    return scene
+    return updateScene
   }
 
   static async hideStoryline (sceneId, data) {

@@ -275,6 +275,8 @@ export default {
         .then(response => {
           if (response.status == 200) {
             console.log('toggleHiddenChapter res', response)
+            scope.$store.dispatch('updateSceneHidden', response.data)
+            scope.$store.dispatch('loadScenesByChapter', scope.chapter.uuid)
             scope.scene_hidden = !scope.scene_hidden
 
             window.swal.fire({
