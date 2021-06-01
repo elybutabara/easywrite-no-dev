@@ -40,8 +40,8 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label>{{$t('ABOUT')}}: </label>
-                            <!-- <div class='import-doc-container'><button @click="getImport()">Import Docx</button></div> -->
-                            <button @click="getImport()">Import Docx</button>
+                            <!-- <div class='import-doc-container'><button @click="getImport()">{{ $t('IMPORT_DOCX') }}</button></div> -->
+                            <button @click="getImport()">{{ $t('IMPORT_DOCX') }}</button>
                             <tiny-editor :initValue="data.about" :params="tiny_editor_params" v-on:getEditorContent="setAboutValue" class="form-control" />
                         </div>
                     </div>

@@ -9,7 +9,7 @@
               <button class="es-button btn-sm white" @click="markAsFinished()">{{$t('MARK_AS_FINISHED')}}</button>
               <!-- <button class="es-button-white" @click="markAsCanceled()">{{$t('MARK_AS_CANCEL')}}</button> -->
               <button class="es-button btn-sm white" @click="toggleNotes()">{{$t('MY NOTES').toUpperCase()}}</button>
-              <a class="es-button btn-sm w-icon icon-left warning" href="#goToFeedbacks"><i class="las la-comments"></i> Feedbacks</a>
+              <a class="es-button btn-sm w-icon icon-left warning" href="#goToFeedbacks"><i class="las la-comments"></i> {{ $t('FEEDBACKS') }}</a>
             </div>
         </div>
         <div class="row-head">

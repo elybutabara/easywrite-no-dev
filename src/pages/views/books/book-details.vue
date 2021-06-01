@@ -7,7 +7,7 @@
           </div>
           <div class="book-panel-right">
             <button class="es-button btn-sm white" @click="toggleFindandReplace()">{{ $t('REPLACE') }}</button>
-            <button class="es-button btn-sm white" v-if="user.data.is_premium_user" @click="showTreadline()">Treadline</button>
+            <button class="es-button btn-sm white" @click="showTreadline()">{{ $t('TREADLINE') }}</button>
             <button
               class="es-button btn-sm white btn-storyline"
               @click="/*$store.dispatch('loadDetailedChaptersByBookId', book_id);*/

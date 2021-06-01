@@ -2,20 +2,20 @@
     <div class="user-settings">
         <div class="user-settings-content">
             <div class="user-settings-header">
-                <h4>User Settings</h4>
+                <h4>{{ $t('USER_SETTINGS') }}</h4>
                 <div class="user-settings-actions">
                     <button @click="$parent.toggleUserSettings()" class="btn-minimize"><i class="fas fa-times"></i></button>
                 </div>
             </div>
             <div class="user-settings-body">
                 <div v-if="response == 'success'" class="alert alert-success text-left">
-                    <strong>Updated!</strong>
+                    <strong>{{ $t('UPDATED') }}</strong>
                 </div>
                 <div v-if="response == 'error'" class="alert alert-danger text-left">
-                    <strong>Error</strong> An error occur while updating...
+                    <strong>{{ $t('ERROR') }}</strong> {{ $t('AN_ERROR_OCCUR_WHILE_UPDATING') }}
                 </div>
                 <div style="text-align:left; margin-bottom:20px;">
-                    Enable Auto Sync:
+                    {{ $t('ENABLE_AUTO_SYNC') }}
                     <a class="nav-toggle mr-auto bx-shadow-1" href="javascript:void(0)" style="padding-top: 8px;">
                     <div class="switch-wrapper">
                         <label style="margin:5px;" class="switch">
@@ -26,13 +26,13 @@
                     </a>
                 </div>
                 <div style="text-align:left; margin-bottom:10px;">
-                    <label>Start Date:</label> 
+                    <label>{{ $t('START_DATE') }}:</label> 
                     <b-form-datepicker v-model="synced_date" @context="onSyncDateChange" id="birthdate-datepicker" :placeholder="$t('NO_SELECTED_DATE')" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"></b-form-datepicker>
                 </div>
             </div>
             <div class="user-settings-footer">
-                <button @click="updateUserSyncingSettings()" style="border:1px solid var(--navy); background: var(--navy); color:#fff; font-weight:600; font-size:12px; padding:8px 20px; border-radius:4px;">Update</button>
-                <button @click="$parent.toggleUserSettings()" style="border:1px solid #ccc; background: #efefef; font-weight:600; font-size:12px; padding:8px 20px; border-radius:4px;">Cancel</button>
+                <button @click="updateUserSyncingSettings()" style="border:1px solid var(--navy); background: var(--navy); color:#fff; font-weight:600; font-size:12px; padding:8px 20px; border-radius:4px;">{{ $t('UPDATE') }}</button>
+                <button @click="$parent.toggleUserSettings()" style="border:1px solid #ccc; background: #efefef; font-weight:600; font-size:12px; padding:8px 20px; border-radius:4px;">{{ $t('CANCEL') }}</button>
             </div>
         </div>
     </div>
