@@ -9,7 +9,7 @@
                     </div>
                 </div>
                 <div class="book-panel-right">
-                    <button class="es-button btn-sm white view-comments" v-if="commentbase_dom" @click="toggleComments()">{{('VIEW COMMENTS').toUpperCase()}}</button>
+                    <!--<button class="es-button btn-sm white view-comments" v-if="commentbase_dom" @click="toggleComments()">{{('VIEW COMMENTS').toUpperCase()}}</button>-->
                   <button class="es-button btn-sm white" @click="toggleFeedbacks()">{{$t('FEEDBACKS').toUpperCase()}}</button>
                   <button class="es-button btn-sm white" @click="toggleNotes()">{{$t('MY NOTES').toUpperCase()}}</button>
                 </div>
@@ -62,8 +62,8 @@
         </div>
 
         <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content" style="position:relative; overflow: hidden; height:calc(100vh - 190px);">
-            <CommentBasePanelv2 v-bind:class="{ 'show_comments' : show_comments }" v-if="commentbase_dom" :dom="commentbase_dom" :properties="{ book: book,
-                parent_name: 'scene', parent_id: scene.uuid, parent: scene, selected_comment:selected_comment, is_reply: true }" ref="commentbasepanelv2"></CommentBasePanelv2>
+            <!--<CommentBasePanelv2 v-bind:class="{ 'show_comments' : show_comments }" v-if="commentbase_dom" :dom="commentbase_dom" :properties="{ book: book,
+                parent_name: 'scene', parent_id: scene.uuid, parent: scene, selected_comment:selected_comment, is_reply: true }" ref="commentbasepanelv2"></CommentBasePanelv2>-->
             <Feedback v-if="show_feedbacks" :properties="{ book: book, parent: scene, parent_name: 'scene' }"></Feedback>
             <Note v-if="show_notes" :properties="{ book: book, parent: scene, parent_name: 'scene' }"></Note>
             <!-- footer previous & next -->
