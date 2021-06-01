@@ -2,6 +2,8 @@
 <div class="page-main" v-bind:class="{ 'collapsed': $store.getters.collapsedSideNav, 'dark': $store.getters.darkmode }">
     <div v-if="ready">
         <SyncerV2 v-if="$store.getters.getSyncStatus == 'syncing'"></SyncerV2>
+        <UserSettings v-if="is_user_settings_open"></UserSettings>
+        <NotifySync v-if="show_notify_sync"></NotifySync>
         <!-- <div @click="toggleMainSideBar()"  class="btn-sidebar-opener"><i class="las la-arrow-right"></i></div> -->
         <main-side-navigation></main-side-navigation>
         <div class="es-right-side-content">
@@ -80,6 +82,7 @@
                           <!--                        <a class="dropdown-item" @click="CHANGE_COMPONENT({tabKey: 'main-book-directory', tabComponent: 'main-book-directory',  tabData: null, tabTitle: 'Main Book Directory'})">{{ trans("site.the-book-directory") }}</a>-->
                           <!--                        <a class="dropdown-item" @click="CHANGE_COMPONENT({tabKey: 'main-book-finished', tabComponent: 'main-book-finished',  tabData: null, tabTitle: 'Main Book Finished'})">{{ trans('site.books-ive-finished') }}</a>-->
                           <!--                        <a class="dropdown-item" @click="CHANGE_COMPONENT({tabKey: 'my-deleted-books', tabComponent: 'my-deleted-books',  tabData: null, tabTitle: 'My Deleted Books'})">{{ trans('site.deleted-books-text') }}</a>-->
+                          <a @click="toggleUserSettings()" class="dropdown-item">{{ $t('site.settings')  }}</a>
                           <a class="dropdown-item" @click="logout()">{{ $t('site.logout') }}</a>
                         </div>
                       </div>
@@ -146,6 +149,8 @@ import MessageCenterPopup from '@/components/MessageCenterPopup'
 import Messaging from '@/components/Messaging'
 import Syncer from '@/components/Syncer'
 import SyncerV2 from '@/components/SyncerV2'
+import UserSettings from '@/components/UserSettings'
+import NotifySync from '@/components/NotifySync'
 
 import Syncing from '@/pages/views/syncing'
 import StoryBoard from '@/pages/views/storyboard'
@@ -220,7 +225,9 @@ export default {
       showMessageCenter: false,
       showUserSettings: false,
       forceQuit: false,
-      notificationCount_: 0
+      notificationCount_: 0,
+      is_user_settings_open: false,
+      show_notify_sync: false,
     }
   },
   components: {
@@ -229,6 +236,8 @@ export default {
     'messaging': Messaging,
     'syncer': Syncer,
     'SyncerV2': SyncerV2,
+    'NotifySync': NotifySync,
+    'UserSettings': UserSettings,
     'syncing': Syncing,
     'storyboard': StoryBoard,
     'storyline': Storyline,
@@ -271,6 +280,10 @@ export default {
       // const scope = this
       // scope.notification.show = !scope.notification.show
       // scope.showUserSettings = false
+    },
+    toggleUserSettings: function () {
+      var scope = this 
+      scope.is_user_settings_open = !scope.is_user_settings_open
     },
     setItemCount: function (k, n) {
       console.log('setItemCount', n)
@@ -342,6 +355,9 @@ export default {
 
       scope.$store.dispatch('setSyncSource', { source: 'CTA' })
       scope.$store.commit('startSync')
+    },
+    closeSyncingNotification: function () {
+      this.show_notify_sync = false
     }
   },
   beforeMount () {
@@ -452,8 +468,20 @@ export default {
       window.AppMessaging.recountUnread()
     }
 
+    scope.auto_sync = scope.$store.getters.getUserSyncedAutoSync
+ 
     setTimeout(function () {
-      scope.$store.commit('startSync')
+      if (scope.auto_sync) {
+        scope.$store.commit('startSync')
+      } else {
+        var authorUUID = scope.$store.getters.getAuthorID
+        scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
+        scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
+
+        setTimeout(function(){
+          scope.show_notify_sync = true
+        },5500);
+      }
     }, 1000)
   },
   created () {

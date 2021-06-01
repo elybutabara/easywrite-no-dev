@@ -15,6 +15,7 @@
                 </button>
                 
                 <!-- <button ref="button" class="es-button btn-sm white" :disabled="busy" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button> -->
+                  <button class="es-button btn-sm white view-comments" v-if="commentbase_dom" @click="toggleComments()">{{('VIEW COMMENTS').toUpperCase()}}</button>
                 <button class="es-button icon-only warning" @click="toggleFeedbacks()"><i class="las la-comments"></i><!--{{$t('FEEDBACKS').toUpperCase()}}--></button>
                 <button class="es-button icon-only" @click="CHANGE_COMPONENT({ tabKey: 'chapter-form-' + chapter.uuid, tabComponent: 'chapter-form',  tabData: { book: book, chapter:  chapter }, tabTitle: $t('EDIT')+ ' - ' +  chapter.title, newTab: true })"><i class="las la-highlighter"></i><!--{{$t('EDIT').toUpperCase()}}--></button>
                 <button class="es-button icon-only danger" @click="deleteChapter(chapter)"><i class="las la-trash-alt"></i><!-- {{$t('DELETE').toUpperCase()}} --></button>
@@ -37,6 +38,8 @@
           </div>
         </div>
         <div style="position:relative; padding-bottom:40px; overflow: hidden;">
+            <CommentBasePanelv2 v-bind:class="{ 'show_comments' : show_comments }" v-if="commentbase_dom" :dom="commentbase_dom" :properties="{ book: book,
+            parent_name: 'chapter', parent_id: chapter.uuid, parent: chapter, selected_comment: selected_comment }" ref="commentbasepanelv2"></CommentBasePanelv2>
           <Feedback v-bind:class="{ 'show_feedbacks' : show_feedbacks }" :properties="{ book: book, parent: chapter, parent_name: 'chapter', toggleType: true }"></Feedback>
 
           <!-- footer previous & next -->
@@ -44,17 +47,17 @@
           <div style="border-top:1px solid #ccc; z-index:2000; background:#fff; height:50px; padding:0px 20px; line-height:50px; width:100%; position:absolute; bottom:0px; left:0px;">
 
             <button v-if="prevScene != null && prevType == 'chapter'" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + prevScene.id, tabComponent: 'chapter-details',  tabData: { book: book, chapter: prevScene }, tabTitle: 'VIEW' + ' - ' + prevScene.title})" style="float:left; background:transparent; border:none;">
-                <i class="las la-angle-double-left"></i> PREV
+                <i class="las la-angle-double-left"></i> {{ $t('PREV') }}
             </button>
             <button v-if="nextScene != null && nextType == 'chapter'" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + nextScene.id, tabComponent: 'chapter-details',  tabData: { book: book, chapter: nextScene }, tabTitle: 'VIEW' + ' - ' + nextScene.title})" style="float:right; background:transparent; border:none;">
-                NEXT <i class="las la-angle-double-right"></i>
+                {{ $t('NEXT') }} <i class="las la-angle-double-right"></i>
             </button>
 
             <button v-if="prevScene != null && prevType == 'scene'" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + prevScene.id, tabComponent: 'scene-details',  tabData: { book: book, scene: prevScene, chapter: previousChapter}, tabTitle: prevScene.title})" style="float:left; background:transparent; border:none;">
-                <i class="las la-angle-double-left"></i> PREV
+                <i class="las la-angle-double-left"></i> {{ $t('PREV') }}
             </button>
             <button v-if="nextScene != null && nextType == 'scene'" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + nextScene.id, tabComponent: 'scene-details',  tabData: { book: book, scene: nextScene, chapter: chapter}, tabTitle: nextScene.title})" style="float:right; background:transparent; border:none;">
-                NEXT <i class="las la-angle-double-right"></i>
+                {{ $t('NEXT') }} <i class="las la-angle-double-right"></i>
             </button>
 
           </div>
@@ -131,6 +134,7 @@ import ChapterVersions from '@/pages/views/chapters/chapter-versions'
 import ChapterCompareVersions from '@/pages/views/chapters/chapter-compare-versions'
 import moment from 'moment'
 import Vue from 'vue'
+import CommentBasePanelv2 from '../../../components/CommentBasePanelv2'
 
 // import CommentBasePanel from '../../../components/CommentBasePanel'
 
@@ -159,7 +163,7 @@ export default {
       busy: false,
       tempVersionDesc: '',
       commentbase_id: ('cm-' + Math.random()).replace('.', ''),
-      // commentbase_dom: null,
+      commentbase_dom: null,
       // commentbase_params: {
       //   onMounted: (vm) => {
       //     scope.commentbase_vm = vm
@@ -173,6 +177,8 @@ export default {
       exportOnProgress: false,
       exportLoading: this.$t('Loading'),
       show_feedbacks: false,
+        show_comments: false,
+        selected_comment: null,
       notification: null,
       nextType: '',
       prevType: '',
@@ -185,7 +191,8 @@ export default {
     Feedback,
     ChapterScenes,
     ChapterVersions,
-    ChapterCompareVersions
+    ChapterCompareVersions,
+      CommentBasePanelv2
     // CommentBasePanel
   },
   computed: {
@@ -273,6 +280,7 @@ export default {
         .then(response => {
           if (response.status == 200) {
             console.log('toggleHiddenChapter res', response)
+            scope.$store.dispatch('updateChapterHidden', response.data)
             scope.chapter_hidden = !scope.chapter_hidden
 
             window.swal.fire({
@@ -295,13 +303,13 @@ export default {
     changeTab: function (tab) {
       var scope = this
       scope.tab.active = tab
-      // Vue.nextTick(function () {
-      //   if (tab === 'content') {
-      //     scope.commentbase_dom = document.getElementById(scope.commentbase_id)
-      //   } else {
-      //     scope.commentbase_dom = null
-      //   }
-      // })
+      Vue.nextTick(function () {
+          if (tab === 'content') {
+            scope.commentbase_dom = document.getElementById(scope.commentbase_id)
+          } else {
+            scope.commentbase_dom = null
+          }
+      })
     },
     newVersion: function () {
       var scope = this
@@ -409,7 +417,26 @@ export default {
     toggleFeedbacks: function () {
       let scope = this
       scope.show_feedbacks = !scope.show_feedbacks
-    }
+    },
+      toggleComments: function () {
+          let scope = this
+          if (scope.show_feedbacks) {
+              scope.show_feedbacks = !scope.show_feedbacks
+          }
+
+          if (scope.show_comments) {
+              document.getElementById('app').focus()
+          }
+
+          this.$refs.commentbasepanelv2.sub_comment_msg = '';
+          this.$refs.commentbasepanelv2.main_comment_id = null;
+          // close all sub_comments
+          $.each(this.$refs.commentbasepanelv2.comments, function(k, v) {
+              v.show_sub_comments = false;
+          });
+
+          scope.show_comments = !scope.show_comments
+      },
   },
   beforeUpdate () {
     // var scope = this
@@ -439,6 +466,7 @@ export default {
     try {
       await scope.$store.dispatch('loadScenesByChapter', scope.properties.chapter.uuid)
       await scope.$store.dispatch('loadVersionsByChapter', scope.properties.chapter.uuid)
+        await scope.$store.dispatch('loadCommentsByChapter', scope.properties.chapter.uuid)
     } catch (ex) {
       console.log('Failed to load data')
     } finally {

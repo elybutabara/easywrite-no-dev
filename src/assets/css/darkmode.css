@@ -123,16 +123,25 @@
 .page-main.dark .btn-icon:hover { background: var(--thin-white); }
 
 /* feedback*/
-.page-main.dark .feedback-wrap .feedbacks .es-panel-body .feedback-single.done { background: var(--whiteblue); }
-.page-main.dark .feedback-wrap .feedbacks .es-panel-body .feedback-single { border-color: #eee; }
-.page-main.dark .feedback-wrap .feedbacks .foot { background: var(--navy); border-color: var(--navy); }
+.page-main.dark .feedback-wrap .feedbacks .es-panel-body .feedback-single.done,
+.page-main.dark .comment-wrap .comments .es-panel-body .comment-single.done { background: var(--whiteblue); }
+.page-main.dark .feedback-wrap .feedbacks .es-panel-body .feedback-single,
+.page-main.dark .comment-wrap .comments .es-panel-body .comment-single { border-color: #eee; }
+.page-main.dark .feedback-wrap .feedbacks .foot,
+.page-main.dark .comment-wrap .comments .foot { background: var(--navy); border-color: var(--navy); }
 .page-main.dark .feedback-wrap .es-panel-2 .es-panel-body,
-.page-main.dark .feedback-wrap .es-panel-sm .es-panel-body { background: var(--whitesh); border-color: var(--whiteblue); }
-.page-main.dark .feedback-single .feedback-single-replies-wrap .feedback-single-replies .response-single { border-color: #eee; }
+.page-main.dark .feedback-wrap .es-panel-sm .es-panel-body,
+.page-main.dark .comment-wrap .es-panel-2 .es-panel-body,
+.page-main.dark .comment-wrap .es-panel-sm .es-panel-body { background: var(--whitesh); border-color: var(--whiteblue); }
+.page-main.dark .feedback-single .feedback-single-replies-wrap .feedback-single-replies .response-single,
+.page-main.dark .comment-single .comment-single-replies-wrap .comment-single-replies .response-single { border-color: #eee; }
 /*btn feedback*/
 .page-main.dark .feedback-single.done .btn-feedback-marks.done,
-.page-main.dark .feedback-single.seen .btn-feedback-marks.seen { background: var(--navy); border-color: var(--navy); }
-.page-main.dark .feedback-wrap .btn-close-feedback { color: #fff; }
+.page-main.dark .feedback-single.seen .btn-feedback-marks.seen,
+.page-main.dark .comment-single.done .btn-comment-marks.done,
+.page-main.dark .comment-single.seen .btn-comment-marks.seen { background: var(--navy); border-color: var(--navy); }
+.page-main.dark .feedback-wrap .btn-close-feedback,
+.page-main.dark .comment-wrap .btn-close-comment { color: #fff; }
 /* es-panels */
 .page-main.dark .es-panel-2 { background: var(--whiteblue); border-color: var(--whiteblue); }
 /*messaging*/

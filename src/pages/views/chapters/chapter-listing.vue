@@ -4,7 +4,7 @@
         <div class="row-head">
           <div>
               <h4 class="main-title"><i class="fas fa-folder mr-1"></i> {{ book.title }}</h4>
-              <small>{{$t('BELOW_ARE_THE_LIST_OF_SCENES_UNDER')}} {{ book.title }}</small>
+              <small>{{$t('BELOW_ARE_THE_LIST_OF_CHAPTERS_UNDER')}} {{ book.title }}</small>
           </div>
           <div class="book-panel-right">
             <button class="es-button btn-sm white" @click="CHANGE_COMPONENT({tabKey: 'chapter-form', tabComponent: 'chapter-form', tabData: { book: book, chapter: null }, tabTitle: $t('NEW_CHAPTER'), newTab: true})">{{$t('NEW_CHAPTER').toUpperCase()}}</button>
@@ -36,10 +36,10 @@
                     </div>
                     <p class="title ellipsis-2">{{ displayTitle(chapter.title) }}</p>
                     <i class="description ellipsis-2">{{ chapter.short_description || $t('NO_SHORT_DESCRIPTION') + '...' }}</i>
-                    <toggle-button
+                    <toggle-button :labels="{checked: $t('SHOW'), unchecked: $t('HIDE')}"
                         :width="60" :height="20" :font-size="12"
                         :color="{checked:'#dc3545', unchecked:'#354350'}" class="mt-2 ml-2"
-                        v-model="chapter.hidden"
+                        :value="!!chapter.hidden"
                         @change="hiddenChapter(chapter, $event)">
                     </toggle-button>
                 </div>
@@ -156,8 +156,19 @@ export default {
       var scope = this
       console.log('HIDDEN ==> ',chapter.hidden)
       scope.axios
-        .post('http://localhost:3000/chapters/hide', { hidden : chapter.hidden, id: chapter.id, uuid: chapter.uuid })
+        .post('http://localhost:3000/chapters/hide', { hidden : event.value, id: chapter.id, uuid: chapter.uuid })
         .then(response => {
+
+          window.swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: this.$t("SUCCESSFULY_SAVED"),
+              showConfirmButton: false,
+              timer: 1500
+          }).then(() => {
+             scope.$store.dispatch('updateChapterHidden', response.data)
+          })
+          
         }
       );
     }
