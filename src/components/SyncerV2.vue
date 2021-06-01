@@ -101,7 +101,8 @@ export default {
         main: [
           { title: 'Authors', type: 'default', api: 'authors', local: 'authors', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
           { title: 'Genres', type: 'default', api: 'book-genres', local: 'book-genres', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
-          { title: 'Relations', type: 'default', api: 'book-relations', local: 'relations', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false }
+          { title: 'Relations', type: 'default', api: 'book-relations', local: 'relations', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'TreadLine', type: 'default', api: 'admin-treadlines', local: 'admin-treadlines', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false }
         ],
         bookChildren: [
           { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
@@ -117,7 +118,8 @@ export default {
           { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
           { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
           { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
-          { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false }
+          { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false },
+          { title: 'Treadlines', api: 'user-treadlines', local: 'treadline', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
         ],
         booksIReadChildren: [
           { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
@@ -327,11 +329,11 @@ export default {
       
       // this is what we store on last synced_date, we will use this as base data for next syncng
       scope.start_synced_date = moment().format('YYYY-MM-DD HH:mm:ss').toString()
-      console.log('start', scope.endpoint_sync_date, scope.start_synced_date)
+      //console.log('start', scope.endpoint_sync_date, scope.start_synced_date)
 
-      console.log('########################################')
-      console.log('START HERE: endpoint_sync_date',scope.endpoint_sync_date)
-      console.log('START HERE: start_synced_date',scope.start_synced_date)
+      //console.log('########################################')
+      //console.log('START HERE: endpoint_sync_date',scope.endpoint_sync_date)
+      //console.log('START HERE: start_synced_date',scope.start_synced_date)
       
       var endpoint = scope.endpoints[scope.endpoint_index]
       scope.processEndpoint(endpoint)
@@ -352,7 +354,6 @@ export default {
 
       // we no longer process All books i read and books on main_endpoint since it was already synced at "PRE"
       if (endpoint.is_book_single && endpoint.is_book_single == true) {
-        console.log('BOOK SINGLE SKIP ==> ', endpoint.title)
         scope.next()
         return
       }
@@ -465,7 +466,6 @@ export default {
           // if data (object) contains "file" then UPLOAD
           for (var i in row) {
             if (i == 'file') {
-              console.log('APPEND FILE!')
               FORMDATA.append('file_' + row['uuid'], row[i])
             }
           }
@@ -544,7 +544,6 @@ export default {
       var URL = 'http://localhost:3000/' + endpoint.local + '/sync'
 
       var rows = endpoint.downloaded
-      console.log('save data to app', endpoint.downloaded, data.updated_at)
       var chunks = scope.CHUNK_ARRAY(rows, endpoint.chunkSize)
 
       scope.$set(endpoint, 'chunks', [])
