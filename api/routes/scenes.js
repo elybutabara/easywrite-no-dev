@@ -17,6 +17,14 @@ router.get('/:sceneId/items', async function (req, res) {
 router.get('/:sceneId/characters', async function (req, res) {
   const sceneCharacters = await SceneCharacterController.getAllSceneCharactersBySceneId(req.params.sceneId)
 
+  // picture src
+  sceneCharacters.forEach(function (item, index) {
+    sceneCharacters[index].character.picture_src = ''
+    if (item.character.picture) {
+      sceneCharacters[index].character.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'characters', item.character.picture)
+    }
+  })
+
   res
     .status(200)
     .json(sceneCharacters)

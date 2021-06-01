@@ -75,11 +75,10 @@ class ChapterController {
   static async hide ( data) {
     console.log('HIDE CHAPTER DATA ==> '.data)
 
-    var chapter = await Chapter.query()
-      .patch({ hidden: data.hidden })
-      .where('id', '=', data.id)
+    var chapter = await Chapter.query().findOne({ id: data.id });
+    const updateChapter = await chapter.$query().patchAndFetch({ hidden: data.hidden });
 
-    return chapter
+    return updateChapter
   }
 
 

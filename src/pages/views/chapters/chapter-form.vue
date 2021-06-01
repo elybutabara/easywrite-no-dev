@@ -107,7 +107,7 @@
                         </div>
                     </div>
                     <div class="content ">
-                        <button @click="getImport()">Import Docx</button>
+                        <button @click="getImport()">{{ $t('IMPORT_DOCX') }}</button>
                         <div class="row">
                             <div class="col-md-12">
                                 <div v-if="chapter_history.length" class="text-right">
@@ -136,7 +136,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <small>The chapter will be autosaved every ten seconds</small>
+                                <small>{{ $t('THE_CHAPTER_WILL_BE_SAVED_EVERY_TEN_SECONDS') }}</small>
                                 <small v-if="!do_chapter_auto_save" class="text-red"> | Saving ...</small>
                             </div>
                         </div>
@@ -318,8 +318,8 @@ export default {
       show_feedbacks: false,
       selected_chapter: null,
       options_importance: [
-        {text: 'Plot', value: 'Plot'},
-        {text: 'Subplot', value: 'Subplot'}
+        {text: this.$t('PLOT'), value: 'Plot'},
+        {text: this.$t('PLOT'), value: 'Subplot'}
       ],
       save_to_scene: false,
       clear_history: true,

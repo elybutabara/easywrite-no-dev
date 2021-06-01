@@ -5,7 +5,7 @@
 <script>
 import tinymce from 'tinymce'
 import Vue from 'vue'
-// const path = window.require('path')
+const path = window.require('path')
 export default {
   name: 'TinyMCE',
   props: ['initValue', 'disabled', 'params'],
@@ -14,6 +14,7 @@ export default {
     // console.log('params........', scope.params)
     return {
       initConfig: {
+        content_css: path.resolve('src/assets/css/darkmode.css'),
         selector: 'input.tiny-area',
         language: 'custom_lang',
         min_height: 400,
@@ -153,9 +154,9 @@ export default {
       //   this.initConfig.content_style = 'body { color: #000; }'
       // }
 
-      this.initConfig.content_style = this.darkmode?'body { color: #fff; }':'body { color: #000; }'
-      if(vm.params){
-        if(vm.params.type = 'user_treadline'){
+      this.initConfig.content_style = this.darkmode ? 'body { color: #fff; }' : 'body { color: #000; }'
+      if (vm.params) {
+        if (vm.params.type == 'user_treadline') {
           this.initConfig.content_style = 'body { color: #000; }'
         }
       }
@@ -172,9 +173,9 @@ export default {
     emitToParent (event) {
       this.$emit('getEditorContent', this.$el.value)
     },
-   emitTyped () {
-     this.$emit('typing', this.$el)
-   }
+    emitTyped () {
+      this.$emit('typing', this.$el)
+    }
   },
   updated: function () {
     // Since we're using Ajax to load data, hence we have to use this hook because when parent's data got loaded, it will fire this hook.

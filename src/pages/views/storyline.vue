@@ -70,7 +70,7 @@
         </div>
         <div class="legend">
             <span class="circle"></span>
-            <span>{{ $t('STROYLINE_ENDS_WITH_SCENE') }}</span>
+            <span>{{ $t('STORYLINE_ENDS_WITH_SCENE') }}</span>
         </div>
       </div>
     </div>
@@ -214,7 +214,7 @@
     <div class="d-flex align-items-center flex-column">
       <div id="pageLoader"></div>
         <br>
-        <p style="font-size: 13px;">{{ $t('LOADING') }} '{{ book.title }}' {{ $t('STROYLINE') }}: {{ loading_msg }}</p>
+        <p style="font-size: 13px;">{{ $t('LOADING') }} '{{ book.title }}' {{ $t('STORYLINE') }}: {{ loading_msg }}</p>
       </div>
   </div>
 

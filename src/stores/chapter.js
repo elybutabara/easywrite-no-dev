@@ -248,6 +248,14 @@ export default {
         }
       }
     },
+    updateChapterHidden (state, payload) {
+      let bookID = payload.book_id
+      for (var i = 0; i <= (state.chapters[bookID].rows.length - 1); i++) {
+        if (state.chapters[bookID].rows[i].id === payload.id) {
+          state.chapters[bookID].rows[i].hidden = payload.hidden
+        }
+      }
+    },
     removeChapterFromList (state, payload) {
       let bookID = payload.book_id
       for (var i = 0; i <= (state.chapters[bookID].rows.length - 1); i++) {
@@ -367,6 +375,9 @@ export default {
     },
     sortChapters ({ commit, state }, payload) {
       commit('sortChapters', payload)
-    }
+    },
+    updateChapterHidden ({ commit, state }, payload) {
+      commit('updateChapterHidden', payload)
+    },
   }
 }

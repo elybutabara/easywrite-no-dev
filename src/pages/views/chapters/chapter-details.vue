@@ -11,11 +11,11 @@
                 <button class="es-button btn-sm white" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + chapter.uuid, tabComponent: 'scene-form',  tabData: { book: book, chapter: chapter, scene: null }, tabTitle: 'New Scene', newTab: true})">{{$t('ADD_NEW_SCENE').toUpperCase()}}</button>
                 <button class="es-button btn-sm white" @click="toggleHiddenChapter()">
                   <span v-if="chapter_hidden" class="d-flex align-items-center"><i class="las la-eye-slash mr-1"></i> Chapter Hidden</span>
-                  <span v-else class="d-flex align-items-center"><i class="las la-eye mr-1"></i> Hide Chapter</span>
+                  <span v-else class="d-flex align-items-center"><i class="las la-eye mr-1"></i> {{ $t('HIDE_CHAPTER') }}</span>
                 </button>
                 
                 <!-- <button ref="button" class="es-button btn-sm white" :disabled="busy" @click="newVersion">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button> -->
-                  <button class="es-button btn-sm white view-comments" v-if="commentbase_dom" @click="toggleComments()">{{('VIEW COMMENTS').toUpperCase()}}</button>
+                  <!--<button class="es-button btn-sm white view-comments" v-if="commentbase_dom" @click="toggleComments()">{{('VIEW COMMENTS').toUpperCase()}}</button>-->
                 <button class="es-button icon-only warning" @click="toggleFeedbacks()"><i class="las la-comments"></i><!--{{$t('FEEDBACKS').toUpperCase()}}--></button>
                 <button class="es-button icon-only" @click="CHANGE_COMPONENT({ tabKey: 'chapter-form-' + chapter.uuid, tabComponent: 'chapter-form',  tabData: { book: book, chapter:  chapter }, tabTitle: $t('EDIT')+ ' - ' +  chapter.title, newTab: true })"><i class="las la-highlighter"></i><!--{{$t('EDIT').toUpperCase()}}--></button>
                 <button class="es-button icon-only danger" @click="deleteChapter(chapter)"><i class="las la-trash-alt"></i><!-- {{$t('DELETE').toUpperCase()}} --></button>
@@ -38,8 +38,8 @@
           </div>
         </div>
         <div style="position:relative; padding-bottom:40px; overflow: hidden;">
-            <CommentBasePanelv2 v-bind:class="{ 'show_comments' : show_comments }" v-if="commentbase_dom" :dom="commentbase_dom" :properties="{ book: book,
-            parent_name: 'chapter', parent_id: chapter.uuid, parent: chapter, selected_comment: selected_comment }" ref="commentbasepanelv2"></CommentBasePanelv2>
+            <!--<CommentBasePanelv2 v-bind:class="{ 'show_comments' : show_comments }" v-if="commentbase_dom" :dom="commentbase_dom" :properties="{ book: book,
+            parent_name: 'chapter', parent_id: chapter.uuid, parent: chapter, selected_comment: selected_comment }" ref="commentbasepanelv2"></CommentBasePanelv2>-->
           <Feedback v-bind:class="{ 'show_feedbacks' : show_feedbacks }" :properties="{ book: book, parent: chapter, parent_name: 'chapter', toggleType: true }"></Feedback>
 
           <!-- footer previous & next -->
@@ -224,7 +224,7 @@ export default {
     prevScene: function () {
       let chapter = this.chapter
       let scope = this
-      scope.previousChapter = this.$store.getters.getPrevChapter(chapter, false)
+      scope.previousChapter = this.$store.getters.getPrevChapter(chapter, true)
 
       // check if there is prev chapter
       if (scope.previousChapter != null) {
@@ -234,18 +234,18 @@ export default {
         // check if there is a scene -not including the hidden
         let notHiddenRows = this.$store.getters.getScenesByChapter(scope.previousChapter.uuid)
 
-        for (var i = 0; i < notHiddenRows.length; i++) {
-          if (notHiddenRows[i].hidden) {
-            notHiddenRows.splice(i, 1)
-          }
-        }
+        // for (var i = 0; i < notHiddenRows.length; i++) {
+        //   if (notHiddenRows[i].hidden) {
+        //     notHiddenRows.splice(i, 1)
+        //   }
+        // }
 
         if (notHiddenRows.length > 0) { // if previous chapter has scene - return scene
           scope.prevType = 'scene'
           return notHiddenRows[notHiddenRows.length - 1] // last scene
         } else { // if no scene under chapter then return the next chapter
           scope.prevType = 'chapter'
-          return this.$store.getters.getPrevChapter(chapter, false)
+          return scope.previousChapter
         }
       }
       return null
@@ -257,18 +257,18 @@ export default {
       // check if there is a scene -not including the hidden
       let notHiddenRows = this.$store.getters.getScenesByChapter(chapter.uuid)
 
-      for (var i = 0; i < notHiddenRows.length; i++) {
-        if (notHiddenRows[i].hidden) {
-          notHiddenRows.splice(i, 1)
-        }
-      }
+      // for (var i = 0; i < notHiddenRows.length; i++) {
+      //   if (notHiddenRows[i].hidden) {
+      //     notHiddenRows.splice(i, 1)
+      //   }
+      // }
 
       if (notHiddenRows.length > 0) { // if chapter has scene - return scene
         scope.nextType = 'scene'
         return notHiddenRows[0]
       } else { // if no scene under chapter then return the next chapter
         scope.nextType = 'chapter'
-        return this.$store.getters.getNextChapter(chapter, false)
+        return this.$store.getters.getNextChapter(chapter, true)
       }
     }
   },
@@ -280,6 +280,7 @@ export default {
         .then(response => {
           if (response.status == 200) {
             console.log('toggleHiddenChapter res', response)
+            scope.$store.dispatch('updateChapterHidden', response.data)
             scope.chapter_hidden = !scope.chapter_hidden
 
             window.swal.fire({

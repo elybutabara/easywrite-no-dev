@@ -183,6 +183,15 @@ export default {
       Vue.set(state.scenes, bookID, { rows: [] })
       state.scenes[bookID] = { is_open: false, rows: chapterScenes.data }
     },
+    updateSceneHidden (state, payload) {
+      let bookID = payload.book_id
+
+      for (var i = 0; i < state.scenes[bookID].rows.length; i++) {
+        if (state.scenes[bookID].rows[i].id === payload.id) {
+          state.scenes[bookID].rows[i].hidden = payload.hidden
+        }
+      }
+    },
     loadScenesByChapter (state, payload) {
       let chapterUUID = payload.chapter_id
       let scenes = payload.scenes
@@ -452,6 +461,9 @@ export default {
     },
     updateSceneVersionList ({ commit, state }, payload) {
       commit('updateSceneVersionList', payload)
+    },
+    updateSceneHidden ({ commit, state }, payload) {
+      commit('updateSceneHidden', payload)
     }
   }
 }

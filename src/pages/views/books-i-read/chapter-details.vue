@@ -8,7 +8,7 @@ a<template>
                 </div>
                 <div class="book-panel-right">
                   <button class="es-button btn-sm white" @click="toggleNotes()">{{$t('MY_NOTES').toUpperCase()}}</button>
-                    <button class="es-button btn-sm white view-comments" v-if="commentbase_dom" @click="toggleComments()">{{('VIEW COMMENTS').toUpperCase()}}</button>
+                    <!--<button class="es-button btn-sm white view-comments" v-if="commentbase_dom" @click="toggleComments()">{{('VIEW COMMENTS').toUpperCase()}}</button>-->
                   <a class="es-button btn-sm w-icon icon-left warning" @click="toggleFeedbacks()"><i class="las la-comments"></i> {{$t('FEEDBACKS')}}</a>
                 </div>
             </div>
@@ -34,8 +34,8 @@ a<template>
               </div>
         </div>
         <div style="position:relative; padding-bottom:40px; overflow: hidden;">
-            <CommentBasePanelv2 v-bind:class="{ 'show_comments' : show_comments }" v-if="commentbase_dom" :dom="commentbase_dom" :properties="{ book: book,
-            parent_name: 'chapter', parent_id: chapter.uuid, parent: chapter, selected_comment: selected_comment, is_reply: true }" ref="commentbasepanelv2"></CommentBasePanelv2>
+            <!--<CommentBasePanelv2 v-bind:class="{ 'show_comments' : show_comments }" v-if="commentbase_dom" :dom="commentbase_dom" :properties="{ book: book,
+            parent_name: 'chapter', parent_id: chapter.uuid, parent: chapter, selected_comment: selected_comment, is_reply: true }" ref="commentbasepanelv2"></CommentBasePanelv2>-->
           <Feedback v-bind:class="{ 'show_feedbacks' : show_feedbacks }" :properties="{ book: book, parent: chapter, parent_name: 'chapter', toggleType: true }"></Feedback>
           <Note v-if="show_notes" :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></Note>
 
@@ -43,17 +43,17 @@ a<template>
           <div style="border-top:1px solid #ccc; z-index:2000; background:#fff; height:50px; padding:0px 20px; line-height:50px; width:100%; position:absolute; bottom:0px; left:0px;">
 
               <button v-if="prevScene != null && prevType == 'chapter'" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + prevScene.id, tabComponent: 'books-i-read-chapter-details',  tabData: { book: book, chapter: prevScene }, tabTitle: 'VIEW' + ' - ' + prevScene.title})" style="float:left; background:transparent; border:none;">
-                  <i class="las la-angle-double-left"></i> PREV
+                  <i class="las la-angle-double-left"></i> {{ $t('PREV') }}
               </button>
               <button v-if="nextScene != null && nextType == 'chapter'" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + nextScene.id, tabComponent: 'books-i-read-chapter-details',  tabData: { book: book, chapter: nextScene }, tabTitle: 'VIEW' + ' - ' + nextScene.title})" style="float:right; background:transparent; border:none;">
-                  NEXT <i class="las la-angle-double-right"></i>
+                  {{ $t('NEXT') }} <i class="las la-angle-double-right"></i>
               </button>
 
               <button v-if="prevScene != null && prevType == 'scene'" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + prevScene.id, tabComponent: 'books-i-read-scene-details',  tabData: { book: book, scene: prevScene, chapter: previousChapter}, tabTitle: prevScene.title})" style="float:left; background:transparent; border:none;">
-                  <i class="las la-angle-double-left"></i> PREV
+                  <i class="las la-angle-double-left"></i> {{ $t('PREV') }}
               </button>
               <button v-if="nextScene != null && nextType == 'scene'" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + nextScene.id, tabComponent: 'books-i-read-scene-details',  tabData: { book: book, scene: nextScene, chapter: chapter}, tabTitle: nextScene.title})" style="float:right; background:transparent; border:none;">
-                  NEXT <i class="las la-angle-double-right"></i>
+                  {{ $t('NEXT') }} <i class="las la-angle-double-right"></i>
               </button>
 
           </div>

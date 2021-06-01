@@ -45,7 +45,7 @@
                     </div>
                     <div>
                         <button @click="togglePomodoro()" class="btn-pomodoro">{{ pmdtogglestatus.pmd_toggle }}</button>
-                        <button @click="resetPomodoro()" class="btn-pomodoro red">Reset</button>
+                        <button @click="resetPomodoro()" class="btn-pomodoro red">{{ $t('RESET') }}</button>
                     </div>
                 </div>
             </div>

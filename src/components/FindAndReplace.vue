@@ -3,9 +3,9 @@
     <div class="form-group">
         <span class="form-label">SCOPE</span>
         <select v-model="scope" class="form-control">
-            <option value="all">All</option>
-            <option value="chapters">Chapters</option>
-            <option value="scenes">Scenes</option>
+            <option value="all">{{ $t('ALL') }}</option>
+            <option value="chapters">{{ $t('CHAPTERS') }}</option>
+            <option value="scenes">{{ $t('SCENES') }}</option>
         </select>
     </div>
     <div class="form-group">
@@ -13,11 +13,11 @@
         <input v-model="find" type="text" class="form-control">
     </div>
     <div class="form-group">
-        <span class="form-label">REPLACE</span>
+        <span class="form-label">{{ $t('REPLACE') }}</span>
         <input v-model="replace" type="text" class="form-control">
     </div>
     <div class="form-group">
-        <button @click="saveReplacedWords()" type="button">REPLACE</button>
+        <button @click="saveReplacedWords()" type="button">{{ $t('REPLACE') }}</button>
     </div>
 </div> 
 </template>

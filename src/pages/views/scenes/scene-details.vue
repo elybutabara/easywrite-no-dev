@@ -10,9 +10,9 @@
                     <!-- <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>-->
                     <button class="es-button btn-sm white" @click="toggleHiddenScene()">
                       <span v-if="scene_hidden" class="d-flex align-items-center"><i class="las la-eye-slash mr-1"></i> Scene Hidden</span>
-                      <span v-else class="d-flex align-items-center"><i class="las la-eye mr-1"></i> Hide Scene</span>
+                      <span v-else class="d-flex align-items-center"><i class="las la-eye mr-1"></i> {{ $t('HIDE_SCENE') }}</span>
                     </button>
-                    <button class="es-button btn-sm white view-comments" v-if="commentbase_dom" @click="toggleComments()">{{('VIEW COMMENTS').toUpperCase()}}</button>
+                    <!--<button class="es-button btn-sm white view-comments" v-if="commentbase_dom" @click="toggleComments()">{{('VIEW COMMENTS').toUpperCase()}}</button>-->
                     <button class="es-button icon-only warning" @click="toggleFeedbacks()"><i class="las la-comments"></i><!--{{$t('FEEDBACKS').toUpperCase()}}--></button>
                     <button class="es-button icon-only" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.scene.uuid, tabComponent: 'scene-form', tabData: { book: book, scene: properties.scene, chapter: chapter }, tabTitle: $t('EDIT')+ ' - ' +  properties.scene.title, newTab: true})"><i class="las la-highlighter"></i><!--{{$t('EDIT').toUpperCase()}}--></button>
                     <button class="es-button icon-only danger" @click="deleteScene(properties.scene)"><i class="las la-trash-alt"></i><!--{{$t('DELETE').toUpperCase()}}--></button>
@@ -50,8 +50,8 @@
           </div>
         </div>
         <div style="position:relative;">
-            <CommentBasePanelv2 v-bind:class="{ 'show_comments' : show_comments }" v-if="commentbase_dom" :dom="commentbase_dom" :properties="{ book: book,
-            parent_name: 'scene', parent_id: scene.uuid, parent: scene, selected_comment: selected_comment }" ref="commentbasepanelv2"></CommentBasePanelv2>
+            <!--<CommentBasePanelv2 v-bind:class="{ 'show_comments' : show_comments }" v-if="commentbase_dom" :dom="commentbase_dom" :properties="{ book: book,
+            parent_name: 'scene', parent_id: scene.uuid, parent: scene, selected_comment: selected_comment }" ref="commentbasepanelv2"></CommentBasePanelv2>-->
         <Feedback v-bind:class="{ 'show_feedbacks' : show_feedbacks }" :properties="{ book: book, parent: scene, parent_name: 'scene', toggleType: true }"></Feedback>
 
         <!-- footer previous & next -->
@@ -275,6 +275,8 @@ export default {
         .then(response => {
           if (response.status == 200) {
             console.log('toggleHiddenChapter res', response)
+            scope.$store.dispatch('updateSceneHidden', response.data)
+            scope.$store.dispatch('loadScenesByChapter', scope.chapter.uuid)
             scope.scene_hidden = !scope.scene_hidden
 
             window.swal.fire({

@@ -33,8 +33,8 @@
 
 .page-main.dark .left-side-bar .left-sidebar-tab .tab-item,
 .page-main.dark .left-side-bar .left-sidebar-tab { border-color: var(--thin-navy); }
-.page-main.dark .left-side-bar .left-sidebar-tab .tab-item        { color: var(--darkgrey);  } 
-.page-main.dark .left-side-bar .left-sidebar-tab .tab-item.active {  color: var(--lightgrey); } 
+.page-main.dark .left-side-bar .left-sidebar-tab .tab-item        { color: var(--darkgrey);  }
+.page-main.dark .left-side-bar .left-sidebar-tab .tab-item.active {  color: var(--lightgrey); }
 
 .page-main.dark .pomodoro-nav { background: var(--thin-white); }
 .page-main.dark .pomodoro-nav h4 { color: var(--navy); }
@@ -63,9 +63,9 @@
 .page-main.dark .tox .tox-toolbar, .tox .tox-toolbar__overflow, .tox .tox-toolbar__primary { background:#2b3548 !important; border-bottom: 1px solid #3c4557;}
 .page-main.dark .tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) { border-right:none !important; }
 
-.page-main.dark .tox .tox-tbtn--disabled svg, 
-.page-main.dark .tox .tox-tbtn--disabled:hover svg, 
-.page-main.dark .tox .tox-tbtn:disabled svg, 
+.page-main.dark .tox .tox-tbtn--disabled svg,
+.page-main.dark .tox .tox-tbtn--disabled:hover svg,
+.page-main.dark .tox .tox-tbtn:disabled svg,
 .page-main.dark .tox .tox-tbtn:disabled:hover svg { fill: #495469; }
 .page-main.dark .tox .tox-tbtn--enabled, .page-main.dark .tox .tox-tbtn--enabled:hover {     background: #495469; }
 
@@ -75,8 +75,6 @@
 .page-main.dark .tox .tox-edit-area__iframe { background:#3e4b64; }
 .page-main.dark .tox .tox-tbtn__select-label { color:#fff; }
 .page-main.dark .tox .tox-tbtn svg { }
-
-.page-main.dark .tox .tox-edit-area__iframe body { color: #000 !important; }
 
 /* btn-tabs */
 .page-main.dark .btn-tabs .btn-tab { background: var(--thin-navy); color: #fff; }
@@ -180,4 +178,9 @@
 /*page course details*/
 .page-main.dark .es-course-details-content .es-page-content { background: #fff; padding-top: 20px; }
 .page-main.dark .lesson-list .lesson-single .footer { background: var(--navy); border-color: var(--navy); }
-.page-main.dark .lesson-list .lesson-single .footer span { color: #fff; }                        
+.page-main.dark .lesson-list .lesson-single .footer span { color: #fff; }
+
+/* added for disabling of inline-comment */
+.commentbase-comment-highlight {
+    background: transparent !important;
+}
