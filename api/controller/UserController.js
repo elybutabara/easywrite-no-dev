@@ -79,14 +79,12 @@ class UserController {
   }
 
   static async saveSyncingSettings (params) {
-
-    let lastSyncedDate = (params.date)  ? params.date : moment().add(5, 'seconds').format('YYYY-MM-DD HH:mm:ss').toString()
+    let lastSyncedDate = (params.date) ? params.date : moment().add(5, 'seconds').format('YYYY-MM-DD HH:mm:ss').toString()
     var columns = {synced_at: lastSyncedDate}
-    
-    if (params.autosync !== undefined && params.autosync !== null ) {
+
+    if (params.autosync !== undefined && params.autosync !== null) {
       columns['autosync'] = params.autosync
     }
-    
 
     await User.query()
       .patch(columns)

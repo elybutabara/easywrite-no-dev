@@ -90,22 +90,25 @@ router.get('/:userID/courses', async function (req, res) {
   }
 
   const courses = await CourseTakenController.getAllByUserId(param)
+
   courses.forEach(function (course, index) {
-    var file = path.join(resourcePath, 'resources', 'images', 'courses', course.package.course.image.replace('/uploads/course-images/', ''))
+    if (course.package.course) {
+      var file = path.join(resourcePath, 'resources', 'images', 'courses', course.package.course.image.replace('/uploads/course-images/', ''))
 
-    courses[index].package.course.picture_src = 'file://' + path.resolve(app.getAppPath(), '../', 'src', 'assets', 'img', 'default-image.jpg')
-    if (electronFs.existsSync(file)) {
-      courses[index].package.course.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'courses', course.package.course.image.replace('/uploads/course-images/', ''))
-    }
-
-    course.package.course.webinars.forEach(function (webinar, indx) {
-      var web_file = path.join(resourcePath, 'resources', 'images', 'webinars', webinar.image.replace('/uploads/webinars/', ''))
-
-      courses[index].package.course.webinars[indx].image_src = 'file://' + path.resolve(app.getAppPath(), '../', 'src', 'assets', 'img', 'default-image.jpg')
-      if (electronFs.existsSync(web_file)) {
-        courses[index].package.course.webinars[indx].image_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'webinars', webinar.image.replace('/uploads/webinars/', ''))
+      courses[index].package.course.picture_src = 'file://' + path.resolve(app.getAppPath(), '../', 'src', 'assets', 'img', 'default-image.jpg')
+      if (electronFs.existsSync(file)) {
+        courses[index].package.course.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'courses', course.package.course.image.replace('/uploads/course-images/', ''))
       }
-    })
+
+      course.package.course.webinars.forEach(function (webinar, indx) {
+        var web_file = path.join(resourcePath, 'resources', 'images', 'webinars', webinar.image.replace('/uploads/webinars/', ''))
+
+        courses[index].package.course.webinars[indx].image_src = 'file://' + path.resolve(app.getAppPath(), '../', 'src', 'assets', 'img', 'default-image.jpg')
+        if (electronFs.existsSync(web_file)) {
+          courses[index].package.course.webinars[indx].image_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'webinars', webinar.image.replace('/uploads/webinars/', ''))
+        }
+      })
+    }
   })
 
   res

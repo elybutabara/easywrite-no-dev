@@ -10,6 +10,7 @@ class CourseController {
       .withGraphJoined('package')
       .withGraphJoined('course')
       .whereNotNull('course.uuid')
+      .whereNull('course.deleted_at')
       .groupBy('course.id')
     if (param.limit) {
       courseTaken.limit(param.limit)
@@ -83,7 +84,8 @@ class CourseController {
         hide_price: row.hide_price,
         student_discount: row.student_discount,
         created_at: row.created_at,
-        updated_at: row.updated_at
+        updated_at: row.updated_at,
+        deleted_at: row.deleted_at
       }
       var data = await Course.query()
         .patch(columns)

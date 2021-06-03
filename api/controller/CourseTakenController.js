@@ -13,6 +13,7 @@ class CourseTakenController {
         builder.orderBy('order', 'asc')
       })
       .modifyGraph('package.course', builder => {
+        builder.whereNull('deleted_at')
         builder.groupBy('id')
       })
       .modifyGraph('package.course.webinars', builder => {
