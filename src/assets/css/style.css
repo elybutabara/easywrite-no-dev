@@ -1548,3 +1548,8 @@ input:checked + .slider:before {
 /** ===== es-snackbar end ==== */
 #message-center > span { position: absolute; top: 20px; left: calc(50% + 10px); transform: translate(-50%, -50%); }
 
+/* added for disabling of inline-comment */
+.commentbase-comment-highlight {
+    background: transparent !important;
+    color: #212529 !important;
+}

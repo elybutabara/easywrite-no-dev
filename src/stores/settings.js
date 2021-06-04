@@ -6,7 +6,7 @@ export default {
     collapsedSideNav: false,
     autosync: true,
     syncStatus: 'idle',
-    syncSource: 'initial', // initial (on app load), CTA (when manually started)
+    syncSource: 'initial' // initial (on app load), CTA (when manually started)
   },
   getters: {
     darkmode: state => {
@@ -33,14 +33,14 @@ export default {
       state.collapsedSideNav = !state.collapsedSideNav
     },
     setSyncSource (state, payload) {
-      state.syncSource =  payload.source
+      state.syncSource = payload.source
     },
     startSync (state) {
-      state.syncStatus =  'syncing'
+      state.syncStatus = 'syncing'
     },
     stopSync (state) {
-      state.syncSource =  'initial'
-      state.syncStatus =  'idle'
+      state.syncSource = 'initial'
+      state.syncStatus = 'idle'
     }
   },
   actions: {

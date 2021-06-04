@@ -70,7 +70,7 @@ export default {
   data: function () {
     return {
       ready: false,
-      version: 19, // syncing version
+      version: 20, // syncing version
       api_token: '',
       synced_date: null,
       start_synced_date: null,
@@ -93,6 +93,8 @@ export default {
       connected: null,
       retry: 0,
       max_retry: 5,
+      total_uploaded: 0,
+      total_downloaded: 0,
       template: {
         pre: [
           { title: 'Books', type: 'book', api: 'books', local: 'books', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
@@ -101,7 +103,8 @@ export default {
         main: [
           { title: 'Authors', type: 'default', api: 'authors', local: 'authors', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
           { title: 'Genres', type: 'default', api: 'book-genres', local: 'book-genres', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
-          { title: 'Relations', type: 'default', api: 'book-relations', local: 'relations', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false }
+          { title: 'Relations', type: 'default', api: 'book-relations', local: 'relations', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'TreadLine', type: 'default', api: 'admin-treadlines', local: 'admin-treadlines', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false }
         ],
         bookChildren: [
           { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
@@ -117,7 +120,8 @@ export default {
           { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
           { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
           { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
-          { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false }
+          { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false },
+          { title: 'Treadlines', api: 'user-treadlines', local: 'treadline', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
         ],
         booksIReadChildren: [
           { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
@@ -261,11 +265,13 @@ export default {
       scope.axios.get(window.APP.API.URL + '/user/connect')
         .then(function () {
           // set the books and books i read (template.pre) as the main endpoint first
+          /*
           if (!scope.$store.getters.isAutoSync) {
             scope.updateAppData()
             scope.$store.commit('stopSync')
             return
           }
+          */
 
           scope.ready = true
 
@@ -327,11 +333,11 @@ export default {
       
       // this is what we store on last synced_date, we will use this as base data for next syncng
       scope.start_synced_date = moment().format('YYYY-MM-DD HH:mm:ss').toString()
-      console.log('start', scope.endpoint_sync_date, scope.start_synced_date)
+      //console.log('start', scope.endpoint_sync_date, scope.start_synced_date)
 
-      console.log('########################################')
-      console.log('START HERE: endpoint_sync_date',scope.endpoint_sync_date)
-      console.log('START HERE: start_synced_date',scope.start_synced_date)
+      //console.log('########################################')
+      //console.log('START HERE: endpoint_sync_date',scope.endpoint_sync_date)
+      //console.log('START HERE: start_synced_date',scope.start_synced_date)
       
       var endpoint = scope.endpoints[scope.endpoint_index]
       scope.processEndpoint(endpoint)
@@ -352,7 +358,6 @@ export default {
 
       // we no longer process All books i read and books on main_endpoint since it was already synced at "PRE"
       if (endpoint.is_book_single && endpoint.is_book_single == true) {
-        console.log('BOOK SINGLE SKIP ==> ', endpoint.title)
         scope.next()
         return
       }
@@ -395,6 +400,7 @@ export default {
 
       scope.pointed_endpoint_status = 'Uploading'
       scope.pointed_endpoint_uploaded = 0
+      scope.total_uploaded += endpoint.packed.length
 
       for (let i = 0; i < endpoint.packed.length; i++) {
         var data = endpoint.packed[i]
@@ -465,7 +471,6 @@ export default {
           // if data (object) contains "file" then UPLOAD
           for (var i in row) {
             if (i == 'file') {
-              console.log('APPEND FILE!')
               FORMDATA.append('file_' + row['uuid'], row[i])
             }
           }
@@ -533,6 +538,7 @@ export default {
 
       scope.pointed_endpoint_status = 'Saving'
       scope.pointed_endpoint_saved = 0
+      scope.total_downloaded += endpoint.downloaded.length
 
       for (let i = 0; i < endpoint.downloaded.length; i++) {
         var data = endpoint.downloaded[i]
@@ -544,7 +550,6 @@ export default {
       var URL = 'http://localhost:3000/' + endpoint.local + '/sync'
 
       var rows = endpoint.downloaded
-      console.log('save data to app', endpoint.downloaded, data.updated_at)
       var chunks = scope.CHUNK_ARRAY(rows, endpoint.chunkSize)
 
       scope.$set(endpoint, 'chunks', [])
@@ -675,9 +680,11 @@ export default {
         scope.saveUserSyncedDate(last_sync_date)
         scope.ready = false
         scope.updateAppData()
-
+        scope.userSyncingLog();
         scope.$store.commit('stopSync')
-
+        
+        scope.total_uploaded = 0
+        scope.total_downloaded = 0
         // TODO: enable if the button is ready
         // if (scope.$store.getters.isAutoSync) {
         //   setTimeout(function () {
@@ -876,6 +883,27 @@ export default {
       download(src.url, dst, function () {
         console.log('done donwloadig image: ' + src.name)
       })
+    },
+    userSyncingLog: function () {
+      var scope = this
+
+      var URL = window.APP.API.URL + '/users/synced'
+      var headers = {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Authorization': 'Bearer ' + scope.api_token,
+        'X-Authorization': 'Bearer ' + scope.api_token,
+      }
+
+      scope.axios.post(URL, { uploaded: scope.total_uploaded, downloaded: scope.total_downloaded, version:  scope.version }, { 'headers': headers })
+        .then(function (response) {})
+        .catch(function (error) {
+          setTimeout(function () {
+            scope.userSyncingLog()
+          }, 4000)
+        })
+        .finally(function () {
+
+        })
     }
   },
   mounted () {

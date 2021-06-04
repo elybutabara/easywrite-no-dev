@@ -4,7 +4,6 @@ const path = require('path')
 const { User, Book, BookGenre, Chapter, ChapterVersion, Scene, SceneVersion } = require(path.join(__dirname, '..', 'models'))
 
 class BookController {
-  
   static async getAllBooksByUserId (userId) {
     const user = await User.query()
       .findById(userId)
@@ -80,16 +79,13 @@ class BookController {
     return book
   }
 
-  static async replaceWords(params)
-  {
+  static async replaceWords (params) {
     var scope = params.scope
     var bookUUID = params.book_id
     var find = params.find
     var replace = params.replace
 
-
     if (scope == 'all' || scope == 'chapters') {
-
       const chapters = await Chapter.query().where('book_id', '=', bookUUID)
       var chapterUUIDs = []
 
@@ -97,12 +93,12 @@ class BookController {
         var chapter = chapters[i]
         var content = chapter.content
         if (content) {
-          var new_content = content.replace(eval('/' + find + '/gi'), replace);
+          var new_content = content.replace(eval('/' + find + '/gi'), replace)
           var update = await Chapter.query()
-                .patch({ 'content': new_content })
-                .where('uuid', '=', chapter.uuid)
+            .patch({ 'content': new_content })
+            .where('uuid', '=', chapter.uuid)
         }
-            
+
         /*
         var chapter_id = chapters[i].uuid
         var version = await ChapterVersion.query()
@@ -131,14 +127,13 @@ class BookController {
 
         var content = scene.content
         if (content) {
-          var new_content = content.replace(eval('/' + find + '/gi'), replace);
+          var new_content = content.replace(eval('/' + find + '/gi'), replace)
           var update = await Scene.query()
-                .patch({ 'content': new_content })
-                .where('uuid', '=', scene.uuid)
+            .patch({ 'content': new_content })
+            .where('uuid', '=', scene.uuid)
         }
       }
     }
-    
   }
 
   static async getSyncable (userId) {
@@ -169,8 +164,8 @@ class BookController {
         from_local: row.from_local
       }
 
-      console.log('BOOK UUID ===> ',row.uuid)
-      console.log('BOOK TITLE ===> ',row.title)
+      // console.log('BOOK UUID ===> ',row.uuid)
+      // console.log('BOOK TITLE ===> ',row.title)
 
       var data = await Book.query()
         .patch(columns)
@@ -178,7 +173,7 @@ class BookController {
 
       if (!data || data === 0) {
         data = await Book.query().insert(columns)
-        console.log('BOOK NOT FOUND, INSERT ===> ',row.title)
+        // console.log('BOOK NOT FOUND, INSERT ===> ',row.title)
 
         // update uuid to match web
         data = await Book.query()

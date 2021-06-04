@@ -102,7 +102,7 @@
                         </div>
                     </div>
                     <div class="content ">
-                        <button @click="getImport()">Import Docx</button>
+                        <button @click="getImport()"> {{ $t('IMPORT_DOCX') }} </button>
                         <b-row class="margin-bottom-1rem">
                             <b-col>
                                 <div v-if="scene_history.length" class="text-right">
@@ -132,7 +132,7 @@
                             </b-col>
                         </b-row>
                         <div class="col-md-12">
-                            <small>The scene will be autosaved every ten seconds</small>
+                            <small> {{ $t('THE_SCENE_WILL_BE_SAVED_EVERY_TEN_SECONDS') }} </small>
                             <small v-if="!do_scene_auto_save" class="text-red"> | Saving ...</small>
                         </div>
                     </div>
@@ -285,7 +285,7 @@
                     <b-card-group deck>
                         <b-card header="Content">
                             <template class="text-center" v-slot:header>
-                                <h4 class="mb-0">Content</h4>
+                                <h4 class="mb-0">{{ $t('CONTENT') }}</h4>
                             </template>
                             <div class="margin-bottom-1rem">
                                 <div v-html="historyContent" class="history-content" ></div>
@@ -318,13 +318,13 @@
                   <b-col>
                     <div class="custom-checkbox mt-2">
                       <input v-model="clear_history" type="checkbox" id="clearSceneHistory">
-                      <label for="clearSceneHistory">{{$t('site.clear-scene-history-on-save')}}</label>
+                      <label for="clearSceneHistory">{{ $t('site.clear-scene-history-on-save') }}</label>
                     </div>
                   </b-col>
                 </b-row>
                 <b-row style="margin-bottom: 1rem;" class="text-left">
                   <b-col>
-                    <label>{{$t('DESCRIPTION')}}: </label>
+                    <label>{{ $t('DESCRIPTION') }}: </label>
                     <tiny-editor :initValue="new_scene_version.change_description"
                                  v-on:getEditorContent="setDescription"
                                  class="form-control"
@@ -335,7 +335,7 @@
                   <b-col>
                     <div class="text-right">
                       <b-button variant="outline-dark" class="mr-2" @click="scene_version_modal_is_open = !scene_version_modal_is_open">{{$t('CANCEL')}}</b-button>
-                      <b-button variant="dark" @click="saveNewVersion">{{$t('SAVE')}}</b-button>
+                      <b-button variant="dark" @click="saveNewVersion">{{ $t('SAVE') }}</b-button>
                     </div>
                   </b-col>
                 </b-row>
@@ -400,25 +400,25 @@ export default {
       // Options for multiselect
       options_chapters: [{title: this.$t('OTHER_SCENE'), uuid: '-1'}],
       options_typeofscene: [
-        {text: 'Action', value: 'Action'},
-        {text: 'Reaction', value: 'Reaction'}
+        {text: this.$t('ACTION'), value: 'Action'},
+        {text: this.$t('REACTION'), value: 'Reaction'}
       ],
       options_importance: [
-        {text: 'Plot', value: 'Plot'},
-        {text: 'Subplot', value: 'Subplot'}
+        {text: this.$t('PLOT'), value: 'Plot'},
+        {text: this.$t('SUBPLOT'), value: 'Subplot'}
       ],
       options_status: [
-        {text: 'Outline', value: 'Outline'},
-        {text: 'Draft', value: 'Draft'},
-        {text: '1st Edition', value: '1st Edition'},
-        {text: '2nd Edition', value: '2nd Edition'},
-        {text: 'Done', value: 'Done'}
+        {text:  this.$t('OUTLINE'), value: 'Outline'},
+        {text:  this.$t('DRAFT'), value: 'Draft'},
+        {text:  this.$t('FIRST_EDITION'), value: '1st Edition'},
+        {text:  this.$t('SECOND_EDITION'), value: '2nd Edition'},
+        {text:  this.$t('DONE'), value: 'Done'}
       ],
       options_weather_type: [
-        {text: 'Rainy', value: 'Rainy'},
-        {text: 'Sunny', value: 'Sunny'},
-        {text: 'Snowy', value: 'Snowy'},
-        {text: 'Windy', value: 'Windy'}
+        {text: this.$t('RAINY'), value: 'Rainy'},
+        {text: this.$t('SUNNY'), value: 'Sunny'},
+        {text: this.$t('SNOWY'), value: 'Snowy'},
+        {text: this.$t('WINDY'), value: 'Windy'}
       ],
       options_character_id_vp: [
         {text: 'Author', value: '-1'}
@@ -559,7 +559,8 @@ export default {
         // Add the imported contents where mouse cursor is located.
         tinymce.get(scope.$refs.tmc.$el.id).execCommand('mceInsertContent', false, data)
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
-        scope.data.scene_version.content = tinymce.get(scope.$refs.tmc.$el.id).getContent()
+        // scope.data.scene_version.content = tinymce.get(scope.$refs.tmc.$el.id).getContent()
+        scope.data.content = tinymce.get(scope.$refs.tmc.$el.id).getContent()
         scope.baseSceneContent = tinymce.get(scope.$refs.tmc.$el.id).getContent()
         /*
         // conflict with delete-in-detail-page-for-items-location-character-cause-breadcrumbs-problem-after-redirecting-in-listing-page
@@ -635,8 +636,8 @@ export default {
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: this.$t('APPLY'),
-        cancelButtonText: this.$t('CANCEL')
+        confirmButtonText: scope.$t('APPLY'),
+        cancelButtonText: scope.$t('CANCEL')
       }).then((result) => {
         if (result.value) {
           scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)

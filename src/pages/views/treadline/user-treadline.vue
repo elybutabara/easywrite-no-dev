@@ -6,7 +6,7 @@
             <div style="text-align: center; font-size: 30px;" class="es-form-control-wrap">
                 <label class="form-label" for="treadline-title">{{Treadline.title}}</label>
                 <button class="btn btn-outline-success btn-sm rounded float-right" @click="showModal()">
-                Edit Answers
+                {{ $t('EDIT_ANSWERS') }}
                 </button>
             </div>
         </div>
@@ -28,10 +28,10 @@
                 <table class="table table-bordered treadline-table">
                     <thead>
                         <tr>
-                            <th style="width: 40px;">Count</th>
-                            <th>Questions</th>
-                            <th>Answers</th>
-                            <th>Comments</th>
+                            <th style="width: 40px;">{{ $t('COUNT') }}</th>
+                            <th>{{ $t('QUESTIONS') }}</th>
+                            <th>{{ $t('ANSWERS') }}</th>
+                            <th>{{ $t('COMMENTS') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -129,12 +129,12 @@
         <div class="form-group" v-for="index in 11" v-bind:key = index>
             <div>
                 <strong><label>
-                    Question {{ index }}: {{ Treadline['question_' + index]}}
+                    {{ $t('QUESTION') }} {{ index }}: {{ Treadline['question_' + index]}}
                 </label></strong>
             </div>
 
             <div>
-                <label><strong><span>Comment: </span></strong>{{ Treadline['comment_' + index]}}</label>
+                <label><strong><span>{{ $t('COMMENT') }}: </span></strong>{{ Treadline['comment_' + index]}}</label>
             </div>
             <div>
                 <tiny-editor ref="answer_1" v-if="index == 1" :initValue="formdata['answer_' + index]" v-on:getEditorContent="setAnswer1" v-on:typing="isTyping_" :params="{answer: 'answer_'+index, type: 'user_treadline'}" class="form-control" />           
@@ -213,7 +213,7 @@ export default {
             formdata: {
                 id: null,
                 user_id: '',
-                answer_1: 'hey test',
+                answer_1: '',
                 answer_2: '',
                 answer_3: '',
                 answer_4: '',
@@ -531,7 +531,6 @@ export default {
 }
 </script>
 <style scoped>
-
     .tox .tox-tbtn--bespoke .tox-tbtn__select-label {
         color: #fff;
     }

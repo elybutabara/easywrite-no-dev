@@ -31,7 +31,7 @@
           <h4 class="main-title"><i class="fas fa-link mr-2"></i>{{ $t('STORYLINE_EDITOR_FOR') }} ‘{{ book.title }}’</h4>
         </div>
         <div class="book-panel-right">
-          <button class="es-button btn-sm white" v-bind:class="{'disabled' : printing}" @click="generateReport()">
+          <button class="es-button btn-sm white" v-bind:class="{'disabled' : printing}" @click="generateImage()">
             <span v-if="printing && print =='default'">{{ $t('PROCESSING') }}...</span>
             <span v-else>{{ $t('PRINT') }}</span>
 
@@ -70,12 +70,12 @@
         </div>
         <div class="legend">
             <span class="circle"></span>
-            <span>{{ $t('STROYLINE_ENDS_WITH_SCENE') }}</span>
+            <span>{{ $t('STORYLINE_ENDS_WITH_SCENE') }}</span>
         </div>
       </div>
     </div>
 
-    <div class="es-page-content" id="custom-scrollbar">
+    <div :class="'es-page-content storyline-content-container-' + book.id" id="custom-scrollbar">
       <div class="storyline-content mt-1">
         <div class="row">
           <div class="col-lg-2">
@@ -214,7 +214,7 @@
     <div class="d-flex align-items-center flex-column">
       <div id="pageLoader"></div>
         <br>
-        <p style="font-size: 13px;">{{ $t('LOADING') }} '{{ book.title }}' {{ $t('STROYLINE') }}: {{ loading_msg }}</p>
+        <p style="font-size: 13px;">{{ $t('LOADING') }} '{{ book.title }}' {{ $t('STORYLINE') }}: {{ loading_msg }}</p>
       </div>
   </div>
 
@@ -384,6 +384,9 @@ import VueHtml2pdf from 'vue-html2pdf'
 import Print from './storyline-print'
 import PrintChunked from './storyline-print-chunked'
 
+import * as htmlToImage from 'html-to-image'
+import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image'
+
 export default {
   name: 'storyline',
   props: ['properties'],
@@ -476,6 +479,41 @@ export default {
     }
   },
   methods: {
+    generateImage: function () {
+      var scope = this
+
+      const appWidth = window.$('#app').width()
+      const leftSidebarWidth = window.$('.left-side-bar').width()
+      const storylineWidth = appWidth - leftSidebarWidth
+      const columnWidth = storylineWidth / 6
+      const storylineColumns = window.$(`.storyline-content-container-${scope.book.id} > .storyline-content > .row > .col-lg-2`).length
+      const imgWidth = (columnWidth * storylineColumns) + (storylineColumns * 2)
+      const node = window.$('.storyline-content-container-' + this.book.id)
+
+      // const storylines = window.$('.storyline-content-container')
+      // for (let storyline of storylines) {
+      //   for (let each of storyline.classList) {
+      //     if (each == this.book.id) {
+      //     }
+      //   }
+      // }
+
+      if (scope.printing) {
+        return
+      }
+
+      scope.printing = true
+
+      scope.print = 'default'
+        htmlToImage.toPng(node[0], { quality: 0.95, width: imgWidth })
+          .then(function (dataUrl) {
+            var link = document.createElement('a');
+            link.download = scope.book.title + ' storyline.png';
+            link.href = dataUrl;
+            link.click();
+            scope.printing = false
+          });
+    },
     generateReport (chunked = false) {
       var scope = this
       var data = {

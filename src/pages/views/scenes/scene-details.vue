@@ -10,7 +10,7 @@
                     <!-- <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>-->
                     <button class="es-button btn-sm white" @click="toggleHiddenScene()">
                       <span v-if="scene_hidden" class="d-flex align-items-center"><i class="las la-eye-slash mr-1"></i> Scene Hidden</span>
-                      <span v-else class="d-flex align-items-center"><i class="las la-eye mr-1"></i> Hide Scene</span>
+                      <span v-else class="d-flex align-items-center"><i class="las la-eye mr-1"></i> {{ $t('HIDE_SCENE') }}</span>
                     </button>
                     <!--<button class="es-button btn-sm white view-comments" v-if="commentbase_dom" @click="toggleComments()">{{('VIEW COMMENTS').toUpperCase()}}</button>-->
                     <button class="es-button icon-only warning" @click="toggleFeedbacks()"><i class="las la-comments"></i><!--{{$t('FEEDBACKS').toUpperCase()}}--></button>
@@ -57,17 +57,17 @@
         <!-- footer previous & next -->
         <div style="border-top:1px solid #ccc; z-index:2000; background:#fff; height:50px; padding:0px 20px; line-height:50px; width:100%; position:absolute; bottom:0px; left:0px;">
             <button v-if="prevScene != null && prevType == 'scene'" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + prevScene.id, tabComponent: 'scene-details',  tabData: { book: book, scene: prevScene, chapter: chapter }, tabTitle: prevScene.title})" style="float:left; background:transparent; border:none;">
-                <i class="las la-angle-double-left"></i> PREV
+                <i class="las la-angle-double-left"></i> {{ $t('PREV') }}
             </button>
             <button v-if="nextScene != null && nextType == 'scene'" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + nextScene.id, tabComponent: 'scene-details',  tabData: { book: book, scene: nextScene, chapter: chapter}, tabTitle: nextScene.title})" style="float:right; background:transparent; border:none;">
-                NEXT <i class="las la-angle-double-right"></i>
+                {{ $t('NEXT') }} <i class="las la-angle-double-right"></i>
             </button>
 
             <button v-if="prevScene != null && prevType == 'chapter'" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + prevScene.id, tabComponent: 'chapter-details',  tabData: { book: book, chapter: prevScene }, tabTitle: 'VIEW' + ' - ' + prevScene.title})" style="float:left; background:transparent; border:none;">
-                <i class="las la-angle-double-left"></i> PREV
+                <i class="las la-angle-double-left"></i> {{ $t('PREV') }}
             </button>
             <button v-if="nextScene != null && nextType == 'chapter'" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + nextScene.id, tabComponent: 'chapter-details',  tabData: { book: book, chapter: nextScene }, tabTitle: 'VIEW' + ' - ' + nextScene.title})" style="float:right; background:transparent; border:none;">
-                NEXT <i class="las la-angle-double-right"></i>
+                {{ $t('NEXT') }} <i class="las la-angle-double-right"></i>
             </button>
         </div>
 
@@ -275,6 +275,8 @@ export default {
         .then(response => {
           if (response.status == 200) {
             console.log('toggleHiddenChapter res', response)
+            scope.$store.dispatch('updateSceneHidden', response.data)
+            scope.$store.dispatch('loadScenesByChapter', scope.chapter.uuid)
             scope.scene_hidden = !scope.scene_hidden
 
             window.swal.fire({

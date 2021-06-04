@@ -101,7 +101,7 @@ window.chunk = require('chunk')
 let APP = {
   SE_PROD: {
     API: {
-      URL: 'https://api.pilotleser.no/se',
+      URL: 'https://www.easywrite.se/app',
       UPLOAD_URL: 'https://www.easywrite.se/uploads',
       SITE: 'se-live',
       CHAT: 'se'
@@ -109,7 +109,7 @@ let APP = {
   },
   SE_DEV: {
     API: {
-      URL: 'https://api.pilotleser.no/se-dev',
+      URL: 'https://dev.easywrite.se/app',
       UPLOAD_URL: 'https://dev.easywrite.se/uploads',
       SITE: 'se-dev',
       CHAT: 'se-dev'
@@ -117,7 +117,7 @@ let APP = {
   },
   NO_PROD: {
     API: {
-      URL: 'https://api.pilotleser.no/no',
+      URL: 'https://www.pilotleser.no/app',
       UPLOAD_URL: 'https://www.pilotleser.no/uploads',
       SITE: 'no-live',
       CHAT: 'no'
@@ -173,9 +173,9 @@ let APP = {
   }
 }
 
-window.APP = APP.NO_DEV // DEVELOPEMENT APP
+window.APP = APP.LOCAL // DEVELOPEMENT APP
 if (process.env.NODE_ENV === 'production') {
-  window.APP = APP.NO_DEV // PRODUCTION APP
+  window.APP = APP.LOCAL // PRODUCTION APP
 }
 // window.$.fn.select2.defaults.set('theme', 'bootstrap')
 
