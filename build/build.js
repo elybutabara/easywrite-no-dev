@@ -94,9 +94,9 @@ let buildOptions = {
       "repo": "easywrite-no-dev"
       // "repo": "easywrite-no-live"
     }],
-    "certificateFile" : "build/certificate/easywrite.pfx",
+    //"certificateFile" : "build/certificate/easywrite.pfx",
     "verifyUpdateCodeSignature" : true,
-    "certificatePassword": process.env.CSC_KEY_PASSWORD
+    //"certificatePassword": process.env.CSC_KEY_PASSWORD
   },
   "nsis": {
     // "oneClick": false
