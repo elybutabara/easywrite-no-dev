@@ -69,7 +69,7 @@
         </div>
         <div v-if="tab.active === 'course-webinars'"  class="es-course-details-tab-content"  id="custom-scrollbar">
           <div class="webinar-list" v-if="webinars">
-            <div class="webinar-single" v-for="webinar in webinars" :key="webinar.id">
+            <div class="webinar-single" v-for="webinar in webinars" :key="webinar.id" v-if="webinar.start_date_hour_diff >= 0">
               <img v-bind:src="webinar.image_src">
               <div class="details">
                 <strong>{{ webinar.title }}</strong> <br>
@@ -192,6 +192,7 @@ export default {
     changeTab: function (tab) {
       let scope = this
       scope.tab.active = tab
+      console.log(scope.webinars)
     },
     openLesson: function (lesson) {
       let scope = this

@@ -2,17 +2,17 @@
 <div class="export-book-chapter-scene">
   <div class="form-group">
     <div class="d-flex justify-content-between">
-      <strong class="form-label">EXPORT OPTIONS:</strong>
-      <span v-if="export_option === 'export_all'">Word count: {{ countAllBookWords }}</span>
-      <span v-else>Word count: {{ word_count }}</span>
+      <strong class="form-label">{{ $t('EXPORT_OPTIONS') }} :</strong>
+      <span v-if="export_option === 'export_all'">{{ $t('WORD_COUNT') }}: {{ countAllBookWords }}</span>
+      <span v-else>{{ $t('WORD_COUNT') }}: {{ word_count }}</span>
     </div>
     <div class="export-options">
       <input id="se_all" v-model="export_option" type="radio" value="export_all" @click="resetData()">
-      <label for="se_all" class="mr-3">Export All</label>
+      <label for="se_all" class="mr-3"> {{ $t('EXPORT_ALL') }}</label>
       <input id="se_ch" v-model="export_option" type="radio" value="select_chapters" @click="word_count = 0; resetData()">
-      <label for="se_ch" class="mr-3">Select Chapters</label>
+      <label for="se_ch" class="mr-3"> {{ $t('SELECT_A_CHAPTERS') }}</label>
       <input id="se_sc" v-model="export_option" type="radio" value="select_scenes" @click="word_count = 0; resetData()">
-      <label for="se_sc">Select Scenes</label>
+      <label for="se_sc"> {{ $t('SELECT_SCENES') }}</label>
     </div>
 
     <div v-if="export_option === 'select_chapters'">
@@ -95,7 +95,7 @@
 
   </div>
   <div class="form-group">
-    <button @click="exportBook()" type="button">EXPORT</button>
+    <button @click="exportBook()" type="button">{{ $t('EXPORT') }}</button>
   </div>
 </div>
 </template>

@@ -4,7 +4,11 @@
 
 <script>
 import tinymce from 'tinymce'
-// const path = window.require('path')
+import Vue from 'vue'
+
+const path = window.require('path')
+
+console.log(path.resolve('src/assets/css/darkmode.css'))
 export default {
   name: 'TinyMCE',
   props: ['initValue', 'disabled', 'params', 'chapterData'],
@@ -13,6 +17,7 @@ export default {
     return {
       save_to_scene: false,
       initConfig: {
+        content_css: path.resolve('src/assets/css/darkmode.css'),
         selector: 'input.tiny-area',
         language: 'custom_lang',
         min_height: 400,
@@ -211,6 +216,23 @@ export default {
     var vm = this
     vm.initEditor()
     console.log('tinyMCECHapter-uid' + this._uid)
+    /**
+    setTimeout(() => {
+      $('.page-main.dark .tox .tox-edit-area__iframe #tinymce').css('color', '#fff')
+      tinymce.get(vm.$el.id).getBody().style.color = '#fff'
+      console.log('test1')
+    },3000)
+
+    Vue.nextTick(() => {
+      $('.page-main.dark .tox .tox-edit-area__iframe #tinymce').css('color', '#fff')
+      tinymce.get(vm.$el.id).getBody().style.color = '#fff'
+      console.log('test2')
+    })
+    */
+    tinymce.get(vm.$el.id).getBody().style.color = '#000'
+    if ($('.page-main').hasClass('dark')) {
+      tinymce.get(vm.$el.id).getBody().style.color = '#fff'
+    }
   }
 }
 </script>

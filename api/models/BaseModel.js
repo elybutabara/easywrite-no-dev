@@ -10,7 +10,7 @@ class BaseModel extends Model {
   }
 
   $beforeUpdate (opt, queryContext) {
-    this.updated_at = moment().format('YYYY-MM-DD HH:mm:ss').toString()
+    this.updated_at = (!this.updated_at) ? moment().format('YYYY-MM-DD HH:mm:ss').toString() : this.updated_at
   }
 
   static get idColumn () { return ['uuid'] }

@@ -1,7 +1,7 @@
 <template>
     <div style="width:calc(100% - 40px); max-width:700px; background:#fff; margin:0px auto; margin-top:120px;">
         <div style="background-color: rgba(0, 0, 0, 0.03); padding:5px 20px; border-bottom: 1px solid rgba(0, 0, 0, 0.125); font-weight:900;">
-          Save to Scene
+          {{ $t('SAVE_TO_SCENE') }}
         </div>
         <div style="padding:20px 20px;">
           <div>

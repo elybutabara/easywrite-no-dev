@@ -17,7 +17,8 @@ class Package extends BaseModel {
       join: {
         from: 'packages.course_id',
         to: 'courses.uuid'
-      }
+      },
+      softDelete: true
     },
     course_taken: {
       relation: BaseModel.HasOneRelation,

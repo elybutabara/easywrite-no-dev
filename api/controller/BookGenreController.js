@@ -22,21 +22,28 @@ class BookGenreController {
     return rows
   }
 
-  static async sync (row) {
-    var data = await BookGenre.query()
-      .patch(row)
-      .where('uuid', '=', row.uuid)
+  static async sync (datas) {
+    var rows = []
+    if (!Array.isArray(datas)) rows.push(datas)
+    else rows = datas
 
-    if (!data || data === 0) {
-      data = await BookGenre.query().insert(row)
+    for (let i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      var data = await BookGenre.query()
+        .patch(row)
+        .where('uuid', '=', row.uuid)
 
-      // update uuid to match web
-      data = await BookGenre.query()
-        .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
-        .where('uuid', '=', data.uuid)
+      if (!data || data === 0) {
+        data = await BookGenre.query().insert(row)
+
+        // update uuid to match web
+        data = await BookGenre.query()
+          .patch({'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at})
+          .where('uuid', '=', data.uuid)
+      }
     }
 
-    return data
+    return true
   }
 }
 

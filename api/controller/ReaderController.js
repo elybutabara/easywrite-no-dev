@@ -76,65 +76,69 @@ class ReaderController {
       .withGraphJoined('author', { maxBatchSize: 1 })
 
     const rows = await Reader.query()
-      .where('author_id', user.author.uuid)
-      .where('updated_at', '>', user.synced_at)
+      .withGraphJoined('book', { maxBatchSize: 1 })
+      .where('book_readers.author_id', user.author.uuid)
+      .where('book_readers.updated_at', '>', user.synced_at)
 
     return rows
   }
 
-  static async sync (row) {
-    var columns = {
-      uuid: row.uuid,
-      author_id: row.author_id,
-      book_id: row.book_id,
-      role: row.role,
-      status: row.status,
-      reasons: row.reasons,
-      allow_feedback_email_notification: row.allow_feedback_email_notification,
-      created_at: row.created_at,
-      updated_at: row.updated_at,
-      deleted_at: row.deleted_at
-    }
+  static async sync (rows) {
+    for (let i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      var columns = {
+        uuid: row.uuid,
+        author_id: row.author_id,
+        book_id: row.book_id,
+        role: row.role,
+        status: row.status,
+        reasons: row.reasons,
+        allow_feedback_email_notification: row.allow_feedback_email_notification,
+        created_at: row.created_at,
+        updated_at: row.updated_at,
+        deleted_at: row.deleted_at
+      }
 
-    var bookColumns = {
-      uuid: row.book.uuid,
-      author_id: row.book.author_id,
-      title: row.book.title,
-      about: row.book.about,
-      numbered_chapter: row.book.numbered_chapter,
-      is_default: row.book.is_default,
-      created_at: row.book.created_at,
-      updated_at: row.book.updated_at,
-      deleted_at: row.book.deleted_at,
-      from_local: row.book.from_local
-    }
+      var bookColumns = {
+        uuid: row.book.uuid,
+        author_id: row.book.author_id,
+        title: row.book.title,
+        about: row.book.about,
+        numbered_chapter: row.book.numbered_chapter,
+        is_default: row.book.is_default,
+        created_at: row.book.created_at,
+        updated_at: row.book.updated_at,
+        deleted_at: row.book.deleted_at,
+        from_local: row.book.from_local
+      }
 
-    let bookData = await Book.query()
-      .patch(bookColumns)
-      .where('uuid', '=', row.uuid)
+      /*
+      let bookData = await Book.query()
+        .patch(bookColumns)
+        .where('uuid', '=', row.uuid)
 
-    console.log('bookData', row.uuid)
+      if (!bookData || bookData === 0) {
+        bookData = await Book.query().insert(bookColumns)
 
-    if (!bookData || bookData === 0) {
-      bookData = await Book.query().insert(bookColumns)
+        // update uuid to match web
+        bookData = await Book.query()
+          .patch({ 'uuid': row.book.uuid, created_at: row.book.created_at, updated_at: row.book.updated_at })
+          .where('uuid', '=', bookData.uuid)
+      }
+      */
 
-      // update uuid to match web
-      bookData = await Book.query()
-        .patch({ 'uuid': row.book.uuid, created_at: row.book.created_at, updated_at: row.book.updated_at })
-        .where('uuid', '=', bookData.uuid)
-    }
+      var data = await Reader.query()
+        .patch(columns)
+        .where('uuid', '=', row.uuid)
 
-    var data = await Reader.query()
-      .patch(columns)
-      .where('uuid', '=', row.uuid)
+      if (!data || data === 0) {
+        data = await Reader.query().insert(columns)
 
-    if (!data || data === 0) {
-      data = await Reader.query().insert(columns)
-
-      // update uuid to match web
-      data = await Reader.query()
-        .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
-        .where('uuid', '=', data.uuid)
+        // update uuid to match web
+        data = await Reader.query()
+          .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
+          .where('uuid', '=', data.uuid)
+      }
     }
 
     return data

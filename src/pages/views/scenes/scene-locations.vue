@@ -91,7 +91,8 @@ export default {
         .post('http://localhost:3000/scene-locations', sceneLocation)
         .then(response => {
           if (response.data) {
-            scope.$store.dispatch('addSceneLocationToList', response.data)
+            // scope.$store.dispatch('addSceneLocationToList', response.data)
+            scope.$store.dispatch('loadLocationsByScene', scope.scene)
           }
         })
     },

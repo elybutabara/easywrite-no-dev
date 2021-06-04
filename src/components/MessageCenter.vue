@@ -143,7 +143,7 @@
                                     <div>
                                         <div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{ model.alias }}</div>
                                         <div class="mt-2" style="font-size: 14px; line-height: 100%;">
-                                            {{ model.alias +' '+$tc('has been invited to read ')+' '+ model.book.title+'.'}}
+                                            {{ model.alias +' '+$t('HAS_INVITED_YOU_TO_READ')+' '+ model.book.title+'.'}}
                                             <a href='javascript:void(0)' @click="CHANGE_COMPONENT({
                                                 tabKey: 'invitations-tab',
                                                 tabComponent: 'invitations-tab',

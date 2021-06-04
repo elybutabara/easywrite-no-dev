@@ -7,7 +7,7 @@ const router = express.Router()
 const { BookGenreCollectionController } = require(path.join(__dirname, '..', 'controllers'))
 
 router.get('/syncable', async function (req, res) {
-  const rows = await BookGenreCollectionController.getSyncable(req.query.userID)
+  const rows = await BookGenreCollectionController.getSyncable(req)
 
   res
     .status(200)

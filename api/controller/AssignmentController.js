@@ -23,41 +23,48 @@ class AssignmentController {
     return assignments
   }
 
-  static async sync (row) {
-    var columns = {
-      uuid: row.uuid,
-      course_id: row.course_id,
-      title: row.title,
-      description: row.description,
-      submission_date: row.submission_date,
-      available_date: row.available_date,
-      allowed_package: row.allowed_package,
-      add_on_price: row.add_on_price,
-      max_words: row.max_words,
-      for_editor: row.for_editor,
-      editor_manu_generate_count: row.editor_manu_generate_count,
-      generated_filepath: row.generated_filepath,
-      show_join_group_question: row.show_join_group_question,
-      created_at: row.created_at,
-      updated_at: row.updated_at,
-      deleted_at: null,
-      is_treadlinable: row.is_treadlinable
+  static async sync (datas) {
+    var rows = []
+    if (!Array.isArray(datas)) rows.push(datas)
+    else rows = datas
+
+    for (let i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      var columns = {
+        uuid: row.uuid,
+        course_id: row.course_id,
+        title: row.title,
+        description: row.description,
+        submission_date: row.submission_date,
+        available_date: row.available_date,
+        allowed_package: row.allowed_package,
+        add_on_price: row.add_on_price,
+        max_words: row.max_words,
+        for_editor: row.for_editor,
+        editor_manu_generate_count: row.editor_manu_generate_count,
+        generated_filepath: row.generated_filepath,
+        show_join_group_question: row.show_join_group_question,
+        created_at: row.created_at,
+        updated_at: row.updated_at,
+        deleted_at: null,
+        is_treadlinable: row.is_treadlinable
+      }
+
+      var data = await Assignment.query()
+        .patch(columns)
+        .where('uuid', '=', row.uuid)
+
+      if (!data || data === 0) {
+        data = await Assignment.query().insert(columns)
+
+        // update uuid to match web
+        data = await Assignment.query()
+          .patch({'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at})
+          .where('uuid', '=', data.uuid)
+      }
     }
 
-    var data = await Assignment.query()
-      .patch(columns)
-      .where('uuid', '=', row.uuid)
-
-    if (!data || data === 0) {
-      data = await Assignment.query().insert(columns)
-
-      // update uuid to match web
-      data = await Assignment.query()
-        .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
-        .where('uuid', '=', data.uuid)
-    }
-
-    return data
+    return true
   }
 }
 

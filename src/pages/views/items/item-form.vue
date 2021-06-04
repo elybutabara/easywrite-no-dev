@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="book-panel-right">
-                <button v-if="!savingInProgress" class="es-button btn-sm white" @click="uploadImage()">{{ (data.id!=null) ? $t('SAVE_CHANGES') : $t('SAVE') }}</button>
+                <button :disabled="!allowSave" v-if="!savingInProgress" class="es-button btn-sm white" @click="uploadImage()"><b-spinner v-if="!allowSave" small label="Small Spinner" type="grow"></b-spinner>&nbsp;{{ (data.id!=null) ? $t('SAVE_CHANGES') : $t('SAVE') }}</button>
                 <button v-else class="es-button btn-sm white" disabled>{{ (data.id!=null) ? $t('SAVE_CHANGES') : $t('SAVE') }} <b-spinner small label="Small Spinner"></b-spinner></button>
             </div>
         </div>
@@ -81,7 +81,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label>{{$t('DESCRIPTION')}}: </label>
-                            <tiny-editor :initValue="data.description" v-on:getEditorContent="setDescription" class="form-control" />
+                            <tiny-editor :initValue="data.description" v-on:getEditorContent="setDescription" v-on:typing="isTyping_" class="form-control" />
                         </div>
                     </div>
                 </div>
@@ -109,7 +109,8 @@ export default {
         itemname: '',
         AKA: '',
         tags: '',
-        description: ''
+        description: '',
+        file_changed: false,
       },
       picture_src: '',
       file: '',
@@ -120,7 +121,8 @@ export default {
           message: null
         }
       },
-      savingInProgress: false
+      savingInProgress: false,
+      allowSave: true
     }
   },
   components: {
@@ -138,6 +140,7 @@ export default {
     // Required for geting value from TinyMCE content
     setDescription (value) {
       var scope = this
+      scope.allowSave = true
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
       scope.tempDescription = value
     },
@@ -150,7 +153,7 @@ export default {
       scope.file = this.$refs.fileInput.files[0]
 
       let validImageTypes = ['image/gif', 'image/jpeg', 'image/png']
-
+      
       if (!validImageTypes.includes(scope.file['type'])) {
         scope.file = ''
         window.swal.fire({
@@ -168,6 +171,7 @@ export default {
           image.setAttribute('width', '100%')
           scope.picture_src = image.src
           // window.$('.uploaded-file-preview').html(image)
+          scope.data.file_changed = true
         }
         reader.readAsDataURL(scope.file)
       }
@@ -237,6 +241,7 @@ export default {
       }
 
       if (scope.data.hasOwnProperty('picture_src')) delete scope.data.picture_src
+      
       scope.axios
         .post('http://localhost:3000/items', scope.data)
         .then(response => {
@@ -261,6 +266,7 @@ export default {
 
               scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
               scope.savingInProgress = false
+              scope.data.file_changed = false
             }).catch(function () {
               scope.savingInProgress = false
               scope.$notify({
@@ -287,7 +293,11 @@ export default {
         scope.data.pictures = item.pictures
         scope.picture_src = item.picture_src
       }
-    }
+    },
+    isTyping_ (data) { //this is needed since there is a delay in tinymce v-on:click - delay on getting the tinymce content. if removed, saving answer might be empty
+        let scope = this
+        scope.allowSave = false
+    },
   },
   beforeMount () {
     var scope = this

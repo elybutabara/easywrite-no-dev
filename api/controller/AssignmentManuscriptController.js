@@ -42,41 +42,48 @@ class AssignmentManuscriptController {
     return rows
   }
 
-  static async sync (row) {
-    var columns = {
-      uuid: row.uuid,
-      assignment_id: row.assignment_id,
-      user_id: row.user_id,
-      content: row.content,
-      words: row.words,
-      grade: row.grade,
-      genre: row.genre,
-      where_in_script: row.where_in_script,
-      locked: row.locked,
-      text_number: row.text_number,
-      editor_id: row.editor_id,
-      has_feedback: row.has_feedback,
-      join_group: row.join_group,
-      is_file: row.is_file,
-      created_at: row.created_at,
-      updated_at: row.updated_at,
-      deleted_at: row.deleted_at
+  static async sync (datas) {
+    var rows = []
+    if (!Array.isArray(datas)) rows.push(datas)
+    else rows = datas
+
+    for (let i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      var columns = {
+        uuid: row.uuid,
+        assignment_id: row.assignment_id,
+        user_id: row.user_id,
+        content: row.content,
+        words: row.words,
+        grade: row.grade,
+        genre: row.genre,
+        where_in_script: row.where_in_script,
+        locked: row.locked,
+        text_number: row.text_number,
+        editor_id: row.editor_id,
+        has_feedback: row.has_feedback,
+        join_group: row.join_group,
+        is_file: row.is_file,
+        created_at: row.created_at,
+        updated_at: row.updated_at,
+        deleted_at: row.deleted_at
+      }
+
+      var data = await AssignmentManuscript.query()
+        .patch(columns)
+        .where('uuid', '=', row.uuid)
+
+      if (!data || data === 0) {
+        data = await AssignmentManuscript.query().insert(columns)
+
+        // update uuid to match web
+        data = await AssignmentManuscript.query()
+          .patch({'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at})
+          .where('uuid', '=', data.uuid)
+      }
     }
 
-    var data = await AssignmentManuscript.query()
-      .patch(columns)
-      .where('uuid', '=', row.uuid)
-
-    if (!data || data === 0) {
-      data = await AssignmentManuscript.query().insert(columns)
-
-      // update uuid to match web
-      data = await AssignmentManuscript.query()
-        .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
-        .where('uuid', '=', data.uuid)
-    }
-
-    return data
+    return true
   }
 }
 

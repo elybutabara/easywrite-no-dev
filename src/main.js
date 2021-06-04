@@ -29,6 +29,7 @@ import listing from './stores/listing'
 import timer from './stores/timer'
 import chapter from './stores/chapter'
 import character from './stores/character'
+import comment from './stores/comment'
 import item from './stores/item'
 import location from './stores/location'
 import scene from './stores/scene'
@@ -100,7 +101,7 @@ window.chunk = require('chunk')
 let APP = {
   SE_PROD: {
     API: {
-      URL: 'https://api.pilotleser.no/se',
+      URL: 'https://www.easywrite.se/app',
       UPLOAD_URL: 'https://www.easywrite.se/uploads',
       SITE: 'se-live',
       CHAT: 'se'
@@ -108,7 +109,7 @@ let APP = {
   },
   SE_DEV: {
     API: {
-      URL: 'https://api.pilotleser.no/se-dev',
+      URL: 'https://dev.easywrite.se/app',
       UPLOAD_URL: 'https://dev.easywrite.se/uploads',
       SITE: 'se-dev',
       CHAT: 'se-dev'
@@ -116,7 +117,7 @@ let APP = {
   },
   NO_PROD: {
     API: {
-      URL: 'https://api.pilotleser.no/no',
+      URL: 'https://www.pilotleser.no/app',
       UPLOAD_URL: 'https://www.pilotleser.no/uploads',
       SITE: 'no-live',
       CHAT: 'no'
@@ -126,6 +127,38 @@ let APP = {
     API: {
       URL: 'https://dev.pilotleser.no/app',
       UPLOAD_URL: 'https://dev.pilotleser.no/uploads',
+      SITE: 'no-dev',
+      CHAT: 'no-dev'
+    }
+  },
+  FI_PROD: {
+    API: {
+      URL: 'https://easywrite.fi/app',
+      UPLOAD_URL: 'https://easywrite.fi/uploads',
+      SITE: 'no-dev',
+      CHAT: 'no-dev'
+    }
+  },
+  FI_DEV: {
+    API: {
+      URL: 'https://dev.easywrite.fi/app',
+      UPLOAD_URL: 'https://dev.easywrite.fi/uploads',
+      SITE: 'no-dev',
+      CHAT: 'no-dev'
+    }
+  },
+  DK_PROD: {
+    API: {
+      URL: 'https://easywrite.dk/app',
+      UPLOAD_URL: 'https://easywrite.dk/uploads',
+      SITE: 'no-dev',
+      CHAT: 'no-dev'
+    }
+  },
+  DK_DEV: {
+    API: {
+      URL: 'https://dev.easywrite.dk/app',
+      UPLOAD_URL: 'https://dev.easywrite.dk/uploads',
       SITE: 'no-dev',
       CHAT: 'no-dev'
     }
@@ -181,6 +214,7 @@ const store = new Vuex.Store({
     timer: timer,
     chapter: chapter,
     character: character,
+    comment:comment,
     item: item,
     location: location,
     scene: scene,

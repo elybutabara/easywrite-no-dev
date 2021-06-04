@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
 
-const { User, Book, BookGenre } = require(path.join(__dirname, '..', 'models'))
+const { User, Book, BookGenre, Chapter, ChapterVersion, Scene, SceneVersion } = require(path.join(__dirname, '..', 'models'))
 
 class BookController {
   static async getAllBooksByUserId (userId) {
@@ -79,6 +79,63 @@ class BookController {
     return book
   }
 
+  static async replaceWords (params) {
+    var scope = params.scope
+    var bookUUID = params.book_id
+    var find = params.find
+    var replace = params.replace
+
+    if (scope == 'all' || scope == 'chapters') {
+      const chapters = await Chapter.query().where('book_id', '=', bookUUID)
+      var chapterUUIDs = []
+
+      for (let i = 0; i < chapters.length; i++) {
+        var chapter = chapters[i]
+        var content = chapter.content
+        if (content) {
+          var new_content = content.replace(eval('/' + find + '/gi'), replace)
+          var update = await Chapter.query()
+            .patch({ 'content': new_content })
+            .where('uuid', '=', chapter.uuid)
+        }
+
+        /*
+        var chapter_id = chapters[i].uuid
+        var version = await ChapterVersion.query()
+          .where('chapter_id', '=',chapter_id)
+          .whereNull('deleted_at')
+          .orderBy([{ column: 'is_current_version', order:  'desc' }, { column: 'id', order: 'desc' }])
+          .first()
+
+        if (version && version.content) {
+          var content = version.content
+          console.log('VERSION UUID ==> ', version.id)
+          //console.log('CONTENT ===> ',content)
+          var new_content = content.replace(eval('/' + find + '/gi'), replace);
+          var update = await ChapterVersion.query()
+              .patch({ 'content': new_content })
+              .where('uuid', '=', version.uuid)
+        }
+      */
+      }
+    }
+
+    if (scope == 'all' || scope == 'scenes') {
+      const scenes = await Scene.query().where('book_id', '=', bookUUID)
+      for (let i = 0; i < scenes.length; i++) {
+        var scene = scenes[i]
+
+        var content = scene.content
+        if (content) {
+          var new_content = content.replace(eval('/' + find + '/gi'), replace)
+          var update = await Scene.query()
+            .patch({ 'content': new_content })
+            .where('uuid', '=', scene.uuid)
+        }
+      }
+    }
+  }
+
   static async getSyncable (userId) {
     const user = await User.query()
       .findById(userId)
@@ -91,34 +148,41 @@ class BookController {
     return rows
   }
 
-  static async sync (row) {
-    var columns = {
-      uuid: row.uuid,
-      author_id: row.author_id,
-      title: row.title,
-      about: row.about,
-      numbered_chapter: row.numbered_chapter,
-      is_default: row.is_default,
-      created_at: row.created_at,
-      updated_at: row.updated_at,
-      deleted_at: row.deleted_at,
-      from_local: row.from_local
+  static async sync (rows) {
+    for (let i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      var columns = {
+        uuid: row.uuid,
+        author_id: row.author_id,
+        title: row.title,
+        about: row.about,
+        numbered_chapter: row.numbered_chapter,
+        is_default: row.is_default,
+        created_at: row.created_at,
+        updated_at: row.updated_at,
+        deleted_at: row.deleted_at,
+        from_local: row.from_local
+      }
+
+      // console.log('BOOK UUID ===> ',row.uuid)
+      // console.log('BOOK TITLE ===> ',row.title)
+
+      var data = await Book.query()
+        .patch(columns)
+        .where('uuid', '=', row.uuid)
+
+      if (!data || data === 0) {
+        data = await Book.query().insert(columns)
+        // console.log('BOOK NOT FOUND, INSERT ===> ',row.title)
+
+        // update uuid to match web
+        data = await Book.query()
+          .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
+          .where('uuid', '=', data.uuid)
+      }
     }
 
-    var data = await Book.query()
-      .patch(columns)
-      .where('uuid', '=', row.uuid)
-
-    if (!data || data === 0) {
-      data = await Book.query().insert(columns)
-
-      // update uuid to match web
-      data = await Book.query()
-        .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
-        .where('uuid', '=', data.uuid)
-    }
-
-    return data
+    return 1
   }
 }
 

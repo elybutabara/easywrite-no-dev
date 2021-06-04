@@ -101,7 +101,7 @@ router.delete('/:chapterId', async function (req, res) {
 })
 
 router.get('/syncable', async function (req, res) {
-  const rows = await ChapterController.getSyncable(req.query.userID)
+  const rows = await ChapterController.getSyncable(req)
 
   res
     .status(200)
@@ -114,6 +114,14 @@ router.post('/sort', async function (req, res) {
   res
     .status(200)
     .json(chapters)
+})
+
+router.post('/hide', async function (req, res) {
+  const chapter = await ChapterController.hide(req.body)
+
+  res
+    .status(200)
+    .json(chapter)
 })
 
 router.post('/sync', async function (req, res) {

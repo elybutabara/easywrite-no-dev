@@ -43,7 +43,7 @@ router.delete('/:itemId', async function (req, res) {
 })
 
 router.get('/syncable', async function (req, res) {
-  const rows = await ItemController.getSyncable(req.query.userID)
+  const rows = await ItemController.getSyncable(req)
 
   res
     .status(200)

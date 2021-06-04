@@ -1,6 +1,9 @@
 <template>
 <div class="page-main" v-bind:class="{ 'collapsed': $store.getters.collapsedSideNav, 'dark': $store.getters.darkmode }">
     <div v-if="ready">
+        <SyncerV2 v-if="$store.getters.getSyncStatus == 'syncing'"></SyncerV2>
+        <UserSettings v-if="is_user_settings_open"></UserSettings>
+        <NotifySync v-if="show_notify_sync"></NotifySync>
         <!-- <div @click="toggleMainSideBar()"  class="btn-sidebar-opener"><i class="las la-arrow-right"></i></div> -->
         <main-side-navigation></main-side-navigation>
         <div class="es-right-side-content">
@@ -30,9 +33,15 @@
                       <i class="fas fa-book-open"></i>
                       <span>{{ $t('NEW_BOOK') }}</span>
                   </a>
-                  <a @click="CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing',  tabData: null, tabTitle: $t('SYNC_DATA'), newTab: true})" href="javascript:void(0)" class="nav-btn sync-data bx-shadow-1">
-                      <i class="fas fa-sync"></i>
-                      <span>{{ $t('SYNC_DATA') }}</span>
+                  <a @click="startSync()" href="javascript:void(0)" class="nav-btn sync-data bx-shadow-1">
+                      <template v-if="$store.getters.getSyncStatus == 'syncing'">
+                        <i  class="fas fa-sync fa-spin"></i>
+                        <span>{{ $t('SYNCING') }}</span>
+                      </template>
+                      <template v-else>
+                        <i class="far fa-play-circle"></i>
+                        <span>{{ $t('SYNC_DATA') }}</span>
+                      </template>
                   </a>
                   <a @click="CHANGE_COMPONENT({tabKey: 'course-list', tabComponent: 'course-listing',  tabData: {}, tabTitle: $t('COURSES'), newTab: true})" href="javascript:void(0)" class="nav-btn courses bx-shadow-1">
                       <i class="fas fa-graduation-cap"></i>
@@ -73,6 +82,7 @@
                           <!--                        <a class="dropdown-item" @click="CHANGE_COMPONENT({tabKey: 'main-book-directory', tabComponent: 'main-book-directory',  tabData: null, tabTitle: 'Main Book Directory'})">{{ trans("site.the-book-directory") }}</a>-->
                           <!--                        <a class="dropdown-item" @click="CHANGE_COMPONENT({tabKey: 'main-book-finished', tabComponent: 'main-book-finished',  tabData: null, tabTitle: 'Main Book Finished'})">{{ trans('site.books-ive-finished') }}</a>-->
                           <!--                        <a class="dropdown-item" @click="CHANGE_COMPONENT({tabKey: 'my-deleted-books', tabComponent: 'my-deleted-books',  tabData: null, tabTitle: 'My Deleted Books'})">{{ trans('site.deleted-books-text') }}</a>-->
+                          <a @click="toggleUserSettings()" class="dropdown-item">{{ $t('site.settings')  }}</a>
                           <a class="dropdown-item" @click="logout()">{{ $t('site.logout') }}</a>
                         </div>
                       </div>
@@ -94,7 +104,7 @@
                 <location-listing :key="tab.key" v-if="tab.component == 'location-listing'" :properties="tab.data"></location-listing>
                 <character-listing :key="tab.key" v-if="tab.component == 'character-listing'" :properties="tab.data"></character-listing>
 
-                <book-details :key="tab.key" v-if="tab.component == 'book-details'" :properties="tab.data"></book-details>
+                <book-details :key="tab.key" v-if="tab.component == 'book-details'" :properties="tab.data" :user="user"></book-details>
                 <chapter-details :key="tab.key" v-if="tab.component == 'chapter-details'" :properties="tab.data"></chapter-details>
                 <scene-details :key="tab.key" v-if="tab.component == 'scene-details'" :properties="tab.data"></scene-details>
                 <item-details :key="tab.key" v-if="tab.component == 'item-details'" :properties="tab.data"></item-details>
@@ -124,6 +134,8 @@
 
                 <note-listing :key="tab.key" v-if="tab.component == 'note-listing'" :properties="tab.data"></note-listing>
                 <webinar-listing :key="tab.key" v-if="tab.component == 'webinar-listing'" :properties="tab.data"></webinar-listing>
+
+                <user-treadline :key="tab.key" v-if="tab.component == 'user-treadline'" :properties="tab.data" :user="user"></user-treadline>
             </div>
         </div>
     </div>
@@ -136,6 +148,9 @@ import MainSideNavigation from '@/components/MainSideNavigation'
 import MessageCenterPopup from '@/components/MessageCenterPopup'
 import Messaging from '@/components/Messaging'
 import Syncer from '@/components/Syncer'
+import SyncerV2 from '@/components/SyncerV2'
+import UserSettings from '@/components/UserSettings'
+import NotifySync from '@/components/NotifySync'
 
 import Syncing from '@/pages/views/syncing'
 import StoryBoard from '@/pages/views/storyboard'
@@ -174,6 +189,7 @@ import CourseListing from '@/pages/views/course/course-listing'
 
 import NoteListing from '@/pages/views/notes/note-listing'
 import WebinarListing from '@/pages/views/webinars/webinar-listing'
+import UserTreadline from '@/pages/views/treadline/user-treadline.vue'
 // const electron = window.require('electron')
 // const remote = electron.remote
 // const loginInfo = remote.getGlobal('loginInfo')
@@ -186,6 +202,7 @@ const {ipcRenderer} = electron
 
 export default {
   name: 'Main',
+
   data: function () {
     return {
       ready: false,
@@ -208,7 +225,9 @@ export default {
       showMessageCenter: false,
       showUserSettings: false,
       forceQuit: false,
-      notificationCount_: 0
+      notificationCount_: 0,
+      is_user_settings_open: false,
+      show_notify_sync: false,
     }
   },
   components: {
@@ -216,6 +235,9 @@ export default {
     'message-center-popup': MessageCenterPopup,
     'messaging': Messaging,
     'syncer': Syncer,
+    'SyncerV2': SyncerV2,
+    'NotifySync': NotifySync,
+    'UserSettings': UserSettings,
     'syncing': Syncing,
     'storyboard': StoryBoard,
     'storyline': Storyline,
@@ -247,7 +269,8 @@ export default {
     'course-listing': CourseListing,
     'lesson-details': LessonDetails,
     'note-listing': NoteListing,
-    'webinar-listing': WebinarListing
+    'webinar-listing': WebinarListing,
+    'user-treadline': UserTreadline,
   },
   methods: {
     logout () {
@@ -257,6 +280,10 @@ export default {
       // const scope = this
       // scope.notification.show = !scope.notification.show
       // scope.showUserSettings = false
+    },
+    toggleUserSettings: function () {
+      var scope = this 
+      scope.is_user_settings_open = !scope.is_user_settings_open
     },
     setItemCount: function (k, n) {
       console.log('setItemCount', n)
@@ -314,12 +341,23 @@ export default {
       var scope = this
       scope.itemsCounts['all'] = scope.itemsCounts['messages'] + scope.itemsCounts['invitations'] + scope.itemsCounts['notifications']
       scope.notificationCount_ = scope.itemsCounts['all']
-      // console.log(scope.itemsCounts)
       return scope.itemsCounts['all']
     },
     goToNotes: function () {
       this.$store.dispatch('setActiveMainSideNavTab', 'books-i-read')
       this.CHANGE_COMPONENT({tabKey: 'note-listing', tabComponent: 'note-listing', tabData: null, tabTitle: this.$t('NOTES')})
+    },
+    startSync: function () {
+      var scope = this
+      if (scope.$store.getters.getSyncStatus == 'syncing') {
+        return
+      }
+
+      scope.$store.dispatch('setSyncSource', { source: 'CTA' })
+      scope.$store.commit('startSync')
+    },
+    closeSyncingNotification: function () {
+      this.show_notify_sync = false
     }
   },
   beforeMount () {
@@ -347,10 +385,12 @@ export default {
     var scope = this
     // console.log(scope.tabs.items[0].component)
     window.AppMain = this
+    // eslint-disable-next-line no-unused-vars
     var userUUID = this.$store.getters.getUserID
+    // eslint-disable-next-line no-unused-vars
     var authorUUID = this.$store.getters.getAuthorID
-    scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
-    scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+    // scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+    // scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
     // scope.$store.dispatch('getBooksByAuthorID', userID)
     setTimeout(function () {
       scope.ready = true
@@ -367,7 +407,8 @@ export default {
     })
 
     ipcRenderer.on('SYNC_DATA', function (event, data) {
-      scope.CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing', tabData: null, tabTitle: scope.$t('SYNC_DATA'), newTab: true})
+      // scope.CHANGE_COMPONENT({tabKey: 'syncing', tabComponent: 'syncing', tabData: null, tabTitle: scope.$t('SYNC_DATA'), newTab: true})
+      scope.startSync();
     })
 
     ipcRenderer.on('SHOW_SWAL_TIMESUP', function (event, data) {
@@ -426,6 +467,22 @@ export default {
     if (window.AppMessaging.recountUnread) {
       window.AppMessaging.recountUnread()
     }
+
+    scope.auto_sync = scope.$store.getters.getUserSyncedAutoSync
+ 
+    setTimeout(function () {
+      if (scope.auto_sync) {
+        scope.$store.commit('startSync')
+      } else {
+        var authorUUID = scope.$store.getters.getAuthorID
+        scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
+        scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
+
+        setTimeout(function(){
+          scope.show_notify_sync = true
+        },5500);
+      }
+    }, 1000)
   },
   created () {
     const scope = this

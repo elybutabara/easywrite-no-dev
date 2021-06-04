@@ -31,8 +31,6 @@ export default {
         is_ready: false,
         data: null
       },
-      scene: null,
-      versions: [],
       version: {
         id: null,
         uuid: null,
@@ -46,6 +44,12 @@ export default {
     TinyMCE
   },
   computed: {
+    scene: function () {
+      return this.$store.getters.findScene(this.properties.scene)
+    },
+    versions: function () {
+      return this.$store.getters.getSceneVersions(this.properties.scene.uuid)
+    }
   },
   methods: {
     changeSceneVersion: function () {
@@ -84,8 +88,6 @@ export default {
   },
   mounted () {
     var scope = this
-    scope.scene = scope.properties.scene
-    scope.versions = scope.$store.getters.getSceneVersions(scope.scene.uuid)
 
     setTimeout(function () {
       scope.getLatestVersion()

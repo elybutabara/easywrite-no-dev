@@ -23,12 +23,15 @@
         </div>
         <div class="es-tree-view" id="custom-scrollbar">
             <ul v-bind:class="{'active' : tab === 'my-books' }"  class="left-sidebar-tab-content level-1">
-                <li v-bind:class="{ 'open' : book.is_open }" v-bind:key="book.id" v-for="(book) in books">
+                <li v-bind:class="{ 'open' : book.is_open, 'syncing' : !book.is_synced }" v-bind:key="book.id" v-for="(book) in books">
                     <div class="label" @click="TOGGLE_BOOK(book,'book')">
-                      <i v-if="book.is_open" class="fas fa-chevron-down"></i>
-                      <i v-else class="fas fa-chevron-right"></i>
-                      <i class="fas fa-book"></i>
-                      <span>{{ book.title || 'Untitled' }}</span>
+                        <i v-if="!book.is_synced" class="fas fa-sync fa-spin"></i>
+                        <template v-else>
+                            <i v-if="book.is_open" class="fas fa-chevron-down"></i>
+                            <i v-else class="fas fa-chevron-right"></i>
+                        </template>
+                        <i class="fas fa-book"></i>
+                        <span>{{ book.title || 'Untitled' }}</span>
                     </div>
                     <ul v-if="book.is_open" class="level-2">
                         <book-chapters-folder :key="'tree-chapters-' + book.uuid" :properties="book"></book-chapters-folder>
@@ -40,12 +43,15 @@
                 </li>
             </ul>
             <ul v-bind:class="{'active' : tab === 'books-i-read' }"  class="left-sidebar-tab-content level-1">
-                <li v-bind:class="{ 'open' : book.is_open }" v-bind:key="book.id" v-for="(book) in books_i_read">
+                <li v-bind:class="{ 'open' : book.is_open, 'syncing' : !book.is_synced }" v-bind:key="book.id" v-for="(book) in books_i_read">
                     <div class="label" @click="TOGGLE_BOOK_I_READ(book,'book')">
-                      <i v-if="book.is_open" class="fas fa-chevron-down"></i>
-                      <i v-else class="fas fa-chevron-right"></i>
-                      <i class="fas fa-book"></i>
-                      <span>{{ book.title || 'Untitled' }}</span>
+                        <i v-if="!book.is_synced" class="fas fa-sync fa-spin"></i>
+                        <template v-else>
+                            <i v-if="book.is_open" class="fas fa-chevron-down"></i>
+                            <i v-else class="fas fa-chevron-right"></i>
+                        </template>
+                        <i class="fas fa-book"></i>
+                        <span>{{ book.title || 'Untitled' }}</span>
                     </div>
                     <ul v-if="book.is_open" class="level-2">
                         <book-i-read-chapters-folder :key="'tree-chapters-' + book.uuid" :properties="book"></book-i-read-chapters-folder>
@@ -255,7 +261,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+.syncing { opacity: 0.5; cursor: default }
 .new-book { font-family: 'Crimson Roman'; color:#abc4d7; font-size: 14px; cursor: pointer }
 .new-book:hover  { color:#fff; }
 

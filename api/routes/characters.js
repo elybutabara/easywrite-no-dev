@@ -56,7 +56,7 @@ router.delete('/:characterId', async function (req, res) {
 })
 
 router.get('/syncable', async function (req, res) {
-  const rows = await CharacterController.getSyncable(req.query.userID)
+  const rows = await CharacterController.getSyncable(req)
 
   res
     .status(200)

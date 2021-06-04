@@ -27,7 +27,7 @@ router.delete('/:relationDetailId', async function (req, res) {
 })
 
 router.get('/syncable', async function (req, res) {
-  const rows = await RelationDetailController.getSyncable(req.query.userID)
+  const rows = await RelationDetailController.getSyncable(req)
 
   res
     .status(200)

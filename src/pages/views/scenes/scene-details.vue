@@ -8,6 +8,11 @@
                 </div>
                 <div class="book-panel-right">
                     <!-- <button ref="button" class="es-button-white" :disabled="busy" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>-->
+                    <button class="es-button btn-sm white" @click="toggleHiddenScene()">
+                      <span v-if="scene_hidden" class="d-flex align-items-center"><i class="las la-eye-slash mr-1"></i> Scene Hidden</span>
+                      <span v-else class="d-flex align-items-center"><i class="las la-eye mr-1"></i> {{ $t('HIDE_SCENE') }}</span>
+                    </button>
+                    <!--<button class="es-button btn-sm white view-comments" v-if="commentbase_dom" @click="toggleComments()">{{('VIEW COMMENTS').toUpperCase()}}</button>-->
                     <button class="es-button icon-only warning" @click="toggleFeedbacks()"><i class="las la-comments"></i><!--{{$t('FEEDBACKS').toUpperCase()}}--></button>
                     <button class="es-button icon-only" @click="CHANGE_COMPONENT({tabKey: 'scene-form-' + properties.scene.uuid, tabComponent: 'scene-form', tabData: { book: book, scene: properties.scene, chapter: chapter }, tabTitle: $t('EDIT')+ ' - ' +  properties.scene.title, newTab: true})"><i class="las la-highlighter"></i><!--{{$t('EDIT').toUpperCase()}}--></button>
                     <button class="es-button icon-only danger" @click="deleteScene(properties.scene)"><i class="las la-trash-alt"></i><!--{{$t('DELETE').toUpperCase()}}--></button>
@@ -45,24 +50,25 @@
           </div>
         </div>
         <div style="position:relative;">
+            <!--<CommentBasePanelv2 v-bind:class="{ 'show_comments' : show_comments }" v-if="commentbase_dom" :dom="commentbase_dom" :properties="{ book: book,
+            parent_name: 'scene', parent_id: scene.uuid, parent: scene, selected_comment: selected_comment }" ref="commentbasepanelv2"></CommentBasePanelv2>-->
         <Feedback v-bind:class="{ 'show_feedbacks' : show_feedbacks }" :properties="{ book: book, parent: scene, parent_name: 'scene', toggleType: true }"></Feedback>
 
         <!-- footer previous & next -->
         <div style="border-top:1px solid #ccc; z-index:2000; background:#fff; height:50px; padding:0px 20px; line-height:50px; width:100%; position:absolute; bottom:0px; left:0px;">
             <button v-if="prevScene != null && prevType == 'scene'" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + prevScene.id, tabComponent: 'scene-details',  tabData: { book: book, scene: prevScene, chapter: chapter }, tabTitle: prevScene.title})" style="float:left; background:transparent; border:none;">
-                <i class="las la-angle-double-left"></i> PREV
+                <i class="las la-angle-double-left"></i> {{ $t('PREV') }}
             </button>
             <button v-if="nextScene != null && nextType == 'scene'" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + nextScene.id, tabComponent: 'scene-details',  tabData: { book: book, scene: nextScene, chapter: chapter}, tabTitle: nextScene.title})" style="float:right; background:transparent; border:none;">
-                NEXT <i class="las la-angle-double-right"></i>
+                {{ $t('NEXT') }} <i class="las la-angle-double-right"></i>
             </button>
 
             <button v-if="prevScene != null && prevType == 'chapter'" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + prevScene.id, tabComponent: 'chapter-details',  tabData: { book: book, chapter: prevScene }, tabTitle: 'VIEW' + ' - ' + prevScene.title})" style="float:left; background:transparent; border:none;">
-                <i class="las la-angle-double-left"></i> PREV
+                <i class="las la-angle-double-left"></i> {{ $t('PREV') }}
             </button>
             <button v-if="nextScene != null && nextType == 'chapter'" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + nextScene.id, tabComponent: 'chapter-details',  tabData: { book: book, chapter: nextScene }, tabTitle: 'VIEW' + ' - ' + nextScene.title})" style="float:right; background:transparent; border:none;">
-                NEXT <i class="las la-angle-double-right"></i>
+                {{ $t('NEXT') }} <i class="las la-angle-double-right"></i>
             </button>
-
         </div>
 
         <div v-if="tab.active === 'content'"  class="es-scene-details-tab-content">
@@ -75,8 +81,7 @@
                 </div>
               </b-button>
             </div>
-            <div v-html="getSceneContent" class="description" v-bind:id="commentbase_id"></div>
-            <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params"></CommentBasePanel>
+            <div v-html="scene.content" class="description" v-bind:id="commentbase_id"></div>
         </div>
         <div v-if="tab.active === 'locations'"  class="es-scene-details-tab-content no-padding">
             <scene-locations :properties="{ book: book, scene: page.data.scene }"></scene-locations>
@@ -144,8 +149,8 @@ import SceneCharacters from '@/pages/views/scenes/scene-characters'
 import SceneVersions from '@/pages/views/scenes/scene-versions'
 import SceneCompareVersions from '@/pages/views/scenes/scene-compare-versions'
 import Vue from 'vue'
-
-import CommentBasePanel from '../../../components/CommentBasePanel'
+import CommentBasePanelv2 from '../../../components/CommentBasePanelv2'
+// import CommentBasePanel from '../../../components/CommentBasePanel'
 
 const {ipcRenderer} = window.require('electron')
 
@@ -153,8 +158,10 @@ export default {
   name: 'scene-details',
   props: ['properties'],
   data: function () {
+    // eslint-disable-next-line no-unused-vars
     var scope = this
     return {
+      scene_hidden: false,
       scene_version: {
         book_scene_id: null,
         change_description: null,
@@ -172,19 +179,21 @@ export default {
       tempVersionDesc: '',
       commentbase_id: ('cm-' + Math.random()).replace('.', ''),
       commentbase_dom: null,
-      commentbase_params: {
-        onMounted: (vm) => {
-          scope.commentbase_vm = vm
-          vm.setAuthor(this.getAuthor)
-          vm.setCommentsJSON(this.comments)
-        },
-        onAddComment: function () {
-          scope.saveComments()
-        }
-      },
+      // commentbase_params: {
+      //   onMounted: (vm) => {
+      //     scope.commentbase_vm = vm
+      //     vm.setAuthor(this.getAuthor)
+      //     vm.setCommentsJSON(this.comments)
+      //   },
+      //   onAddComment: function () {
+      //     scope.saveComments()
+      //   }
+      // },
       exportOnProgress: false,
       exportLoading: this.$t('Loading'),
       show_feedbacks: false,
+        show_comments: false,
+        selected_comment: null,
       nextType: '',
       prevType: ''
     }
@@ -197,29 +206,31 @@ export default {
     SceneCharacters,
     SceneVersions,
     SceneCompareVersions,
-    CommentBasePanel
+      CommentBasePanelv2
+    // CommentBasePanel
   },
   computed: {
     book: function () {
       return this.properties.book
     },
     scene: function () {
-      return this.properties.scene
+      return this.$store.getters.findScene(this.properties.scene)
     },
     chapter: function () {
-      return this.properties.chapter
+      if (this.properties.chapter) { return this.$store.getters.findChapter(this.properties.chapter) }
+      return null
     },
-    getSceneContent: function () {
-      var scope = this
-      var sceneID = scope.page.data.scene.uuid
-      return this.$store.getters.getSceneContent(sceneID)
-    },
-    comments: function () {
-      // return '{}'
-      var scope = this
-      var sceneID = scope.page.data.scene.uuid
-      return this.$store.getters.getSceneComments(sceneID)
-    },
+    // getSceneContent: function () {
+    //   var scope = this
+    //   var sceneID = scope.page.data.scene.uuid
+    //   return this.$store.getters.getSceneContent(sceneID)
+    // },
+    // comments: function () {
+    //   // return '{}'
+    //   var scope = this
+    //   var sceneID = scope.page.data.scene.uuid
+    //   return this.$store.getters.getSceneComments(sceneID)
+    // },
     getAuthor: function () {
       var scope = this
       return scope.$store.getters.getAuthor
@@ -241,6 +252,10 @@ export default {
       let scope = this
       let scene = this.scene
       let chapter = this.chapter
+
+      // this is for other scene, since other scne dont have chapter
+      if (!chapter) return null
+
       let nextScene = this.$store.getters.getNextScene(chapter, scene)
       // check if there is a next scene
       if (nextScene != null) {
@@ -253,6 +268,29 @@ export default {
     }
   },
   methods: {
+    toggleHiddenScene: function () {
+      var scope = this
+      scope.axios
+        .post('http://localhost:3000/scenes/hide', { hidden : !scope.scene_hidden, id: scope.scene.id, uuid: scope.scene.uuid })
+        .then(response => {
+          if (response.status == 200) {
+            console.log('toggleHiddenChapter res', response)
+            scope.$store.dispatch('updateSceneHidden', response.data)
+            scope.$store.dispatch('loadScenesByChapter', scope.chapter.uuid)
+            scope.scene_hidden = !scope.scene_hidden
+
+            window.swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Changes ' + scope.$t('SUCCESSFULY_SAVED'),
+              showConfirmButton: false,
+              timer: 1500
+            })
+          }
+
+        }
+      );
+    },
     setDescription (value) {
       var scope = this
       scope.tempVersionDesc = value
@@ -270,20 +308,19 @@ export default {
     changeTab: function (tab) {
       var scope = this
       scope.tab.active = tab
-
       Vue.nextTick(function () {
-        if (tab === 'content') {
-          scope.commentbase_dom = document.getElementById(scope.commentbase_id)
-        } else {
-          scope.commentbase_dom = null
-        }
+          if (tab === 'content') {
+            scope.commentbase_dom = document.getElementById(scope.commentbase_id)
+          } else {
+            scope.commentbase_dom = null
+          }
       })
     },
     saveNewVersion () {
       var scope = this
 
       scope.scene_version.change_description = scope.tempVersionDesc
-      scope.scene_version.content = scope.getSceneContent
+      scope.scene_version.content = scope.scene.content
       scope.scene_version.book_scene_id = scope.page.data.scene.uuid
 
       scope.axios
@@ -308,35 +345,33 @@ export default {
           }
         })
     },
-
     // todo
-    saveComments () {
-      var scope = this
-
-      var sceneID = scope.page.data.scene.uuid
-      scope.scene_version.uuid = this.$store.getters.getSceneVersionUUID(sceneID)
-      scope.scene_version.change_description = scope.tempVersionDesc
-      scope.scene_version.content = this.commentbase_vm.dom.innerHTML
-      scope.scene_version.comments = this.commentbase_vm.getCommentsJSON()
-      scope.scene_version.book_scene_id = sceneID
-      scope.scene_version.new_comment_json = this.commentbase_vm.getLastComment()
-      scope.scene_version.new_comment_json.scene_id = sceneID
-      scope.scene_version.new_comment_json.scene_title = scope.page.data.scene.title
-      scope.scene_version.new_comment_json = JSON.stringify(scope.scene_version.new_comment_json)
-
-      scope.axios
-        .post('http://localhost:3000/scene-versions/comment', scope.scene_version)
-        .then(response => {
-          if (response.data) {
-            // TODO: Insert vuex code that will refresh the chapter version
-            scope.tab.active = 'content'
-            this.busy = false
-            // scope.$store.dispatch('updateSceneVersionList', { uuid: response.data.book_scene_id })
-          }
-        })
-    },
-
-    initializeData: function () {
+    // saveComments () {
+    //   var scope = this
+    //
+    //   var sceneID = scope.page.data.scene.uuid
+    //   scope.scene_version.uuid = this.$store.getters.getSceneVersionUUID(sceneID)
+    //   scope.scene_version.change_description = scope.tempVersionDesc
+    //   scope.scene_version.content = this.commentbase_vm.dom.innerHTML
+    //   scope.scene_version.comments = this.commentbase_vm.getCommentsJSON()
+    //   scope.scene_version.book_scene_id = sceneID
+    //   scope.scene_version.new_comment_json = this.commentbase_vm.getLastComment()
+    //   scope.scene_version.new_comment_json.scene_id = sceneID
+    //   scope.scene_version.new_comment_json.scene_title = scope.page.data.scene.title
+    //   scope.scene_version.new_comment_json = JSON.stringify(scope.scene_version.new_comment_json)
+    //
+    //   scope.axios
+    //     .post('http://localhost:3000/scene-versions/comment', scope.scene_version)
+    //     .then(response => {
+    //       if (response.data) {
+    //         // TODO: Insert vuex code that will refresh the chapter version
+    //         scope.tab.active = 'content'
+    //         this.busy = false
+    //         // scope.$store.dispatch('updateSceneVersionList', { uuid: response.data.book_scene_id })
+    //       }
+    //     })
+    // },
+    initializeData: async function () {
       var scope = this
       scope.page.data = scope.properties
 
@@ -351,10 +386,16 @@ export default {
       scope.$store.dispatch('loadLocationsByScene', scope.page.data.scene)
       scope.$store.dispatch('loadVersionsByScene', scope.page.data.scene)
 
-      setTimeout(function () {
-        scope.page.is_ready = true
-        scope.changeTab('content')
-      }, 500)
+        try {
+            await scope.$store.dispatch('loadCommentsByScene', scope.properties.scene.uuid)
+        } catch (ex) {
+            console.log('Failed to load data')
+        } finally {
+            setTimeout(function () {
+                scope.page.is_ready = true
+                scope.changeTab('content')
+            }, 500)
+        }
     },
     deleteScene: function (scene) {
       var scope = this
@@ -395,19 +436,50 @@ export default {
     exportContent: function () {
       var scope = this
       scope.exportOnProgress = true
-      ipcRenderer.send('EXPORT-CONTENT-DOCX', {content: scope.getSceneContent, defaultfilename: scope.properties.scene.title + ' - ' + this.$t('CONTENT')})
+      ipcRenderer.send('EXPORT-CONTENT-DOCX', {content: scope.scene.content, defaultfilename: scope.properties.scene.title + ' - ' + this.$t('CONTENT')})
     },
     toggleFeedbacks: function () {
       let scope = this
       scope.show_feedbacks = !scope.show_feedbacks
-    }
+    },
+      toggleComments: function () {
+          let scope = this
+          if (scope.show_feedbacks) {
+              scope.show_feedbacks = !scope.show_feedbacks
+          }
+
+          if (scope.show_comments) {
+              document.getElementById('app-container').focus()
+          }
+
+          this.$refs.commentbasepanelv2.sub_comment_msg = '';
+          this.$refs.commentbasepanelv2.main_comment_id = null;
+          // close all sub_comments
+          $.each(this.$refs.commentbasepanelv2.comments, function(k, v) {
+              v.show_sub_comments = false;
+          });
+
+          scope.show_comments = !scope.show_comments
+      },
   },
   mounted () {
     var scope = this
 
+    if (scope.scene.hidden) {
+      scope.scene_hidden = true
+    }
+    console.log(scope.scene_hidden, 'mounted hidden')
+
     if (scope.properties.openfeedback) {
       scope.show_feedbacks = true
     }
+
+      if(scope.properties.action){
+          if (scope.properties.action.includes('open-inline-comment')) {
+              scope.show_comments = true;
+              scope.selected_comment = scope.properties.comment;
+          }
+      }
 
     scope.initializeData()
     ipcRenderer.on('EXPORT_DOCX_ENABLE_BUTTON', function () {
@@ -418,6 +490,9 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    .las.la-eye,
+    .las.la-eye-slash { font-size: 16px; }
+
     .es-breadcrumb.special{ max-width: none !important;}
     .export-content{ text-align: right; margin-bottom: 20px;}
     .es-scene-details-tab { display:flex; border-bottom:1px solid #ccc; padding:0px 30px; height:70px; background:#fff; }

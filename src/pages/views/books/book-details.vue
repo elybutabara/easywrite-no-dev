@@ -6,6 +6,8 @@
             <h4 class="main-title"><i class="fas fa-book mr-1"></i> {{ properties.title }}</h4>
           </div>
           <div class="book-panel-right">
+            <button class="es-button btn-sm white" @click="toggleFindandReplace()">{{ $t('REPLACE') }}</button>
+            <button class="es-button btn-sm white" @click="showTreadline()">{{ $t('TREADLINE') }}</button>
             <button
               class="es-button btn-sm white btn-storyline"
               @click="/*$store.dispatch('loadDetailedChaptersByBookId', book_id);*/
@@ -24,6 +26,7 @@
               <button class="es-button btn-sm white h-100" @click="toggleExportBookChapterScene()">{{export_book}}</button>
               <ExportBookChapterScene :properties="properties" v-show="show_export_book_chapter_scene"></ExportBookChapterScene>
             </div>
+            
             <button class="es-button btn-sm white" @click="getImport()">{{ $t('IMPORT_MULTIPLE_CHAPTERS') }}</button>
             <a class="es-button icon-only warning" href="#goToFeedbacks"><i class="las la-comments"></i><!--{{$t('FEEDBACKS').toUpperCase()}}--></a>
             <button class="es-button icon-only" @click="CHANGE_COMPONENT({tabKey: 'book-form-' + page.data.uuid, tabComponent: 'book-form',  tabData: page.data, tabTitle: $t('EDIT') + ' - ' + properties.title, newTab: true})"><i class="las la-highlighter"></i></button>
@@ -40,6 +43,8 @@
       </div>
     </div>
     <div class="es-page-content" id="custom-scrollbar">
+        <find-and-replace :properties="properties" v-show="show_find_and_replace"></find-and-replace>
+
         <div class="mb-5">
             <h4>{{ $t('ABOUT') }}</h4>
             <div v-html="properties.about"></div>
@@ -57,13 +62,15 @@ import axios from 'axios'
 import { mapGetters } from 'vuex'
 import Feedback from '../../../components/Feedback'
 import ExportBookChapterScene from '../../../components/ExportBookChapterScene'
+import FindandReplace from '../../../components/FindandReplace'
 
 const {ipcRenderer} = window.require('electron')
 
 export default {
   name: 'book-details',
-  props: ['properties'],
+  props: ['properties', 'user'],
   data: function () {
+    var scope = this
     return {
       page: {
         is_ready: false,
@@ -82,7 +89,15 @@ export default {
       show_feedbacks: true,
       show_notes: false,
       feedbacks: [],
-      show_export_book_chapter_scene: false
+      show_export_book_chapter_scene: false,
+      show_find_and_replace: false,
+      authorProgress: {
+        author_id: scope.properties.author_id,
+        relation_id: '',
+        is_for: 'chapter',
+        total_words: 0
+      },
+      show_find_and_replace: false,
     }
   },
   computed: {
@@ -90,9 +105,14 @@ export default {
   },
   components: {
     Feedback,
-    ExportBookChapterScene
+    ExportBookChapterScene,
+    'find-and-replace': FindandReplace
   },
   methods: {
+    toggleFindandReplace() {
+        var scope = this
+        scope.show_find_and_replace = !scope.show_find_and_replace
+    },
     toggleExportBookChapterScene () {
       var scope = this
       scope.show_export_book_chapter_scene = !scope.show_export_book_chapter_scene
@@ -127,12 +147,24 @@ export default {
           })
 
           for (let i = 0; i < chapters.length; i++) {
-            wholeChapter.push({book_id: data.book.uuid, title: chapters[i].title, chapter_version: {content: chapters[i].fileContent}})
+            wholeChapter.push({book_id: data.book.uuid, title: chapters[i].title, content: chapters[i].fileContent, chapter_version: {content: chapters[i].fileContent, is_current_version: 1}})
             axios
               .post('http://localhost:3000/chapters', wholeChapter[i])
               .then(response => {
                 if (response.data) {
                   scope.$store.dispatch('updateChapterList', response.data)
+
+                  scope.authorProgress.total_words = scope.WORD_COUNT(response.data.content)
+                  scope.authorProgress.relation_id = response.data.uuid
+                 
+                  scope.axios
+                  .post('http://localhost:3000/author-personal-progress', scope.authorProgress)
+                  .then(response_pp => {
+                    scope.authorProgress = response_pp.data
+                    scope.base_content_count = scope.WORD_COUNT(scope.data.content)
+                    scope.$store.dispatch('loadAuthorPersonalProgress', {authorId: response_pp.data.author_id})
+                  })
+                  
                 }
               })
           }
@@ -178,15 +210,30 @@ export default {
           }
         }
 
+        if(wholeChapter.length > 0){
+
+          window.swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: window.vm.$t('CHAPTERS') + ' ' + window.vm.$t('SUCCESSFULY_IMPORTED'),
+            showConfirmButton: false,
+            timer: 1500
+          })
+
+        }else{
+
+          window.swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: window.vm.$t('NO') + ' ' + window.vm.$t('CHAPTERS'),
+            showConfirmButton: false,
+            timer: 1500
+          })
+          
+        }
         wholeChapter = []
 
-        window.swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: window.vm.$t('CHAPTERS') + ' ' + window.vm.$t('SUCCESSFULY_IMPORTED'),
-          showConfirmButton: false,
-          timer: 1500
-        })
+        
       })
     },
     updateBook () {
@@ -242,7 +289,14 @@ export default {
         scope.exportOnProgress = false
         scope.export_book = scope.$t('EXPORT_BOOK')
       })
-    }
+    },
+
+    showTreadline: function () {
+
+      var scope = this
+      scope.CHANGE_COMPONENT({tabKey: 'user-treadline', tabComponent: 'user-treadline', tabData: {bookId: scope.properties.uuid}, tabTitle: 'User Treadline'})
+
+    },
   },
   mounted () {
     var scope = this

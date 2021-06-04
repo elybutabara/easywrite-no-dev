@@ -22,8 +22,9 @@
             </p>
           </div>
         </div>
+
         <div v-if="stage == 'connecting'" class="es-card fadeIn animated">
-          <div class="es-card-header">{{$t('CONNECTING')}}</div>
+          <div class="es-card-header">{{ $t('CONNECTING') }}</div>
           <div class="es-card-content">
             <img class="loader" src="@/assets/img/loader-cog.svg">
             <p>{{ progress_message }}</p>
@@ -65,6 +66,7 @@
             <br/>
           </div>
         </div>
+
         <div v-if="stage == 'downloading'" class="es-card">
           <div class="es-card-header">{{$t('DOWNLOADING_DATA')}}</div>
           <div class="es-card-content">
@@ -78,6 +80,7 @@
             <br/>
           </div>
         </div>
+
         <div v-if="stage == 'saving'" class="es-card">
           <div class="es-card-header">{{$t('SAVING_DATA')}}</div>
           <div class="es-card-content">
@@ -91,6 +94,7 @@
             <br/>
           </div>
         </div>
+
         <div v-if="stage == 'logs'" class="es-card">
           <div class="es-card-header">{{$t('CHANGE_LOGS')}}</div>
           <div class="es-card-content">
@@ -103,6 +107,7 @@
             </div>
           </div>
         </div>
+
         <div v-if="stage == 'no-connection'" class="es-card">
           <div class="es-card-header">{{ $t('NO_CONNECTION') }}</div>
           <div class="es-card-content">
