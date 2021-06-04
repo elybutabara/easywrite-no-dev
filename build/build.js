@@ -60,8 +60,8 @@ let buildOptions = {
     "publish" : [{
       "provider": "github",
       "private": true,
-      "token": "dfd1c61fcb090ecba24909875e177c5326ad449d",
-      "owner": "rancorfloydz",
+      "token": "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",
+      "owner": "easywrite",
       // "repo": "easywrite-se-dev",
       // "repo": "easywrite-se-live"
       "repo": "easywrite-no-dev"
@@ -87,8 +87,8 @@ let buildOptions = {
     "publish" : [{
       "provider": "github",
       "private": true,
-      "token": "dfd1c61fcb090ecba24909875e177c5326ad449d",
-      "owner": "rancorfloydz",
+      "token": "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",
+      "owner": "easywrite",
       // "repo": "easywrite-se-dev",
       // "repo": "easywrite-se-live"
       "repo": "easywrite-no-dev"

@@ -23,7 +23,7 @@ exports.checkAppUpdates = () => {
   //   if(process.env.NODE_ENV !== 'production') return false
   if (process.env.NODE_ENV != 'production') return false
 
-  process.env.GH_TOKEN = 'dfd1c61fcb090ecba24909875e177c5326ad449d'
+  process.env.GH_TOKEN = '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'
 
   autoUpdater.checkForUpdates().then(() => {})
 

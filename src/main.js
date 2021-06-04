@@ -173,9 +173,9 @@ let APP = {
   }
 }
 
-window.APP = APP.LOCAL // DEVELOPEMENT APP
+window.APP = APP.NO_DEV // DEVELOPEMENT APP
 if (process.env.NODE_ENV === 'production') {
-  window.APP = APP.LOCAL // PRODUCTION APP
+  window.APP = APP.NO_DEV // PRODUCTION APP
 }
 // window.$.fn.select2.defaults.set('theme', 'bootstrap')
 
