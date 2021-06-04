@@ -322,7 +322,8 @@ export default {
     'logout': 'Logout',
     'anonymous': 'Anonymous',
     'clear-chapter-history-on-save': 'Clear chapter history on save',
-    'clear-scene-history-on-save': 'Clear scene history on save'
+    'clear-scene-history-on-save': 'Clear scene history on save',
+      'replied-to-your-comment': 'replied to your comment'
   },
   EDIT_SCENE: 'Edit Scene',
   REMOVE_SELECTION_FROM_STORYLINE: 'Remove Selection From Storyline',

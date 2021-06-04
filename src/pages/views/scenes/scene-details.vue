@@ -472,6 +472,13 @@ export default {
       scope.show_feedbacks = true
     }
 
+      if(scope.properties.action){
+          if (scope.properties.action.includes('open-inline-comment')) {
+              scope.show_comments = true;
+              scope.selected_comment = scope.properties.comment;
+          }
+      }
+
     scope.initializeData()
     ipcRenderer.on('EXPORT_DOCX_ENABLE_BUTTON', function () {
       scope.exportOnProgress = false

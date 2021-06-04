@@ -113,6 +113,33 @@
               </div>
               <div style="clear: both;"></div>
             </div>
+              <div v-else-if="model.type == 'chapter_inline_comment' && ['post','reply'].includes(model.action)" class="row ml-0 mr-0">
+                  <div class="col-md-2">
+                      <div v-bind:style="{'background-image': 'url(images/avatars/icons8-source-code-100.png)','background-size':'cover'}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #c0c0c0;"></div>
+                  </div>
+
+                  <div class="col-md-10">
+                      <div style="margin-left: 10px;">
+                          <div><div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{ model.alias }}</div>
+                              <div class="mt-2" style="font-size: 14px; line-height: 100%;">
+                                  <template v-if="model.action === 'post'">
+                                      {{ model.alias +' '+$t('site.commented-on')+' '+ model.chapter.title+'.'}}
+                                      <a href='javascript:void(0)' @click="openCommentDetails(model)">
+                                          {{ capitalizeFirstLetter($t('site.click-here')) }}
+                                      </a> {{ $t('site.to-view') }}
+                                  </template>
+                                  <template v-else="">
+                                      {{ model.alias +' '+$t('site.replied-to-your-comment')+' '+ model.chapter.title+'.'}}
+                                      <a href='javascript:void(0)' @click="openCommentDetails(model, 'books-i-read')">
+                                          {{ capitalizeFirstLetter($t('site.click-here')) }}
+                                      </a> {{ $t('site.to-view') }}
+                                  </template>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div style="clear: both;"></div>
+              </div>
             <div v-else-if="model.type == 'scene_comment' && model.action =='post'" class="row ml-0 mr-0">
               <div class="col-md-2">
                 <div v-bind:style="{'background-image': 'url(images/avatars/icons8-source-code-100.png)','background-size':'cover'}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #c0c0c0;"></div>
@@ -135,6 +162,33 @@
                 <div style="clear: both;"></div>
               </div>
             </div>
+              <div v-else-if="model.type == 'scene_inline_comment' && ['post','reply'].includes(model.action)" class="row ml-0 mr-0">
+                  <div class="col-md-2">
+                      <div v-bind:style="{'background-image': 'url(images/avatars/icons8-source-code-100.png)','background-size':'cover'}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #c0c0c0;"></div>
+                  </div>
+
+                  <div class="col-md-10">
+                      <div style="margin-left: 10px;">
+                          <div><div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{ model.alias }}</div>
+                              <div class="mt-2" style="font-size: 14px; line-height: 100%;">
+                                  <template v-if="model.action === 'post'">
+                                      {{ model.alias +' '+$t('site.commented-on')+' '+ model.scene.title+'.'}}
+                                      <a href='javascript:void(0)' @click="openCommentDetails(model, 'scene-my-books')">
+                                          {{ capitalizeFirstLetter($t('site.click-here')) }}
+                                      </a> {{ $t('site.to-view') }}
+                                  </template>
+                                  <template v-else="">
+                                      {{ model.alias +' '+$t('site.replied-to-your-comment')+' '+ model.scene.title+'.'}}
+                                      <a href='javascript:void(0)' @click="openCommentDetails(model, 'scene-books-i-read')">
+                                          {{ capitalizeFirstLetter($t('site.click-here')) }}
+                                      </a> {{ $t('site.to-view') }}
+                                  </template>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div style="clear: both;"></div>
+              </div>
             <div v-else-if="model.type == 'book' && model.action =='invitation'" class="row ml-0 mr-0">
               <div class="col-md-2">
                 <div v-bind:style="{'background-image': 'url(images/avatars/icons8-source-code-100.png)','background-size':'cover'}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #c0c0c0;"></div>
@@ -545,6 +599,64 @@ export default {
         })
       }
     },
+      async openCommentDetails(model, tab = 'my-books') {
+          const scope = this;
+          if (tab === 'my-books') {
+
+              scope.$store.dispatch('setActiveMainSideNavTab', 'my-books');
+              try {
+                  await scope.TOGGLE_BOOK(model.book, 'book')
+                  await scope.TOGGLE_BOOK(model.book,'chapters')
+
+              } finally {
+                  scope.CHANGE_COMPONENT({
+                      tabKey: 'chapter-details-' + model.chapter.uuid,
+                      tabComponent: 'chapter-details',
+                      tabData: { book: model.book, chapter: model.chapter, action: 'open-inline-comment', comment: model.comment},
+                      tabTitle: model.chapter.title
+                  })
+              }
+
+          }
+
+          if (tab === 'books-i-read'){
+              scope.$store.dispatch('setActiveMainSideNavTab', 'books-i-read');
+              try {
+                  await scope.TOGGLE_BOOK_I_READ(model.book, 'book')
+                  await scope.TOGGLE_BOOK_I_READ(model.book,'chapters')
+                  //scope.params.author.id
+              } finally {
+                  scope.CHANGE_COMPONENT({
+                      tabKey: 'chapter-details-' + model.chapter.uuid,
+                      tabComponent: 'books-i-read-chapter-details',
+                      tabData: { book: model.book, chapter: model.chapter, action: 'open-inline-comment', comment: model.comment},
+                      tabTitle: model.chapter.title
+                  })
+              }
+
+          }
+
+          if (tab === 'scene-my-books') {
+              try {
+                  await scope.TOGGLE_BOOK(model.book, 'book')
+                  await scope.TOGGLE_BOOK(model.book,'chapters')
+              } finally {
+
+                  // added delay to let the data set first before loading
+                  setTimeout(function(){
+                      scope.$store.dispatch('toggleChapter', model.chapter);
+
+                      scope.CHANGE_COMPONENT({
+                          tabKey: 'scene-details-' + model.scene.uuid,
+                          tabComponent: 'scene-details',
+                          tabData: { book: model.book, chapter: model.chapter , scene: model.scene,
+                              action: 'open-inline-comment', comment: model.comment},
+                          tabTitle: model.scene.title
+                      })
+                  }, 500);
+              }
+          }
+      },
     async openSceneDetails (model, action = '') {
       const scope = this
       scope.$store.dispatch('setActiveMainSideNavTab', 'my-books')
@@ -597,6 +709,8 @@ export default {
         .then(response => {
           // console.log('response data', response.data.data)
           scope.allItems['notifications'] = response.data.data.notifications
+            console.log("fetch notifications")
+            console.log(scope.allItems['notifications']);
         })
         .catch(error => {
           console.log('error', error)

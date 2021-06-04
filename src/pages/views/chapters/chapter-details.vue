@@ -443,7 +443,7 @@ export default {
   async mounted () {
     var scope = this
 
-    if (scope.chapter.hidden) {
+    if (scope.chapter ? scope.chapter.hidden : scope.properties.chapter.hidden) {
       scope.chapter_hidden = true
     }
     console.log(scope.chapter_hidden, 'mounted hidden')
@@ -461,6 +461,14 @@ export default {
     scope.page.title = scope.properties.chapter.title
     console.log('PROPERTIES')
     console.log(scope.properties)
+
+      // check if for opening comment
+      if(scope.properties.action){
+          if (scope.properties.action.includes('open-inline-comment')) {
+              scope.show_comments = true;
+              scope.selected_comment = scope.properties.comment;
+          }
+      }
 
     try {
       await scope.$store.dispatch('loadScenesByChapter', scope.properties.chapter.uuid)
