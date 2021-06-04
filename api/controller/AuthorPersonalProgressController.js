@@ -18,7 +18,6 @@ class AuthorPersonalProgressController {
     }
 
     let authorPersonalProgress = await queryBuilder.orderBy('created_at', 'DESC').first()
-
     return authorPersonalProgress
   }
 
@@ -37,7 +36,6 @@ class AuthorPersonalProgressController {
     }
 
     let authorPersonalProgress = await queryBuilder.orderBy('created_at', 'DESC').first()
-
     return authorPersonalProgress
   }
 
@@ -60,32 +58,39 @@ class AuthorPersonalProgressController {
     return rows
   }
 
-  static async sync (row) {
-    var columns = {
-      uuid: row.uuid,
-      author_id: row.author_id,
-      relation_id: row.relation_id,
-      total_words: row.total_words,
-      is_for: row.is_for,
-      created_at: row.created_at,
-      updated_at: row.updated_at,
-      deleted_at: row.deleted_at
+  static async sync (datas) {
+    var rows = []
+    if (!Array.isArray(datas)) rows.push(datas)
+    else rows = datas
+
+    for (let i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      var columns = {
+        uuid: row.uuid,
+        author_id: row.author_id,
+        relation_id: row.relation_id,
+        total_words: row.total_words,
+        is_for: row.is_for,
+        created_at: row.created_at,
+        updated_at: row.updated_at,
+        deleted_at: row.deleted_at
+      }
+
+      var data = await AuthorPersonalProgress.query()
+        .patch(columns)
+        .where('uuid', '=', row.uuid)
+
+      if (!data || data === 0) {
+        data = await AuthorPersonalProgress.query().insert(columns)
+
+        // update uuid to match web
+        data = await AuthorPersonalProgress.query()
+          .patch({'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at})
+          .where('uuid', '=', data.uuid)
+      }
     }
 
-    var data = await AuthorPersonalProgress.query()
-      .patch(columns)
-      .where('uuid', '=', row.uuid)
-
-    if (!data || data === 0) {
-      data = await AuthorPersonalProgress.query().insert(columns)
-
-      // update uuid to match web
-      data = await AuthorPersonalProgress.query()
-        .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
-        .where('uuid', '=', data.uuid)
-    }
-
-    return data
+    return true
   }
 }
 

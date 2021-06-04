@@ -6,17 +6,6 @@ const router = express.Router()
 
 const { NotificationController } = require(path.join(__dirname, '..', 'controllers'))
 
-router.get('/:authorUuid', async function (req, res) {
-  const data = await NotificationController.getAll(req.params.authorUuid)
-  const response = {
-    // 'count': data.notification.length + data.notification.length,
-    'data': data 
-  } 
-  res  
-    .status(200)
-    .json(response)
-})
-
 router.post('/', async function (req, res) {
   const data = await NotificationController.save(req.body)
 
@@ -47,11 +36,22 @@ router.post('/sync', async function (req, res) {
     .json(row)
 })
 
-router.post('/update-notification-status', async function (req, res){
+router.post('/update-notification-status', async function (req, res) {
   const row = await NotificationController.updateNotificationStatus(req.body)
   res
     .status(200)
     .json(row)
+})
+
+router.get('/:authorUuid', async function (req, res) {
+  const data = await NotificationController.getAll(req.params.authorUuid)
+  const response = {
+    // 'count': data.notification.length + data.notification.length,
+    'data': data
+  }
+  res
+    .status(200)
+    .json(response)
 })
 
 module.exports = router

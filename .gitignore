@@ -30,3 +30,5 @@ private/
 !*api/base.db
 desktop.ini
 build/certificate/certificate.env
+build/certificate/easywrite.pfx
+build/certificate/EasyWrite.provisionprofile

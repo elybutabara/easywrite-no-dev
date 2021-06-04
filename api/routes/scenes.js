@@ -17,6 +17,14 @@ router.get('/:sceneId/items', async function (req, res) {
 router.get('/:sceneId/characters', async function (req, res) {
   const sceneCharacters = await SceneCharacterController.getAllSceneCharactersBySceneId(req.params.sceneId)
 
+  // picture src
+  sceneCharacters.forEach(function (item, index) {
+    sceneCharacters[index].character.picture_src = ''
+    if (item.character.picture) {
+      sceneCharacters[index].character.picture_src = 'file://' + path.resolve(resourcePath, 'resources', 'images', 'characters', item.character.picture)
+    }
+  })
+
   res
     .status(200)
     .json(sceneCharacters)
@@ -73,6 +81,22 @@ router.post('/', async function (req, res) {
     .json(scene)
 })
 
+router.post('/:sceneId/hide-storyline', async function (req, res) {
+  const scene = await SceneController.hideStoryline(req.params.sceneId, req.body)
+
+  res
+    .status(200)
+    .json(scene)
+})
+
+router.post('/:sceneId/children', async function (req, res) {
+  const scene = await SceneController.saveChildren(req.params.sceneId, req.body)
+
+  res
+    .status(200)
+    .json(scene)
+})
+
 router.delete('/:sceneId', async function (req, res) {
   const scene = await SceneController.delete(req.params.sceneId)
 
@@ -82,7 +106,7 @@ router.delete('/:sceneId', async function (req, res) {
 })
 
 router.get('/syncable', async function (req, res) {
-  const rows = await SceneController.getSyncable(req.query.userID)
+  const rows = await SceneController.getSyncable(req)
 
   res
     .status(200)
@@ -103,6 +127,14 @@ router.post('/sync', async function (req, res) {
   res
     .status(200)
     .json(row)
+})
+
+router.post('/hide', async function (req, res) {
+  const scene = await SceneController.hide(req.body)
+
+  res
+    .status(200)
+    .json(scene)
 })
 
 router.get('/:sceneId', async function (req, res) {

@@ -13,8 +13,8 @@
             </div>
             <div class="book-panel-right">
                 <button ref="button" v-show="data.id!=null" class="es-button btn-sm white" :disabled="scene_version_modal_is_open" @click="newVersion()">{{$t('SAVE_AS_NEW_VERSION').toUpperCase()}}</button>
-                <button v-if="data.id != null" class="es-button btn-sm white" @click="saveScene()">{{$t('SAVE_CHANGES')}}</button>
-                <button v-else class="es-button btn-sm white" @click="saveScene()">{{$t('SAVE')}}</button>
+                <button :disabled="isCurrentlySaving" v-if="data.id != null" class="es-button btn-sm white" @click="saveScene()">{{$t('SAVE_CHANGES')}}</button>
+                <button :disabled="isCurrentlySaving || !isSaveEnabled" v-else class="es-button btn-sm white" @click="saveScene()">{{$t('SAVE')}}</button>
             </div>
         </div>
     </div>
@@ -60,7 +60,7 @@
                                     :state="feedback.title.state"
                                     aria-describedby="input-live-help input-live-feedback"
                                     :placeholder="$t('TITLE')"
-                                    @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
+                                    @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab); "
                                     trim
                                 ></b-form-input>
                                 <!-- This will only be shown if the preceding input has an invalid state -->
@@ -82,7 +82,7 @@
                                     :state="feedback.short_description.state"
                                     aria-describedby="input-live-help input-live-feedback"
                                     :placeholder="$t('SHORT_DESCRIPTION')"
-                                    @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab)"
+                                    @keydown="MARK_TAB_AS_MODIFIED($store.getters.getActiveTab); setAll(feedback.short_description, null)"
                                     trim
                                 ></b-form-input>
                                 <!-- This will only be shown if the preceding input has an invalid state -->
@@ -102,15 +102,14 @@
                         </div>
                     </div>
                     <div class="content ">
-                        <button @click="getImport()">Import Docx</button>
+                        <button @click="getImport()"> {{ $t('IMPORT_DOCX') }} </button>
                         <b-row class="margin-bottom-1rem">
                             <b-col>
                                 <div v-if="scene_history.length" class="text-right">
                                     <button class="es-button-white margin-bottom-1rem" @click="show_history = !show_history">{{$t('SHOW_HISTORY')}}</button>
                                 </div>
                                 <div class="form-group testtest">
-                                    <tiny-editor ref="tmc" :params="tiny_editor_params" :initValue="baseSceneVersionContent" v-on:getEditorContent="setContent" class="form-control" />
-                                    <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params()"></CommentBasePanel>
+                                    <tiny-editor ref="tmc" :params="tiny_editor_params" :initValue="baseSceneContent" v-on:getEditorContent="setContent" class="form-control" />
                                 </div>
                                 <div v-if="show_history" class="scene-history-items slideInRight animated">
                                     <div class="note">
@@ -132,8 +131,8 @@
                                 </div>
                             </b-col>
                         </b-row>
-                        <div class="col-md-12" v-show="data.id != null">
-                            <small>The scene will be autosaved every ten seconds</small>
+                        <div class="col-md-12">
+                            <small> {{ $t('THE_SCENE_WILL_BE_SAVED_EVERY_TEN_SECONDS') }} </small>
                             <small v-if="!do_scene_auto_save" class="text-red"> | Saving ...</small>
                         </div>
                     </div>
@@ -178,7 +177,7 @@
                         </div>
                     </div>
                     <div class="content">
-                        <tiny-editor :initValue="data.notes" v-on:getEditorContent="setNotes" class="form-control" />
+                        <tiny-editor :initValue="baseSceneNotes" v-on:getEditorContent="setNotes" class="form-control" />
                     </div>
                 </div>
                 <div class="item" v-bind:class="{'active': accordion['viewpoint'] === 'active'}">
@@ -215,7 +214,7 @@
                         <b-row class="margin-bottom-1rem">
                             <b-col>
                                 <label>{{$t('VIEWPOINT_DESCRIPTION')}}: </label>
-                                <tiny-editor :initValue="data.viewpoint_description"
+                                <tiny-editor :initValue="baseViewpointDescription"
                                             v-on:getEditorContent="setViewpointDescription"
                                             class="form-control"
                                 />
@@ -286,7 +285,7 @@
                     <b-card-group deck>
                         <b-card header="Content">
                             <template class="text-center" v-slot:header>
-                                <h4 class="mb-0">Content</h4>
+                                <h4 class="mb-0">{{ $t('CONTENT') }}</h4>
                             </template>
                             <div class="margin-bottom-1rem">
                                 <div v-html="historyContent" class="history-content" ></div>
@@ -315,9 +314,17 @@
           <b-container class="bv-example-row">
             <b-card-group deck>
               <b-card :header="$t('SAVE_AS_NEW_VERSION')"  class="text-center">
+                <b-row class="text-left">
+                  <b-col>
+                    <div class="custom-checkbox mt-2">
+                      <input v-model="clear_history" type="checkbox" id="clearSceneHistory">
+                      <label for="clearSceneHistory">{{ $t('site.clear-scene-history-on-save') }}</label>
+                    </div>
+                  </b-col>
+                </b-row>
                 <b-row style="margin-bottom: 1rem;" class="text-left">
                   <b-col>
-                    <label>{{$t('DESCRIPTION')}}: </label>
+                    <label>{{ $t('DESCRIPTION') }}: </label>
                     <tiny-editor :initValue="new_scene_version.change_description"
                                  v-on:getEditorContent="setDescription"
                                  class="form-control"
@@ -328,7 +335,7 @@
                   <b-col>
                     <div class="text-right">
                       <b-button variant="outline-dark" class="mr-2" @click="scene_version_modal_is_open = !scene_version_modal_is_open">{{$t('CANCEL')}}</b-button>
-                      <b-button variant="dark" @click="saveNewVersion">{{$t('SAVE')}}</b-button>
+                      <b-button variant="dark" @click="saveNewVersion">{{ $t('SAVE') }}</b-button>
                     </div>
                   </b-col>
                 </b-row>
@@ -344,7 +351,7 @@
 <script>
 import TinyMCE from '../../../components/TinyMCE'
 
-import CommentBasePanel from '../../../components/CommentBasePanel'
+// import CommentBasePanel from '../../../components/CommentBasePanel'
 import tinymce from 'tinymce'
 const moment = require('moment')
 const {ipcRenderer} = window.require('electron')
@@ -366,7 +373,9 @@ export default {
         chapter_id: '',
         title: '',
         short_description: '',
+        content: '',
         scene_version: {
+          change_description: '',
           content: ''
         },
         typeofscene: '',
@@ -391,25 +400,25 @@ export default {
       // Options for multiselect
       options_chapters: [{title: this.$t('OTHER_SCENE'), uuid: '-1'}],
       options_typeofscene: [
-        {text: 'Action', value: 'Action'},
-        {text: 'Reaction', value: 'Reaction'}
+        {text: this.$t('ACTION'), value: 'Action'},
+        {text: this.$t('REACTION'), value: 'Reaction'}
       ],
       options_importance: [
-        {text: 'Plot', value: 'Plot'},
-        {text: 'Subplot', value: 'Subplot'}
+        {text: this.$t('PLOT'), value: 'Plot'},
+        {text: this.$t('SUBPLOT'), value: 'Subplot'}
       ],
       options_status: [
-        {text: 'Outline', value: 'Outline'},
-        {text: 'Draft', value: 'Draft'},
-        {text: '1st Edition', value: '1st Edition'},
-        {text: '2nd Edition', value: '2nd Edition'},
-        {text: 'Done', value: 'Done'}
+        {text:  this.$t('OUTLINE'), value: 'Outline'},
+        {text:  this.$t('DRAFT'), value: 'Draft'},
+        {text:  this.$t('FIRST_EDITION'), value: '1st Edition'},
+        {text:  this.$t('SECOND_EDITION'), value: '2nd Edition'},
+        {text:  this.$t('DONE'), value: 'Done'}
       ],
       options_weather_type: [
-        {text: 'Rainy', value: 'Rainy'},
-        {text: 'Sunny', value: 'Sunny'},
-        {text: 'Snowy', value: 'Snowy'},
-        {text: 'Windy', value: 'Windy'}
+        {text: this.$t('RAINY'), value: 'Rainy'},
+        {text: this.$t('SUNNY'), value: 'Sunny'},
+        {text: this.$t('SNOWY'), value: 'Snowy'},
+        {text: this.$t('WINDY'), value: 'Windy'}
       ],
       options_character_id_vp: [
         {text: 'Author', value: '-1'}
@@ -419,14 +428,14 @@ export default {
       selected_characters: [],
       selected_locations: [],
       // Temp container of content
-      baseSceneVersionContent: '',
-      tempSceneNotes: '',
-      tempViewpointDescription: '',
+      baseSceneContent: '',
+      baseSceneNotes: '',
+      baseViewpointDescription: '',
       tempSceneStart: '',
       tempSceneEnd: '',
       accordion: {
         'scene-details': 'active',
-        'content': 'inactive',
+        'content': 'active',
         'more-details': 'inactive',
         'notes': 'inactive',
         'viewpoint': 'inactive',
@@ -457,6 +466,7 @@ export default {
       },
       scene_history: {},
       show_history: false,
+      clear_history: true,
       view_history: false,
       historyContent: '',
       tinyEditorAccess: null,
@@ -467,24 +477,24 @@ export default {
         },
         onEditorInit: function (ed) {
           // console.log('ed init----->', ed, ed.contentDocument, ed.getDoc())
-          scope.commentbase_editor = ed
-          scope.commentbase_dom = ed.getDoc()
+          // scope.commentbase_editor = ed
+          // scope.commentbase_dom = ed.getDoc()
         }
       },
-      commentbase_dom: null,
-      commentbase_params: function () {
-        return {
-          tinymce: scope.commentbase_editor,
-          onMounted: (vm) => {
-            scope.commentbase_vm = vm
-            vm.setAuthor(this.getAuthor)
-            vm.setCommentsJSON(this.comments)
-          },
-          onAddComment: function () {
-            scope.saveScene(true)
-          }
-        }
-      },
+      // commentbase_dom: null,
+      // commentbase_params: function () {
+      //   return {
+      //     tinymce: scope.commentbase_editor,
+      //     onMounted: (vm) => {
+      //       scope.commentbase_vm = vm
+      //       vm.setAuthor(this.getAuthor)
+      //       vm.setCommentsJSON(this.comments)
+      //     },
+      //     onAddComment: function () {
+      //       scope.saveScene(true)
+      //     }
+      //   }
+      // },
       new_scene_version: {
         book_scene_id: null,
         change_description: null,
@@ -493,12 +503,14 @@ export default {
       tempVersionDesc: '',
       auto_save_scene_interval: null,
       scene_version_modal_is_open: false,
-      do_scene_auto_save: true
+      do_scene_auto_save: true,
+      isCurrentlySaving: false,
+        isSaveEnabled: false,
     }
   },
   components: {
-    TinyMCE,
-    CommentBasePanel
+    TinyMCE
+    // CommentBasePanel
   },
   computed: {
     book: function () {
@@ -519,13 +531,13 @@ export default {
     characters: function () {
       return this.$store.getters.getCharactersByBook(this.properties.book.uuid)
     },
-    comments: function () {
-      // return '{}'
-      var scope = this
-      if (!scope.scene) return null
-      var sceneID = scope.scene.uuid
-      return this.$store.getters.getSceneComments(sceneID)
-    },
+    // comments: function () {
+    //   // return '{}'
+    //   var scope = this
+    //   if (!scope.scene) return null
+    //   var sceneID = scope.scene.uuid
+    //   return this.$store.getters.getSceneComments(sceneID)
+    // },
     getAuthor: function () {
       var scope = this
       return scope.$store.getters.getAuthor
@@ -547,12 +559,13 @@ export default {
         // Add the imported contents where mouse cursor is located.
         tinymce.get(scope.$refs.tmc.$el.id).execCommand('mceInsertContent', false, data)
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
-        scope.data.scene_version.content = tinymce.get(scope.$refs.tmc.$el.id).getContent()
-        scope.baseSceneVersionContent = tinymce.get(scope.$refs.tmc.$el.id).getContent()
+        // scope.data.scene_version.content = tinymce.get(scope.$refs.tmc.$el.id).getContent()
+        scope.data.content = tinymce.get(scope.$refs.tmc.$el.id).getContent()
+        scope.baseSceneContent = tinymce.get(scope.$refs.tmc.$el.id).getContent()
         /*
         // conflict with delete-in-detail-page-for-items-location-character-cause-breadcrumbs-problem-after-redirecting-in-listing-page
         // scope.data.scene_version.content = data
-        // scope.baseSceneVersionContent = data
+        // scope.baseSceneContent = data
         // Add the imported contents where mouse cursor is located.
         scope.tinymce.get(scope.$refs.tmc.$el.id).execCommand('mceInsertContent', false, data)
         scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
@@ -623,8 +636,8 @@ export default {
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: this.$t('APPLY'),
-        cancelButtonText: this.$t('CANCEL')
+        confirmButtonText: scope.$t('APPLY'),
+        cancelButtonText: scope.$t('CANCEL')
       }).then((result) => {
         if (result.value) {
           scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
@@ -632,8 +645,8 @@ export default {
           scope.show_history = false
 
           let content = !(scope.historyContent) ? ' ' : scope.historyContent
-          scope.data.scene_version.content = content
-          scope.baseSceneVersionContent = content
+          scope.data.content = content
+          scope.baseSceneContent = content
         }
       })
     },
@@ -699,21 +712,21 @@ export default {
     // Required for geting value from TinyMCE content
     setContent (value) {
       var scope = this
+      scope.data.content = value
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
-      scope.data.scene_version.content = value
-      // scope.baseSceneVersionContent = value
+      // scope.baseSceneContent = value
     },
     setNotes (value) {
       var scope = this
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
 
-      scope.tempSceneNotes = value
+      scope.data.notes = value
     },
     setViewpointDescription (value) {
       var scope = this
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
 
-      scope.tempViewpointDescription = value
+      scope.data.viewpoint_description = value
     },
     setAll (obj, val) {
       Object.keys(obj).forEach(function (index) {
@@ -725,11 +738,10 @@ export default {
       scope.setAll(scope.feedback.title, null)
       scope.setAll(scope.feedback.short_description, null)
     },
-    validate () {
+    validate (noAlert) {
       var scope = this
       var isValid = true
 
-      scope.setFeedbackNull()
       // Check if title is empty and return error
       if (!scope.data.title) {
         scope.feedback.title.message = this.$t('TITLE') + ' ' + this.$t('IS_REQUIRED')
@@ -745,13 +757,18 @@ export default {
 
       return isValid
     },
-    saveScene (noAlert) {
+    async saveScene (noAlert) {
       var scope = this
 
-      // scope.data.scene_version.content = scope.baseSceneVersionContent
-      scope.data.scene_version.comments = (scope.commentbase_vm) ? scope.commentbase_vm.getCommentsJSON() : null
-      scope.data.notes = scope.tempSceneNotes
-      scope.data.viewpoint_description = scope.tempViewpointDescription
+      scope.isCurrentlySaving = true
+
+      // Clear error messages
+      scope.setFeedbackNull()
+
+      // scope.data.scene_version.content = scope.baseSceneContent
+      // scope.data.scene_version.comments = (scope.commentbase_vm) ? scope.commentbase_vm.getCommentsJSON() : null
+      // scope.data.notes = scope.tempSceneNotes
+      // scope.data.viewpoint_description = scope.tempViewpointDescription
       scope.data.chapter_id = (scope.selected_chapter !== 'undefined' && scope.selected_chapter !== null && scope.selected_chapter.uuid !== '-1') ? scope.selected_chapter.uuid : null
       scope.data.typeofscene = scope.selected_typeofscene.value
       scope.data.importance = scope.selected_importance.value
@@ -759,20 +776,22 @@ export default {
       scope.data.weather_type = scope.selected_weather_type.value
       scope.data.character_id_vp = scope.selected_character_id_vp.value
 
-      if (!scope.validate()) {
+      if (!scope.validate(noAlert)) {
+        scope.isCurrentlySaving = false
         return false
       }
 
       // Set autosave to busy
       scope.do_scene_auto_save = false
 
-      scope.axios
+      await scope.axios
         .post('http://localhost:3000/scenes', scope.data)
         .then(response => {
           if (response.data) {
             scope.saveRelatedTables(response.data.uuid)
             scope.$store.dispatch('updateSceneList', response.data)
             scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
+
             if (!noAlert) {
               window.swal.fire({
                 position: 'center',
@@ -814,9 +833,19 @@ export default {
 
                 scope.loadScene(response.data)
               })
+            } else {
+              if (scope.data.uuid === null) {
+                scope.$set(scope.data, 'id', response.data.id)
+                scope.$set(scope.data, 'uuid', response.data.uuid)
+                scope.$set(scope.data.scene_version, 'id', response.data.scene_version[0].id)
+                scope.$set(scope.data.scene_version, 'uuid', response.data.scene_version[0].uuid)
+
+                scope.setBaseSceneVal(scope.data)
+              }
             }
           }
         })
+      scope.isCurrentlySaving = false
     },
     saveRelatedTables: async function (sceneId) {
       var scope = this
@@ -860,36 +889,44 @@ export default {
     saveAuthorPersonalProgress (sceneId) {
       var scope = this
       if (scope.authorProgress.uuid) {
-        scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.WORD_COUNT(scope.data.scene_version.content) - scope.base_content_count)
+        scope.authorProgress.total_words = scope.authorProgress.total_words + (scope.WORD_COUNT(scope.data.content) - scope.base_content_count)
       } else {
         scope.authorProgress.author_id = scope.$store.getters.getAuthorID
         scope.authorProgress.relation_id = sceneId
-        scope.authorProgress.total_words = scope.WORD_COUNT(scope.data.scene_version.content) - scope.base_content_count
+        scope.authorProgress.total_words = scope.WORD_COUNT(scope.data.content) - scope.base_content_count
       }
 
       scope.axios
         .post('http://localhost:3000/author-personal-progress', scope.authorProgress)
         .then(response => {
           scope.authorProgress = response.data
+          scope.base_content_count = scope.WORD_COUNT(scope.data.content)
           scope.$store.dispatch('loadAuthorPersonalProgress', { authorId: this.$store.getters.getAuthorID })
+
+          console.log('Author Personal Progress saved!')
         })
     },
     saveSceneHistory (sceneId) {
       var scope = this
       let sceneHistory = {
         scene_id: sceneId,
-        content: scope.data.scene_version.content
+        content: scope.data.content
       }
 
-      if (sceneHistory.content === '') return
+      if (sceneHistory.content === null || sceneHistory.content === undefined || sceneHistory.content === '') return
 
       scope.axios
         .post('http://localhost:3000/book-scene-history', sceneHistory)
         .then(response => {
           scope.setBaseSceneVal(scope.data)
 
-          scope.scene_history.push(response.data)
+          if (scope.scene_history.length) {
+            scope.scene_history.unshift(response.data)
+          } else {
+            scope.$set(scope, 'scene_history', response.data)
+          }
 
+          scope.do_auto_save = true
           console.log('Scene history saved!')
         })
     },
@@ -898,7 +935,7 @@ export default {
       var scope = this
       this.scene_version_modal_is_open = true
 
-      scope.clear_history = false
+      scope.clear_history = true
       scope.new_scene_version.change_description = ''
       if (scope.new_scene_version.id) {
         delete (scope.new_scene_version.id)
@@ -909,7 +946,7 @@ export default {
       var scope = this
 
       scope.new_scene_version.change_description = scope.tempVersionDesc
-      scope.new_scene_version.content = scope.data.scene_version.content
+      scope.new_scene_version.content = scope.data.content
       scope.new_scene_version.book_scene_id = scope.data.uuid
 
       scope.axios.post('http://localhost:3000/scene-versions', scope.new_scene_version)
@@ -947,7 +984,7 @@ export default {
         await scope.$store.dispatch('loadItemsByScene', scope.properties.scene)
         await scope.$store.dispatch('loadLocationsByScene', scope.properties.scene)
         await scope.$store.dispatch('loadVersionsByScene', scope.properties.scene)
-        await scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', scope.properties.scene.uuid)
+        await scope.$store.dispatch('loadTodayAuthorPersonalProgressForScene', sceneProp.uuid)
         await scope.$store.dispatch('loadSceneHistory', scope.properties.scene.uuid)
       } catch (ex) {
         console.log('Failed to load data')
@@ -959,9 +996,12 @@ export default {
         let version = scope.$store.getters.findLatestSceneVersionByScene(sceneProp)
         let progress = scope.$store.getters.getTodayAuthorPersonalProgressForScene(sceneProp)
 
+        console.log('progress')
+        console.log(progress)
         // scene
         scope.data.title = scene.title
         scope.data.short_description = scene.short_description
+        scope.data.content = scene.content
         scope.data.typeofscene = scene.typeofscene
         scope.data.importance = scene.importance
         scope.data.status = scene.status
@@ -972,6 +1012,7 @@ export default {
         scope.data.tags = scene.tags
         scope.data.notes = scene.notes
         scope.data.viewpoint_description = scene.viewpoint_description
+        scope.baseSceneContent = scene.content
 
         scope.tempSceneStart = scene.date_starts
         scope.tempSceneEnd = scene.date_ends
@@ -1003,25 +1044,21 @@ export default {
           scope.selected_chapter = chapter
         }
 
-        if (version) {
-          // version
-          scope.data.scene_version.id = version.id
-          scope.data.scene_version.uuid = version.uuid
-          scope.data.scene_version.content = version.content
-          scope.data.scene_version.change_description = version.change_description
+        // version
+        scope.data.scene_version.id = version.id
+        scope.data.scene_version.uuid = version.uuid
+        scope.data.scene_version.content = version.content
+        scope.data.scene_version.change_description = version.change_description
 
-          scope.baseSceneVersionContent = version.content
-        }
-
-        scope.tempSceneNotes = scene.notes
-        scope.tempViewpointDescription = scene.viewpoint_description
+        scope.baseSceneNotes = scene.notes
+        scope.baseViewpointDescription = scene.viewpoint_description
 
         // set selected item/character/location
         scope.setSelectedChild()
 
         scope.setBaseSceneVal(scope.data)
 
-        scope.base_content_count = scope.WORD_COUNT(scope.baseSceneVersionContent)
+        scope.base_content_count = scope.WORD_COUNT(scope.baseSceneContent)
 
         // progress
         if (progress) {
@@ -1030,9 +1067,9 @@ export default {
 
         // scene history
         scope.scene_history = scope.GET_SCENE_HISTORY(scene.uuid)
-
-        scope.page.is_ready = true
       }
+
+      scope.page.is_ready = true
     },
     setBaseSceneVal: function (scene) {
       let scope = this
@@ -1055,7 +1092,7 @@ export default {
       // If save new version modal is open skip auto save
       // If view history modal is open skip auto save
       // If no changes  skip auto save
-      if (scope.scene_version_modal_is_open || scope.view_history || (scope.DEEP_EQUAL(scope.base_scene_val, scope.data) && !scope.IS_TAB_AS_MODIFIED)) return false
+      if (scope.scene_version_modal_is_open || scope.view_history || !scope.IS_TAB_AS_MODIFIED || scope.DEEP_EQUAL(scope.base_scene_val, scope.data)) return false
 
       // There still a ongoing autosave return false and let that autosave to finish saving
       if (!scope.do_scene_auto_save) return false
@@ -1098,11 +1135,11 @@ export default {
     } catch (ex) {
       console.log('Failed to load data')
     } finally {
+      scope.auto_save_scene_interval = setInterval(scope.autoSave, 10000)
       if (scope.data.uuid) {
+        scope.accordion['scene-details'] = 'inactive'
         scope.loadScene(scope.properties.scene)
         scope.selected_chapter = scope.properties.chapter
-
-        scope.auto_save_scene_interval = setInterval(scope.autoSave, 10000)
       } else {
         let chapters = scope.$store.getters.getChaptersByBook(scope.properties.book.uuid)
         var bookCharacters = scope.$store.getters.getCharactersByBook(scope.properties.book.uuid)
@@ -1119,6 +1156,9 @@ export default {
           }
         }
         scope.page.is_ready = true
+          setTimeout(function(){
+             scope.isSaveEnabled = true;
+          }, 5000);
       }
     }
 
@@ -1204,4 +1244,11 @@ export default {
   }
 
   .history-content { max-height: 400px; overflow-y: auto }
+
+    .es-button[disabled] {
+        background: #f1f3f4;
+        border-color: #f1f3f4;
+        color: #0f1c24;
+        cursor: context-menu;
+    }
 </style>

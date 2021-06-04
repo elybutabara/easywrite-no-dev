@@ -127,10 +127,13 @@ export default {
     loadBooksByAuthor (state, payload) {
       var authorUUID = payload.authorUUID
       var books = payload.books
+      var is_synced = payload.is_synced
+
       Vue.set(state.books, authorUUID, { rows: [] })
       state.books[authorUUID].rows = books.data
 
       for (let i = 0; i < state.books[authorUUID].rows.length; i++) {
+        Vue.set(state.books[authorUUID].rows[i], 'is_synced', is_synced)
         Vue.set(state.books[authorUUID].rows[i], 'is_open', false)
         Vue.set(state.books[authorUUID].rows[i], 'is_chapters_folder_open', false)
         Vue.set(state.books[authorUUID].rows[i], 'is_items_folder_open', false)
@@ -142,11 +145,13 @@ export default {
     loadBooksIReadByAuthor (state, payload) {
       var authorUUID = payload.authorUUID
       let bookIRead = payload.bookIRead
+      let is_synced = payload.is_synced
 
       Vue.set(state.books_i_read, authorUUID, { rows: [] })
       state.books_i_read[authorUUID].rows = bookIRead.data
 
       for (let i = 0; i < state.books_i_read[authorUUID].rows.length; i++) {
+        Vue.set(state.books_i_read[authorUUID].rows[i], 'is_synced', is_synced)
         Vue.set(state.books_i_read[authorUUID].rows[i], 'is_open', false)
         Vue.set(state.books_i_read[authorUUID].rows[i], 'is_chapters_folder_open', false)
         Vue.set(state.books_i_read[authorUUID].rows[i], 'is_items_folder_open', false)
@@ -238,6 +243,7 @@ export default {
         // add row
         state.books[authorUUID].rows.push({})
         Vue.set(state.books[authorUUID].rows, 0, payload)
+        Vue.set(state.books[authorUUID].rows[0], 'is_synced', true)
         Vue.set(state.books[authorUUID].rows[0], 'is_open', false)
         Vue.set(state.books[authorUUID].rows[0], 'is_chapters_folder_open', false)
         Vue.set(state.books[authorUUID].rows[0], 'is_items_folder_open', false)
@@ -251,13 +257,14 @@ export default {
         let current = state.books[authorUUID].rows[i]
         if (current.uuid === payload.uuid) {
           for (var key in payload) {
-            if (state.books[authorUUID].rows[i][key]) {
+            if (typeof state.books[authorUUID].rows[i][key] !== 'undefined') {
               state.books[authorUUID].rows[i][key] = payload[key]
             }
           }
           break
         } else if (i === (state.books[authorUUID].rows.length - 1) && current.uuid !== payload.uuid) {
           // use this to get the total number of chapters under book
+          Vue.set(payload, 'is_synced', true)
           Vue.set(payload, 'is_open', false)
           Vue.set(payload, 'is_chapters_folder_open', false)
           Vue.set(payload, 'is_items_folder_open', false)
@@ -280,6 +287,7 @@ export default {
         // add row
         state.books_i_read[authorUUID].rows.push({})
         Vue.set(state.books_i_read[authorUUID].rows, 0, book)
+        Vue.set(state.books_i_read[authorUUID].rows[0], 'is_synced', true)
         Vue.set(state.books_i_read[authorUUID].rows[0], 'is_open', false)
         Vue.set(state.books_i_read[authorUUID].rows[0], 'is_chapters_folder_open', false)
         Vue.set(state.books_i_read[authorUUID].rows[0], 'is_items_folder_open', false)
@@ -300,6 +308,7 @@ export default {
           break
         } else if (i === (state.books_i_read[authorUUID].rows.length - 1) && current.uuid !== book.uuid) {
           // use this to get the total number of chapters under book
+          Vue.set(book, 'is_synced', true)
           Vue.set(book, 'is_open', false)
           Vue.set(book, 'is_chapters_folder_open', false)
           Vue.set(book, 'is_items_folder_open', false)
@@ -333,15 +342,18 @@ export default {
     async loadBooksByAuthor ({ commit, state }, payload) {
       var userUUID = payload.userUUID // this is for requesting purposes
       var authorUUID = payload.authorUUID
+      var is_synced = !!((payload.is_synced && payload.is_synced === true))
+
       let books = await axios.get('http://localhost:3000/users/' + userUUID + '/books')
-      commit('loadBooksByAuthor', { authorUUID: authorUUID, books: books })
+      commit('loadBooksByAuthor', { authorUUID: authorUUID, books: books, is_synced: is_synced })
     },
     async loadBooksIReadByAuthor ({ commit, state }, payload) {
       var userUUID = payload.userUUID // this is for requesting purposes
       var authorUUID = payload.authorUUID
+      var is_synced = !!((payload.is_synced && payload.is_synced === true))
 
       let bookIRead = await axios.get('http://localhost:3000/users/' + userUUID + '/books-i-read')
-      commit('loadBooksIReadByAuthor', { authorUUID: authorUUID, bookIRead: bookIRead })
+      commit('loadBooksIReadByAuthor', { authorUUID: authorUUID, bookIRead: bookIRead, is_synced: is_synced })
     },
     reloadBooksIReadByAuthor ({ commit, state }, payload) {
       commit('reloadBooksIReadByAuthor', payload)

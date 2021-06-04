@@ -88,11 +88,15 @@ export default {
 
     scope.axios.get('http://localhost:3000/notes/' + authorID + '/' + parent + '/' + parentID)
       .then(function (response) {
-        console.log(response)
+        // console.log(response)
         if (response.data.length > 0) {
-          scope.note.id = response.data[0].id
-          scope.note.uuid = response.data[0].uuid
-          scope.note.message = response.data[0].message
+          for (let note of response.data) {
+            if (note.deleted_at == null) {
+              scope.note.id = note.id
+              scope.note.uuid = note.uuid
+              scope.note.message = note.message
+            }
+          }
         }
       })
       .catch(function (error) {

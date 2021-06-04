@@ -1,26 +1,27 @@
 <template>
   <div v-if="page.is_ready == true && book" class="es-page-content" style="height: auto">
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+        <div v-if="!isSceneOnly">
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
 
-        <div class="inner">
-          <div class="book-title">
-            <center><h1>{{ book.title }}</h1></center>
+          <div class="inner">
+            <div class="book-title">
+              <center><h1>{{ book.title }}</h1></center>
+            </div>
           </div>
-        </div>
 
-        <div class="break"></div>
+          <div class="break"></div>
 
           <div class ="title">© </div>
           <div class ="title"></div>
@@ -33,28 +34,29 @@
           <div class ="title">1. opplag</div>
           <br/>
           <div class ="title">Det er ikke tillatt å kopiere, videreformidle eller mangfoldiggjøresider eller utdrag fra boken uten etter skriftlig avtale med forlaget.</div>
-           <div class="break"></div>
-
-          <div v-if="chapters" class="rows-print-as-pages">
-            <div v-bind:key="chapter.id" v-for="chapter in chapters">
-                <div class="break"></div>
-                <div class ="title"><h2>{{chapter.title}}</h2></div>
-                <br>
-                <br>
-                <br>
-                <div v-html="removeCommentChapter((chapter.chapter_version[chapter.chapter_version.length-1]) ? chapter.chapter_version[chapter.chapter_version.length-1].content : null)"></div>
-
-              <div v-bind:key="scene.id" v-for="scene in chapter.scene">
-                    <div class="break"></div>
-                    <div class ="title"><h2>{{scene.title}}</h2></div>
-                    <br>
-                    <br>
-                    <br>
-                    <div v-html="removeCommentScene((scene.scene_version[scene.scene_version.length-1]) ? scene.scene_version[scene.scene_version.length-1].content : null)"></div>
-              </div>
-
+          <div class="break"></div>
+        </div>
+        <div v-if="chapters" class="rows-print-as-pages">
+          <div v-bind:key="chapter.id" v-for="chapter in chapters">
+            <div v-if="!isSceneOnly">
+              <div class="break"></div>
+              <div class="title"><h2>{{chapter.title}}</h2></div>
+              <br>
+              <br>
+              <br>
+              <div v-html="removeCommentChapter((chapter.chapter_version[chapter.chapter_version.length-1]) ? chapter.chapter_version[chapter.chapter_version.length-1].content : null)"></div>
             </div>
+            <div v-bind:key="scene.id" v-for="scene in chapter.scene">
+              <div class="title"><h2>{{scene.title}}</h2></div>
+              <br>
+              <br>
+              <br>
+              <div v-html="removeCommentScene((scene.scene_version[scene.scene_version.length-1]) ? scene.scene_version[scene.scene_version.length-1].content : null)"></div>
+              <div class="break"></div>
+            </div>
+
           </div>
+        </div>
 
   </div>
 </template>
@@ -74,7 +76,10 @@ export default {
         is_ready: false
       },
       chapter_content: '',
-      scene_content: ''
+      scene_content: '',
+      selected_chapters: [],
+      selected_scenes: [],
+      isSceneOnly: false
     }
   },
   methods: {
@@ -122,10 +127,57 @@ export default {
     var scope = this
     ipcRenderer.on('EXPORT-DOCX-GET-BOOK', async function (event, data) {
       try {
-        scope.book = data
+        scope.book = data.book
+        scope.selected_chapters = data.selected_chapters
+        scope.selected_scenes = data.selected_scenes
         await scope.$store.dispatch('loadChaptersWithScenesByBook', scope.book.uuid)
       } finally {
-        scope.chapters = scope.$store.getters.getChaptersByBook(scope.book.uuid)
+        var chapters = scope.$store.getters.getChaptersByBook(scope.book.uuid)
+        // 'selected' (filtered) export
+        if (data.export_option === 'select_chapters') {
+          // chapter filtering
+          for (var i = 0; i < scope.selected_chapters.length; i++) {
+            for (var j = 0; j < chapters.length; j++) {
+              if (scope.selected_chapters[i] == chapters[j].id) {
+                var chapterScenes = chapters[j].scene
+                chapters[j].scene = []
+
+                // scene filtering
+                for (var k = 0; k < scope.selected_scenes.length; k++) {
+                  for (var l = 0; l < chapterScenes.length; l++) {
+                    if (chapterScenes[l].id == scope.selected_scenes[k]) {
+                      chapters[j].scene.push(chapterScenes[l])
+                    }
+                  }
+                }
+                scope.chapters.push(chapters[j])
+              }
+            }
+          }
+        } else if (data.export_option === 'select_scenes') {
+
+          // chapter filtering
+          for (let chapter in chapters) {
+            let chapterScenes = chapters[chapter].scene
+            chapters[chapter].scene = []
+
+            // scene filtering
+            for (let scene in scope.selected_scenes) {
+              for (let chapterScene in chapterScenes) {
+                if (chapterScenes[chapterScene].id == scope.selected_scenes[scene]) {
+                  chapters[chapter].scene.push(chapterScenes[chapterScene])
+                }
+              }
+            }
+            
+            scope.chapters.push(chapters[chapter])
+            scope.isSceneOnly = true
+          }
+        } else {
+          // export all
+          scope.chapters = chapters
+        }
+
         scope.page.is_ready = true
         scope.exportBook()
       }

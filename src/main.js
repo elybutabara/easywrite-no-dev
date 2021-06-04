@@ -29,6 +29,7 @@ import listing from './stores/listing'
 import timer from './stores/timer'
 import chapter from './stores/chapter'
 import character from './stores/character'
+import comment from './stores/comment'
 import item from './stores/item'
 import location from './stores/location'
 import scene from './stores/scene'
@@ -55,6 +56,7 @@ import './assets/css/darkmode.css'
 // import 'select2/dist/js/select2.min'
 
 import 'vue-multiselect/dist/vue-multiselect.min.css'
+import { Sketch, Slider } from 'vue-color' // refer to this for more options "https://www.npmjs.com/package/vue-color"
 
 import 'tinymce/tinymce'
 import 'tinymce/themes/silver'
@@ -95,11 +97,11 @@ window.$ = window.jQuery = require('jquery')
 window.moment = require('moment')
 window.swal = require('sweetalert2')
 window.he = require('he')
-
+window.chunk = require('chunk')
 let APP = {
   SE_PROD: {
     API: {
-      URL: 'https://api.pilotleser.no/se',
+      URL: 'https://www.easywrite.se/app',
       UPLOAD_URL: 'https://www.easywrite.se/uploads',
       SITE: 'se-live',
       CHAT: 'se'
@@ -107,7 +109,7 @@ let APP = {
   },
   SE_DEV: {
     API: {
-      URL: 'https://api.pilotleser.no/se-dev',
+      URL: 'https://dev.easywrite.se/app',
       UPLOAD_URL: 'https://dev.easywrite.se/uploads',
       SITE: 'se-dev',
       CHAT: 'se-dev'
@@ -115,7 +117,7 @@ let APP = {
   },
   NO_PROD: {
     API: {
-      URL: 'https://api.pilotleser.no/no',
+      URL: 'https://www.pilotleser.no/app',
       UPLOAD_URL: 'https://www.pilotleser.no/uploads',
       SITE: 'no-live',
       CHAT: 'no'
@@ -123,19 +125,58 @@ let APP = {
   },
   NO_DEV: {
     API: {
-      URL: 'https://api.pilotleser.no/no-dev',
+      URL: 'https://dev.pilotleser.no/app',
       UPLOAD_URL: 'https://dev.pilotleser.no/uploads',
       SITE: 'no-dev',
       CHAT: 'no-dev'
     }
+  },
+  FI_PROD: {
+    API: {
+      URL: 'https://easywrite.fi/app',
+      UPLOAD_URL: 'https://easywrite.fi/uploads',
+      SITE: 'no-dev',
+      CHAT: 'no-dev'
+    }
+  },
+  FI_DEV: {
+    API: {
+      URL: 'https://dev.easywrite.fi/app',
+      UPLOAD_URL: 'https://dev.easywrite.fi/uploads',
+      SITE: 'no-dev',
+      CHAT: 'no-dev'
+    }
+  },
+  DK_PROD: {
+    API: {
+      URL: 'https://easywrite.dk/app',
+      UPLOAD_URL: 'https://easywrite.dk/uploads',
+      SITE: 'no-dev',
+      CHAT: 'no-dev'
+    }
+  },
+  DK_DEV: {
+    API: {
+      URL: 'https://dev.easywrite.dk/app',
+      UPLOAD_URL: 'https://dev.easywrite.dk/uploads',
+      SITE: 'no-dev',
+      CHAT: 'no-dev'
+    }
+  },
+  LOCAL: {
+    API: {
+      URL: 'http://easywrite.local/app',
+      UPLOAD_URL: 'http://easywrite.local/uploads',
+      SITE: 'local',
+      CHAT: 'local'
+    }
   }
 }
 
-window.APP = APP.SE_DEV // DEVELOPEMENT APP
+window.APP = APP.LOCAL // DEVELOPEMENT APP
 if (process.env.NODE_ENV === 'production') {
-  window.APP = APP.SE_PROD // PRODUCTION APP
+  window.APP = APP.LOCAL // PRODUCTION APP
 }
-
 // window.$.fn.select2.defaults.set('theme', 'bootstrap')
 
 // import electron from 'electron'
@@ -147,6 +188,8 @@ Vue.component('multiselect', Multiselect)
 Vue.component('tiny-editor', TinyMCE)
 Vue.component('tiny-editor-chapter', TinyMCEChapter)
 Vue.component('ToggleButton', ToggleButton)
+Vue.component('sketch-picker', Sketch)
+Vue.component('slider-picker', Slider)
 
 // Install BootstrapVue
 Vue.use(BootstrapVue)
@@ -171,6 +214,7 @@ const store = new Vuex.Store({
     timer: timer,
     chapter: chapter,
     character: character,
+    comment:comment,
     item: item,
     location: location,
     scene: scene,

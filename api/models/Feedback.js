@@ -18,12 +18,21 @@ class Feedback extends BaseModel {
       },
       softDelete: true
     },
-    author: {
+    /* author: {
       relation: BaseModel.BelongsToOneRelation,
       modelClass: path.join(__dirname, 'AuthorName'),
       join: {
         from: 'feedbacks.author_id',
         to: 'author_names.uuid'
+      },
+      softDelete: false
+    }, */
+    author: {
+      relation: BaseModel.BelongsToOneRelation,
+      modelClass: path.join(__dirname, 'Author'),
+      join: {
+        from: 'feedbacks.author_id',
+        to: 'authors.uuid'
       },
       softDelete: false
     },

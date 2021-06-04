@@ -1,0 +1,936 @@
+<template>
+    <div v-if="ready">
+        <div v-if="!minimized" class="component-syncing-v2">
+            <div class="component-syncing-v2-content">
+                <div class="component-syncing-v2-header">
+                    <h4>Sync Data</h4>
+                    <div class="component-syncing-v2-actions">
+                        <button @click="showSyncDateForm()" class="btn-minimize"><i class="fas fa-cog"></i></button>
+                        <button @click="minimize()" class="btn-minimize"><i class="far fa-window-minimize"></i></button>
+                    </div>
+                </div>
+                <div v-if="tab == 'CHANGE_SYNC_DATE'" class="component-syncing-v2-body">
+                  <b-form-datepicker @context="onSyncDateChange" id="birthdate-datepicker" :placeholder="$t('NO_SELECTED_DATE')" v-model="synced_date" class="mb-2" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"></b-form-datepicker>
+                  <div style="margin-top:20px; margin-bottom:10px; text-align:center;">
+                    <button @click="updateSyncDate()" style="border:1px solid var(--navy); background: var(--navy); color:#fff; font-weight:600; font-size:12px; padding:8px 20px; border-radius:4px;">Update</button>
+                    <button @click="showSyncProgress()" style="border:1px solid #ccc; background: #efefef; font-weight:600; font-size:12px; padding:8px 20px; border-radius:4px;">Cancel</button>
+                  </div>
+                </div>
+                <template v-if="tab == 'SYNC'">
+                <div v-if="!pointed_endpoint" class="component-syncing-v2-body">
+                  <div>Preparing to Sync, Please wait...</div>
+                </div>
+                <div v-if="pointed_endpoint" class="component-syncing-v2-body">
+                  <p style="font-weight:600;">{{ main_endpoint.title }}</p>
+                    <div class="es-progress-bar">
+                      <div class="es-progress-number">{{ main_progress }}%</div>
+                      <div class="es-progress" v-bind:style="{ width: main_progress + '%' }"></div>
+                    </div>
+                     {{ pointed_endpoint_status }} {{ pointed_endpoint.title }} Data
+                     <span v-if="pointed_endpoint.packed && pointed_endpoint.packed.length > 0 && pointed_endpoint_status == 'Uploading'">[{{ pointed_endpoint_uploaded }}/{{ pointed_endpoint.packed.length }}]</span>
+                     <span v-if="pointed_endpoint.downloaded && pointed_endpoint.downloaded.length > 0 && pointed_endpoint_status == 'Saving'">[{{ pointed_endpoint_saved }}/{{ pointed_endpoint.downloaded.length }}]</span>
+                </div>
+                </template>
+            </div>
+        </div>
+        <div v-else class="component-syncing-v2-minimize">
+            <template v-if="pointed_endpoint">
+            <span>
+              <i class="fas fa-sync fa-spin"></i>
+              {{ pointed_endpoint_status }}
+              {{ pointed_endpoint.title }} Data
+              <template v-if="pointed_endpoint.packed && pointed_endpoint.packed.length > 0 && pointed_endpoint_status == 'Uploading'">[{{ pointed_endpoint_uploaded }}/{{ pointed_endpoint.packed.length }}]</template>
+              <template v-if="pointed_endpoint.downloaded && pointed_endpoint.downloaded.length > 0 && pointed_endpoint_status == 'Saving'">[{{ pointed_endpoint_saved }}/{{ pointed_endpoint.downloaded.length }}]</template>
+              {{ main_progress }}%
+            </span>
+            <span style="cursor:pointer;" @click="maximize()"><i class="fas fa-window-maximize"></i></span>
+            </template>
+        </div>
+    </div>
+</template>
+
+<script>
+import moment from 'moment'
+
+var electronFs = window.require('fs')
+const fs = window.require('fs-extra')
+
+const path = window.require('path')
+
+// eslint-disable-next-line no-unused-vars
+const app = window.require('electron').remote.app
+
+const electron = window.require('electron')
+const resourcePath = electron.remote.getGlobal('resourcePath')
+
+const request = window.require('request')
+
+export default {
+  name: 'SyncerV2',
+  data: function () {
+    return {
+      ready: false,
+      version: 20, // syncing version
+      api_token: '',
+      synced_date: null,
+      start_synced_date: null,
+      minimized: false,
+      endpoint_index: 0,
+      endpoint_sync_date: null,
+      endpoint_upload_request_done: null,
+      endpoint_upload_request_count: null,
+      endpoint_save_local_request_done: null,
+      endpoint_save_local_request_count: null,
+      pointed_endpoint: null,
+      pointed_endpoint_status: null,
+      pointed_endpoint_uploaded: 0,
+      pointed_endpoint_saved: 0,
+      endpoint_total_counter: 0,
+      endpoint_done_counter: 0,
+      tab: 'SYNC', // SYNC, CHANGE_SYNC_DATE
+      stage: 'BOOK',
+      endpoints: [],
+      connected: null,
+      retry: 0,
+      max_retry: 5,
+      total_uploaded: 0,
+      total_downloaded: 0,
+      template: {
+        pre: [
+          { title: 'Books', type: 'book', api: 'books', local: 'books', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Book Readers', type: 'books-i-read', api: 'book-readers', local: 'readers', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false }
+        ],
+        main: [
+          { title: 'Authors', type: 'default', api: 'authors', local: 'authors', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'Genres', type: 'default', api: 'book-genres', local: 'book-genres', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'Relations', type: 'default', api: 'book-relations', local: 'relations', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'TreadLine', type: 'default', api: 'admin-treadlines', local: 'admin-treadlines', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false }
+        ],
+        bookChildren: [
+          { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Chapters', api: 'book-chapters', local: 'chapters', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Items', api: 'book-items', local: 'items', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Locations', api: 'book-locations', local: 'locations', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Characters', api: 'book-characters', local: 'characters', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Relationships', api: 'book-relation-details', local: 'relation-details', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Scenes', api: 'book-scenes', local: 'scenes', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Chapter Versions', api: 'book-chapter-versions', local: 'chapter-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false },
+          { title: 'Scene Items', api: 'book-scene-items', local: 'scene-items', downloaded: null, packed: null, skip: false, done: false },
+          { title: 'Scene Locations', api: 'book-scene-locations', local: 'scene-locations', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Scene Characters', api: 'book-scene-characters', local: 'scene-characters', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false },
+          { title: 'Treadlines', api: 'user-treadlines', local: 'treadline', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+        ],
+        booksIReadChildren: [
+          { title: 'Book Genres', api: 'book-genre-collections', local: 'book-genre-collections', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Chapters', api: 'book-chapters', local: 'chapters', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Scenes', api: 'book-scenes', local: 'scenes', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Chapter Versions', api: 'book-chapter-versions', local: 'chapter-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false },
+          { title: 'Feedbacks', api: 'feedbacks', local: 'feedbacks', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Feedback Response', api: 'feedback-responses', local: 'feedback-responses', downloaded: null, packed: null, skip: false, error: [], chunkSize: 50, done: false },
+          { title: 'Scene Versions', api: 'book-scene-versions', local: 'scene-versions', downloaded: null, packed: null, skip: false, chunkSize: 3, done: false }
+        ],
+        postBook: [
+          { title: 'Author Personal Progress', type: 'default', api: 'author-personal-progress', local: 'author-personal-progress', downloaded: null, packed: null, skip: false, chunkSize: 40, done: false },
+          { title: 'Courses', type: 'default', api: 'courses', local: 'courses', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'Courses Taken', type: 'default', api: 'courses-taken', local: 'courses-taken', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'Packages', type: 'default', api: 'packages', local: 'packages', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'Package Courses', type: 'default', api: 'package-courses', local: 'package-courses', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'Lessons', type: 'default', api: 'lessons', local: 'lessons', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+          { title: 'Lesson Documents', type: 'default', api: 'lesson-documents', local: 'lesson-documents', downloaded: null, packed: null, skip: true, error: [], chunkSize: 50, done: false },
+
+          { title: 'Notes', api: 'notes', local: 'notes', downloaded: null, packed: null, skip: false, error: [], chunkSize: 25 }, // can only be added on books i read?
+          { title: 'Assignments', type: 'default', api: 'assignments', local: 'assignments', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Assignment Manuscripts', type: 'default', api: 'assignment-manuscripts', local: 'assignment-manuscripts', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Notifications', type: 'default', api: 'notifications', local: 'notifications', downloaded: null, packed: null, skip: false, chunkSize: 50, done: false },
+          { title: 'Webinars', type: 'default', api: 'webinars', local: 'webinars', downloaded: null, packed: null, skip: true, chunkSize: 50 },
+          { title: 'WebinarPresenters', type: 'default', api: 'webinar-presenters', local: 'webinar-presenters', downloaded: null, packed: null, skip: true, chunkSize: 50 },
+          { title: 'WebinarRegistrants', type: 'default', api: 'webinar-registrants', local: 'webinar-registrants', downloaded: null, packed: null, skip: true, chunkSize: 50 }
+        ]
+      }
+    }
+  },
+  computed: {
+    books: function () {
+      // this is fetched during login s
+      var authorUUID = this.$store.getters.getAuthorID
+      return this.$store.getters.getBooksByAuthor(authorUUID)
+    },
+    deleted_books: function () {
+      // this is fetched during login s
+      var authorUUID = this.$store.getters.getAuthorID
+      return this.$store.getters.getSyncableBooks(authorUUID)
+    },
+    books_i_read: function () {
+      // this is fetched during login
+      var authorUUID = this.$store.getters.getAuthorID
+      return this.$store.getters.getBooksIReadByAuthor(authorUUID)
+    },
+    main_endpoint: function () {
+      var scope = this
+      var endpoint = scope.endpoints[scope.endpoint_index]
+      return endpoint
+    },
+    main_progress: function () {
+      var scope = this
+      var progress = (scope.endpoint_done_counter / scope.endpoint_total_counter) * 100
+      return Math.ceil(progress)
+    }
+  },
+  watch: {
+    retry: function (val) {
+      var scope = this
+      if (val < scope.max_retry) {
+        return
+      }
+
+      scope.next()
+    },
+    endpoint_upload_request_done: function (val) {
+      var scope = this
+      if (val === null) {
+        return
+      }
+
+      if (val == scope.endpoint_upload_request_count) {
+        setTimeout(function () {
+          scope.fetchDataFromWeb(scope.pointed_endpoint)
+
+          // reset
+          scope.endpoint_upload_request_count = null
+          scope.endpoint_upload_request_done = null
+        }, 400)
+      }
+    },
+    endpoint_save_local_request_done: function (val) {
+      var scope = this
+      if (val === null) {
+        return
+      }
+
+      if (val == scope.endpoint_save_local_request_count) {
+        setTimeout(function () {
+          scope.next()
+
+          // reset
+          scope.endpoint_save_local_request_count = null
+          scope.endpoint_save_local_request_done = null
+        }, 400)
+      }
+    }
+  },
+  methods: {
+    onSyncDateChange: function (ctx) {
+      var scope = this
+      scope.synced_date = ctx.selectedYMD
+    },
+    updateSyncDate: function () {
+      var scope = this
+      scope.tab = 'SYNC'
+      scope.stage = 'BOOK'
+      scope.saveUserSyncedDate(scope.endpoint_sync_date)
+      // just add a delay to make sure some (or all) axios request is done before restarting
+      setTimeout(function () {
+        scope.initialize()
+      }, 5000)
+    },
+    showSyncDateForm: function () {
+      this.tab = 'CHANGE_SYNC_DATE'
+    },
+    showSyncProgress: function () {
+      this.tab = 'SYNC'
+    },
+    resetData: function () {
+      var scope = this
+      scope.endpoints = []
+      scope.endpoint_index = 0
+      scope.endpoint_upload_request_done = null
+      scope.endpoint_upload_request_count = null
+      scope.endpoint_save_local_request_done = null
+      scope.endpoint_save_local_request_count = null
+      scope.pointed_endpoint = null
+      scope.pointed_endpoint_status = null
+      scope.pointed_endpoint_uploaded = 0
+      scope.pointed_endpoint_saved = 0
+      scope.endpoint_total_counter = 0
+      scope.endpoint_done_counter = 0
+    },
+    initialize: function () {
+      var scope = this
+
+      scope.resetData()
+
+      scope.axios.get(window.APP.API.URL + '/user/connect')
+        .then(function () {
+          // set the books and books i read (template.pre) as the main endpoint first
+          /*
+          if (!scope.$store.getters.isAutoSync) {
+            scope.updateAppData()
+            scope.$store.commit('stopSync')
+            return
+          }
+          */
+
+          scope.ready = true
+
+          if (scope.stage == 'BOOK') {
+            scope.endpoints = JSON.parse(JSON.stringify(scope.template.pre))
+            scope.endpoint_total_counter = scope.template.pre.length
+            scope.start()
+          } else {
+            scope.endpoints = JSON.parse(JSON.stringify(scope.template.main))
+            scope.addBooksToMainEndpoint()
+            // scope.start() ===> this one will be executed after the addPostBookToMainEndpoint is executed
+          }
+        })
+        .catch(function (error) {
+          // handle error
+          scope.ready = false
+          scope.updateAppData()
+          scope.$store.commit('stopSync')
+          /*
+          setTimeout(function () {
+            scope.LOGTIME('START TIME (RESUME)')
+            scope.stage = 'BOOK'
+            scope.initialize()
+          }, 60000)
+          */
+        })
+        .finally(function () {
+          // always executed
+        })
+    },
+    updateAppData: async function () {
+      var scope = this
+
+      var userUUID = this.$store.getters.getUserID
+      var authorUUID = this.$store.getters.getAuthorID
+
+      await scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
+      await scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
+      await scope.$store.dispatch('loadAuthorPersonalProgress', {authorId: authorUUID})
+
+      scope.$root.$emit('loadCourses')
+      scope.$root.$emit('loadAssignment')
+      scope.$root.$emit('loadMessageCenter')
+
+      var books = scope.books
+      for (let i = 0; i < books.length; i++) {
+        var book = books[i]
+        book.is_synced = true
+      }
+      books = scope.books_i_read
+      for (let i = 0; i < books.length; i++) {
+        book = books[i]
+        book.is_synced = true
+      }
+    },
+    start: function () {
+      var scope = this
+      scope.endpoint_sync_date = (!scope.synced_date) ? '1970-01-01 00:00:00' : JSON.parse(JSON.stringify(scope.synced_date))
+      
+      // this is what we store on last synced_date, we will use this as base data for next syncng
+      scope.start_synced_date = moment().format('YYYY-MM-DD HH:mm:ss').toString()
+      //console.log('start', scope.endpoint_sync_date, scope.start_synced_date)
+
+      //console.log('########################################')
+      //console.log('START HERE: endpoint_sync_date',scope.endpoint_sync_date)
+      //console.log('START HERE: start_synced_date',scope.start_synced_date)
+      
+      var endpoint = scope.endpoints[scope.endpoint_index]
+      scope.processEndpoint(endpoint)
+    },
+    processEndpoint: function (endpoint) {
+      var scope = this
+
+      scope.pointed_endpoint = endpoint
+
+      if (scope.endpoint_index >= scope.endpoints.length) {
+        return
+      }
+
+      if (!endpoint || endpoint.skip) {
+        scope.fetchDataFromWeb(endpoint)
+        return
+      }
+
+      // we no longer process All books i read and books on main_endpoint since it was already synced at "PRE"
+      if (endpoint.is_book_single && endpoint.is_book_single == true) {
+        scope.next()
+        return
+      }
+
+      // if (endpoint.type === 'book' || endpoint.type === 'books-i-read') {
+      //   scope.saveDataToWeb(endpoint)
+      //   return
+      // }
+
+      scope.fetchDataFromApp(endpoint)
+    },
+    fetchDataFromApp: function (endpoint) {
+      var scope = this
+      var userID = scope.$store.getters.getUserID
+      var parent_uuid = (endpoint.book_uuid) ? endpoint.book_uuid : null
+      // var sync_date = scope.timeConvertToUTC(scope.endpoint_sync_date)
+      var sync_date = scope.endpoint_sync_date
+
+      scope.pointed_endpoint_status = 'Packing'
+      scope.axios.get('http://localhost:3000/' + endpoint.local + '/syncable', { params: {synced_at: sync_date, userID: userID, parent_uuid: parent_uuid } })
+        .then(function (response) {
+          endpoint.packed = (response.data) ? response.data : []
+          scope.saveDataToWeb(endpoint)
+          scope.retry = 0
+        })
+        .catch(function (error) {
+          setTimeout(function () {
+            scope.retry++
+            scope.fetchDataFromApp(endpoint)
+          }, 5000)
+        })
+    },
+    saveDataToWeb: function (endpoint) {
+      var scope = this
+
+      if (!endpoint.packed || endpoint.packed.length < 1) {
+        scope.fetchDataFromWeb(endpoint)
+        return
+      }
+
+      scope.pointed_endpoint_status = 'Uploading'
+      scope.pointed_endpoint_uploaded = 0
+      scope.total_uploaded += endpoint.packed.length
+
+      for (let i = 0; i < endpoint.packed.length; i++) {
+        var data = endpoint.packed[i]
+
+        data.created_at = scope.timeConvertToUTC(data.created_at)
+        data.updated_at = scope.timeConvertToUTC(data.updated_at)
+        // data.sync_version = scope.version
+
+        if (['Items', 'Characters', 'Locations'].indexOf(endpoint.title) > -1 && (data.picture || data.pictures)) {
+          var src = path.join(resourcePath, 'resources', 'images', endpoint.title.replace(/\s+/g, '-').toLowerCase(), (data.picture || data.pictures))
+          if (electronFs.existsSync(src)) {
+            console.log('local file found: ', src)
+            data.file = new Blob([electronFs.readFileSync(src)])
+          } else {
+            console.log('local file not found ==> ', src)
+          }
+        }
+      }
+
+      var URL = window.APP.API.URL + '/' + endpoint.api + '/v2'
+
+      var rows = endpoint.packed
+      var chunks = scope.CHUNK_ARRAY(rows, endpoint.chunkSize)
+
+      scope.$set(endpoint, 'chunks', [])
+      scope.$set(endpoint, 'uploaded', 0)
+
+      // use this to detect whether or not we move to fetchDataFromWeb
+      scope.endpoint_upload_request_count = chunks.length
+      scope.endpoint_upload_request_done = 0
+
+      for (let i = 0; i < chunks.length; i++) {
+        var chunk = chunks[i]
+        endpoint.chunks.push({
+          done: false,
+          rows: chunk
+        })
+
+        if (i > 0 && (i % 5) == 0) {
+          setTimeout(function () {
+            var _chunk = endpoint.chunks[i]
+            scope.upload(URL, _chunk, i)
+          }, 5000)
+        } else {
+          var _chunk = endpoint.chunks[i]
+          scope.upload(URL, _chunk, i)
+        }
+      }
+    },
+    upload: function (URL, chunk, index = 0) {
+      var scope = this
+      var headers = {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Authorization': 'Bearer ' + scope.api_token,
+        'X-Authorization': 'Bearer ' + scope.api_token,
+        'Content-Type': 'multipart/form-data '
+      }
+
+      var rows = chunk.rows
+
+      var FORMDATA = new FormData()
+
+      for (var x in rows) {
+        if (rows[x]) {
+          var row = rows[x]
+
+          FORMDATA.append(x, JSON.stringify(rows[x]))
+          // if data (object) contains "file" then UPLOAD
+          for (var i in row) {
+            if (i == 'file') {
+              FORMDATA.append('file_' + row['uuid'], row[i])
+            }
+          }
+        }
+      }
+
+      scope.axios.post(URL, FORMDATA, { 'headers': headers })
+        .then(function (response) {
+          chunk.done = true
+          scope.endpoint_upload_request_done++
+          scope.pointed_endpoint_uploaded += chunk.rows.length
+          // scope.upload_total += chunk.rows.length
+          scope.retry = 0
+        })
+        .catch(function (error) {
+          setTimeout(function () {
+            scope.retry++
+            scope.upload(URL, chunk, index)
+          }, 4000)
+        })
+        .finally(function () {
+
+        })
+    },
+    fetchDataFromWeb: function (endpoint) {
+      var scope = this
+
+      var sync_date = scope.timeConvertToUTC(scope.endpoint_sync_date)
+      var parent_uuid = (endpoint.book_uuid) ? endpoint.book_uuid : null
+
+      scope.pointed_endpoint_status = 'Fetching'
+      scope.axios.get(window.APP.API.URL + '/' + endpoint.api + '/v2',
+        {
+          params: {
+            synced_at: sync_date,
+            uuid: parent_uuid,
+            parent_uuid: parent_uuid
+          },
+          'headers': {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Authorization': 'Bearer ' + scope.api_token,
+            'X-Authorization': 'Bearer ' + scope.api_token
+          }
+        })
+        .then(function (response) {
+          endpoint.downloaded = (response.data) ? response.data.rows : []
+          scope.saveDownloadedFiles(endpoint, endpoint.downloaded)
+          scope.saveDataToApp(endpoint)
+          scope.retry = 0
+        })
+        .catch(function (error) {
+          setTimeout(function () {
+            scope.retry++
+            scope.fetchDataFromWeb(endpoint)
+          }, 5000)
+        })
+    },
+    saveDataToApp: function (endpoint) {
+      var scope = this
+
+      if (!endpoint.downloaded || endpoint.downloaded.length < 1) {
+        scope.next()
+        return
+      }
+
+      scope.pointed_endpoint_status = 'Saving'
+      scope.pointed_endpoint_saved = 0
+      scope.total_downloaded += endpoint.downloaded.length
+
+      for (let i = 0; i < endpoint.downloaded.length; i++) {
+        var data = endpoint.downloaded[i]
+        data.created_at = scope.timeConvertFromUTC(data.created_at)
+        data.updated_at = scope.timeConvertFromUTC(scope.start_synced_date, true)
+        // data.sync_version = scope.version scope.start_synced_date
+      }
+
+      var URL = 'http://localhost:3000/' + endpoint.local + '/sync'
+
+      var rows = endpoint.downloaded
+      var chunks = scope.CHUNK_ARRAY(rows, endpoint.chunkSize)
+
+      scope.$set(endpoint, 'chunks', [])
+      scope.$set(endpoint, 'uploadeda', 0)
+
+      // use this to detect whether or not we move to fetchDataFromWeb
+      scope.endpoint_save_local_request_count = chunks.length
+      scope.endpoint_save_local_request_done = 0
+
+      for (let i = 0; i < chunks.length; i++) {
+        var chunk = chunks[i]
+        endpoint.chunks.push({
+          done: false,
+          rows: chunk
+        })
+
+        if (i > 0 && (i % 5) == 0) {
+          setTimeout(function () {
+            var _chunk = endpoint.chunks[i]
+            scope.saveToLocalDB(URL, _chunk, i)
+          }, 5000)
+        } else {
+          var _chunk = endpoint.chunks[i]
+          scope.saveToLocalDB(URL, _chunk, i)
+        }
+      }
+    },
+    saveToLocalDB: function (URL, chunk, index = 0) {
+      var scope = this
+      var headers = {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Authorization': 'Bearer ' + scope.api_token,
+        'X-Authorization': 'Bearer ' + scope.api_token
+      }
+
+      var FORMDATA = chunk.rows
+      scope.axios.post(URL, FORMDATA)
+        .then(function (response) {
+          chunk.done = true
+          scope.endpoint_save_local_request_done++
+          scope.pointed_endpoint_saved += chunk.rows.length
+          // scope.upload_total += chunk.rows.length
+          scope.retry = 0
+        })
+        .catch(function (error) {
+          setTimeout(function () {
+            scope.retry++
+            scope.saveToLocalDB(URL, chunk, index)
+          }, 4000)
+        })
+        .finally(function () {
+
+        })
+    },
+    next: function () {
+      var scope = this
+      var main_endpoint = scope.main_endpoint
+
+      if (scope.stage == 'BOOK') {
+        scope.endpoint_index++
+        scope.endpoint_done_counter++
+        var endpoint = scope.endpoints[scope.endpoint_index]
+        scope.processEndpoint(endpoint)
+        scope.stage = 'BOOK-I-READ'
+        return
+      } else if (scope.stage == 'BOOK-I-READ') {
+        var userUUID = this.$store.getters.getUserID
+        var authorUUID = this.$store.getters.getAuthorID
+        scope.endpoint_done_counter++
+
+        // scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+        // scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+        if (scope.$store.getters.getSyncSource == 'initial') {
+          scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+          scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
+        } else {
+          scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
+          scope.$store.dispatch('loadBooksIReadByAuthor', {userUUID: userUUID, authorUUID: authorUUID, is_synced: true})
+        }
+
+        scope.stage = 'ALL'
+
+        setTimeout(function () {
+          scope.initialize()
+        }, 3000)
+
+        return
+      }
+
+      // books or others except book childrens e.g chapter, scenes
+      if (main_endpoint.children && main_endpoint.children.length > 0 && main_endpoint.child_index < main_endpoint.children.length) {
+        var child_index = main_endpoint.child_index
+
+        var endpoint = main_endpoint.children[child_index]
+        main_endpoint.child_index++
+
+        scope.processEndpoint(endpoint)
+      } else {
+        if (main_endpoint.type == 'book' && main_endpoint.children && main_endpoint.children.length > 0 && main_endpoint.child_index == main_endpoint.children.length) {
+          // dispatch
+          // console.log('MAIN ENDPOIRT', main_endpoint)
+          var books = (this.$store.getters.getAuthorID == main_endpoint.packed[0].author_id) ? scope.books : scope.books_i_read
+          for (let i = 0; i < books.length; i++) {
+            var book = books[i]
+            if (book.uuid == main_endpoint.packed[0].uuid) {
+              book.is_synced = true
+              break
+            }
+          }
+        }
+
+        scope.endpoint_index++
+
+        var endpoint = scope.endpoints[scope.endpoint_index]
+        scope.processEndpoint(endpoint)
+      }
+
+      scope.endpoint_done_counter++
+
+      // done processing all endpoints
+      if (scope.endpoint_index == scope.endpoints.length) {
+        scope.LOGTIME('END TIME', scope.endpoint_sync_date, scope.start_synced_date)
+        // DISPATCH POST
+        // eslint-disable-next-line camelcase
+        var last_sync_date = scope.start_synced_date
+        // eslint-disable-next-line camelcase
+        scope.synced_date = last_sync_date
+        scope.saveUserSyncedDate(last_sync_date)
+        scope.ready = false
+        scope.updateAppData()
+        scope.userSyncingLog();
+        scope.$store.commit('stopSync')
+        
+        scope.total_uploaded = 0
+        scope.total_downloaded = 0
+        // TODO: enable if the button is ready
+        // if (scope.$store.getters.isAutoSync) {
+        //   setTimeout(function () {
+        //     scope.LOGTIME('START TIME (RESUME)')
+        //     scope.stage = 'BOOK'
+        //     scope.minimized = true
+        //     scope.initialize()
+        //   }, 300000)
+        // }
+      }
+    },
+    minimize: function () {
+      this.minimized = true
+    },
+    maximize: function () {
+      this.minimized = false
+    },
+    timeConvertFromUTC: function (datetime, is_updated_at = false) {
+      if (datetime === null || datetime === 'undefined') { return null }
+
+      // Commented by Ismael: we dont need to convert the date we get from api cause it is coverted already from NORWAY to UTC so the date is already in UTC. The only thing we need to do is convert what we get to local
+      // var stillUtc = moment.utc(datetime).toDate()
+      var date = ''
+
+      // eslint-disable-next-line camelcase
+      if (is_updated_at) date = moment(datetime).subtract(1, 'second').format('YYYY-MM-DD HH:mm:ss')
+      else date = moment(datetime).local().format('YYYY-MM-DD HH:mm:ss')
+
+      return date
+    },
+    timeConvertToUTC: function (datetime) {
+      if (datetime === null || datetime === 'undefined') { return null }
+      return moment(datetime).utc().format('YYYY-MM-DD HH:mm:ss').toString()
+    },
+    addBooksToMainEndpoint: function () {
+      var scope = this
+      var rows = scope.books
+
+      for (let i = 0; i < rows.length; i++) {
+        var row = rows[i]
+
+        var children = JSON.parse(JSON.stringify(scope.template.bookChildren))
+        for (let x = 0; x < children.length; x++) {
+          var child = children[x]
+          scope.$set(child, 'book_uuid', row.uuid)
+        }
+
+        var packed = []
+        packed.push(row)
+        scope.endpoints.push({ title: row.title, is_book_single: true, type: 'book', api: 'books', local: 'books', downloaded: null, packed: packed, skip: false, error: [], chunkSize: 1, done: false, children: children, child_index: 0 })
+      }
+      scope.addBooksIReadToMainEndpoint()
+    },
+    addBooksIReadToMainEndpoint: function () {
+      var scope = this
+      var rows = scope.books_i_read
+
+      for (let i = 0; i < rows.length; i++) {
+        var row = rows[i]
+        var children = JSON.parse(JSON.stringify(scope.template.booksIReadChildren))
+        for (let x = 0; x < children.length; x++) {
+          var child = children[x]
+          scope.$set(child, 'book_uuid', row.uuid)
+        }
+
+        var packed = []
+        packed.push(row)
+        scope.endpoints.push({ title: row.title, is_book_single: true, type: 'book', api: 'books', local: 'books', downloaded: null, packed: packed, skip: false, error: [], chunkSize: 1, done: false, children: children, child_index: 0 })
+      }
+      scope.addPostBookMainEndpoint()
+    },
+    addPostBookMainEndpoint: function () {
+      var scope = this
+      var rows = scope.template.postBook
+
+      for (let i = 0; i < rows.length; i++) {
+        var row = rows[i]
+        scope.endpoints.push(row)
+      }
+
+      var count = 0
+      for (let i = 0; i < scope.endpoints.length; i++) {
+        var data = scope.endpoints[i]
+        count++
+        count += (data.children) ? data.children.length : 0
+      }
+
+      scope.endpoint_total_counter = count
+      scope.start()
+    },
+    saveUserSyncedDate: function (date = null) {
+      var scope = this
+      var userID = this.$store.getters.getUserID
+
+      scope.axios
+        .post('http://localhost:3000/users/synced', { uuid: userID, date: date})
+        .then(function (response) {
+          var data = response.data
+          scope.$store.commit('updateSyncedAt', {
+            syncedAt: data.synced_at
+          })
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error)
+        })
+        .finally(function () {
+          // always executed
+        })
+    },
+    saveDownloadedFiles: function (endpoint, rows) {
+      var scope = this
+      if (rows.length < 1) {
+        return
+      }
+      var endpoint = JSON.parse(JSON.stringify(endpoint))
+
+      if (['Items', 'Characters', 'Locations', 'Courses', 'Webinars', 'WebinarPresenters'].indexOf(endpoint.title) > -1) {
+        // console.log(endpoint.title + ' response.data.rows ---->\n', response.data.rows)
+        if (rows.length > 0) {
+          for (let i = 0; i < rows.length; i++) {
+            const row = rows[i]
+            let image = (row.picture || row.pictures || row.image)
+            const allowedExt = ['.png', '.jpg', '.jpeg']
+            let imageExt = (image) ? image.split('.').pop() : null
+
+            if (!(imageExt && (allowedExt.indexOf('.' + imageExt) > -1))) {
+              continue
+            }
+
+            // Added by mael this will create the directory if not exist
+            let dstDir = path.join(resourcePath, 'resources', 'images', endpoint.title.replace(/\s+/g, '-').toLowerCase())
+            fs.mkdirsSync(dstDir)
+
+            var folderName = window.APP.API.UPLOAD_URL + '/book-' + endpoint.title.toLowerCase()
+            if (['Webinars', 'Courses', 'WebinarPresenters'].indexOf(endpoint.title) > -1) {
+              folderName = window.APP.API.UPLOAD_URL + '/' + endpoint.title.toLowerCase()
+
+              image = image.replace('/uploads/' + endpoint.api + '/', '')
+              if (endpoint.title === 'Courses') {
+                folderName = window.APP.API.UPLOAD_URL + '/course-images'
+                image = image.replace('/uploads/course-images/', '')
+              }
+              // console.log(endpoint.api)
+              // console.log(image)
+            }
+
+            const src = folderName + '/' + image + ''
+            const dst = path.resolve(dstDir, image + '')
+            scope.donwloadFile({url: src, name: image}, dst)
+          }
+        }
+      } else if (['Assignment Manuscripts'].indexOf(endpoint.title) > -1) {
+        if (rows.length > 0) {
+          // eslint-disable-next-line no-redeclare
+          for (var i = 0; i < rows.length; i++) {
+            // eslint-disable-next-line no-redeclare
+            var row = rows[i]
+
+            if (row.is_file) {
+              const loc = '/uploads/assignment-manuscripts/' // file location from web TODO: refactor web saving of assignment ,dont include path
+              const filename = row.content.replace(loc, '') // file location from web TODO: refactor web saving of assignment ,dont include path
+              var src = window.APP.API.UPLOAD_URL + '/' + endpoint.title.replace(/\s+/g, '-').toLowerCase() + '/' + filename
+
+              var dst = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), row.content)
+              // Added by mael this will create the directory if not exist
+
+              // file location from web TODO: refactor web saving of assignment ,dont include path
+              let dstDir = path.join(resourcePath, 'resources', 'files', endpoint.title.replace(/\s+/g, '-').toLowerCase(), loc)
+              fs.mkdirsSync(dstDir)
+
+              fetch(src, {
+                method: 'GET'
+              })
+                .then(response => response.blob())
+                .then(blob => {
+                  var fileReader = new FileReader()
+                  fileReader.onload = function () {
+                    electronFs.writeFileSync(dst, Buffer.from(new Uint8Array(this.result)))
+                  }
+                  fileReader.readAsArrayBuffer(blob)
+                })
+            }
+          }
+        }
+      }
+    },
+    donwloadFile: function (src, dst) {
+      const download = function (uri, filename, callback) {
+        // eslint-disable-next-line handle-callback-err
+        request.head(uri, function () {
+          request(uri).pipe(electronFs.createWriteStream(filename)).on('close', callback)
+        })
+      }
+
+      download(src.url, dst, function () {
+        console.log('done donwloadig image: ' + src.name)
+      })
+    },
+    userSyncingLog: function () {
+      var scope = this
+
+      var URL = window.APP.API.URL + '/users/synced'
+      var headers = {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Authorization': 'Bearer ' + scope.api_token,
+        'X-Authorization': 'Bearer ' + scope.api_token,
+      }
+
+      scope.axios.post(URL, { uploaded: scope.total_uploaded, downloaded: scope.total_downloaded, version:  scope.version }, { 'headers': headers })
+        .then(function (response) {})
+        .catch(function (error) {
+          setTimeout(function () {
+            scope.userSyncingLog()
+          }, 4000)
+        })
+        .finally(function () {
+
+        })
+    }
+  },
+  mounted () {
+    const scope = this
+    scope.api_token = scope.$store.getters.getUserToken
+    scope.synced_date = scope.$store.getters.getUserSyncedDate
+    scope.initialize()
+    // scope.addBooksToEndpoint();
+  }
+}
+</script>
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+    .component-syncing-v2 { position:fixed; width:100%; height:100vh; z-index:9000; background:rgba(0,0,0,0.7); }
+    .component-syncing-v2-content { width:650px; height:250px; background:#fff; margin:0px auto; margin-top:calc(50vh - 225px); border-radius: 5px; }
+    .component-syncing-v2-header { padding:15px;  }
+    .component-syncing-v2-header h4 { font-size:16px; margin-bottom:0px; color:#333; font-weight:900;  }
+    .component-syncing-v2-actions { float:right; text-align:right; margin-top:-25px;  }
+    .component-syncing-v2-actions .btn-minimize { border:none;  background:transparent;  }
+
+    .component-syncing-v2-body { padding:50px 40px; text-align:center;  }
+
+    .component-syncing-v2-minimize { position:fixed; bottom:0px; left:0px; background:#007acc; padding:0px 20px; width:100%; height:25px; line-height:25px; color:#fff; text-align:right; z-index:9000; }
+    .component-syncing-v2-minimize span { padding-left:8px; }
+
+    .es-progress-bar { margin-top:-8px; margin-bottom:10px; position:relative; background:#ccc; border-radius:8px; height:15px;  }
+    .es-progress { position:absolute; top:0px; left:0px; border-radius:8px; height:15px; background:#43c853; width:0%; height:100%;  }
+    .es-progress-number { position:absolute; top:0px; left:calc(50% - 15px); color:#fff; z-index:5000; font-size:12px;  }
+    .es-progress.error { background:#ef3551;  }
+</style>

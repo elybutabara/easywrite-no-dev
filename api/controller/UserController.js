@@ -1,9 +1,9 @@
 'use strict'
 const path = require('path')
 const moment = require('moment')
-
+// const { app } = require('electron')
 // eslint-disable-next-line no-unused-vars
-const { Author, AuthorName, User, Book } = require(path.join(__dirname, '..', 'models'))
+const { Author, AuthorName, User, AppSetting } = require(path.join(__dirname, '..', 'models'))
 
 class UserController {
   static authenticate (username, password) {
@@ -17,12 +17,29 @@ class UserController {
   }
 
   static async save (row) {
+    // console.log(row)
+    var columns = {
+      id: row.id,
+      uuid: row.uuid,
+      username: row.username,
+      email: row.email,
+      role: row.role,
+      is_premium_user: row.is_premium_user,
+      active_state: row.active_state,
+      is_confirmed: row.is_confirmed,
+      confirm_token: row.confirm_token,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      token: row.token,
+      password: row.password
+    }
+
     var data = await User.query()
-      .patch(row)
+      .patch(columns)
       .where('uuid', '=', row.uuid)
 
     if (!data || data === 0) {
-      var user = await User.query().insert(row)
+      var user = await User.query().insert(columns)
       var author = await Author.query().insert(row.author)
 
       // console.log(user)
@@ -61,14 +78,20 @@ class UserController {
     return data
   }
 
-  static async saveSyncedDate (params) {
-    var data = await User.query()
-      .patch({synced_at: moment().add(5, 'seconds').format('YYYY-MM-DD HH:mm:ss').toString()})
+  static async saveSyncingSettings (params) {
+    let lastSyncedDate = (params.date) ? params.date : moment().add(5, 'seconds').format('YYYY-MM-DD HH:mm:ss').toString()
+    var columns = {synced_at: lastSyncedDate}
+
+    if (params.autosync !== undefined && params.autosync !== null) {
+      columns['autosync'] = params.autosync
+    }
+
+    await User.query()
+      .patch(columns)
       .where('uuid', '=', params.uuid)
 
-    data = await User.query().findById(params.uuid)
-
-    return data
+    let ret = await User.query().findById(params.uuid)
+    return ret
   }
 }
 

@@ -39,6 +39,10 @@ export default {
     },
     TOGGLE_BOOK: function (data, model) {
       var scope = this
+
+      // disable book if still syncing
+      if (model === 'book' && !data.is_synced) return
+
       scope.$store.dispatch('toggleBook', { model: model, data: data })
 
       if (model === 'book') {
@@ -62,6 +66,10 @@ export default {
     },
     TOGGLE_BOOK_I_READ: function (data, model) {
       var scope = this
+
+      // disable book if still syncing
+      if (model === 'book' && !data.is_synced) return
+
       // we use this to get the books id read of the current user
       var authorUUID = this.$store.getters.getAuthorID
       scope.$store.dispatch('toggleBookIRead', { model: model, data: data, author_id: authorUUID })
@@ -198,12 +206,12 @@ export default {
       // eslint-disable-next-line no-useless-escape
       var stripedHtml = content.replace(/<br\s*[\/]?>/gi, ' ')
       stripedHtml = stripedHtml.replace(/<[^>]+>/g, '') // Remove html tags
+      stripedHtml = stripedHtml.replace(/&nbsp;/g, ' ')// Remove &nbsp; //newly added - replace it with a space
       // stripedHtml = stripedHtml.replace(/[0-9]/gi, '') // Remove numbers
       stripedHtml = stripedHtml.replace(/\n/g, ' ') // exclude newline with a start spacings
       stripedHtml = stripedHtml.replace(/(^\s*)|(\s*$)/gi, '')// exclude  start and end white-space
       stripedHtml = stripedHtml.replace(/[ ]{2,}/gi, ' ')// 2 or more space to 1
       stripedHtml = stripedHtml.replace(/[^\w\s] [^\w\s] /gi, ' ') // Remove all special char
-
       return stripedHtml.split(' ').filter(function (str) { return str !== '' }).length
     },
     GET_AUTHOR_PERSONAL_PROGRESS: function (progress = 'all_time') {
@@ -296,6 +304,27 @@ export default {
       }
 
       return true
+    },
+    CHUNK_ARRAY: function (array, chunkSize) {
+      if (!array.length) {
+        return []
+      }
+      return array.reduce(function (previous, current) {
+        var chunk
+        if (previous.length === 0 ||
+                  previous[previous.length - 1].length === chunkSize) {
+          chunk = [] // 1
+          previous.push(chunk) // 2
+        } else {
+          chunk = previous[previous.length - 1] // 3
+        }
+        chunk.push(current) // 4
+        return previous // 5
+      }, [])
+    },
+    LOGTIME: function (label) {
+      var d = new Date() // for now
+      console.log(label + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds())
     },
     formatDate: function (date, format) {
       return moment(date).format(format)

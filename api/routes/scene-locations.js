@@ -31,7 +31,7 @@ router.post('/', async function (req, res) {
 })
 
 router.get('/syncable', async function (req, res) {
-  const rows = await SceneLocationController.getSyncable(req.query.userID)
+  const rows = await SceneLocationController.getSyncable(req)
 
   res
     .status(200)

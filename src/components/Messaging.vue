@@ -209,11 +209,21 @@ export default {
 
       if (window.AppMain && window.AppMain.setItemCount) {
         window.AppMain.setItemCount('Message', c)
+        window.AppMain.itemsCounts['messages'] = c
       }
 
       if (window.AppMessageCenterPopup && window.AppMessageCenterPopup.setItemCount) {
         window.AppMessageCenterPopup.setItemCount('Message', c)
+        window.AppMain.itemsCounts['messages'] = c
       }
+
+      if (window.AppNotification && window.AppNotification.setItemCount) {
+        window.AppNotification.setItemCount('Message', c)
+        window.AppMain.itemsCounts['messages'] = c
+      }
+
+      window.AppMain.itemsCounts['messages'] = c
+      window.AppMain.countNotificationItemTotal()
     },
     messageSeenBy: function (msg, i) {
       var members = this.currentGroup.members || []
@@ -279,18 +289,22 @@ export default {
     createGroupChat: function (e) {
       e.preventDefault()
       if (!this.socketConnected) {
+        alert('ss')
         return
       }
       if (this.userSelect.selected.length < 1) {
+        alert('bbb')
         return
       }
       if (this.userSelect.selected.length > 1) {
+        alert('ccc')
         if (this.userSelect.groupName === '') {
           return
         }
       } else {
         this.userSelect.groupName = ''
       }
+
       this.socket.emit('group create', {name: this.userSelect.groupName, members: this.userSelect.selected})
     },
     userSelectLimitText (count) {
@@ -331,7 +345,8 @@ export default {
 
       var port = 3040
 
-      var socket = socketIO('https://dev.kunohay.com:' + port)
+      // var socket = socketIO('https://dev.kunohay.com:' + port)
+      var socket = socketIO('https://chat.easywrite.no:3040')
       socket.on('connect', function () {
         scope.socket = socket
         scope.socketConnected = true

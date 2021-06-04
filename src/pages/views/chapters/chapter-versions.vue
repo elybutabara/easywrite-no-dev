@@ -34,8 +34,6 @@ export default {
         is_ready: false,
         data: null
       },
-      chapter: null,
-      versions: [],
       version: {
         id: null,
         uuid: null,
@@ -61,6 +59,12 @@ export default {
       if (this.versions.length > 1 && (typeof (this.defaultVersion) === 'undefined' || this.defaultVersion.id !== this.version.id)) {
         return true
       }
+    },
+    chapter: function () {
+      return this.$store.getters.findChapter(this.properties.chapter)
+    },
+    versions: function () {
+      return this.$store.getters.getChapterVersions(this.properties.chapter.uuid)
     }
   },
   methods: {
@@ -115,8 +119,6 @@ export default {
   },
   mounted () {
     var scope = this
-    scope.chapter = scope.properties.chapter
-    scope.versions = scope.$store.getters.getChapterVersions(scope.chapter.uuid)
 
     setTimeout(function () {
       scope.getLatestVersion()

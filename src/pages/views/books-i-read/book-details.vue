@@ -9,16 +9,16 @@
               <button class="es-button btn-sm white" @click="markAsFinished()">{{$t('MARK_AS_FINISHED')}}</button>
               <!-- <button class="es-button-white" @click="markAsCanceled()">{{$t('MARK_AS_CANCEL')}}</button> -->
               <button class="es-button btn-sm white" @click="toggleNotes()">{{$t('MY NOTES').toUpperCase()}}</button>
-              <a class="es-button btn-sm w-icon icon-left warning" href="#goToFeedbacks"><i class="las la-comments"></i> Feedbacks</a>
+              <a class="es-button btn-sm w-icon icon-left warning" href="#goToFeedbacks"><i class="las la-comments"></i> {{ $t('FEEDBACKS') }}</a>
             </div>
         </div>
         <div class="row-head">
           <div>
-            <small>{{ $tc('BY') }}: <strong>{{ properties.author.alias }}</strong></small>
-            <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>
+            <i class="las la-user-tag" style="font-size: 18px;"></i> <span class="book-author"><small><strong> {{ (properties.author.alias) ? properties.author.alias : $t('site.anonymous')+properties.id }} </strong></small></span>
+            <i class="las la-tags" style="font-size: 18px;"></i> <span class="book-genre" v-for="genre in properties.genre" :key="genre.uuid">{{ genre.name }}</span>
           </div>
           <div class="d-flex align-items-center">
-            <i class="las la-cog" style="font-size: 18px; margin-right: 4px;"></i><small> {{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
+            <i class="las la-clock" style="font-size: 18px; margin-right: 4px;"></i><small> {{ $t('DATE_MODIFIED') }}: {{ properties.created_at }}</small>
           </div>
         </div>
     </div>
@@ -242,6 +242,10 @@ export default {
 .book-genre { padding:3px 10px; font-size:12px; font-size:10px; font-family:'Crimson Roman Bold'; text-transform: uppercase; margin-right: 3px; }
 .book-genre:nth-child(odd) { background:#e1e7fe; color:#9098c5; }
 .book-genre:nth-child(even) { background:#feedda; color:#d6a67f; }
+
+.book-author { padding:3px 10px; font-size:12px; font-weight: bold; font-family:'Crimson Roman Bold'; text-transform: uppercase; margin-right: 3px; }
+.book-author { background:#e1e7fe; color: #727aa9; }
+.book-author { cursor: pointer; }
 
 .es-page-head {
   height: 110px;

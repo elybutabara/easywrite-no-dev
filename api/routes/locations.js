@@ -18,6 +18,22 @@ router.post('/', async function (req, res) {
     .json(location)
 })
 
+router.post('/:locationId/line-color', async function (req, res) {
+  const location = await LocationController.updateLineColor(req.params.locationId, req.body)
+
+  res
+    .status(200)
+    .json(location)
+})
+
+router.post('/:locationId/hide-storyline', async function (req, res) {
+  const location = await LocationController.hideStoryline(req.params.locationId, req.body)
+
+  res
+    .status(200)
+    .json(location)
+})
+
 router.delete('/:locationId', async function (req, res) {
   const location = await LocationController.delete(req.params.locationId)
 
@@ -27,7 +43,7 @@ router.delete('/:locationId', async function (req, res) {
 })
 
 router.get('/syncable', async function (req, res) {
-  const rows = await LocationController.getSyncable(req.query.userID)
+  const rows = await LocationController.getSyncable(req)
 
   res
     .status(200)

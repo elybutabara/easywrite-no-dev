@@ -140,7 +140,6 @@ export default {
             break
           }
         }
-        console.log('HERE ' + isHiddenIncluded)
 
         if (index > 0) {
           for (let x = (index - 1); x >= 0; x--) {
@@ -170,7 +169,6 @@ export default {
             break
           }
         }
-        console.log('HERE ' + isHiddenIncluded)
         if (index < rows.length) {
           for (let x = (index + 1); x < rows.length; x++) {
             let row = rows[x]
@@ -250,6 +248,14 @@ export default {
         }
       }
     },
+    updateChapterHidden (state, payload) {
+      let bookID = payload.book_id
+      for (var i = 0; i <= (state.chapters[bookID].rows.length - 1); i++) {
+        if (state.chapters[bookID].rows[i].id === payload.id) {
+          state.chapters[bookID].rows[i].hidden = payload.hidden
+        }
+      }
+    },
     removeChapterFromList (state, payload) {
       let bookID = payload.book_id
       for (var i = 0; i <= (state.chapters[bookID].rows.length - 1); i++) {
@@ -281,6 +287,12 @@ export default {
           state.chapters[bookUUID].rows.push({})
           Vue.set(state.chapters[bookUUID].rows, count, payload)
         }
+      }
+
+      // if there is no rows yet. 1st chapter of the book
+      if (state.chapters[bookUUID].rows === undefined || state.chapters[bookUUID].rows.length == 0) {
+        state.chapters[bookUUID].rows.push({})
+        Vue.set(state.chapters[bookUUID].rows, 0, payload)
       }
     },
     updateChapterVersionList (state, payload) {
@@ -363,6 +375,9 @@ export default {
     },
     sortChapters ({ commit, state }, payload) {
       commit('sortChapters', payload)
-    }
+    },
+    updateChapterHidden ({ commit, state }, payload) {
+      commit('updateChapterHidden', payload)
+    },
   }
 }

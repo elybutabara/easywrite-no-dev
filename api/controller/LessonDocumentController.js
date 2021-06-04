@@ -38,29 +38,36 @@ class LessonDocumentController {
     return lessonDocuments
   }
 
-  static async sync (row) {
-    let columns = {
-      uuid: row.uuid,
-      lesson_id: row.lesson_id,
-      title: row.title,
-      name: row.name,
-      document: row.document,
-      created_at: row.created_at,
-      updated_at: row.updated_at
-    }
-    var data = await LessonDocument.query()
-      .patch(columns)
-      .where('uuid', '=', row.uuid)
+  static async sync (datas) {
+    var rows = []
+    if (!Array.isArray(datas)) rows.push(datas)
+    else rows = datas
 
-    if (!data || data === 0) {
-      data = await LessonDocument.query().insert(columns)
-      // update uuid to match web
-      data = await LessonDocument.query()
-        .patch({ 'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at })
-        .where('uuid', '=', data.uuid)
+    for (let i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      let columns = {
+        uuid: row.uuid,
+        lesson_id: row.lesson_id,
+        title: row.title,
+        name: row.name,
+        document: row.document,
+        created_at: row.created_at,
+        updated_at: row.updated_at
+      }
+      var data = await LessonDocument.query()
+        .patch(columns)
+        .where('uuid', '=', row.uuid)
+
+      if (!data || data === 0) {
+        data = await LessonDocument.query().insert(columns)
+        // update uuid to match web
+        data = await LessonDocument.query()
+          .patch({'uuid': row.uuid, created_at: row.created_at, updated_at: row.updated_at})
+          .where('uuid', '=', data.uuid)
+      }
     }
 
-    return data
+    return true
   }
 }
 

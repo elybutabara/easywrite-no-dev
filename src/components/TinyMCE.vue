@@ -4,15 +4,17 @@
 
 <script>
 import tinymce from 'tinymce'
+import Vue from 'vue'
 const path = window.require('path')
 export default {
   name: 'TinyMCE',
   props: ['initValue', 'disabled', 'params'],
   data: function () {
     var scope = this
-    console.log('params........', scope.params)
+    // console.log('params........', scope.params)
     return {
       initConfig: {
+        content_css: path.resolve('src/assets/css/darkmode.css'),
         selector: 'input.tiny-area',
         language: 'custom_lang',
         min_height: 400,
@@ -24,7 +26,7 @@ export default {
           'table contextmenu directionality template paste textcolor print'// remove autoresize
         ],
         external_plugins: {
-          'wordcomment': 'file:///' + path.resolve('src/assets/js/tinymce/plugins/wordcomment/plugin.js')
+          // 'wordcomment': 'file:///' + path.resolve('src/assets/js/tinymce/plugins/wordcomment/plugin.js') // TODO: check what is the function of this
         },
         toolbar: [
           'undo | redo | fontselect | fontsizeselect | copy | cut | paste | bold | italic | underline | strikethrough | forecolor | backcolor | leftChev | rightChev | enDash | numlist | bullist | alignleft | aligncenter | alignright | alignjustify | removeformat | wordcomment | print | fullscreen | searchreplace'
@@ -108,8 +110,20 @@ export default {
             }
           })
 
+          var timer = null
+
           editor.on('keyup', function (e) {
-            window.jQuery('#' + this.id).val(editor.getContent()).click()
+            let thisId = this.id
+            console.log('timer', timer)
+            if (timer) {
+              clearTimeout(timer)
+            }
+
+            scope.emitTyped()
+
+            timer = setTimeout(function () {
+              window.jQuery('#' + thisId).val(editor.getContent()).click()
+            }, 2000)
           })
         }
       }
@@ -124,9 +138,9 @@ export default {
     darkmode: function () {
       var vm = this
       if (this.darkmode) {
-        tinymce.get(vm.$el.id).getBody().style.color = '#fff'
+        tinymce.get(vm.$el.id).getBody().style.color = '#fff !important'
       } else {
-        tinymce.get(vm.$el.id).getBody().style.color = '#000'
+        tinymce.get(vm.$el.id).getBody().style.color = '#000 !important'
       }
     }
   },
@@ -134,11 +148,20 @@ export default {
     initEditor: function () {
       var vm = this
 
-      if (this.darkmode) {
-        this.initConfig.content_style = 'body { color: #fff;  }'
-      } else {
-        this.initConfig.content_style = 'body { color: #000;  }'
+      // if (this.darkmode) {
+      //   this.initConfig.content_style = 'body { color: #fff; }'
+      // } else {
+      //   this.initConfig.content_style = 'body { color: #000; }'
+      // }
+
+      this.initConfig.content_style = this.darkmode ? 'body { color: #fff; }' : 'body { color: #000; }'
+      if (vm.params) {
+        if (vm.params.type == 'user_treadline') {
+          this.initConfig.content_style = 'body { color: #000; }'
+        }
       }
+
+      this.initConfig.valid_children = '+body[style]'
 
       tinymce.init(vm.initConfig)
 
@@ -149,6 +172,9 @@ export default {
     },
     emitToParent (event) {
       this.$emit('getEditorContent', this.$el.value)
+    },
+    emitTyped () {
+      this.$emit('typing', this.$el)
     }
   },
   updated: function () {
@@ -164,6 +190,19 @@ export default {
   mounted () {
     var vm = this
     vm.initEditor()
+
+    /*
+    if (this.darkmode) {
+      tinymce.get(vm.$el.id).getBody().style.color = '#fff !important'
+    } else {
+      tinymce.get(vm.$el.id).getBody().style.color = '#000 !important'
+    }
+    */
+
+    // tinymce.get(vm.$el.id).getBody().style.color = '#000'
+    // if ($('.page-main').hasClass('dark')) {
+    //   tinymce.get(vm.$el.id).getBody().style.color = '#fff'
+    // }
   }
 }
 </script>

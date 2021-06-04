@@ -106,7 +106,7 @@ export default {
       var authorID = scope.$store.getters.getAuthorID
       scope.axios.get('http://localhost:3000/notes/' + authorID)
         .then(function (response) {
-          console.log('notes', response.data)
+          console.log('notes all', response.data)
           scope.notes = response.data
         })
         .catch(function (error) {
@@ -145,7 +145,7 @@ export default {
         scope.CHANGE_COMPONENT({
           tabKey: 'scene-details-' + note.scene.uuid,
           tabComponent: 'books-i-read-scene-details',
-          tabData: { book: note.book, scene: note.scene, chapter: null },
+          tabData: { book: note.book, scene: note.scene, chapter: note.chapter },
           tabTitle: scope.$t('VIEW') + ' - ' + note.scene.title,
           newTab: true
         })

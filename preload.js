@@ -73,7 +73,14 @@ ipcRenderer.on('SET_MAIN_MENU', function (event, data) {
 
   // Icon cannot be seen in development but it can be seen in production
   titlebar = new customTitlebar.Titlebar({
-    backgroundColor: customTitlebar.Color.fromHex('#324553'),
+    /*
+    * default: #324553
+    * no-live: 324553
+    * se-live: 324553
+    * no-dev: ff4d4d
+    * se-dev: 97ff4d
+    * */
+    backgroundColor: customTitlebar.Color.fromHex('#ff4d4d'),
     icon: url.format(path.join(__dirname, '/assets', '/images', '/easywrite-new.ico')),
     menu: menu,
     maximizable: maximizable
@@ -87,7 +94,7 @@ ipcRenderer.on('SET_MAIN_MENU', function (event, data) {
   * */
   if( process.platform == 'darwin') {
     const menuRegion = document.getElementsByClassName('titlebar')
-    console.log(menuRegion)
+    // console.log(menuRegion)
     for (let i = 0; i < menuRegion.length; i++) {
       menuRegion[i].addEventListener('dblclick', function () {
         ipcRenderer.send('MAC_MENU_BEHAVIOR')

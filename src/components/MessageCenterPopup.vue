@@ -36,6 +36,7 @@
           <div v-if="items.length < 1" style="text-align: center; padding: 30px 0; opacity: 0.5;">
             Empty
           </div>
+
           <div v-for="model in items" v-bind:key="model.id" v-if="model != null" @click="updateNotificationStatus(model)"  style="padding: 10px; border-top: 1px solid #e3e6f0; clear: both;" v-bind:style="{backgroundColor: model.status!=0?'#fff':'rgb(177,226,239)'}">
             <!--INVITE AREA -->
             <div v-if="model.action == 'invite'" class="TnxGiv1ng  row ml-0 mr-0">
@@ -94,12 +95,13 @@
               <div class="col-md-2">
                 <div v-bind:style="{'background-image': 'url(images/avatars/icons8-source-code-100.png)','background-size':'cover'}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #c0c0c0;"></div>
               </div>
+
               <div class="col-md-10">
                 <div style="margin-left: 10px;">
                   <div><div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{ model.alias }}</div>
                     <div class="mt-2" style="font-size: 14px; line-height: 100%;">
                       {{ model.alias +' '+$t('site.commented-on-chapter')+' '+ model.chapter.title+'.'}}
-                      <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openChapterDetails(model, 'open-feedback'):openBookIReadChapterDetails(model, 'open-feedback')">
+                      <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openChapterDetails(model ):openBookIReadChapterDetails(model, 'open-feedback')">
                         {{ capitalizeFirstLetter($t('site.click-here')) }}
                       </a> {{ $t('site.to-view') }}
                     </div>
@@ -111,6 +113,33 @@
               </div>
               <div style="clear: both;"></div>
             </div>
+              <div v-else-if="model.type == 'chapter_inline_comment' && ['post','reply'].includes(model.action)" class="row ml-0 mr-0">
+                  <div class="col-md-2">
+                      <div v-bind:style="{'background-image': 'url(images/avatars/icons8-source-code-100.png)','background-size':'cover'}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #c0c0c0;"></div>
+                  </div>
+
+                  <div class="col-md-10">
+                      <div style="margin-left: 10px;">
+                          <div><div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{ model.alias }}</div>
+                              <div class="mt-2" style="font-size: 14px; line-height: 100%;">
+                                  <template v-if="model.action === 'post'">
+                                      {{ model.alias +' '+$t('site.commented-on')+' '+ model.chapter.title+'.'}}
+                                      <a href='javascript:void(0)' @click="openCommentDetails(model)">
+                                          {{ capitalizeFirstLetter($t('site.click-here')) }}
+                                      </a> {{ $t('site.to-view') }}
+                                  </template>
+                                  <template v-else="">
+                                      {{ model.alias +' '+$t('site.replied-to-your-comment')+' '+ model.chapter.title+'.'}}
+                                      <a href='javascript:void(0)' @click="openCommentDetails(model, 'books-i-read')">
+                                          {{ capitalizeFirstLetter($t('site.click-here')) }}
+                                      </a> {{ $t('site.to-view') }}
+                                  </template>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div style="clear: both;"></div>
+              </div>
             <div v-else-if="model.type == 'scene_comment' && model.action =='post'" class="row ml-0 mr-0">
               <div class="col-md-2">
                 <div v-bind:style="{'background-image': 'url(images/avatars/icons8-source-code-100.png)','background-size':'cover'}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #c0c0c0;"></div>
@@ -121,7 +150,7 @@
                     <div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{ model.alias }}</div>
                     <div class="mt-2" style="font-size: 14px; line-height: 100%;">
                       {{ model.alias +' '+$t('site.commented-on-scene')+' '+ model.scene.title+'.'}}
-                      <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openSceneDetails(model, 'open-feedback'):openBookIReadSceneDetails(model, 'open-feedback')">
+                      <a href='javascript:void(0)' @click="(model.to === model.book.author_id)?openSceneDetails(model):openBookIReadSceneDetails(model, 'open-feedback')">
                         {{ capitalizeFirstLetter($t('site.click-here')) }}
                       </a> {{ $t('site.to-view') }}
                     </div>
@@ -133,6 +162,33 @@
                 <div style="clear: both;"></div>
               </div>
             </div>
+              <div v-else-if="model.type == 'scene_inline_comment' && ['post','reply'].includes(model.action)" class="row ml-0 mr-0">
+                  <div class="col-md-2">
+                      <div v-bind:style="{'background-image': 'url(images/avatars/icons8-source-code-100.png)','background-size':'cover'}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #c0c0c0;"></div>
+                  </div>
+
+                  <div class="col-md-10">
+                      <div style="margin-left: 10px;">
+                          <div><div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{ model.alias }}</div>
+                              <div class="mt-2" style="font-size: 14px; line-height: 100%;">
+                                  <template v-if="model.action === 'post'">
+                                      {{ model.alias +' '+$t('site.commented-on')+' '+ model.scene.title+'.'}}
+                                      <a href='javascript:void(0)' @click="openCommentDetails(model, 'scene-my-books')">
+                                          {{ capitalizeFirstLetter($t('site.click-here')) }}
+                                      </a> {{ $t('site.to-view') }}
+                                  </template>
+                                  <template v-else="">
+                                      {{ model.alias +' '+$t('site.replied-to-your-comment')+' '+ model.scene.title+'.'}}
+                                      <a href='javascript:void(0)' @click="openCommentDetails(model, 'scene-books-i-read')">
+                                          {{ capitalizeFirstLetter($t('site.click-here')) }}
+                                      </a> {{ $t('site.to-view') }}
+                                  </template>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div style="clear: both;"></div>
+              </div>
             <div v-else-if="model.type == 'book' && model.action =='invitation'" class="row ml-0 mr-0">
               <div class="col-md-2">
                 <div v-bind:style="{'background-image': 'url(images/avatars/icons8-source-code-100.png)','background-size':'cover'}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #c0c0c0;"></div>
@@ -142,7 +198,7 @@
                   <div>
                     <div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{ model.alias }}</div>
                     <div class="mt-2" style="font-size: 14px; line-height: 100%;">
-                      {{ model.alias +' '+$tc('has been invited to read ')+' '+ model.book.title+'.'}}
+                      {{ model.alias +' '+$t('HAS_INVITED_YOU_TO_READ')+' '+ model.book.title+'.'}}
                       <a href='javascript:void(0)' @click="CHANGE_COMPONENT({
                                                 tabKey: 'invitations-tab',
                                                 tabComponent: 'invitations-tab',
@@ -194,21 +250,21 @@
                     <div v-if="model.action=='post'" class="mt-2" style="font-size: 14px; line-height: 100%;">
                       <!--SCENE FEEDBACK-->
                       <span v-if="model.parent_id && model.parent_name == 'scene' ">
-                                                {{ model.alias +' '+$t('site.has-left-a-feedback-on')+' '+ model.book.title +'-'+model.chapter.title+' ('+model.scene.title+' Scene).'}}
+                                                {{ model.alias +' '+$t('site.has-left-a-scene-feedback-on')+' '+ model.book.title +'-'+model.chapter.title+' ('+model.scene.title+' Scene).'}}
                                                 <a href='javascript:void(0)' @click="openSceneDetails(model, 'open-feedback')">
                                                     {{ capitalizeFirstLetter($t('site.click-here')) }}
                                                 </a> {{ $t('site.to-view')  }}
                                             </span>
                       <!--CHAPTER FEEDBACK-->
-                      <span v-else-if="model.chapter_id">
-                                                {{ model.alias +' '+$t('site.has-left-a-feedback-on')+' '+ model.book.title +'-'+model.chapter.title+'.'}}
+                        <span v-else-if="model.parent_id && model.parent_name == 'chapter' ">
+                                                {{ model.alias +' '+$t('site.has-left-a-chapter-feedback-on')+' '+ model.book.title +'-'+model.chapter.title+'.'}}
                                                 <a href='javascript:void(0)' @click="openChapterDetails(model, 'open-feedback')">
                                                     {{ capitalizeFirstLetter($t('site.click-here')) }}
                                                 </a> {{ $t('site.to-view')  }}
                                             </span>
                       <!--BOOK FEEDBACK-->
                       <span v-else>
-                                                {{ model.alias +' '+$t('site.has-left-a-feedback-on')+' '+ model.book.title+'.'}}
+                                                {{ model.alias +' '+$t('site.has-left-a-book-feedback-on')+' '+ model.book.title+'.'}}
                                                 <a href='javascript:void(0)' @click="openBookDetails(model)">
                                                     {{ capitalizeFirstLetter($t('site.click-here')) }}
                                                 </a> {{ $t('site.to-view') }}
@@ -504,12 +560,15 @@ export default {
         await scope.TOGGLE_BOOK_I_READ(model.book, 'chapters', scope.params.author.id)
 
         var openfeedback = (action == 'open-feedback')
-
+        const book = model.book
+        const chapter = model.chapter
+        delete model.book
+        delete model.chapter
         let config = {
-          tabKey: 'books-i-read-chapter-details-' + model.chapter.id,
+          tabKey: 'books-i-read-chapter-details-' + chapter.id,
           tabComponent: 'books-i-read-chapter-details',
-          tabData: {book: model.book, chapter: model.chapter, openfeedback: openfeedback},
-          tabTitle: scope.trans('site.to-view') + ' - ' + model.chapter.title
+          tabData: {book: book, chapter: chapter, openfeedback: openfeedback, notification: model},
+          tabTitle: scope.trans('site.to-view') + ' - ' + chapter.title
         }
         scope.CHANGE_COMPONENT(config)
         // TODO : open Book-i-read tree for the specific chapter
@@ -527,16 +586,77 @@ export default {
         // if(model.type =='feedback' && (model.action == 'post' || model.action == 'inlined')){
         //     openfeedback = true
         // }
-
+        const book = model.book
+        const chapter = model.chapter
+        delete model.book
+        delete model.chapter
         var openfeedback = (action == 'open-feedback')
         scope.CHANGE_COMPONENT({
-          tabKey: 'chapter-details-' + model.chapter.uuid,
+          tabKey: 'chapter-details-' + chapter.uuid,
           tabComponent: 'chapter-details',
-          tabData: {book: model.book, chapter: model.chapter, openfeedback: openfeedback},
-          tabTitle: ('VIEW') + ' - ' + model.chapter.title
+          tabData: {book: book, chapter: chapter, openfeedback: openfeedback, notification: model},
+          tabTitle: ('VIEW') + ' - ' + chapter.title
         })
       }
     },
+      async openCommentDetails(model, tab = 'my-books') {
+          const scope = this;
+          if (tab === 'my-books') {
+
+              scope.$store.dispatch('setActiveMainSideNavTab', 'my-books');
+              try {
+                  await scope.TOGGLE_BOOK(model.book, 'book')
+                  await scope.TOGGLE_BOOK(model.book,'chapters')
+
+              } finally {
+                  scope.CHANGE_COMPONENT({
+                      tabKey: 'chapter-details-' + model.chapter.uuid,
+                      tabComponent: 'chapter-details',
+                      tabData: { book: model.book, chapter: model.chapter, action: 'open-inline-comment', comment: model.comment},
+                      tabTitle: model.chapter.title
+                  })
+              }
+
+          }
+
+          if (tab === 'books-i-read'){
+              scope.$store.dispatch('setActiveMainSideNavTab', 'books-i-read');
+              try {
+                  await scope.TOGGLE_BOOK_I_READ(model.book, 'book')
+                  await scope.TOGGLE_BOOK_I_READ(model.book,'chapters')
+                  //scope.params.author.id
+              } finally {
+                  scope.CHANGE_COMPONENT({
+                      tabKey: 'chapter-details-' + model.chapter.uuid,
+                      tabComponent: 'books-i-read-chapter-details',
+                      tabData: { book: model.book, chapter: model.chapter, action: 'open-inline-comment', comment: model.comment},
+                      tabTitle: model.chapter.title
+                  })
+              }
+
+          }
+
+          if (tab === 'scene-my-books') {
+              try {
+                  await scope.TOGGLE_BOOK(model.book, 'book')
+                  await scope.TOGGLE_BOOK(model.book,'chapters')
+              } finally {
+
+                  // added delay to let the data set first before loading
+                  setTimeout(function(){
+                      scope.$store.dispatch('toggleChapter', model.chapter);
+
+                      scope.CHANGE_COMPONENT({
+                          tabKey: 'scene-details-' + model.scene.uuid,
+                          tabComponent: 'scene-details',
+                          tabData: { book: model.book, chapter: model.chapter , scene: model.scene,
+                              action: 'open-inline-comment', comment: model.comment},
+                          tabTitle: model.scene.title
+                      })
+                  }, 500);
+              }
+          }
+      },
     async openSceneDetails (model, action = '') {
       const scope = this
       scope.$store.dispatch('setActiveMainSideNavTab', 'my-books')
@@ -578,16 +698,19 @@ export default {
     fetch: async function () {
       const scope = this
       var authorUUID = this.$store.getters.getAuthorID
-
+      scope.allItems['notifications'] = []
+      scope.allItems['invitations'] = []
       /**
        * Get notifications | feedback and comments only
        */
-      console.log('authorUUID', authorUUID)
+      // console.log('authorUUID', authorUUID)
       await scope.axios
         .get('http://localhost:3000/notifications/' + authorUUID)
         .then(response => {
-          scope.allItems = response.data.data
-          // scope.allItems['notifications'] = response.data.data['notifications']
+          // console.log('response data', response.data.data)
+          scope.allItems['notifications'] = response.data.data.notifications
+            console.log("fetch notifications")
+            console.log(scope.allItems['notifications']);
         })
         .catch(error => {
           console.log('error', error)
@@ -672,9 +795,12 @@ export default {
       // send data to Main.vue
       scope.$parent.itemsCounts['notifications'] = scope.itemsCounts['notifications']
       scope.$parent.itemsCounts['invitations'] = scope.itemsCounts['invitations']
-
-      scope.$parent.itemsCounts['all'] = scope.itemsCounts['all']
-      scope.$parent.itemsCounts = scope.itemsCounts
+      
+      // did not incude this since it makes message count 0, only notification and invitation is needed here. all is recomputed in main
+      // scope.$parent.itemsCounts['all'] = scope.itemsCounts['all']
+      // console.log('messages form parent in message ceter', scope.$parent.itemsCounts['messages'])
+      // console.log('message center allllllllllllllllllllllllllllllll', scope.$parent.itemsCounts['all'])
+      // scope.$parent.itemsCounts = scope.itemsCounts
       scope.$parent.countNotificationItemTotal()
     },
     updateNotificationStatus (model) {
@@ -689,7 +815,7 @@ export default {
 
       scope.axios.post('http://localhost:3000/notifications/update-notification-status', params)
         .then(response => {
-          console.log('updateNotificationStatus response', response.data)
+          // console.log('updateNotificationStatus response', response.data)
           scope.items = response.data
           const itemType = 'notifications'
           scope.allItems[itemType] = response.data
@@ -750,9 +876,9 @@ export default {
     })
   },
   beforeDestroy: function () {
-    delete window.AppMessageCenterPopup
+    // delete window.AppMessageCenterPopup
 
-    console.log('window.AppMessageCenterPopup destroyed')
+    // console.log('window.AppMessageCenterPopup destroyed')
   },
   created () {
     const scope = this

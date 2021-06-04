@@ -1,4 +1,4 @@
-<template>
+a<template>
 <div>
     <div v-if="page.is_ready" class="es-page-main page-chapter-details">
         <div class="es-page-head-2 mb-0">
@@ -8,6 +8,7 @@
                 </div>
                 <div class="book-panel-right">
                   <button class="es-button btn-sm white" @click="toggleNotes()">{{$t('MY_NOTES').toUpperCase()}}</button>
+                    <!--<button class="es-button btn-sm white view-comments" v-if="commentbase_dom" @click="toggleComments()">{{('VIEW COMMENTS').toUpperCase()}}</button>-->
                   <a class="es-button btn-sm w-icon icon-left warning" @click="toggleFeedbacks()"><i class="las la-comments"></i> {{$t('FEEDBACKS')}}</a>
                 </div>
             </div>
@@ -33,20 +34,32 @@
               </div>
         </div>
         <div style="position:relative; padding-bottom:40px; overflow: hidden;">
+            <!--<CommentBasePanelv2 v-bind:class="{ 'show_comments' : show_comments }" v-if="commentbase_dom" :dom="commentbase_dom" :properties="{ book: book,
+            parent_name: 'chapter', parent_id: chapter.uuid, parent: chapter, selected_comment: selected_comment, is_reply: true }" ref="commentbasepanelv2"></CommentBasePanelv2>-->
           <Feedback v-bind:class="{ 'show_feedbacks' : show_feedbacks }" :properties="{ book: book, parent: chapter, parent_name: 'chapter', toggleType: true }"></Feedback>
           <Note v-if="show_notes" :properties="{ book: book, parent: chapter, parent_name: 'chapter' }"></Note>
+
+          <!-- footer previous & next -->
           <div style="border-top:1px solid #ccc; z-index:2000; background:#fff; height:50px; padding:0px 20px; line-height:50px; width:100%; position:absolute; bottom:0px; left:0px;">
-            <button v-if="prevChapter !== null" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + prevChapter.uuid, tabComponent: 'books-i-read-chapter-details',  tabData: { book: book, chapter: prevChapter }, tabTitle: $t('VIEW')+ ' - ' + prevChapter.title})" style="float:left; background:transparent; border:none;">
-              <i class="las la-angle-double-left"></i> {{ $t('PREV').toUpperCase() }}
-            </button>
-            <button v-if="nextChapter !== null" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + nextChapter.uuid, tabComponent: 'books-i-read-chapter-details',  tabData: { book: book, chapter: nextChapter }, tabTitle: $t('VIEW')+ ' - ' + nextChapter.title})" style="float:right; background:transparent; border:none;">
-              {{ $t('NEXT').toUpperCase() }} <i class="las la-angle-double-right"></i>
-            </button>
+
+              <button v-if="prevScene != null && prevType == 'chapter'" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + prevScene.id, tabComponent: 'books-i-read-chapter-details',  tabData: { book: book, chapter: prevScene }, tabTitle: 'VIEW' + ' - ' + prevScene.title})" style="float:left; background:transparent; border:none;">
+                  <i class="las la-angle-double-left"></i> {{ $t('PREV') }}
+              </button>
+              <button v-if="nextScene != null && nextType == 'chapter'" @click="CHANGE_COMPONENT({tabKey: 'chapter-details-' + nextScene.id, tabComponent: 'books-i-read-chapter-details',  tabData: { book: book, chapter: nextScene }, tabTitle: 'VIEW' + ' - ' + nextScene.title})" style="float:right; background:transparent; border:none;">
+                  {{ $t('NEXT') }} <i class="las la-angle-double-right"></i>
+              </button>
+
+              <button v-if="prevScene != null && prevType == 'scene'" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + prevScene.id, tabComponent: 'books-i-read-scene-details',  tabData: { book: book, scene: prevScene, chapter: previousChapter}, tabTitle: prevScene.title})" style="float:left; background:transparent; border:none;">
+                  <i class="las la-angle-double-left"></i> {{ $t('PREV') }}
+              </button>
+              <button v-if="nextScene != null && nextType == 'scene'" @click="CHANGE_COMPONENT({tabKey: 'scene-details-' + nextScene.id, tabComponent: 'books-i-read-scene-details',  tabData: { book: book, scene: nextScene, chapter: chapter}, tabTitle: nextScene.title})" style="float:right; background:transparent; border:none;">
+                  {{ $t('NEXT') }} <i class="las la-angle-double-right"></i>
+              </button>
+
           </div>
 
           <div v-if="tab.active === 'content'"  class="es-chapter-details-tab-content">
-              <div v-html="getChapterContent" class="description" v-bind:id="commentbase_id"></div>
-              <CommentBasePanel v-if="commentbase_dom" :dom="commentbase_dom" :params="commentbase_params"></CommentBasePanel>
+              <div v-html="chapter.content" class="description" v-bind:id="commentbase_id"></div>
           </div>
           <div v-if="tab.active === 'scenes'"  class="es-chapter-details-tab-content scene-listing">
               <books-i-read-chapter-scenes :properties="{ book: book, chapter: chapter }"></books-i-read-chapter-scenes>
@@ -65,8 +78,8 @@ import ChapterVersions from '@/pages/views/chapters/chapter-versions'
 import ChapterCompareVersions from '@/pages/views/chapters/chapter-compare-versions'
 import moment from 'moment'
 import Vue from 'vue'
-
-import CommentBasePanel from '../../../components/CommentBasePanel'
+import CommentBasePanelv2 from '../../../components/CommentBasePanelv2'
+// import CommentBasePanel from '../../../components/CommentBasePanel'
 
 // const {ipcRenderer} = window.require('electron')
 
@@ -74,9 +87,13 @@ export default {
   name: 'books-i-read-chapter-details',
   props: ['properties'],
   data: function () {
+    // eslint-disable-next-line no-unused-vars
     var scope = this
     return {
       show_feedbacks: false,
+        show_comments: false,
+        selected_comment: null,
+      notification: null,
       show_notes: false,
       chapter_version: {
         chapter_id: null,
@@ -95,16 +112,19 @@ export default {
       tempVersionDesc: '',
       commentbase_id: ('cm-' + Math.random()).replace('.', ''),
       commentbase_dom: null,
-      commentbase_params: {
-        onMounted: (vm) => {
-          scope.commentbase_vm = vm
-          vm.setAuthor(this.getAuthor)
-          vm.setCommentsJSON(this.comments)
-        },
-        onAddComment: function () {
-          scope.saveComments()
-        }
-      }
+      // commentbase_params: {
+      //   onMounted: (vm) => {
+      //     scope.commentbase_vm = vm
+      //     vm.setAuthor(this.getAuthor)
+      //     vm.setCommentsJSON(this.comments)
+      //   },
+      //   onAddComment: function () {
+      //     scope.saveComments()
+      //   }
+      // },
+      nextType: '',
+      prevType: '',
+      previousChapter: ''
     }
   },
   components: {
@@ -114,19 +134,20 @@ export default {
     'books-i-read-chapter-scenes': ChapterScenes,
     ChapterVersions,
     ChapterCompareVersions,
-    CommentBasePanel
+      CommentBasePanelv2
+    // CommentBasePanel
   },
   computed: {
-    getChapterContent: function () {
-      var scope = this
-      var chapterID = scope.page.data.chapter.uuid
-      return this.$store.getters.getChapterContent(chapterID)
-    },
-    comments: function () {
-      var scope = this
-      var chapterID = scope.page.data.chapter.uuid
-      return this.$store.getters.getChapterComments(chapterID)
-    },
+    // getChapterContent: function () {
+    //   var scope = this
+    //   var chapterID = scope.page.data.chapter.uuid
+    //   return this.$store.getters.getChapterContent(chapterID)
+    // },
+    // comments: function () {
+    //   var scope = this
+    //   var chapterID = scope.page.data.chapter.uuid
+    //   return this.$store.getters.getChapterComments(chapterID)
+    // },
     book: function () {
       return this.properties.book
     },
@@ -142,13 +163,57 @@ export default {
       var scope = this
       return scope.$store.getters.getAuthor
     },
-    prevChapter: function () {
+    prevScene: function () {
       let chapter = this.chapter
-      return this.$store.getters.getPrevChapter(chapter, false)
+      let scope = this
+      scope.previousChapter = this.$store.getters.getPrevChapter(chapter, false)
+
+      // check if there is prev chapter
+      if (scope.previousChapter != null) {
+        // if there is a previous chapter - load the scenes of the previous chapter
+        scope.$store.dispatch('loadScenesByChapter', scope.previousChapter.uuid)
+
+        // check if there is a scene -not including the hidden
+        let notHiddenRows = this.$store.getters.getScenesByChapter(scope.previousChapter.uuid)
+
+        for (var i = 0; i < notHiddenRows.length; i++) {
+          if (notHiddenRows[i].hidden) {
+            notHiddenRows.splice(i, 1)
+          }
+        }
+
+        if (notHiddenRows.length > 0) { // if previous chapter has scene - return scene
+          scope.prevType = 'scene'
+          return notHiddenRows[notHiddenRows.length - 1] // last scene
+        } else { // if no scene under chapter then return the next chapter
+          scope.prevType = 'chapter'
+          return this.$store.getters.getPrevChapter(chapter, false)
+        }
+      }
+      return null
     },
-    nextChapter: function () {
+    nextScene: function () {
       let chapter = this.chapter
-      return this.$store.getters.getNextChapter(chapter, false)
+      let scope = this
+
+      // check if there is a scene -not including the hidden
+      let notHiddenRows = this.$store.getters.getScenesByChapter(chapter.uuid)
+
+      console.log('not hiddden rows', notHiddenRows, chapter.uuid)
+
+      for (var i = 0; i < notHiddenRows.length; i++) {
+        if (notHiddenRows[i].hidden) {
+          notHiddenRows.splice(i, 1)
+        }
+      }
+
+      if (notHiddenRows.length > 0) { // if chapter has scene - return scene
+        scope.nextType = 'scene'
+        return notHiddenRows[0]
+      } else { // if no scene under chapter then return the next chapter
+        scope.nextType = 'chapter'
+        return this.$store.getters.getNextChapter(chapter, false)
+      }
     }
   },
   methods: {
@@ -162,63 +227,82 @@ export default {
       scope.tab.active = tab
 
       Vue.nextTick(function () {
-        if (tab === 'content') {
-          scope.commentbase_dom = document.getElementById(scope.commentbase_id)
-        } else {
-          scope.commentbase_dom = null
-        }
-      })
-    },
-    saveComments () {
-      var scope = this
-      var chapterID = scope.page.data.chapter.uuid
-
-      scope.chapter_version.chapter_id = chapterID
-      scope.chapter_version.uuid = this.$store.getters.getChapterVersionUUID(chapterID)
-      scope.chapter_version.change_description = scope.tempVersionDesc
-      scope.chapter_version.content = this.commentbase_vm.dom.innerHTML
-      scope.chapter_version.comments = this.commentbase_vm.getCommentsJSON()
-      scope.chapter_version.new_comment_json = this.commentbase_vm.getLastComment()
-      scope.chapter_version.new_comment_json.chapter_id = chapterID
-      scope.chapter_version.new_comment_json.chapter_title = scope.page.data.chapter.title
-      scope.chapter_version.new_comment_json = JSON.stringify(scope.chapter_version.new_comment_json)
-
-      /*
-      var data = Object.assign({}, scope.chapter_version, {
-        chapter_id: chapterID,
-        uuid: this.$store.getters.getChapterVersionUUID(chapterID),
-        change_description: scope.tempVersionDesc,
-        content: this.commentbase_vm.getContent(),
-        comments: this.commentbase_vm.getCommentsJSON()
-      })
-      */
-
-      scope.axios
-        .post('http://localhost:3000/chapter-versions/comment', scope.chapter_version)
-        .then(response => {
-          if (response.data) {
-            // TODO: Insert vuex code that will refresh the chapter version
-            scope.tab.active = 'content'
-            scope.$store.dispatch('loadVersionsByChapter', scope.page.data.chapter.uuid)
-            this.busy = false
-            /*
-            window.swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: this.$t('CHAPTER') + ' ' + this.$t('VERSION') + ' ' + this.$t('SUCCESSFULY_SAVED'),
-              showConfirmButton: false,
-              timer: 1500
-            }).then(() => {
-              scope.tab.active = 'content'
-            })s
-            */
+          if (tab === 'content') {
+            scope.commentbase_dom = document.getElementById(scope.commentbase_id)
+          } else {
+            scope.commentbase_dom = null
           }
-        })
+      })
     },
+    // saveComments () {
+    //   var scope = this
+    //   var chapterID = scope.page.data.chapter.uuid
+    //
+    //   scope.chapter_version.chapter_id = chapterID
+    //   scope.chapter_version.uuid = this.$store.getters.getChapterVersionUUID(chapterID)
+    //   scope.chapter_version.change_description = scope.tempVersionDesc
+    //   scope.chapter_version.content = this.commentbase_vm.dom.innerHTML
+    //   scope.chapter_version.comments = this.commentbase_vm.getCommentsJSON()
+    //   scope.chapter_version.new_comment_json = this.commentbase_vm.getLastComment()
+    //   scope.chapter_version.new_comment_json.chapter_id = chapterID
+    //   scope.chapter_version.new_comment_json.chapter_title = scope.page.data.chapter.title
+    //   scope.chapter_version.new_comment_json = JSON.stringify(scope.chapter_version.new_comment_json)
+    //
+    //   /*
+    //   var data = Object.assign({}, scope.chapter_version, {
+    //     chapter_id: chapterID,
+    //     uuid: this.$store.getters.getChapterVersionUUID(chapterID),
+    //     change_description: scope.tempVersionDesc,
+    //     content: this.commentbase_vm.getContent(),
+    //     comments: this.commentbase_vm.getCommentsJSON()
+    //   })
+    //   */
+    //
+    //   scope.axios
+    //     .post('http://localhost:3000/chapter-versions/comment', scope.chapter_version)
+    //     .then(response => {
+    //       if (response.data) {
+    //         // TODO: Insert vuex code that will refresh the chapter version
+    //         scope.tab.active = 'content'
+    //         scope.$store.dispatch('loadVersionsByChapter', scope.page.data.chapter.uuid)
+    //         this.busy = false
+    //         /*
+    //         window.swal.fire({
+    //           position: 'center',
+    //           icon: 'success',
+    //           title: this.$t('CHAPTER') + ' ' + this.$t('VERSION') + ' ' + this.$t('SUCCESSFULY_SAVED'),
+    //           showConfirmButton: false,
+    //           timer: 1500
+    //         }).then(() => {
+    //           scope.tab.active = 'content'
+    //         })s
+    //         */
+    //       }
+    //     })
+    // },
     toggleFeedbacks: function () {
       let scope = this
       scope.show_feedbacks = !scope.show_feedbacks
     },
+      toggleComments: function () {
+          let scope = this
+          if (scope.show_feedbacks) {
+              scope.show_feedbacks = !scope.show_feedbacks
+          }
+
+          if (scope.show_comments) {
+              document.getElementById('app').focus()
+          }
+
+          this.$refs.commentbasepanelv2.sub_comment_msg = '';
+          this.$refs.commentbasepanelv2.main_comment_id = null;
+          // close all sub_comments
+          $.each(this.$refs.commentbasepanelv2.comments, function(k, v) {
+              v.show_sub_comments = false;
+          });
+
+          scope.show_comments = !scope.show_comments
+      },
     toggleNotes: function () {
       let scope = this
       scope.show_notes = !scope.show_notes
@@ -233,7 +317,18 @@ export default {
     if (scope.properties.openfeedback) {
       scope.show_feedbacks = true
     }
+    if (scope.properties.notification) {
+      scope.notification = scope.properties.notification
+    }
 
+      if(scope.properties.action){
+          if (scope.properties.action.includes('open-inline-comment')) {
+              scope.show_comments = true
+              scope.selected_comment = scope.properties.comment;
+          }
+      }
+
+    console.log(scope.notification)
     scope.page.data = scope.properties
     scope.page.title = scope.properties.chapter.title
     // console.log('PROPERTIES')
@@ -242,6 +337,7 @@ export default {
     try {
       await scope.$store.dispatch('loadScenesByChapter', scope.properties.chapter.uuid)
       await scope.$store.dispatch('loadVersionsByChapter', scope.properties.chapter.uuid)
+      await scope.$store.dispatch('loadCommentsByChapter', scope.properties.chapter.uuid)
     } catch (ex) {
       console.log('Failed to load data')
     } finally {

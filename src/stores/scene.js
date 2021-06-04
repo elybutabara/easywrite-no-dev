@@ -13,6 +13,68 @@ export default {
     scene_history: {}
   },
   getters: {
+    getNextScene: state => (chapter, scene, isHiddenIncluded = true) => {
+      if (state.scenes.hasOwnProperty(scene.chapter_id)) {
+        let rows = state.scenes[scene.chapter_id].rows
+        var index = 0
+
+        for (var i = 0; i < rows.length; i++) {
+          let row = rows[i]
+          if (row.uuid === scene.uuid) {
+            index = i
+            break
+          }
+        }
+
+        if (index < rows.length) {
+          for (let x = (index + 1); x < rows.length; x++) {
+            let row = rows[x]
+            if (isHiddenIncluded) {
+              return row
+            } else if (!isHiddenIncluded && !row.hidden) {
+              return row
+            } else if (x <= 0) {
+              return null
+            }
+          }
+        } else {
+          return null
+        }
+      }
+
+      return null
+    },
+    getPrevScene: state => (scene, isHiddenIncluded = true) => {
+      if (state.scenes.hasOwnProperty(scene.chapter_id)) {
+        let rows = state.scenes[scene.chapter_id].rows
+        var index = 0
+
+        for (var i = 0; i < rows.length; i++) {
+          let row = rows[i]
+          if (row.uuid === scene.uuid) {
+            index = i
+            break
+          }
+        }
+
+        if (index > 0) {
+          for (let x = (index - 1); x >= 0; x--) {
+            let row = rows[x]
+            if (isHiddenIncluded) {
+              return row
+            } else if (!isHiddenIncluded && !row.hidden) {
+              return row
+            } else if (x <= 0) {
+              return null
+            }
+          }
+        } else {
+          return null
+        }
+      }
+
+      return null
+    },
     getScenesByBook: state => (bookUUID) => {
       if (state.scenes.hasOwnProperty(bookUUID)) {
         return state.scenes[bookUUID].rows
@@ -90,7 +152,6 @@ export default {
     },
     getTodayAuthorPersonalProgressForScene: state => (payload) => {
       let sceneUUID = payload.uuid
-
       if (state.scene_author_personal_progress[sceneUUID] !== 'undefined') {
         return state.scene_author_personal_progress[sceneUUID]
       }
@@ -115,6 +176,21 @@ export default {
       let otherScenes = payload.other_scenes
       Vue.set(state.scenes, bookID, { rows: [] })
       state.scenes[bookID] = { is_open: false, rows: otherScenes.data }
+    },
+    loadChapterScenesByBook (state, payload) {
+      let bookID = payload.book_id
+      let chapterScenes = payload.chapter_scenes
+      Vue.set(state.scenes, bookID, { rows: [] })
+      state.scenes[bookID] = { is_open: false, rows: chapterScenes.data }
+    },
+    updateSceneHidden (state, payload) {
+      let bookID = payload.book_id
+
+      for (var i = 0; i < state.scenes[bookID].rows.length; i++) {
+        if (state.scenes[bookID].rows[i].id === payload.id) {
+          state.scenes[bookID].rows[i].hidden = payload.hidden
+        }
+      }
     },
     loadScenesByChapter (state, payload) {
       let chapterUUID = payload.chapter_id
@@ -156,7 +232,7 @@ export default {
       let sceneID = payload.scene_id
       let authorPersonalProgress = payload.authorPersonalProgress
       Vue.set(state.scene_author_personal_progress, sceneID, {})
-      state.scene_author_personal_progress[sceneID] = authorPersonalProgress.data
+      state.scene_author_personal_progress[sceneID] = authorPersonalProgress
     },
     addSceneToList (state, payload) {
       let parentUUID = (payload.chapter_id !== null && payload.chapter_id !== '') ? payload.chapter_id : payload.book_id
@@ -267,6 +343,12 @@ export default {
           Vue.set(state.scenes[parentUUID].rows, count, payload)
         }
       }
+
+      // if there is no rows yet. 1st scene of the book
+      if (state.scenes[parentUUID].rows === undefined || state.scenes[parentUUID].rows.length == 0) {
+        state.scenes[parentUUID].rows.push({})
+        Vue.set(state.scenes[parentUUID].rows, 0, payload)
+      }
     },
     updateSceneVersionList (state, payload) {
       let sceneUUID = payload.book_scene_id
@@ -300,6 +382,11 @@ export default {
       let otherScenes = await axios.get('http://localhost:3000/books/' + bookID + '/scenes/other')
       commit('loadScenesByBook', { book_id: payload, other_scenes: otherScenes })
     },
+    async loadChapterScenesByBook ({ commit, state }, payload) {
+      let bookID = payload
+      let chapterScenes = await axios.get('http://localhost:3000/books/' + bookID + '/scenes')
+      commit('loadChapterScenesByBook', { book_id: payload, chapter_scenes: chapterScenes })
+    },
     async loadScenesByChapter ({ commit, state }, payload) {
       let chapterUUID = payload
       let scenes = await axios.get('http://localhost:3000/chapters/' + chapterUUID + '/scenes')
@@ -331,10 +418,10 @@ export default {
       commit('loadVersionsByScene', { scene: payload, versions: versions })
     },
     async loadTodayAuthorPersonalProgressForScene ({ commit, state, rootGetters }, payload) {
-      let sceneID = payload.scene_id
+      let sceneID = payload
       let authorID = rootGetters.getAuthorID
-      let authorPersonalProgress = await axios.get('http://localhost:3000/authors/' + authorID + '/scene/' + sceneID + '/personal-progress/today')
-      commit('loadTodayAuthorPersonalProgressForScene', { scene_id: payload, authorPersonalProgress: authorPersonalProgress })
+      let todayAuthorPersonalProgress = await axios.get('http://localhost:3000/authors/' + authorID + '/scene/' + sceneID + '/personal-progress/today')
+      commit('loadTodayAuthorPersonalProgressForScene', { scene_id: payload, authorPersonalProgress: todayAuthorPersonalProgress.data })
     },
     addSceneToList ({ commit, state }, payload) {
       commit('addSceneToList', payload)
@@ -374,6 +461,9 @@ export default {
     },
     updateSceneVersionList ({ commit, state }, payload) {
       commit('updateSceneVersionList', payload)
+    },
+    updateSceneHidden ({ commit, state }, payload) {
+      commit('updateSceneHidden', payload)
     }
   }
 }

@@ -12,8 +12,8 @@
                 </div>
             </div>
             <div class="book-panel-right">
-                <button v-if="properties != null" class="es-button btn-sm white" @click="saveBook()">{{$t('SAVE_CHANGES')}}</button>
-                <button v-else class="es-button btn-sm white" @click="saveBook()">{{$t('SAVE')}}</button>
+                <button :disabled="isCurrentlySaving" v-if="properties != null" class="es-button btn-sm white" @click="saveBook()">{{$t('SAVE_CHANGES')}}</button>
+                <button :disabled="isCurrentlySaving" v-else class="es-button btn-sm white" @click="saveBook()">{{$t('SAVE')}}</button>
             </div>
         </div>
     </div>
@@ -40,8 +40,8 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label>{{$t('ABOUT')}}: </label>
-                            <!-- <div class='import-doc-container'><button @click="getImport()">Import Docx</button></div> -->
-                            <button @click="getImport()">Import Docx</button>
+                            <!-- <div class='import-doc-container'><button @click="getImport()">{{ $t('IMPORT_DOCX') }}</button></div> -->
+                            <button @click="getImport()">{{ $t('IMPORT_DOCX') }}</button>
                             <tiny-editor :initValue="data.about" :params="tiny_editor_params" v-on:getEditorContent="setAboutValue" class="form-control" />
                         </div>
                     </div>
@@ -79,7 +79,8 @@ export default {
       },
       tempAbout: '',
       genre_collection: [],
-      genres: []
+      genres: [],
+      isCurrentlySaving: false
     }
   },
   components: {
@@ -126,8 +127,9 @@ export default {
           scope.genres = response.data
         })
     },
-    saveBook: function () {
+    saveBook: async function () {
       var scope = this
+      scope.isCurrentlySaving = true
       scope.data.about = scope.tempAbout
 
       scope.genre_collection.forEach(function (item, index) {
@@ -138,7 +140,7 @@ export default {
         }
       })
 
-      scope.axios
+      await scope.axios
         .post('http://localhost:3000/books', scope.data)
         .then(response => {
           if (response.data) {
@@ -155,7 +157,10 @@ export default {
               scope.$store.dispatch('loadBooksByAuthor', {userUUID: userUUID, authorUUID: authorUUID})
               */
               scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
-              scope.$store.dispatch('updateBookList', response.data)
+              let book = response.data
+              // This is to set the book already sync and it will not display loading icon
+              if (!book.is_synced) book.is_synced = true
+              scope.$store.dispatch('updateBookList', book)
               if (scope.data.id !== null) { // update book
                 scope.$store.dispatch('changeTabTitle', {
                   key: 'book-form-' + response.data.uuid,
@@ -177,6 +182,8 @@ export default {
             })
           }
         })
+
+      scope.isCurrentlySaving = false
     },
     loadBook: function () {
       var scope = this
@@ -214,11 +221,11 @@ export default {
       scope.$set(scope.data, 'uuid', scope.properties.uuid)
     }
   },
-  mounted () {
+  async mounted () {
     var scope = this
-    scope.getGenre()
+    await scope.getGenre()
     if (scope.data.id !== null) {
-      scope.loadBook()
+      await scope.loadBook()
     }
   }
 }

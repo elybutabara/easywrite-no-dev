@@ -39,7 +39,7 @@ router.delete('/:ID', async function (req, res) {
 })
 
 router.get('/syncable', async function (req, res) {
-  const rows = await FeedbackController.getSyncable(req.query.userID)
+  const rows = await FeedbackController.getSyncable(req)
 
   res
     .status(200)

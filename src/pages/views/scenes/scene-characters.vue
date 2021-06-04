@@ -95,7 +95,8 @@ export default {
         .post('http://localhost:3000/scene-characters', sceneCharacter)
         .then(response => {
           if (response.data) {
-            scope.$store.dispatch('addSceneCharacterToList', response.data)
+            // scope.$store.dispatch('addSceneCharacterToList', response.data)
+            scope.$store.dispatch('loadCharactersByScene', scope.scene)
           }
         })
     },

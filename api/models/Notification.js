@@ -26,6 +26,15 @@ class Notification extends BaseModel {
         to: 'authors.uuid'
       },
       softDelete: true
+    },
+    book: {
+      relation: BaseModel.BelongsToOneRelation,
+      modelClass: path.join(__dirname, 'Book'),
+      join: {
+        from: 'notifications.book_id',
+        to: 'books.uuid'
+      },
+      softDelete: true
     }
   }
 }

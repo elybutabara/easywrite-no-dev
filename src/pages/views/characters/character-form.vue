@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="book-panel-right">
-                <button v-if="!savingInProgress" class="es-button btn-sm white" @click="uploadImage()">{{ (data.id!=null) ? $t('SAVE_CHANGES') : $t('SAVE') }}</button>
+                <button :disabled="!allowSave" v-if="!savingInProgress" class="es-button btn-sm white" @click="uploadImage()"><b-spinner v-if="!allowSave" small label="Small Spinner" type="grow"></b-spinner>&nbsp;{{ (data.id!=null) ? $t('SAVE_CHANGES') : $t('SAVE') }}</button>
                 <button v-else class="es-button btn-sm white" disabled>{{ (data.id!=null) ? $t('SAVE_CHANGES') : $t('SAVE') }} <b-spinner small label="Small Spinner"></b-spinner></button>
             </div>
         </div>
@@ -93,13 +93,13 @@
                         <div class="form-group">
                             <b-tabs content-class="mt-3" active-nav-item-class="bg-dark text-white">
                                 <b-tab :title="$t('DESCRIPTION')" active>
-                                    <tiny-editor :initValue="data.description" v-on:getEditorContent="setDescription" class="form-control" />
+                                    <tiny-editor :initValue="data.description" v-on:getEditorContent="setDescription" v-on:typing="isTyping_" class="form-control" />
                                 </b-tab>
                                 <b-tab :title="$t('BIO')">
-                                    <tiny-editor :initValue="data.bio" v-on:getEditorContent="setBio" class="form-control" />
+                                    <tiny-editor :initValue="data.bio" v-on:getEditorContent="setBio" v-on:typing="isTyping_" class="form-control" />
                                 </b-tab>
                                 <b-tab :title="$t('GOALS')">
-                                    <tiny-editor :initValue="data.goals" v-on:getEditorContent="setGoals" class="form-control" />
+                                    <tiny-editor :initValue="data.goals" v-on:getEditorContent="setGoals" v-on:typing="isTyping_" class="form-control" />
                                 </b-tab>
                             </b-tabs>
                         </div>
@@ -133,7 +133,8 @@ export default {
         description: '',
         bio: '',
         goals: '',
-        birthdate: ''
+        birthdate: '',
+        file_changed: false
       },
       picture_src: false,
       file: '',
@@ -147,7 +148,8 @@ export default {
           message: null
         }
       },
-      savingInProgress: false
+      savingInProgress: false,
+      allowSave: true
     }
   },
   components: {
@@ -166,18 +168,21 @@ export default {
     setDescription (value) {
       var scope = this
       scope.tempDescription = value
+      scope.allowSave = true
 
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
     },
     setBio (value) {
       var scope = this
       scope.tempBio = value
+      scope.allowSave = true
 
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
     },
     setGoals (value) {
       var scope = this
       scope.tempGoals = value
+      scope.allowSave = true
 
       scope.MARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
     },
@@ -215,6 +220,7 @@ export default {
           image.setAttribute('width', '100%')
           scope.picture_src = image.src
           // window.$('.uploaded-file-preview').html(image)
+          scope.data.file_changed = true
         }
         reader.readAsDataURL(scope.file)
       }
@@ -306,10 +312,12 @@ export default {
               scope.$set(scope.data, 'id', response.data.id)
               scope.$set(scope.data, 'uuid', response.data.uuid)
               scope.$set(scope.data, 'updated_at', response.data.updated_at)
-              scope.$store.dispatch('updateCharacterList', response.data)
+              // scope.$store.dispatch('updateCharacterList', response.data)
+              scope.$store.dispatch('loadCharactersByBook', scope.data.book_id)
 
               scope.UNMARK_TAB_AS_MODIFIED(scope.$store.getters.getActiveTab)
               scope.savingInProgress = false
+              scope.data.file_changed = false
             }).catch(function () {
               scope.savingInProgress = false
               scope.$notify({
@@ -346,7 +354,11 @@ export default {
       } else {
         scope.picture_src = false
       }
-    }
+    },
+    isTyping_ (data) { //this is needed since there is a delay in tinymce v-on:click - delay on getting the tinymce content. if removed, saving answer might be empty
+        let scope = this
+        scope.allowSave = false
+    },
   },
   beforeMount () {
     var scope = this

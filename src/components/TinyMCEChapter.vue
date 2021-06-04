@@ -4,7 +4,11 @@
 
 <script>
 import tinymce from 'tinymce'
+import Vue from 'vue'
+
 const path = window.require('path')
+
+console.log(path.resolve('src/assets/css/darkmode.css'))
 export default {
   name: 'TinyMCE',
   props: ['initValue', 'disabled', 'params', 'chapterData'],
@@ -13,6 +17,7 @@ export default {
     return {
       save_to_scene: false,
       initConfig: {
+        content_css: path.resolve('src/assets/css/darkmode.css'),
         selector: 'input.tiny-area',
         language: 'custom_lang',
         min_height: 400,
@@ -24,7 +29,7 @@ export default {
           'table contextmenu directionality template paste textcolor print'// remove autoresize
         ],
         external_plugins: {
-          'wordcomment': 'file:///' + path.resolve('src/assets/js/tinymce/plugins/wordcomment/plugin.js')
+          // 'wordcomment': 'file:///' + path.resolve('src/assets/js/tinymce/plugins/wordcomment/plugin.js') // TODO: check what is the function of this
         },
         toolbar: [
           'undo | redo | fontselect | fontsizeselect | copy | cut | paste | bold | italic | underline | strikethrough | forecolor | backcolor | leftChev | rightChev | enDash | numlist | bullist | alignleft | aligncenter | alignright | alignjustify | removeformat | wordcomment | print | fullscreen | searchreplace |saveToScene'
@@ -127,8 +132,18 @@ export default {
             }
           })
 
+          var timer = null
+
           editor.on('keyup', function (e) {
-            window.jQuery('#' + this.id).val(editor.getContent()).click()
+            // let thisId = this.id
+            console.log('timer', timer)
+            if (timer) {
+              clearTimeout(timer)
+            }
+
+            timer = setTimeout(function () {
+              scope.emitToParent(editor.getContent())
+            }, 200)
           })
         }
       }
@@ -157,11 +172,13 @@ export default {
     initEditor: function () {
       var vm = this
 
-      if (this.darkmode) {
-        this.initConfig.content_style = 'body { color: #fff;  }'
-      } else {
-        this.initConfig.content_style = 'body { color: #000;  }'
-      }
+      // if (this.darkmode) {
+      //   this.initConfig.content_style = 'body { color: #fff;  }'
+      // } else {
+      //   this.initConfig.content_style = 'body { color: #000;  }'
+      // }
+
+      this.initConfig.valid_children = '+body[style]'
 
       tinymce.init(vm.initConfig)
 
@@ -170,8 +187,16 @@ export default {
         editor.setContent(vm.$attrs.value)
       }
     },
-    emitToParent (event) {
-      this.$emit('getEditorContent', this.$el.value)
+    emitToParent (value) {
+      this.$emit('getEditorContent', value)
+      /*
+      if (value) {
+        this.$emit('getEditorContent', value)
+      } else {
+        console.log('emitToParent content', this.$el.value)
+        this.$emit('getEditorContent', this.$el.value)
+      }
+      */
     },
     showSaveToScene (content) {
       this.$emit('showOverlay', content)
@@ -191,6 +216,23 @@ export default {
     var vm = this
     vm.initEditor()
     console.log('tinyMCECHapter-uid' + this._uid)
+    /**
+    setTimeout(() => {
+      $('.page-main.dark .tox .tox-edit-area__iframe #tinymce').css('color', '#fff')
+      tinymce.get(vm.$el.id).getBody().style.color = '#fff'
+      console.log('test1')
+    },3000)
+
+    Vue.nextTick(() => {
+      $('.page-main.dark .tox .tox-edit-area__iframe #tinymce').css('color', '#fff')
+      tinymce.get(vm.$el.id).getBody().style.color = '#fff'
+      console.log('test2')
+    })
+    */
+    tinymce.get(vm.$el.id).getBody().style.color = '#000'
+    if ($('.page-main').hasClass('dark')) {
+      tinymce.get(vm.$el.id).getBody().style.color = '#fff'
+    }
   }
 }
 </script>

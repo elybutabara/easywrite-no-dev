@@ -15,7 +15,7 @@ router.post('/', async function (req, res) {
 })
 
 router.get('/syncable', async function (req, res) {
-  const rows = await ChapterVersionController.getSyncable(req.query.userID)
+  const rows = await ChapterVersionController.getSyncable(req)
 
   res
     .status(200)

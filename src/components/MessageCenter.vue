@@ -12,6 +12,7 @@
                     </div>
                 </b-form>
             </div>
+
             <div style="padding: 0 20px;border-bottom: 1px solid rgba(0,0,0,.125);">
                 <a class="actionLink" v-bind:class="{ 'activeTab': (itemType=='all')}" id="allMessageCenter" href="#" v-on:click.prevent="setItem(defaultType)">
                     {{ trans("site.all") }}
@@ -142,7 +143,7 @@
                                     <div>
                                         <div style="font-size: 12px; font-weight: bold; line-height: 100%;">{{ model.alias }}</div>
                                         <div class="mt-2" style="font-size: 14px; line-height: 100%;">
-                                            {{ model.alias +' '+$tc('has been invited to read ')+' '+ model.book.title+'.'}}
+                                            {{ model.alias +' '+$t('HAS_INVITED_YOU_TO_READ')+' '+ model.book.title+'.'}}
                                             <a href='javascript:void(0)' @click="CHANGE_COMPONENT({
                                                 tabKey: 'invitations-tab',
                                                 tabComponent: 'invitations-tab',
