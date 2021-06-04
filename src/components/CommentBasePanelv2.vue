@@ -244,7 +244,8 @@ export default {
       this.comment_end_point = comment.end_point
 
       var el = scope.dom
-      var str = window.$('#' + el.id).html() // old code is using .text()
+      var str = window.$('#' + el.id).text()
+      //var str = window.$('#' + el.id).html() // old code is using .text()
 
       var span = document.createElement('span')
       span.id = 'cm-' + comment.uuid
@@ -253,12 +254,13 @@ export default {
       span.setAttribute('data-comments-id', 'cm-' + comment.uuid)
 
       span.append(str.substr(comment.start_point, comment.end_point - comment.start_point))
-      //span.append(str.substr(comment.start_point, comment.end_point - comment.start_point + 1))
+      //span.append(str.substr(comment.start_point, comment.end_point - comment.start_point + 1)) - old code
 
       str = str.substr(0, comment.start_point) + span.outerHTML + str.substr(comment.end_point)
-      //str = str.substr(0, comment.start_point) + span.outerHTML + str.substr(comment.end_point + 1)
+      //str = str.substr(0, comment.start_point) + span.outerHTML + str.substr(comment.end_point + 1) - old code
         el.style="white-space: break-spaces;";
-      scope.dom.innerHTML = str.replace(/&lt;/g, "<").replace(/&gt;/g, ">"); // old don't have replace
+      scope.dom.innerHTML = str;
+      //scope.dom.innerHTML = str.replace(/&lt;/g, "<").replace(/&gt;/g, ">"); // old don't have replace
     },
     highlightText () {
       console.log(this.comment)
@@ -292,9 +294,9 @@ export default {
       let num = 0
       for (let i = 0; i < index; i++) {
           // check if node is text type then count the text, if not then the outerHTML length of the element
-          num += nodes[i].nodeType === 3 ? nodes[i].textContent.length : nodes[i].outerHTML.length
+          //num += nodes[i].nodeType === 3 ? nodes[i].textContent.length : nodes[i].outerHTML.length
           // old code, which do not include the html tags on the count
-          //num += nodes[i].textContent.length
+          num += nodes[i].textContent.length
       }
       return num + offset
     },
@@ -486,6 +488,16 @@ export default {
     scope.loadComments()
       console.log('comments', scope.comments)
     scope.page.is_ready = true
+
+      if (scope.properties.selected_comment) {
+          scope.highlightContentText(scope.properties.selected_comment);
+
+          if (scope.properties.is_reply) {
+              let index = scope.comments.findIndex(listedComment => listedComment.uuid === scope.properties.selected_comment.uuid);
+              scope.comments[index].show_sub_comments = true;
+              scope.main_comment_id = scope.comments[index].uuid;
+          }
+      }
 
   }
 }

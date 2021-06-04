@@ -321,6 +321,13 @@ export default {
       scope.notification = scope.properties.notification
     }
 
+      if(scope.properties.action){
+          if (scope.properties.action.includes('open-inline-comment')) {
+              scope.show_comments = true
+              scope.selected_comment = scope.properties.comment;
+          }
+      }
+
     console.log(scope.notification)
     scope.page.data = scope.properties
     scope.page.title = scope.properties.chapter.title

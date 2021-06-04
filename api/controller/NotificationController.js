@@ -3,6 +3,7 @@
 const path = require('path')
 const moment = require('moment')
 const { User, Notification, Book, Author, Chapter, Scene } = require(path.join(__dirname, '..', 'models'))
+const { CommentController } = require(path.join(__dirname, 'CommentController'));
 
 class NotificationController {
   static async getAll (authorUuid) {
@@ -26,7 +27,8 @@ class NotificationController {
      * QUERY HERE | Get notifications | feedback and comments only
      */
 
-    const notificationType = ['feedback', 'chapter_comment', 'scene_comment']
+    const notificationType = ['feedback', 'chapter_comment', 'scene_comment', 'chapter_inline_comment',
+        'scene_inline_comment']
     var notification = await Notification.query()
       .where(`to`, authorUuid)
       .whereIn('type', notificationType)
@@ -37,7 +39,7 @@ class NotificationController {
       // get sender
       const from = await Author.query()
         .findById(notification[i].from)
-      const alias = from ? from.alias : 'Anonymous'
+      const alias = from && from.alias ? from.alias : 'Anonymous'
 
       notification[i].alias = alias
 
@@ -86,7 +88,24 @@ class NotificationController {
         notification[i].author = from ? from[0] : null
 
         if (!chapter) return null
-      } else if (notification[i].type === 'scene_comment' && notification[i].action == 'post') {
+      } else if (notification[i].type === 'chapter_inline_comment'
+          && (notification[i].action === 'post' || notification[i].action === 'reply')) {
+
+          const comment = await CommentController.getByCommentUUID(notification[i].parent_id);
+          const chapter = await Chapter.query()
+              .withGraphJoined('chapter_version')
+              .modifyGraph('chapter_version', builder => {
+                  builder.whereNull('deleted_at')
+                  builder.orderBy('created_at')
+              })
+              .where('book_chapters.uuid', comment.parent_id)
+
+          notification[i].chapter = chapter ? chapter[0] : null;
+          notification[i].author = from ? from[0] : null;
+          notification[i].comment = !comment.comment_id ? comment
+              : await CommentController.getByCommentUUID(comment.comment_id);
+
+      }  else if (notification[i].type === 'scene_comment' && notification[i].action == 'post') {
         const scene = await Scene.query()
           .withGraphJoined('chapter')
           .modifyGraph('chapter', builder => {
@@ -100,6 +119,24 @@ class NotificationController {
         notification[i].author = from ? from[0] : null
 
         if (!scene) return null
+      } else if (notification[i].type === 'scene_inline_comment'
+          && (notification[i].action === 'post' || notification[i].action === 'reply')) {
+
+          const comment = await CommentController.getByCommentUUID(notification[i].parent_id);
+          const scene = await Scene.query()
+              .withGraphJoined('chapter')
+              .modifyGraph('chapter', builder => {
+                  builder.whereNull('deleted_at')
+              })
+              .whereNull('book_scenes.deleted_at')
+              .where('book_scenes.uuid', comment.parent_id)
+
+          notification[i].scene = scene ? scene[0] : null;
+          notification[i].chapter = scene[0] ? scene[0].chapter : null;
+          notification[i].author = from ? from[0] : null;
+          notification[i].comment = !comment.comment_id ? comment
+              : await CommentController.getByCommentUUID(comment.comment_id);
+
       } else {
         notification[i].author = from ? from[0] : null
       }
@@ -116,7 +153,8 @@ class NotificationController {
         return (
           ((model.parent_name == null || model.parent_name == 'book' || model.parent_name == 'book_reader_invitations') && model.book != null) ||
           (model.parent_name == 'chapter' && model.chapter != null && model.chapter != undefined && model.book != null) ||
-          (model.parent_name == 'scene' && model.scene != null && model.scene != undefined && model.chapter != null && model.chapter != undefined && model.book != null)
+          (model.parent_name == 'scene' && model.scene != null && model.scene != undefined && model.chapter != null && model.chapter != undefined && model.book != null) ||
+            (model.parent_name == 'comment')
         )
       })
     }

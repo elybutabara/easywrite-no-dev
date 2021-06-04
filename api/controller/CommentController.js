@@ -2,7 +2,7 @@
 const path = require('path')
 const moment = require('moment')
 
-const { Comment, Scene, Chapter } = require(path.join(__dirname, '..', 'models'))
+const { Comment, Scene, Chapter, Notification } = require(path.join(__dirname, '..', 'models'))
 
 class CommentController {
 
@@ -41,12 +41,50 @@ class CommentController {
 
         let commentUUID = saveComment.uuid;
 
+        if (!data.id) {
+            let parentTableQuery = data.parent === 'scene' ? Scene.query() : Chapter.query();
+            const parentTable = await parentTableQuery.findById(data.parent_id).withGraphJoined('book', { maxBatchSize: 1 });
+            const book = parentTable.book;
+
+            let to = '';
+            let action = '';
+            // check if reply
+            if (data.comment_id) {
+                const mainComment = await this.getByCommentUUID(saveComment.comment_id);
+                to = mainComment.author_id;
+                action = 'reply';
+            } else {
+                to = book.author_id;
+                action = 'post';
+            }
+
+            const from = saveComment.author_id;
+            if (to !== from) {
+                const notification = {
+                    'from': from,
+                    'to': to,
+                    'book_id': book.uuid,
+                    'parent_id': saveComment.uuid,
+                    'parent_name': 'comment',
+                    'action': action,
+                    'type' : saveComment.parent === 'chapter' ? 'chapter_inline_comment' : 'scene_inline_comment',
+                    'status': 0
+                };
+                await Notification.query().insert(notification)
+            }
+        }
+
         // check if the request have a comment_id
         // then use the comment_id instead
         if (data.comment_id) {
             commentUUID = saveComment.comment_id;
         }
 
+        return this.getByCommentUUID(commentUUID);
+
+    }
+
+    static async getByCommentUUID(uuid) {
         return Comment.query()
             .withGraphJoined('author', {maxBatchSize: 1})
             .withGraphFetched('sub_comments.[author]', {maxBatchSize: 1})
@@ -56,8 +94,7 @@ class CommentController {
             })
             .whereNull('comments.deleted_at')
             .orderBy('comments.created_at', 'DESC')
-            .findById(commentUUID);
-
+            .findById(uuid);
     }
 
     static async delete (itemId) {
